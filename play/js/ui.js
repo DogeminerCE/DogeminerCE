@@ -1396,6 +1396,21 @@ class UIManager {
         }
     }
 
+    // Force close mobile menu (used during cutscenes/planet transitions)
+    closeMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-bottom-menu');
+        const toggleIcon = document.getElementById('mobile-toggle-icon');
+        const toggleBtn = document.getElementById('mobile-menu-toggle');
+
+        if (!mobileMenu) return;
+
+        // Force the menu state to closed
+        this.mobileMenuOpen = false;
+        mobileMenu.classList.remove('open');
+        if (toggleBtn) toggleBtn.classList.remove('menu-open');
+        if (toggleIcon) toggleIcon.src = 'assets/general/btn_up.png';
+    }
+
     // Switch between mobile tabs
     switchMobileTab(tabName) {
         // Check if this tab is already active

@@ -242,7 +242,8 @@ class SaveManager {
             },
             cutscenes: {
                 moonLaunch: !!this.game.hasPlayedMoonLaunch
-            }
+            },
+            unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth']
         };
     }
 
@@ -483,6 +484,26 @@ class SaveManager {
         this.game.notificationsEnabled = saveData.settings?.notificationsEnabled !== false;
         this.game.autoSaveEnabled = saveData.settings?.autoSaveEnabled !== false;
         this.game.hasPlayedMoonLaunch = saveData.cutscenes?.moonLaunch || false;
+
+        // Restore unlockedLevels from saved array
+        if (Array.isArray(saveData.unlockedLevels) && saveData.unlockedLevels.length > 0) {
+            this.game.unlockedLevels = new Set(saveData.unlockedLevels);
+        } else {
+            // Fallback: infer from game state
+            this.game.unlockedLevels = new Set(['earth']);
+            if (this.game.hasPlayedMoonLaunch || this.game.moonHelpers?.length > 0) {
+                this.game.unlockedLevels.add('moon');
+            }
+            if (this.game.marsHelpers?.length > 0) {
+                this.game.unlockedLevels.add('mars');
+            }
+            if (this.game.jupiterHelpers?.length > 0) {
+                this.game.unlockedLevels.add('jupiter');
+            }
+            if (this.game.titanHelpers?.length > 0) {
+                this.game.unlockedLevels.add('titan');
+            }
+        }
 
         if (window.audioManager) {
             window.audioManager.soundEnabled = this.game.soundEnabled;

@@ -4,7 +4,7 @@ class ShopManager {
         this.game = game;
         this.shopData = this.initializeShopData();
     }
-    
+
     initializeShopData() {
         return {
             helpers: {
@@ -61,25 +61,9 @@ class ShopManager {
                     miningSprite: 'assets/helpers/dogebility/dogebility-mine-0.png',
                     description: 'A ship that instantaneously travels to any place in the Universe. Result? Many Dogecoins.',
                     category: 'advanced'
-                },
-                jupiterbase: {
-                    name: 'Jupiter Base',
-                    baseCost: 25000,
-                    baseDps: 2500,
-                    icon: 'assets/helpers/helpers/jupiterbase/jupiterbase-idle-0.png',
-                    description: 'Gas giant mining operations',
-                    category: 'advanced'
-                },
-                titanbase: {
-                    name: 'Titan Base',
-                    baseCost: 100000,
-                    baseDps: 10000,
-                    icon: 'assets/helpers/helpers/titanbase/titanbase-idle-0.png',
-                    description: 'Saturn moon mining facility',
-                    category: 'advanced'
                 }
             },
-            
+
             // Moon helpers
             moonHelpers: {
                 moonBase: {
@@ -137,7 +121,7 @@ class ShopManager {
                     category: 'moon'
                 }
             },
-            
+
             // Mars helpers
             marsHelpers: {
                 marsBase: {
@@ -315,7 +299,7 @@ class ShopManager {
                     category: 'titan'
                 }
             },
-            
+
             pickaxes: {
                 standard: {
                     name: 'Standard Pickaxe',
@@ -366,7 +350,7 @@ class ShopManager {
                     unlocked: true
                 }
             },
-            
+
             upgrades: {
                 clickPower: {
                     name: 'Click Power',
@@ -403,48 +387,48 @@ class ShopManager {
             }
         };
     }
-    
+
     getHelperCost(helperType, owned) {
         const helper = this.shopData.helpers[helperType];
         if (!helper) return Infinity;
-        
+
         return Math.floor(helper.baseCost * Math.pow(1.15, owned));
     }
-    
+
     canAffordHelper(helperType) {
         const owned = this.game.helpers.filter(h => h.type === helperType).length;
         const cost = this.getHelperCost(helperType, owned);
         return this.game.dogecoins >= cost;
     }
-    
+
     canAffordPickaxe(pickaxeType) {
         const pickaxe = this.shopData.pickaxes[pickaxeType];
         if (!pickaxe) return false;
-        
+
         return this.game.dogecoins >= pickaxe.cost && !this.game.pickaxes.includes(pickaxeType);
     }
-    
+
     canAffordUpgrade(upgradeType) {
         const upgrade = this.shopData.upgrades[upgradeType];
         if (!upgrade) return false;
-        
+
         const level = this.game.upgrades[upgradeType] || 0;
         if (level >= upgrade.maxLevel) return false;
-        
+
         const cost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
         return this.game.dogecoins >= cost;
     }
-    
+
     buyHelper(helperType) {
         if (!this.canAffordHelper(helperType)) {
             this.game.showNotification('Not enough Dogecoins!');
             return false;
         }
-        
+
         const owned = this.game.helpers.filter(h => h.type === helperType).length;
         const cost = this.getHelperCost(helperType, owned);
         const helper = this.shopData.helpers[helperType];
-        
+
         this.game.dogecoins -= cost;
         this.game.helpers.push({
             type: helperType,
@@ -452,87 +436,87 @@ class ShopManager {
             dps: helper.baseDps,
             owned: owned + 1
         });
-        
+
         this.game.updateDPS();
         this.game.showNotification(`Bought ${helper.name} for ${this.game.formatNumber(cost)} Dogecoins!`);
         this.game.playSound('check.wav');
-        
+
         return true;
     }
-    
+
     buyPickaxe(pickaxeType) {
         if (!this.canAffordPickaxe(pickaxeType)) {
             this.game.showNotification('Cannot buy this pickaxe!');
             return false;
         }
-        
+
         const pickaxe = this.shopData.pickaxes[pickaxeType];
-        
+
         this.game.dogecoins -= pickaxe.cost;
         this.game.pickaxes.push(pickaxeType);
         this.game.currentPickaxe = pickaxeType;
-        
+
         this.game.showNotification(`Bought ${pickaxe.name}!`);
         this.game.playSound('check.wav');
-        
+
         return true;
     }
-    
+
     buyUpgrade(upgradeType) {
         if (!this.canAffordUpgrade(upgradeType)) {
             this.game.showNotification('Cannot buy this upgrade!');
             return false;
         }
-        
+
         const upgrade = this.shopData.upgrades[upgradeType];
         const level = this.game.upgrades[upgradeType] || 0;
         const cost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
-        
+
         this.game.dogecoins -= cost;
         this.game.upgrades[upgradeType] = level + 1;
-        
+
         this.game.showNotification(`Bought ${upgrade.name} Level ${level + 1}!`);
         this.game.playSound('check.wav');
-        
+
         return true;
     }
-    
+
     getShopItems(category) {
         return this.shopData[category] || {};
     }
-    
+
     getUnlockedItems(category) {
         const items = this.getShopItems(category);
         const unlocked = {};
-        
+
         Object.entries(items).forEach(([key, item]) => {
             if (this.isItemUnlocked(key, category)) {
                 unlocked[key] = item;
             }
         });
-        
+
         return unlocked;
     }
-    
+
     isItemUnlocked(itemKey, category) {
         switch (category) {
             case 'helpers':
                 // All helpers are unlocked by default
                 return true;
-                
+
             case 'pickaxes':
                 const pickaxe = this.shopData.pickaxes[itemKey];
                 return pickaxe && pickaxe.unlocked;
-                
+
             case 'upgrades':
                 // Unlock upgrades based on progress
                 return this.isUpgradeUnlocked(itemKey);
-                
+
             default:
                 return false;
         }
     }
-    
+
     isUpgradeUnlocked(upgradeType) {
         // Unlock upgrades based on game progress
         switch (upgradeType) {
@@ -548,31 +532,31 @@ class ShopManager {
                 return false;
         }
     }
-    
+
     updateShopDisplay() {
         // This will be called by the UI manager to refresh shop displays
         if (uiManager && uiManager.activePanel === 'shop-panel') {
             uiManager.updateShopContent();
         }
     }
-    
+
     getHelperStats(helperType) {
         const helper = this.shopData.helpers[helperType];
         const owned = this.game.helpers.filter(h => h.type === helperType).length;
         const totalDps = helper.baseDps * owned;
-        
+
         return {
             owned,
             totalDps,
             nextCost: this.getHelperCost(helperType, owned)
         };
     }
-    
+
     getUpgradeStats(upgradeType) {
         const upgrade = this.shopData.upgrades[upgradeType];
         const level = this.game.upgrades[upgradeType] || 0;
         const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
-        
+
         return {
             level,
             nextCost,
@@ -580,11 +564,11 @@ class ShopManager {
             isMaxLevel: level >= upgrade.maxLevel
         };
     }
-    
+
     // Special offers and limited-time items
     getSpecialOffers() {
         const offers = [];
-        
+
         // Example: Double DPS weekend
         if (this.isWeekend()) {
             offers.push({
@@ -595,19 +579,19 @@ class ShopManager {
                 active: true
             });
         }
-        
+
         return offers;
     }
-    
+
     isWeekend() {
         const day = new Date().getDay();
         return day === 0 || day === 6; // Sunday or Saturday
     }
-    
+
     applySpecialOffers() {
         const offers = this.getSpecialOffers();
         let multiplier = 1;
-        
+
         offers.forEach(offer => {
             if (offer.active) {
                 switch (offer.type) {
@@ -617,7 +601,7 @@ class ShopManager {
                 }
             }
         });
-        
+
         return multiplier;
     }
 }
