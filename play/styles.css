@@ -2912,14 +2912,17 @@ body.planet-mars #main-rock {
     }
 
     /* Scale down game elements on mobile - centered by platform */
+    /* Scale down game elements on mobile - centered by platform */
     #doge-container {
-        transform: scale(0.7);
+        /* Centered and scaled down */
+        left: 50%;
+        transform: translateX(-50%) scale(0.65);
         transform-origin: bottom center;
     }
 
     #platform {
-        transform: scale(0.9);
-        /* Increased from 0.7 (approx 1.25x larger) */
+        transform: scale(0.8);
+        /* Adjusted: 0.9 was too big, 0.7 too small. 0.8 is just right. */
         transform-origin: bottom center;
     }
 
@@ -2987,21 +2990,24 @@ body.planet-mars #main-rock {
     }
 
     /* Mobile Helper Bar - Grouped helpers at bottom of screen */
+    /* Mobile Helper Bar - Grouped helpers at bottom of screen */
     #mobile-helper-bar {
         position: fixed;
-        bottom: 110px;
-        /* 20px above toggle button (80px height + 10px gap) */
+        bottom: 130px;
+        /* Moved up to avoid menu button overlap */
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) scale(0.85);
+        /* Slightly smaller scale */
         display: flex;
         justify-content: center;
         align-items: flex-end;
         gap: 8px;
         z-index: 500;
         /* Below pull-up menu (2100) and toggle (1001) */
-        max-width: 95vw;
+        max-width: 85vw;
+        /* Reduced max-width to avoid planet switcher */
         overflow-x: auto;
-        padding: 8px 12px;
+        padding: 6px 10px;
         background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
         border: 2px solid #d4af37;
         border-radius: 12px;
@@ -3092,27 +3098,33 @@ body.planet-mars #main-rock {
     }
 
     /* Mobile Menu Toggle Button */
+
     #mobile-menu-toggle {
         display: block;
-        position: fixed;
-        bottom: 20px;
+        position: absolute;
+        /* Attached to the menu container */
+        top: -75px;
+        /* Positioned above the menu */
         left: 50%;
         transform: translateX(-50%);
+        bottom: auto;
+        /* Reset bottom */
         width: 80px;
         height: 80px;
         background: transparent;
         border: none;
         border-radius: 50%;
-        z-index: 1001;
+        z-index: 2101;
+        /* Above menu */
         cursor: pointer;
         padding: 0;
-        transition: bottom 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        transition: transform 0.1s ease;
+        /* Only for click effect */
     }
 
-    /* Move button up when menu is open - sits exactly on top of menu */
-    #mobile-menu-toggle.menu-open {
-        bottom: calc(40vh - 33px);
-    }
+
+
+
 
     #mobile-menu-toggle:active {
         transform: translateX(-50%) scale(0.95);
@@ -3141,10 +3153,17 @@ body.planet-mars #main-rock {
         transform: translateY(100%);
         transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        overflow: visible;
+        /* Allow button to stick out */
     }
 
     #mobile-bottom-menu.open {
         transform: translateY(0);
+    }
+
+    /* Mobile rounded corners for shop items */
+    .shop-item {
+        border-radius: 24px !important;
     }
 
     /* Mobile Panel Tabs */
