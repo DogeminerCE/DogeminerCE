@@ -1,248 +1,164 @@
-import audioManager from "./audio.js";
-import gameManager from "./game.js";
-import shopManager from "./shop.js";
-import notificationManager from "./notification.js";
-import saveManager from "./save.js";
-import performanceMonitor from "./performance-monitor.js";
-import cloudSaveManager from "./cloud-save.js";
-
 // DogeMiner: Community Edition - UI Management
 class UIManager {
-    debugMode = false;
-
-    constructor() {}
-
-    init() {
+    constructor(game) {
+        this.game = game;
         this.activePanel = 'shop-tab'; // Shop tab is active by default
         this.currentShopTab = 'helpers';
-        this.mobileMenuOpen = false; // Track mobile menu state
-        this.activeMobileTab = 'shop'; // Track active mobile tab
-        this.boundHandleBuyButtonClick = this.handleBuyButtonClick.bind(this);
-        this.boundMobileBuyButtonClick = this.handleMobileBuyClick.bind(this);
-
-        try {
-            this.setupUI();
-            this.initializePlanetTabs(); // Initialize planet tabs based on saved state
-            this.setupMobileUI(); // Setup mobile-specific UI functionality
-        } catch (error) {
-            console.error('Error in UIManager constructor:', error);
-            console.error('Error details:', error.message, error.stack);
-            throw error; // Re-throw to be caught by main.js
-        }
-    }
-
-    removeDebugConsole() {
-        const debugConsole = document.getElementById('debug-console');
-        if (debugConsole) {
-            debugConsole.remove();
-        }
-    }
-
-    toggleDebugMode () {
-        this.debugMode = !this.debugMode;
-        if (this.debugMode) {
-            // Enable debug features
-            performanceMonitor.start();
-            
-            // Add debug console
-            this.addDebugConsole();
-            
-            console.log('Debug mode enabled');
-        } else {
-            // Disable debug features
-            performanceMonitor.fpsElement?.remove();
-            
-            this.removeDebugConsole();
-            
-            console.log('Debug mode disabled');
-        }
-    }
-
-    addDebugConsole() {
-        const debugConsole = document.createElement('div');
-        debugConsole.id = 'debug-console';
-        debugConsole.style.cssText = `
-            position: fixed;
-            bottom: 100px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 10000;
-            max-width: 300px;
-        `;
         
-        const debugBtns = [
-            [() => {gameManager.dogecoins += 1000}, "+1000 coins"],
-            [() => {gameManager.dogecoins += 10000}, "+10000 coins"],
-            [() => {gameManager.dogecoins += 4e16}, "+40 Quadrillion Coins"],
-            [() => {gameManager.dps += 100}, "+100 DPS"],
-            [() => {gameManager.rotateBackground()}, "Rotate Background"],
-            [() => {gameManager.forceRickSpawn()}, "Spawn Rick"],
-            [() => {saveManager.repairSave()}, "Repair Save"],
-            [() => {this.toggleDebugMode()}, "Close Debug"]
-        ];
-
-        debugBtns.forEach((btn) => {
-            const btnElem = document.createElement('button');
-            btnElem.addEventListener('click', btn[0]);
-            btnElem.innerHTML = btn[1];
-            debugConsole.append(btnElem);
-        });
-        
-        document.body.appendChild(debugConsole);
+        this.setupUI();
+        this.initializePlanetTabs(); // Initialize planet tabs based on saved state
     }
-
-    hideLoadingScreen() {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (!loadingScreen) {
-            return;
-        }
-        
-        loadingScreen.classList.remove('fade-in');
-        loadingScreen.classList.add('fade-out');
-
-        // Remove inline opacity on next frame so CSS transition can take over
-        requestAnimationFrame(() => {
-            loadingScreen.style.removeProperty('opacity');
-        });
-
-        const fadeDuration = parseFloat(getComputedStyle(loadingScreen).getPropertyValue('--loading-fade-duration') || '1.5');
-        const timeout = isNaN(fadeDuration) ? 1500 : fadeDuration * 1000;
-
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-            loadingScreen.classList.remove('fade-out');
-            loadingScreen.style.opacity = '';
-        }, timeout);
-    }
-
-    updateLoadingInfo(info) {
-        const loadingInfo = document.getElementById('loading-info');
-        if (loadingInfo) {
-            loadingInfo.textContent = info;
-        }
-    }
-
-    showLoadingScreen(useFade = false) {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (!loadingScreen) {
-            return;
-        }
-
-        loadingScreen.style.display = 'flex';
-        loadingScreen.classList.remove('hidden', 'fade-out');
-
-        if (useFade) {
-            loadingScreen.classList.remove('fade-in');
-            loadingScreen.style.opacity = '0';
-            // Force reflow to allow transition to restart
-            void loadingScreen.offsetWidth;
-            loadingScreen.classList.add('fade-in');
-            requestAnimationFrame(() => {
-                loadingScreen.style.removeProperty('opacity');
-            });
-        } else {
-            loadingScreen.classList.remove('fade-in');
-            loadingScreen.style.opacity = '1';
-        }
-    }
-
+    
     setupUI() {
         this.setupPanels();
         this.setupShop();
         this.setupStats();
         this.setupLoading();
-        this.setupMainTabBtns();
-        this.setupPlanetBtns();
-        this.setupSettings();
     }
-
-    setupSettings() {
-        // Local save
-        document.getElementById('setting-btn-save').addEventListener('click', () => {saveManager.saveGame();});
-        document.getElementById('setting-btn-load').addEventListener('click', () => {saveManager.loadGame();});
-        document.getElementById('setting-btn-export').addEventListener('click', () => {saveManager.exportSave();});
-        document.getElementById('setting-btn-import').addEventListener('click', () => {saveManager.importSave();});
-        document.getElementById('setting-btn-reset').addEventListener('click', () => {saveManager.resetGame();});
-
-        // Cloud save
-        document.getElementById('setting-btn-save-cloud').addEventListener('click', () => {cloudSaveManager.saveToCloud();});
-        document.getElementById('setting-btn-load-cloud').addEventListener('click', () => {cloudSaveManager.loadFromCloud();});
-        document.getElementById('setting-btn-signout-cloud').addEventListener('click', () => {cloudSaveManager.signOutUser();});
-        document.getElementById('setting-btn-signin-cloud').addEventListener('click', () => {cloudSaveManager.signInWithGoogle();});
-    }
-
-    // Planet tab switching with loading transition
-    switchPlanet = (planetName) => {
+    
+    setupPanels() {
+        // Main tab switching functionality
+        window.switchMainTab = (tabName) => {
+            // Check if this tab is already active
+            const currentTab = this.activePanel.replace('-tab', '');
+            const isTabAlreadyActive = currentTab === tabName;
+            
+            if (isTabAlreadyActive) return;
+            
+            // Define tab order for swipe direction
+            const tabOrder = ['shop', 'upgrades', 'achievements', 'settings'];
+            const currentIndex = tabOrder.indexOf(currentTab);
+            const targetIndex = tabOrder.indexOf(tabName);
+            const isMovingRight = targetIndex > currentIndex;
+            
+            // Get current and target tab elements
+            const currentTabElement = document.getElementById(currentTab + '-tab');
+            const targetTabElement = document.getElementById(tabName + '-tab');
+            
+            if (!currentTabElement || !targetTabElement) return;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Add slide-out animation to current tab
+            if (isMovingRight) {
+                currentTabElement.classList.add('slide-out-left');
+            } else {
+                currentTabElement.classList.add('slide-out-right');
+            }
+            
+            // After animation, switch tabs
+            setTimeout(() => {
+                // Remove all active classes and animation classes
+            document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+            });
+                
+                // Add new active tab with slide-in animation
+                targetTabElement.classList.add('active');
+                if (isMovingRight) {
+                    targetTabElement.classList.add('slide-in-right');
+                } else {
+                    targetTabElement.classList.add('slide-in-left');
+                }
+                
+                // Remove animation classes after animation completes
+                setTimeout(() => {
+                    targetTabElement.classList.remove('slide-in-right', 'slide-in-left');
+                }, 300);
+            }, 50); // Small delay to let slide-out start
+            
+            // Set active panel
+            this.activePanel = tabName + '-tab';
+            
+            // Play sound
+            if (window.audioManager) {
+                audioManager.playSound('swipe');
+            }
+            
+            // Update shop content if switching to shop
+            if (tabName === 'shop') {
+                this.updateShopContent();
+            }
+        };
+        
+        // Planet tab switching with loading transition
+        window.switchPlanet = (planetName) => {
             // Don't allow switching if already on this planet or if transition is in progress
-            if (gameManager.currentLevel === planetName || gameManager.isTransitioning) return;
-
+            if (this.game.currentLevel === planetName || this.game.isTransitioning) return;
+            
             // Check if Moon is locked (no Space Rockets owned)
             if (planetName === 'moon') {
-                const spaceRocketCount = gameManager.helpers.filter(h => h.type === 'spaceRocket').length;
-
+                const spaceRocketCount = this.game.helpers.filter(h => h.type === 'spaceRocket').length;
+                
                 if (spaceRocketCount === 0) {
                     // Play locked sound
-                    audioManager.playSound('uhoh');
-
+                    if (window.audioManager) {
+                        audioManager.playSound('uhoh');
+                    }
+                    
                     // Show locked overlay
                     this.showMoonLocked();
                     return; // Don't switch planets
                 }
             }
-
+            
             if (planetName === 'mars' && !this.isMarsUnlocked()) {
-                audioManager.playSound('uhoh');
-                notificationManager.showWarning?.('LOCKED: Requires Lander Shibe');
+                if (window.audioManager) {
+                    audioManager.playSound('uhoh');
+                }
+                window.notificationManager?.showWarning?.('LOCKED: Requires Lander Shibe');
                 return;
             }
 
             if (planetName === 'jupiter') {
                 if (!this.isMarsUnlocked()) {
-                    audioManager.playSound('uhoh');
-                    notificationManager.showWarning?.('LOCKED: Requires Mars');
+                    if (window.audioManager) {
+                        audioManager.playSound('uhoh');
+                    }
+                    window.notificationManager?.showWarning?.('LOCKED: Requires Mars');
                     return;
                 }
 
                 if (!this.isJupiterUnlocked()) {
-                    audioManager.playSound('uhoh');
-                    notificationManager.showWarning?.('LOCKED: Requires Jupiter Rocket');
+                    if (window.audioManager) {
+                        audioManager.playSound('uhoh');
+                    }
+                    window.notificationManager?.showWarning?.('LOCKED: Requires Jupiter Rocket');
                     return;
                 }
             }
 
             if (planetName === 'titan') {
                 if (!this.isJupiterUnlocked()) {
-                    audioManager.playSound('uhoh');
-                    notificationManager.showWarning?.('LOCKED: Requires Jupiter');
+                    if (window.audioManager) {
+                        audioManager.playSound('uhoh');
+                    }
+                    window.notificationManager?.showWarning?.('LOCKED: Requires Jupiter');
                     return;
                 }
 
                 if (!this.isTitanUnlocked()) {
-                    audioManager.playSound('uhoh');
-                    notificationManager.showWarning?.('LOCKED: Requires DogeStar');
+                    if (window.audioManager) {
+                        audioManager.playSound('uhoh');
+                    }
+                    window.notificationManager?.showWarning?.('LOCKED: Requires DogeStar');
                     return;
                 }
             }
 
             // Update planet tab buttons
-            const targetElement = event && event.target ? event.target.closest('.planet-tab') : document.querySelector(`.planet-tab[data-planet="${planetName}"]`);
-
             document.querySelectorAll('.planet-tab').forEach(btn => {
                 btn.classList.remove('active');
             });
-
-            if (targetElement) {
-                targetElement.classList.add('active');
-            }
-
+            event.target.closest('.planet-tab').classList.add('active');
+            
             // Set transitioning flag
-            gameManager.isTransitioning = true;
-
+            this.game.isTransitioning = true;
+            
             // Show loading screen with appropriate message
             const loadingInfo = document.getElementById('loading-info');
             if (loadingInfo) {
@@ -260,52 +176,49 @@ class UIManager {
                     loadingInfo.textContent = 'Charting a course to Titan...';
                 }
             }
-
+            
             // Show loading screen with fade
-            this.showLoadingScreen(true);
+            window.showLoadingScreen(true);
 
             // Use timeout to ensure loading screen is visible before processing
             setTimeout(() => {
                 // First save the current state
-                if (gameManager.currentLevel === 'earth') {
+                if (this.game.currentLevel === 'earth') {
                     // Save earth placed helpers
-                    gameManager.earthPlacedHelpers = [...gameManager.placedHelpers];
-                } else if (gameManager.currentLevel === 'moon') {
+                    this.game.earthPlacedHelpers = [...this.game.placedHelpers];
+                } else if (this.game.currentLevel === 'moon') {
                     // Save moon placed helpers
-                    gameManager.moonPlacedHelpers = [...gameManager.placedHelpers];
-                } else if (gameManager.currentLevel === 'mars') {
+                    this.game.moonPlacedHelpers = [...this.game.placedHelpers];
+                } else if (this.game.currentLevel === 'mars') {
                     // Save mars placed helpers
-                    gameManager.marsPlacedHelpers = [...gameManager.placedHelpers];
-                } else if (gameManager.currentLevel === 'jupiter') {
-                    gameManager.jupiterPlacedHelpers = [...gameManager.placedHelpers];
-                } else if (gameManager.currentLevel === 'titan') {
+                    this.game.marsPlacedHelpers = [...this.game.placedHelpers];
+                } else if (this.game.currentLevel === 'jupiter') {
+                    this.game.jupiterPlacedHelpers = [...this.game.placedHelpers];
+                } else if (this.game.currentLevel === 'titan') {
                     // Save titan placed helpers when leaving Titan
-                    gameManager.titanPlacedHelpers = [...gameManager.placedHelpers];
+                    this.game.titanPlacedHelpers = [...this.game.placedHelpers];
                 }
-
+                
                 // Clear the current helpers from the screen
-                gameManager.clearAllHelperSprites();
-
+                this.game.clearAllHelperSprites();
+                
                 // Update game state to reflect planet change
-                gameManager.currentLevel = planetName;
-
-                // Update mobile display
-                this.updateMobilePlanetDisplay();
-
+                this.game.currentLevel = planetName;
+                
                 // Load the appropriate placed helpers
                 if (planetName === 'earth') {
-                    gameManager.placedHelpers = [...gameManager.earthPlacedHelpers];
+                    this.game.placedHelpers = [...this.game.earthPlacedHelpers];
                 } else if (planetName === 'moon') {
-                    gameManager.placedHelpers = [...gameManager.moonPlacedHelpers];
+                    this.game.placedHelpers = [...this.game.moonPlacedHelpers];
                 } else if (planetName === 'mars') {
-                    gameManager.placedHelpers = [...(gameManager.marsPlacedHelpers || [])];
+                    this.game.placedHelpers = [...(this.game.marsPlacedHelpers || [])];
                 } else if (planetName === 'jupiter') {
-                    gameManager.placedHelpers = [...(gameManager.jupiterPlacedHelpers || [])];
+                    this.game.placedHelpers = [...(this.game.jupiterPlacedHelpers || [])];
                 } else if (planetName === 'titan') {
                     // Load titan placed helpers when switching to Titan
-                    gameManager.placedHelpers = [...(gameManager.titanPlacedHelpers || [])];
+                    this.game.placedHelpers = [...(this.game.titanPlacedHelpers || [])];
                 }
-
+                
                 // Update the character sprite
                 if (planetName === 'earth') {
                     // Earth character
@@ -322,7 +235,7 @@ class UIManager {
                     // Titan uses space helmet like Jupiter and Moon
                     this.updateCharacter('spacehelmet');
                 }
-
+                
                 // Update the rock image
                 const rockElement = document.getElementById('main-rock');
                 const platform = document.getElementById('platform');
@@ -335,7 +248,9 @@ class UIManager {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
-                    audioManager.playBackgroundMusic();
+                    if (window.audioManager) {
+                        audioManager.playBackgroundMusic();
+                    }
                 } else if (planetName === 'moon') {
                     rockElement.src = 'assets/general/rocks/moon.png';
                     if (platform) {
@@ -345,7 +260,9 @@ class UIManager {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
-                    audioManager.playBackgroundMusic();
+                    if (window.audioManager) {
+                        audioManager.playBackgroundMusic();
+                    }
                 } else if (planetName === 'mars') {
                     rockElement.src = 'assets/general/rocks/mars.png';
                     if (platform) {
@@ -355,7 +272,9 @@ class UIManager {
                     document.body.classList.add('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
-                    audioManager.playBackgroundMusic();
+                    if (window.audioManager) {
+                        audioManager.playBackgroundMusic();
+                    }
                 } else if (planetName === 'jupiter') {
                     rockElement.src = 'assets/general/rocks/jupiter.png';
                     if (platform) {
@@ -366,7 +285,9 @@ class UIManager {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-jupiter');
-                    audioManager.playBackgroundMusic();
+                    if (window.audioManager) {
+                        audioManager.playBackgroundMusic();
+                    }
                 } else if (planetName === 'titan') {
                     // Titan uses its own rock and platform
                     rockElement.src = 'assets/general/rocks/titan.png';
@@ -377,13 +298,15 @@ class UIManager {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.add('planet-titan');
-                    audioManager.playBackgroundMusic();
+                    if (window.audioManager) {
+                        audioManager.playBackgroundMusic();
+                    }
                 }
-
+                
                 // Update backgrounds with the correct pool
                 if (planetName === 'earth') {
                     // Earth backgrounds
-                    gameManager.backgrounds = [
+                    this.game.backgrounds = [
                         'backgrounds/bg1.jpg',
                         'backgrounds/bg3.jpg',
                         'backgrounds/bg4.jpg',
@@ -395,7 +318,7 @@ class UIManager {
                     ];
                 } else if (planetName === 'moon') {
                     // Moon backgrounds (same as earth since DOM only has 8 background elements)
-                    gameManager.backgrounds = [
+                    this.game.backgrounds = [
                         'backgrounds/bg1.jpg',
                         'backgrounds/bg3.jpg',
                         'backgrounds/bg4.jpg',
@@ -406,7 +329,7 @@ class UIManager {
                         'backgrounds/bg-new.jpg'
                     ];
                 } else if (planetName === 'mars') {
-                    gameManager.backgrounds = [
+                    this.game.backgrounds = [
                         'backgrounds/bg6.jpg',
                         'assets/backgrounds/bg101.jpg',
                         'assets/backgrounds/bg102.jpg',
@@ -416,7 +339,7 @@ class UIManager {
                         'backgrounds/bg-new.jpg'
                     ];
                 } else if (planetName === 'jupiter') {
-                    gameManager.backgrounds = [
+                    this.game.backgrounds = [
                         'assets/backgrounds/bgjup01.jpg',
                         'assets/backgrounds/bgjup02.jpg',
                         'assets/backgrounds/bgjup03.jpg',
@@ -424,33 +347,33 @@ class UIManager {
                     ];
                 } else if (planetName === 'titan') {
                     // Titan uses its own background set for atmospheric effect
-                    gameManager.backgrounds = [
+                    this.game.backgrounds = [
                         'assets/backgrounds/titan02.jpg',
                         'assets/backgrounds/titan03.jpg',
                         'assets/backgrounds/titan04.jpg',
                         'assets/backgrounds/titan05.jpg'
                     ];
                 }
-                gameManager.currentBackgroundIndex = 0;
+                this.game.currentBackgroundIndex = 0;
 
                 // Sync background image DOM nodes to match the newly selected planet.
-                gameManager.syncBackgroundImages?.(true);
-
+                this.game.syncBackgroundImages?.(true);
+                
                 // Update the shop to show the appropriate helpers
                 this.updateShopContent();
                 this.updatePlanetTabVisibility();
-
+                
                 // Delay a bit to simulate loading
                 setTimeout(() => {
                     // Recreate helper sprites for the current planet
-                    gameManager.recreateHelperSprites();
-
+                    this.game.recreateHelperSprites();
+                    
                     // Hide loading screen
-                    this.hideLoadingScreen();
-
+                    window.hideLoadingScreen();
+                    
                     // Reset transitioning flag
-                    gameManager.isTransitioning = false;
-
+                    this.game.isTransitioning = false;
+                    
                     // Trigger landing animation depending on destination
                     const characterContainer = document.getElementById('character-container');
                     if (characterContainer) {
@@ -465,156 +388,61 @@ class UIManager {
                         // Play drop-in intro animation for all planets to maintain consistency
                         const forceIntro = planetName === 'moon' || planetName === 'earth' || planetName === 'mars' || planetName === 'jupiter' || planetName === 'titan';
                         if (forceIntro) {
-                            gameManager.playDogeIntro(true);
+                            this.game.playDogeIntro(true);
                         }
                     }, 300);
 
                 }, 1000); // 1 second delay
             }, 500); // Short delay to ensure loading screen appears
-
+            
             console.log(`Switched to ${planetName}`);
-        }
-
-    // Main tab switching functionality
-    switchMainTab(tabName) {
-        console.log('Current tab: ', this.activePanel);
-        // Check if this tab is already active
-        const currentTab = this.activePanel.replace('-tab', '');
-        const isTabAlreadyActive = currentTab === tabName;
-
-        if (isTabAlreadyActive) return;
-
-        // Define tab order for swipe direction
-        const tabOrder = ['shop', 'upgrades', 'achievements', 'settings'];
-        const currentIndex = tabOrder.indexOf(currentTab);
-        const targetIndex = tabOrder.indexOf(tabName);
-        const isMovingRight = targetIndex > currentIndex;
-
-        // Get current and target tab elements
-        const currentTabElement = document.getElementById(currentTab + '-tab');
-        const targetTabElement = document.getElementById(tabName + '-tab');
-
-        if (!currentTabElement || !targetTabElement) return;
-
-        // Update tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-
-        // Add slide-out animation to current tab
-        if (isMovingRight) {
-            currentTabElement.classList.add('slide-out-left');
-        } else {
-            currentTabElement.classList.add('slide-out-right');
-        }
-
-        // After animation, switch tabs
-        setTimeout(() => {
-            // Remove all active classes and animation classes
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
-            });
-
-            // Add new active tab with slide-in animation
-            targetTabElement.classList.add('active');
-            if (isMovingRight) {
-                targetTabElement.classList.add('slide-in-right');
-            } else {
-                targetTabElement.classList.add('slide-in-left');
-            }
-
-            // Remove animation classes after animation completes
-            setTimeout(() => {
-                targetTabElement.classList.remove('slide-in-right', 'slide-in-left');
-            }, 300);
-        }, 50); // Small delay to let slide-out start
-
-        // Set active panel
-        this.activePanel = tabName + '-tab';
-
-        // Play sound
-        audioManager.playSound('swipe');
-
-        // Update shop content if switching to shop
-        if (tabName === 'shop') {
-            this.updateShopContent();
-        }
-    }
-
-    // Shop sub-tab switching
-    switchShopTab(tabName) {
+        };
+        
+        // Scroll wheel functionality for tab switching (shop and upgrade only)
+        this.setupScrollWheelTabs();
+        
+        // Shop sub-tab switching
+        window.switchShopTab = (tabName) => {
             this.currentShopTab = tabName;
-
+            
             // Update sub-tab buttons in shop
             document.querySelectorAll('.shop-tabs .sub-tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-
+            
             // Update shop content
             this.updateShopContent();
-    }
-
-    // Achievements sub-tab switching
-    switchAchievementsTab(tabName) {
-        // Update sub-tab buttons in achievements
-        document.querySelectorAll('.achievements-tabs .sub-tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-
-        // Update achievements content
-        document.querySelectorAll('.achievements-sub-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        if (tabName === 'achievements') {
-            document.getElementById('achievements-content').classList.add('active');
-        } else if (tabName === 'stats') {
-            document.getElementById('stats-content').classList.add('active');
-        }
-    }
-
-    setupPlanetBtns() {
-        const tabs = document.querySelectorAll('.planet-tab');
-
-        // Setup tab buttons
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const planet = e.currentTarget.dataset.planet;
-                if (planet) {
-                    this.switchPlanet(planet);
-                }
+        };
+        
+        // Achievements sub-tab switching
+        window.switchAchievementsTab = (tabName) => {
+            // Update sub-tab buttons in achievements
+            document.querySelectorAll('.achievements-tabs .sub-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
-        });
-    }
-
-    setupMainTabBtns() {
-        const mainTabs = document.querySelectorAll('.tab-btn');
-
-        // Setup tab buttons
-        mainTabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const tabName = e.currentTarget.dataset.tab;
-                if (tabName) {
-                    this.switchMainTab(tabName);
-                }
+            event.target.classList.add('active');
+            
+            // Update achievements content
+            document.querySelectorAll('.achievements-sub-content').forEach(content => {
+                content.classList.remove('active');
             });
-        });
+            
+            if (tabName === 'achievements') {
+                document.getElementById('achievements-content').classList.add('active');
+            } else if (tabName === 'stats') {
+                document.getElementById('stats-content').classList.add('active');
+            }
+        };
+        
     }
-
-    setupPanels() {
-        // Scroll wheel functionality for tab switching (shop and upgrade only)
-        this.setupScrollWheelTabs();
-    }
-
+    
     setupShop() {
         this.updateShopContent();
     }
-
+    
     updateShopContent() {
-        if (!gameManager) {
+        if (!this.game) {
             console.warn('updateShopContent called before game was ready');
             return;
         }
@@ -626,61 +454,67 @@ class UIManager {
             console.error('shop-content element not found!');
             return;
         }
-
+        
         // Log the current planet to help debug shop issues
-        console.log(`Updating shop content for planet: ${gameManager.currentLevel}`);
-
+        console.log(`Updating shop content for planet: ${this.game.currentLevel}`);
+        
         // Clear existing content
         shopContent.innerHTML = '';
-
+        
         // Render the correct helpers based on current planet
         this.renderHelperShop(shopContent);
-
+        
         // Update shop prices to reflect current planet's helpers
-        gameManager.updateShopPrices();
+        this.game.updateShopPrices();
     }
-
+    
     renderHelperShop(container) {
         container.innerHTML = ''; // Clear container completely
-
-        // Choose which helpers to display based on current planet
-        console.log(`Rendering shop with helper category: ${gameManager.currentLevel} for planet: ${gameManager.currentLevel}`);
-
-        if (!shopManager.shopData.helpers[gameManager.currentLevel]) {
-            console.error(`Shop data for ${gameManager.currentLevel} is missing!`);
+        
+        if (!this.game) {
+            console.warn('renderHelperShop called before game was ready');
             return;
         }
 
-        const helperEntries = Object.entries(shopManager.shopData.helpers[gameManager.currentLevel]);
-        const moonHelpers = Array.isArray(gameManager.moonHelpers) ? gameManager.moonHelpers : [];
-        const marsHelpers = Array.isArray(gameManager.marsHelpers) ? gameManager.marsHelpers : [];
-        const jupiterHelpers = Array.isArray(gameManager.jupiterHelpers) ? gameManager.jupiterHelpers : [];
+        // Choose which helpers to display based on current planet
+        const helperCategory = this.game.getHelperCategoryForLevel(this.game.currentLevel);
+        console.log(`Rendering shop with helper category: ${helperCategory} for planet: ${this.game.currentLevel}`);
+        
+        if (!window.shopManager.shopData[helperCategory]) {
+            console.error(`Shop data for ${helperCategory} is missing!`);
+            return;
+        }
+        
+        const helperEntries = Object.entries(window.shopManager.shopData[helperCategory]);
+        const moonHelpers = Array.isArray(this.game.moonHelpers) ? this.game.moonHelpers : [];
+        const marsHelpers = Array.isArray(this.game.marsHelpers) ? this.game.marsHelpers : [];
+        const jupiterHelpers = Array.isArray(this.game.jupiterHelpers) ? this.game.jupiterHelpers : [];
         const moonBaseOwned = moonHelpers.some(helper => helper.type === 'moonBase');
         const marsBaseOwned = marsHelpers.some(helper => helper.type === 'marsBase');
         const jupiterBaseOwned = jupiterHelpers.some(helper => helper.type === 'cloudBase');
         const landerShibeOwned = moonHelpers.some(helper => helper.type === 'landerShibe');
-
+        
         // Create 6 helper items (2x3 grid)
         for (let i = 0; i < 6; i++) {
             const item = document.createElement('div');
             item.className = 'shop-grid-item';
-
+            
             if (i < helperEntries.length) {
                 const [type, helper] = helperEntries[i];
                 // Choose the correct helper array based on current planet
-                const helperArray = gameManager.getHelperArrayForLevel(gameManager.currentLevel);
+                const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
                 const owned = helperArray.filter(h => h.type === type).length;
                 const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
-                const canAfford = gameManager.dogecoins >= cost;
+                const canAfford = this.game.dogecoins >= cost;
 
                 let lockReason = null;
-                if (gameManager.currentLevel === 'moon') {
+                if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
                         lockReason = 'landerShibe';
                     }
-                } else if (gameManager.currentLevel === 'mars') {
+                } else if (this.game.currentLevel === 'mars') {
                     if (type !== 'marsBase' && !marsBaseOwned) {
                         lockReason = 'marsBase';
                     }
@@ -688,19 +522,19 @@ class UIManager {
                     if (type === 'jupiterRocket' && !spaceBassOwned) {
                         lockReason = 'spaceBass';
                     }
-                } else if (gameManager.currentLevel === 'jupiter') {
+                } else if (this.game.currentLevel === 'jupiter') {
                     if (type !== 'cloudBase' && !jupiterBaseOwned) {
                         lockReason = 'cloudBase';
                     }
                 }
                 const isLocked = lockReason !== null;
-
-
+                
+                
                 // Calculate button width based on price length
-                const priceText = gameManager.formatNumber(cost);
+                const priceText = this.game.formatNumber(cost);
                 const priceLength = priceText.length;
                 let buttonWidth = '45%'; // Default width
-
+                
                 // Scale button width based on price length
                 if (priceLength >= 12) {
                     buttonWidth = '90%'; // Extremely long prices (trillions+)
@@ -715,14 +549,14 @@ class UIManager {
                 } else {
                     buttonWidth = '45%'; // Short prices (hundreds)
                 }
-
+                
                 const buttonDisabled = (!canAfford || isLocked) ? 'disabled' : '';
                 let lockText = 'REQUIRES MOON BASE';
                 if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
                 else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
-
+                
                 const lockOverlayHtml = isLocked ? `
                     <div class="helper-lock-overlay">
                         <div class="helper-lock-icon" aria-hidden="true"></div>
@@ -758,48 +592,45 @@ class UIManager {
                     </div>
                 `;
             }
-
+            
             container.appendChild(item);
         }
-
+        
         // Add event listeners to all buy buttons
         this.setupShopButtonListeners();
     }
-
+    
     setupShopButtonListeners() {
         // Add event listeners to all buy buttons
-        // Desktop helper cards render inside #shop-content, so bind listeners to that node.
-        const shopContainer = document.getElementById('shop-content');
-        if (!shopContainer) return;
-        const buyButtons = shopContainer.querySelectorAll('.shop-buy-btn[data-helper-type]');
+        const buyButtons = document.querySelectorAll('.shop-buy-btn[data-helper-type]');
         buyButtons.forEach((button) => {
             // Remove any existing listeners to prevent duplicates
-            button.removeEventListener('click', this.boundHandleBuyButtonClick);
+            button.removeEventListener('click', this.handleBuyButtonClick);
             // Add new listener
-            button.addEventListener('click', this.boundHandleBuyButtonClick);
+            button.addEventListener('click', this.handleBuyButtonClick.bind(this));
         });
     }
-
+    
     handleBuyButtonClick(event) {
         const button = event.currentTarget;
         const helperType = button.getAttribute('data-helper-type');
-
-        if (helperType) {
+        
+        if (helperType && window.game) {
             // Buy the helper based on the current planet
-            const success = gameManager.buyHelper(helperType);
-
+            const success = window.game.buyHelper(helperType);
+            
             if (success) {
                 // Trigger chromatic aberration effect on successful purchase
-                gameManager.createChromaticAberrationEffect(button);
-
+                window.game.createChromaticAberrationEffect(button);
+                
                 // Update shop display immediately
                 this.updateShopDisplay();
-
+                
                 // Special handling for Earth helpers
-                if (gameManager.currentLevel === 'earth') {
+                if (window.game.currentLevel === 'earth') {
                     // If this is the first Space Rocket purchase, unlock the Moon
                     if (helperType === 'spaceRocket') {
-                        const spaceRocketCount = gameManager.helpers.filter(h => h.type === 'spaceRocket').length;
+                        const spaceRocketCount = window.game.helpers.filter(h => h.type === 'spaceRocket').length;
                         if (spaceRocketCount === 1) {
                             // This is the first Space Rocket purchase
                             this.hideMoonLocked();
@@ -810,58 +641,47 @@ class UIManager {
                 console.log('Failed to buy helper - insufficient funds');
             }
         } else {
-            console.error('Helper type or game not found:', helperType, !!gameManager);
+            console.error('Helper type or game not found:', helperType, !!window.game);
         }
     }
-
-    handleMobileBuyClick(event) {
-        event.preventDefault();
-
-        const button = event.currentTarget;
-        const helperType = button?.getAttribute('data-helper-type');
-
-        if (!helperType || !gameManager) {
-            console.error('Mobile helper type or game not found:', helperType, !!gameManager);
-            return;
-        }
-
-        if (button.disabled) {
-            return;
-        }
-
-        const success = gameManager.buyHelper(helperType);
-
-        if (success) {
-            gameManager.createChromaticAberrationEffect?.(button);
-            this.updateMobileShopContent();
-            this.updateMobileStats?.();
-        } else {
-            console.log('Failed to buy helper on mobile - insufficient funds or locked');
-        }
-    }
-
+    
     updateShopDisplay() {
-        // Prices and availability update automatically, so rebuild instantly to avoid distracting fades.
-        const shopContainer = document.getElementById('shop-content');
-        if (!shopContainer) {
-            return;
+        // Update shop prices and refresh display with fade-in effect
+        const shopContainer = document.getElementById('shop-container');
+        if (shopContainer) {
+            // Add fade-out effect
+            gsap.to(shopContainer, {
+                opacity: 0,
+                duration: 0.15,
+                ease: "power2.out"
+            });
+            
+            // Update shop content
+            setTimeout(() => {
+                this.renderShop();
+                
+                // Add smooth fade-in effect
+                gsap.to(shopContainer, {
+                    opacity: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            }, 150);
         }
-
-        this.updateShopContent();
     }
-
+    
     renderPickaxeShop(container) {
-        Object.entries(gameManager.pickaxeTypes).forEach(([type, pickaxe]) => {
-            const owned = gameManager.pickaxes.includes(type);
-            const canBuy = !owned && gameManager.dogecoins >= pickaxe.cost;
-
+        Object.entries(this.game.pickaxeTypes).forEach(([type, pickaxe]) => {
+            const owned = this.game.pickaxes.includes(type);
+            const canBuy = !owned && this.game.dogecoins >= pickaxe.cost;
+            
             const item = document.createElement('div');
             item.className = 'shop-item';
-
+            
             item.innerHTML = `
                 <div class="shop-item-header">
                     <div class="shop-item-title">${pickaxe.name}</div>
-                    <div class="shop-item-price">${owned ? 'Owned' : 'D ' + gameManager.formatNumber(pickaxe.cost)}</div>
+                    <div class="shop-item-price">${owned ? 'Owned' : 'D ' + this.game.formatNumber(pickaxe.cost)}</div>
                 </div>
                 <div class="shop-item-content">
                     <div class="shop-item-icon">
@@ -879,15 +699,15 @@ class UIManager {
                     </button>
                 </div>
             `;
-
+            
             container.appendChild(item);
         });
     }
-
+    
     setupStats() {
         // Stats are updated in the main game loop
     }
-
+    
     setupLoading() {
         // Loading screen management
         window.updateLoadingProgress = (progress) => {
@@ -895,14 +715,14 @@ class UIManager {
             progressBar.style.width = progress + '%';
         };
     }
-
+    
     updateShop() {
         if (this.activePanel === 'shop-panel') {
             this.updateShopContent();
         }
     }
-
-
+    
+    
     showLevelUpNotification(levelName) {
         const notification = document.createElement('div');
         notification.className = 'level-up-notification';
@@ -912,7 +732,7 @@ class UIManager {
                 <p>Welcome to ${levelName}!</p>
             </div>
         `;
-
+        
         notification.style.cssText = `
             position: fixed;
             top: 20px;
@@ -927,7 +747,7 @@ class UIManager {
             text-align: center;
             animation: levelUpSlide 4s ease-in-out forwards;
         `;
-
+        
         // Add animation keyframes if not already added
         if (!document.getElementById('levelup-animation')) {
             const style = document.createElement('style');
@@ -942,14 +762,14 @@ class UIManager {
             `;
             document.head.appendChild(style);
         }
-
+        
         document.body.appendChild(notification);
-
+        
         setTimeout(() => {
             notification.remove();
         }, 4000);
     }
-
+    
     showAchievement(title, description) {
         const achievement = document.createElement('div');
         achievement.className = 'achievement-notification';
@@ -959,7 +779,7 @@ class UIManager {
                 <p>${description}</p>
             </div>
         `;
-
+        
         // Style the achievement notification
         achievement.style.cssText = `
             position: fixed;
@@ -975,7 +795,7 @@ class UIManager {
             text-align: center;
             animation: achievementPop 3s ease-in-out forwards;
         `;
-
+        
         // Add animation keyframes if not already added
         if (!document.getElementById('achievement-animation')) {
             const style = document.createElement('style');
@@ -991,19 +811,19 @@ class UIManager {
             `;
             document.head.appendChild(style);
         }
-
+        
         document.body.appendChild(achievement);
-
+        
         setTimeout(() => {
             achievement.remove();
         }, 3000);
     }
-
+    
     updateBackground(levelName) {
         const rockImage = document.getElementById('main-rock');
         if (!rockImage) return;
 
-        const level = gameManager.levels[levelName];
+        const level = this.game.levels[levelName];
         if (!level) return;
 
         const targetSrc = level.rock;
@@ -1018,19 +838,19 @@ class UIManager {
         rockImage.src = targetSrc;
         rockImage.style.opacity = '1';
     }
-
+    
     updateCharacter(characterType = 'standard') {
         const characterImage = document.getElementById('main-character');
         if (!characterImage) return;
-
+        
         // Check if the current character is already correct to avoid unnecessary updates
         const currentSrc = characterImage.src;
         const targetSrc = `assets/general/character/${characterType}.png`;
-
+        
         // Only update if the source has changed (avoid unnecessary reloading)
         if (!currentSrc.endsWith(targetSrc)) {
             console.log(`Updating character sprite to: ${characterType}`);
-
+            
             // Create a new image to preload
             const preloadImage = new Image();
             preloadImage.onload = () => {
@@ -1043,12 +863,12 @@ class UIManager {
             preloadImage.src = targetSrc;
         }
     }
-
+    
     showComboEffect(comboCount) {
         const comboElement = document.createElement('div');
         comboElement.className = 'combo-effect';
         comboElement.textContent = `${comboCount}x COMBO!`;
-
+        
         comboElement.style.cssText = `
             position: fixed;
             top: 30%;
@@ -1062,7 +882,7 @@ class UIManager {
             pointer-events: none;
             animation: comboPop 2s ease-out forwards;
         `;
-
+        
         // Add animation keyframes if not already added
         if (!document.getElementById('combo-animation')) {
             const style = document.createElement('style');
@@ -1076,18 +896,18 @@ class UIManager {
             `;
             document.head.appendChild(style);
         }
-
+        
         document.body.appendChild(comboElement);
-
+        
         setTimeout(() => {
             comboElement.remove();
         }, 2000);
     }
-
+    
     setupScrollWheelTabs() {
         // Define the scrollable tabs (shop and upgrades only)
         this.scrollableTabs = ['shop', 'upgrades'];
-
+        
         // Add wheel event listener to the right panel
         const rightPanel = document.getElementById('right-panel');
         if (rightPanel) {
@@ -1096,13 +916,13 @@ class UIManager {
                 const currentTab = this.activePanel.replace('-tab', '');
                 if (this.scrollableTabs.includes(currentTab)) {
                     e.preventDefault(); // Prevent default scrolling
-
+                    
                     // Get current tab index
                     const currentTabIndex = this.scrollableTabs.indexOf(currentTab);
-
+                    
                     // Determine scroll direction
                     const scrollUp = e.deltaY < 0;
-
+                    
                     let newTabIndex;
                     if (scrollUp) {
                         // Scroll up - go to previous tab
@@ -1111,7 +931,7 @@ class UIManager {
                         // Scroll down - go to next tab
                         newTabIndex = Math.min(this.scrollableTabs.length - 1, currentTabIndex + 1);
                     }
-
+                    
                     // Switch to the new tab
                     const newTab = this.scrollableTabs[newTabIndex];
                     this.switchToTab(newTab);
@@ -1119,12 +939,12 @@ class UIManager {
             });
         }
     }
-
+    
     switchToTab(tabName) {
         // Check if this tab is already active
         const currentTab = this.activePanel.replace('-tab', '');
         const isTabAlreadyActive = currentTab === tabName;
-
+        
         // Update tab buttons - find the correct button by data attribute or onclick
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -1133,36 +953,36 @@ class UIManager {
                 btn.classList.add('active');
             }
         });
-
+        
         // Update tab content
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
-
+        
         const targetTab = document.getElementById(tabName + '-tab');
         if (targetTab) {
             targetTab.classList.add('active');
         }
-
+        
         // Set active panel
         this.activePanel = tabName + '-tab';
-
+        
         // Only play sound if switching to a different tab
-        if (!isTabAlreadyActive) {
+        if (!isTabAlreadyActive && window.audioManager) {
             audioManager.playSound('swipe');
         }
-
+        
         // Update shop content if switching to shop
         if (tabName === 'shop') {
             this.updateShopContent();
         }
-
+        
         // Update upgrade content if switching to upgrade
         if (tabName === 'upgrades') {
             this.updateUpgradeContent();
         }
     }
-
+    
     updateUpgradeContent() {
         // This will be populated later with actual upgrade content
         // For now, just ensure the sections are visible
@@ -1175,13 +995,12 @@ class UIManager {
             }
         });
     }
-
+    
     showMoonLocked() {
-        console.log('Moon locked...');
         // Find the moon tab button
-        const moonTab = document.querySelector('.planet-tab[data-planet="moon"]');
+        const moonTab = document.querySelector('.planet-tab[onclick*="moon"]');
         if (!moonTab) return;
-
+        
         // Check if locked overlay already exists
         let lockedOverlay = moonTab.querySelector('.planet-tab-locked');
         if (!lockedOverlay) {
@@ -1191,16 +1010,16 @@ class UIManager {
             lockedOverlay.textContent = 'LOCKED';
             moonTab.appendChild(lockedOverlay);
         }
-
+        
         // Show the overlay
         lockedOverlay.style.display = 'block';
-
+        
         // Auto-hide after 2 seconds
         setTimeout(() => {
             this.hideMoonLocked();
         }, 2000);
     }
-
+    
     hideMoonLocked() {
         const lockedOverlay = document.querySelector('.planet-tab-locked');
         if (lockedOverlay) {
@@ -1210,7 +1029,7 @@ class UIManager {
 
     // Initialize planet tabs based on saved state
     initializePlanetTabs() {
-        if (!gameManager || !gameManager.currentLevel) {
+        if (!this.game || !this.game.currentLevel) {
             return;
         }
 
@@ -1221,34 +1040,34 @@ class UIManager {
             btn.classList.remove('active');
 
             const tabPlanet = btn.dataset.planet || btn.querySelector('img')?.alt?.toLowerCase() || '';
-            if (tabPlanet.toLowerCase() === gameManager.currentLevel) {
+            if (tabPlanet.toLowerCase() === this.game.currentLevel) {
                 btn.classList.add('active');
             }
         });
 
-        if (gameManager.hasPlayedMoonLaunch) {
+        if (this.game.hasPlayedMoonLaunch) {
             this.hideMoonLocked();
         }
 
         const shopPanel = document.getElementById('shop-panel');
         if (shopPanel && (this.activePanel === 'shop-panel' || shopPanel.style.display === 'block')) {
-            console.log(`Updating shop content to match current planet: ${gameManager.currentLevel}`);
+            console.log(`Updating shop content to match current planet: ${this.game.currentLevel}`);
             this.updateShopContent();
         }
 
-        console.log(`Planet tabs initialized to: ${gameManager.currentLevel}`);
+        console.log(`Planet tabs initialized to: ${this.game.currentLevel}`);
     }
 
     playerHasHelperType(helperType) {
-        if (!gameManager) return false;
+        if (!this.game) return false;
 
         const helperLists = [
-            gameManager.helpers,
-            gameManager.moonHelpers,
-            gameManager.marsHelpers,
-            gameManager.earthPlacedHelpers,
-            gameManager.moonPlacedHelpers,
-            gameManager.marsPlacedHelpers
+            this.game.helpers,
+            this.game.moonHelpers,
+            this.game.marsHelpers,
+            this.game.earthPlacedHelpers,
+            this.game.moonPlacedHelpers,
+            this.game.marsPlacedHelpers
         ];
 
         return helperLists.some(list =>
@@ -1267,11 +1086,11 @@ class UIManager {
     isMarsUnlocked() {
         const marsRocketOwned = this.playerHasMarsRocket();
 
-        if (marsRocketOwned && gameManager && !gameManager.hasPlayedMoonLaunch) {
-            gameManager.hasPlayedMoonLaunch = true;
+        if (marsRocketOwned && this.game && !this.game.hasPlayedMoonLaunch) {
+            this.game.hasPlayedMoonLaunch = true;
         }
 
-        const moonUnlocked = gameManager?.hasPlayedMoonLaunch || marsRocketOwned;
+        const moonUnlocked = this.game?.hasPlayedMoonLaunch || marsRocketOwned;
         if (!moonUnlocked) {
             return false;
         }
@@ -1285,7 +1104,7 @@ class UIManager {
 
     playerHasDogeStar() {
         // Check if player owns at least one DogeStar (final Jupiter helper)
-        const jupiterHelpers = gameManager.jupiterHelpers || [];
+        const jupiterHelpers = this.game.jupiterHelpers || [];
         const hasDogeStar = jupiterHelpers.some(helper => helper && helper.type === 'dogeStar');
         return hasDogeStar;
     }
@@ -1334,679 +1153,7 @@ class UIManager {
                 fallbackTab?.classList.add('active');
             }
         }
-
-        // Also update mobile planet tabs
-        this.updateMobilePlanetTabs();
-    }
-
-    // Mobile UI Setup - Handles mobile-specific functionality
-    setupMobileUI() {
-        try {
-            // Setup mobile menu toggle button
-            const mobileToggleBtn = document.getElementById('mobile-menu-toggle');
-            const mobileTabs = document.querySelectorAll('.mobile-tab-btn');
-
-            // Setup toggle button
-            if (mobileToggleBtn) {
-                mobileToggleBtn.addEventListener('click', () => this.toggleMobileMenu());
-            }
-
-            // Setup tab buttons
-            mobileTabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    const tabName = e.currentTarget.dataset.tab;
-                    if (tabName) {
-                        this.switchMobileTab(tabName);
-                    }
-                });
-            });
-
-            // Setup Mobile Planet Menu
-            const planetToggle = document.getElementById('mobile-planet-toggle');
-            const planetMenu = document.getElementById('mobile-planet-menu');
-            const closePlanetMenuBtn = document.getElementById('close-planet-menu');
-            const mobilePlanetTabs = document.querySelectorAll('.mobile-planet-tab');
-
-            if (planetToggle && planetMenu) {
-                planetToggle.addEventListener('click', () => {
-                    planetMenu.classList.add('open');
-                });
-            }
-
-            if (closePlanetMenuBtn && planetMenu) {
-                closePlanetMenuBtn.addEventListener('click', () => {
-                    planetMenu.classList.remove('open');
-                });
-            }
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (planetMenu && planetMenu.classList.contains('open') &&
-                    !planetMenu.contains(e.target) &&
-                    !planetToggle.contains(e.target)) {
-                    planetMenu.classList.remove('open');
-                }
-            });
-
-            // Setup mobile planet tabs
-            mobilePlanetTabs.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    const planet = e.currentTarget.dataset.planet;
-                    if (planet && !e.currentTarget.disabled) {
-                        // Use arrow function or bind to ensure 'this' refers to UIManager
-                        this.switchPlanet(planet);
-                        planetMenu.classList.remove('open');
-
-                        // Update toggle icon and text
-                        const toggleIcon = document.getElementById('mobile-current-planet-icon');
-                        const toggleText = document.getElementById('mobile-planet-name');
-                        if (toggleIcon) {
-                            toggleIcon.src = `assets/general/${planet}.png`;
-                        }
-                        if (toggleText) {
-                            toggleText.textContent = planet.charAt(0).toUpperCase() + planet.slice(1);
-                        }
-
-                        // Update active state in menu
-                        mobilePlanetTabs.forEach(t => t.classList.remove('active'));
-                        e.currentTarget.classList.add('active');
-                    }
-                });
-            });
-
-            // Initialize toggle icon and text based on current planet
-            this.updateMobilePlanetDisplay();
-
-            // Add a delayed update to ensure game state is fully loaded
-            setTimeout(() => {
-                this.updateMobilePlanetDisplay();
-            }, 500);
-
-            // Update mobile stats every second
-            setInterval(() => {
-                this.updateMobileStats();
-            }, 1000);
-
-            // Initialize mobile shop content if on mobile - defer to allow shopManager to initialize
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    this.updateMobileShopContent();
-                }, 100);
-            }
-
-            // Update mobile content on window resize
-            window.addEventListener('resize', () => {
-                if (window.innerWidth <= 768) {
-                    this.updateMobileShopContent();
-                }
-            });
-
-        } catch (e) {
-            console.error('Error setting up mobile UI:', e);
-        }
-    }
-
-    // Update mobile planet tabs based on unlock status
-    updateMobilePlanetTabs() {
-        const mobilePlanetTabs = document.querySelectorAll('.mobile-planet-tab');
-        mobilePlanetTabs.forEach(tab => {
-            const planet = tab.dataset.planet;
-            let isUnlocked = false;
-
-            switch (planet) {
-                case 'earth':
-                    isUnlocked = true;
-                    break;
-                case 'moon':
-                    isUnlocked = gameManager.unlockedLevels.has('moon');
-                    break;
-                case 'mars':
-                    isUnlocked = this.isMarsUnlocked();
-                    break;
-                case 'jupiter':
-                    isUnlocked = this.isJupiterUnlocked();
-                    break;
-                case 'titan':
-                    isUnlocked = this.isTitanUnlocked();
-                    break;
-            }
-
-            tab.disabled = !isUnlocked;
-            const lockOverlay = tab.querySelector('.mobile-lock-overlay');
-            if (lockOverlay) {
-                lockOverlay.style.display = isUnlocked ? 'none' : 'block';
-            }
-        });
-    }
-
-    // Update mobile planet display (icon and text)
-    updateMobilePlanetDisplay() {
-        if (!gameManager || !gameManager.currentLevel) return;
-
-        const toggleIcon = document.getElementById('mobile-current-planet-icon');
-        const toggleText = document.getElementById('mobile-planet-name');
-        const mobilePlanetTabs = document.querySelectorAll('.mobile-planet-tab');
-
-        if (toggleIcon) {
-            toggleIcon.src = `assets/general/${gameManager.currentLevel}.png`;
-        }
-        if (toggleText) {
-            toggleText.textContent = gameManager.currentLevel.charAt(0).toUpperCase() + gameManager.currentLevel.slice(1);
-        }
-
-        // Update active state in menu
-        mobilePlanetTabs.forEach(t => {
-            if (t.dataset.planet === gameManager.currentLevel) {
-                t.classList.add('active');
-            } else {
-                t.classList.remove('active');
-            }
-        });
-
-        // Also update menu theming
-        const planetMenu = document.getElementById('mobile-planet-menu');
-        if (planetMenu) {
-            // Remove existing planet classes
-            planetMenu.classList.remove('planet-earth', 'planet-moon', 'planet-mars', 'planet-jupiter', 'planet-titan');
-            // Add current planet class (assuming CSS uses .planet-name structure on body, but here we scope it to menu if needed)
-            // Actually, the CSS uses body classes like .planet-mars. 
-            // But for the menu styling to work if it's outside the body class scope (it isn't, it's in body), 
-            // we just need to ensure body class is updated. switchPlanet does that via game logic usually.
-            // But let's ensure the menu itself has a class if we used that in CSS.
-            // Looking at CSS: .planet-mars #mobile-planet-menu. So it relies on body class.
-        }
-    }
-
-    // Toggle mobile menu open/closed
-    toggleMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-bottom-menu');
-        const toggleIcon = document.getElementById('mobile-toggle-icon');
-        const toggleBtn = document.getElementById('mobile-menu-toggle');
-
-        if (!mobileMenu || !toggleIcon || !toggleBtn) return;
-
-        this.mobileMenuOpen = !this.mobileMenuOpen;
-
-        if (this.mobileMenuOpen) {
-            // Open menu
-            mobileMenu.classList.add('open');
-            toggleBtn.classList.add('menu-open');
-            toggleIcon.src = 'assets/general/btn_down.png';
-
-            // Update mobile content when opening
-            this.updateMobileShopContent();
-        } else {
-            // Close menu
-            mobileMenu.classList.remove('open');
-            toggleBtn.classList.remove('menu-open');
-            toggleIcon.src = 'assets/general/btn_up.png';
-        }
-    }
-
-    // Switch between mobile tabs
-    switchMobileTab(tabName) {
-        // Check if this tab is already active
-        if (this.activeMobileTab === tabName) return;
-
-        // Define tab order for swipe direction
-        const tabOrder = ['shop', 'upgrades', 'achievements', 'settings'];
-        const currentIndex = tabOrder.indexOf(this.activeMobileTab);
-        const targetIndex = tabOrder.indexOf(tabName);
-        const isMovingRight = targetIndex > currentIndex;
-
-        // Get current and target tab content elements
-        const currentTabContent = document.getElementById(`mobile-${this.activeMobileTab}-tab`);
-        const targetTabContent = document.getElementById(`mobile-${tabName}-tab`);
-
-        // Update active tab state
-        this.activeMobileTab = tabName;
-
-        // Update tab buttons
-        document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        const activeBtn = document.querySelector(`.mobile-tab-btn[data-tab="${tabName}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
-        }
-
-        // Animation logic
-        if (currentTabContent && targetTabContent) {
-            // Add slide-out animation to current tab
-            if (isMovingRight) {
-                currentTabContent.classList.add('slide-out-left');
-            } else {
-                currentTabContent.classList.add('slide-out-right');
-            }
-
-            // After animation, switch tabs
-            setTimeout(() => {
-                // Remove all active classes and animation classes from all tabs
-                document.querySelectorAll('.mobile-tab-content').forEach(content => {
-                    content.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
-                });
-
-                // Add new active tab with slide-in animation
-                targetTabContent.classList.add('active');
-                if (isMovingRight) {
-                    targetTabContent.classList.add('slide-in-right');
-                } else {
-                    targetTabContent.classList.add('slide-in-left');
-                }
-
-                // Remove animation classes after animation completes
-                setTimeout(() => {
-                    targetTabContent.classList.remove('slide-in-right', 'slide-in-left');
-                }, 300);
-            }, 50); // Small delay to let slide-out start
-        } else {
-            // Fallback if elements not found (shouldn't happen)
-            document.querySelectorAll('.mobile-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            if (targetTabContent) {
-                targetTabContent.classList.add('active');
-            }
-        }
-
-        // Update content based on active tab
-        if (tabName === 'shop') {
-            this.updateMobileShopContent();
-        } else if (tabName === 'upgrades') {
-            this.updateMobileUpgradesContent();
-        } else if (tabName === 'achievements') {
-            this.updateMobileAchievementsContent();
-        } else if (tabName === 'settings') {
-            this.updateMobileSettingsContent();
-        }
-
-        audioManager.playSound('swipe');
-    }
-
-    // TODO - this function should be merged with updateShopContent if possible. This goes for all mobile-specific functions for that matter.
-    // Update mobile shop content with horizontal scrolling
-    updateMobileShopContent() {
-        const mobileShopContent = document.getElementById('mobile-shop-content');
-        if (!mobileShopContent) return;
-
-        // Clear existing content
-        mobileShopContent.innerHTML = '';
-
-        if (!shopManager.shopData.helpers[gameManager.currentLevel]) {
-            console.error(`Shop data for ${gameManager.currentLevel} is missing!`);
-            return;
-        }
-
-        const helperEntries = Object.entries(shopManager.shopData.helpers[gameManager.currentLevel]);
-        const helperArray = gameManager.getHelperArrayForLevel(gameManager.currentLevel);
-
-        // Create shop items (same logic as desktop but different layout)
-        for (let i = 0; i < 6; i++) {
-            const item = document.createElement('div');
-            item.className = 'shop-grid-item';
-
-            if (i < helperEntries.length) {
-                const [type, helper] = helperEntries[i];
-                const owned = helperArray.filter(h => h.type === type).length;
-                const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
-                const canAfford = gameManager.dogecoins >= cost;
-
-                // Check if helper is locked (same logic as desktop)
-                let lockReason = null;
-                const moonHelpers = Array.isArray(gameManager.moonHelpers) ? gameManager.moonHelpers : [];
-                const marsHelpers = Array.isArray(gameManager.marsHelpers) ? gameManager.marsHelpers : [];
-                const jupiterHelpers = Array.isArray(gameManager.jupiterHelpers) ? gameManager.jupiterHelpers : [];
-                const moonBaseOwned = moonHelpers.some(h => h.type === 'moonBase');
-                const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
-                const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
-                const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
-
-                if (gameManager.currentLevel === 'moon') {
-                    if (type !== 'moonBase' && !moonBaseOwned) {
-                        lockReason = 'moonBase';
-                    } else if (type === 'marsRocket' && !landerShibeOwned) {
-                        lockReason = 'landerShibe';
-                    }
-                } else if (gameManager.currentLevel === 'mars') {
-                    if (type !== 'marsBase' && !marsBaseOwned) {
-                        lockReason = 'marsBase';
-                    }
-                    const spaceBassOwned = marsHelpers.some(h => h.type === 'spaceBass');
-                    if (type === 'jupiterRocket' && !spaceBassOwned) {
-                        lockReason = 'spaceBass';
-                    }
-                } else if (gameManager.currentLevel === 'jupiter') {
-                    if (type !== 'cloudBase' && !jupiterBaseOwned) {
-                        lockReason = 'cloudBase';
-                    }
-                }
-                const isLocked = lockReason !== null;
-
-                const priceText = gameManager.formatNumber(cost);
-                const buttonDisabled = (!canAfford || isLocked) ? 'disabled' : '';
-
-                item.innerHTML = `
-                    <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title">${helper.name}</div>
-                    <div class="shop-item-dps">${helper.baseDps} ĐPS</div>
-                    <div class="shop-sprite-description-container">
-                        <div class="shop-item-sprite">
-                            <img src="${helper.icon}" alt="${helper.name}">
-                        </div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-description">${helper.description}</div>
-                            <button class="shop-buy-btn" data-helper-type="${type}" ${buttonDisabled}>
-                                <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
-                                <span class="buy-btn-price">${priceText}</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                // Add click listener to buy button using shared handler to avoid duplicate stacking
-                const buyBtn = item.querySelector('.shop-buy-btn');
-                if (buyBtn) {
-                    buyBtn.removeEventListener('click', this.boundMobileBuyButtonClick);
-                    buyBtn.addEventListener('click', this.boundMobileBuyButtonClick);
-                }
-            } else {
-                // Empty slot
-                item.innerHTML = `
-                    <div class="shop-item-empty">
-                        <div class="empty-text">Coming Soon!</div>
-                    </div>
-                `;
-            }
-
-            mobileShopContent.appendChild(item);
-        }
-    }
-
-    // Update mobile upgrades content
-    updateMobileUpgradesContent() {
-        const mobileUpgradesContainer = document.getElementById('mobile-upgrades-container');
-        if (!mobileUpgradesContainer) return;
-
-        // Copy the desktop upgrades content structure
-        mobileUpgradesContainer.innerHTML = `
-            <div style="text-align: center; color: #8b4513; padding: 20px;">
-                <p>Upgrades system coming soon!</p>
-                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">Tap the shop to purchase helpers</p>
-            </div>
-        `;
-    }
-
-    // Update mobile achievements content
-    updateMobileAchievementsContent() {
-        const mobileAchievementsContent = document.getElementById('mobile-achievements-content');
-        if (!mobileAchievementsContent) return;
-
-        // Display comprehensive stats matching desktop
-        mobileAchievementsContent.innerHTML = `
-            <div class="mobile-content-wrapper">
-                <h3 class="mobile-section-header">Statistics</h3>
-                <div class="mobile-stats-list">
-                    <div class="stat-row">
-                        <span class="stat-label">Total Dogecoins:</span>
-                        <span id="mobile-total-mined" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Current Balance:</span>
-                        <span id="mobile-current-balance" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Total Clicks:</span>
-                        <span id="mobile-total-clicks" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Current DPS:</span>
-                        <span id="mobile-current-dps" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Highest DPS:</span>
-                        <span id="mobile-highest-dps" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Helpers Owned:</span>
-                        <span id="mobile-helpers-owned" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Current Level:</span>
-                        <span id="mobile-current-level" class="stat-value">Earth</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Play Time:</span>
-                        <span id="mobile-play-time" style="font-weight: 700; font-size: 14px;">0:00:00</span>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Update stat values if game exists
-        if (gameManager) {
-            const mobileTotalMined = document.getElementById('mobile-total-mined');
-            const mobileCurrentBalance = document.getElementById('mobile-current-balance');
-            const mobileTotalClicks = document.getElementById('mobile-total-clicks');
-            const mobileCurrentDps = document.getElementById('mobile-current-dps');
-            const mobileHighestDps = document.getElementById('mobile-highest-dps');
-            const mobileHelpersOwned = document.getElementById('mobile-helpers-owned');
-            const mobileCurrentLevel = document.getElementById('mobile-current-level');
-            const mobilePlayTime = document.getElementById('mobile-play-time');
-
-            if (mobileTotalMined) mobileTotalMined.textContent = gameManager.formatNumber(Math.floor(gameManager.totalMined || 0));
-            if (mobileCurrentBalance) mobileCurrentBalance.textContent = gameManager.formatNumber(Math.floor(gameManager.dogecoins || 0));
-            if (mobileTotalClicks) mobileTotalClicks.textContent = gameManager.formatNumber(gameManager.totalClicks || 0);
-            if (mobileCurrentDps) mobileCurrentDps.textContent = gameManager.formatNumber(gameManager.dps || 0) + ' Đ/s';
-            if (mobileHighestDps) mobileHighestDps.textContent = gameManager.formatNumber(gameManager.highestDps || 0) + ' Đ/s';
-
-            const totalHelpers = (gameManager.helpers?.length || 0) +
-                (gameManager.moonHelpers?.length || 0) +
-                (gameManager.marsHelpers?.length || 0) +
-                (gameManager.jupiterHelpers?.length || 0) +
-                (gameManager.titanHelpers?.length || 0);
-            if (mobileHelpersOwned) mobileHelpersOwned.textContent = totalHelpers;
-
-            if (mobileCurrentLevel) {
-                const levelName = gameManager.currentLevel?.charAt(0).toUpperCase() + gameManager.currentLevel?.slice(1) || 'Earth';
-                mobileCurrentLevel.textContent = levelName;
-            }
-
-            if (mobilePlayTime) {
-                // Calculate current play time from session start plus total accumulated time
-                const currentPlayTime = Math.floor((Date.now() - gameManager.startTime) / 1000) + gameManager.totalPlayTime;
-                const hours = Math.floor(currentPlayTime / 3600);
-                const minutes = Math.floor((currentPlayTime % 3600) / 60);
-                const seconds = Math.floor(currentPlayTime % 60);
-                mobilePlayTime.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-        }
-    }
-
-    // Update mobile stats (called regularly when achievements tab is open)
-    updateMobileStats() {
-        if (!gameManager || this.activeMobileTab !== 'achievements') return;
-
-        const mobileTotalMined = document.getElementById('mobile-total-mined');
-        const mobileCurrentBalance = document.getElementById('mobile-current-balance');
-        const mobileTotalClicks = document.getElementById('mobile-total-clicks');
-        const mobileCurrentDps = document.getElementById('mobile-current-dps');
-        const mobileHighestDps = document.getElementById('mobile-highest-dps');
-        const mobileHelpersOwned = document.getElementById('mobile-helpers-owned');
-        const mobilePlayTime = document.getElementById('mobile-play-time');
-
-        if (mobileTotalMined) mobileTotalMined.textContent = gameManager.formatNumber(Math.floor(gameManager.totalMined || 0));
-        if (mobileCurrentBalance) mobileCurrentBalance.textContent = gameManager.formatNumber(Math.floor(gameManager.dogecoins || 0));
-        if (mobileTotalClicks) mobileTotalClicks.textContent = gameManager.formatNumber(gameManager.totalClicks || 0);
-        if (mobileCurrentDps) mobileCurrentDps.textContent = gameManager.formatNumber(gameManager.dps || 0) + ' Đ/s';
-        if (mobileHighestDps) mobileHighestDps.textContent = gameManager.formatNumber(gameManager.highestDps || 0) + ' Đ/s';
-
-        const totalHelpers = (gameManager.helpers?.length || 0) +
-            (gameManager.moonHelpers?.length || 0) +
-            (gameManager.marsHelpers?.length || 0) +
-            (gameManager.jupiterHelpers?.length || 0) +
-            (gameManager.titanHelpers?.length || 0);
-        if (mobileHelpersOwned) mobileHelpersOwned.textContent = totalHelpers;
-
-        if (mobilePlayTime) {
-            const currentPlayTime = Math.floor((Date.now() - gameManager.startTime) / 1000) + gameManager.totalPlayTime;
-            const hours = Math.floor(currentPlayTime / 3600);
-            const minutes = Math.floor((currentPlayTime % 3600) / 60);
-            const seconds = Math.floor(currentPlayTime % 60);
-            mobilePlayTime.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-    }
-
-    // Update mobile settings content
-    updateMobileSettingsContent() {
-        const mobileSettingsContent = document.getElementById('mobile-settings-content');
-        if (!mobileSettingsContent) return;
-
-        const soundChecked = gameManager.soundEnabled ? 'checked' : '';
-        const musicChecked = gameManager.musicEnabled ? 'checked' : '';
-        const notificationsChecked = gameManager.notificationsEnabled ? 'checked' : '';
-        const autoSaveChecked = gameManager.autoSaveEnabled ? 'checked' : '';
-
-        // Display complete settings options matching desktop
-        mobileSettingsContent.innerHTML = `
-            <div class="mobile-content-wrapper">
-                <h3 class="mobile-section-header">Game Settings</h3>
-                <div class="mobile-settings-list">
-                    <label class="setting-item">
-                        <input type="checkbox" id="mobile-sound-enabled" ${soundChecked}>
-                        <span class="setting-label">Sound Effects</span>
-                    </label>
-                    <label class="setting-item">
-                        <input type="checkbox" id="mobile-music-enabled" ${musicChecked}>
-                        <span class="setting-label">Background Music</span>
-                    </label>
-                    <label class="setting-item">
-                        <input type="checkbox" id="mobile-notifications-enabled" ${notificationsChecked}>
-                        <span class="setting-label">Notifications</span>
-                    </label>
-                    <label class="setting-item">
-                        <input type="checkbox" id="mobile-auto-save-enabled" ${autoSaveChecked}>
-                        <span class="setting-label">Auto Save</span>
-                    </label>
-                </div>
-                
-                <h3 class="mobile-section-header">Cloud Save</h3>
-                <div id="mobile-cloud-save-section" style="margin-bottom: 15px;">
-                    <div id="mobile-user-info" style="display: none;">
-                        <p id="mobile-user-name" style="font-size: 13px; margin-bottom: 8px;">Signed in as: </p>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button onclick="saveToCloud()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Save to Cloud</button>
-                            <button onclick="loadFromCloud()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Load from Cloud</button>
-                            <button onclick="signOutUser()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Sign Out</button>
-                        </div>
-                    </div>
-                    <div id="mobile-sign-in-section">
-                        <button onclick="signInWithGoogle()" class="google-signin-btn" style="width: 100%; padding: 10px 16px; background: white; border: 1px solid #dadce0; border-radius: 4px; color: #3c4043; font-weight: 500; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
-                            <svg class="google-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                            </svg>
-                            <span>Sign in with Google</span>
-                        </button>
-                        <p style="font-size: 11px; opacity: 0.7; margin-top: 6px; line-height: 1.3;">Sign in to save your progress in the cloud!</p>
-                    </div>
-                </div>
-
-                <h3 style="margin-bottom: 10px; border-bottom: 2px solid #d4af37; padding-bottom: 6px; font-size: 16px;">Local Save/Load</h3>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <button onclick="saveGame()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Save Game</button>
-                    <button onclick="loadGame()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Load Game</button>
-                    <button onclick="exportSave()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Export Save</button>
-                    <button onclick="importSave()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Import Save</button>
-                    <button onclick="resetGame()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(220, 100, 100, 0.95) 50%, rgba(200, 80, 80, 0.95) 50%); border: 2px solid #a00; border-radius: 6px; color: white; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Reset Game</button>
-                </div>
-            </div>
-        `;
-
-        // Attach event listeners
-        const soundCheckbox = document.getElementById('mobile-sound-enabled');
-        if (soundCheckbox) {
-            soundCheckbox.checked = gameManager.soundEnabled; // Ensure initial state is correct
-            soundCheckbox.addEventListener('change', (e) => {
-                gameManager.soundEnabled = e.target.checked;
-                audioManager.soundEnabled = gameManager.soundEnabled;
-                saveManager.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('sound-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
-            });
-        }
-
-        const musicCheckbox = document.getElementById('mobile-music-enabled');
-        if (musicCheckbox) {
-            musicCheckbox.checked = gameManager.musicEnabled; // Ensure initial state is correct
-            musicCheckbox.addEventListener('change', (e) => {
-                gameManager.musicEnabled = e.target.checked;
-
-                audioManager.musicEnabled = gameManager.musicEnabled;
-                if (gameManager.musicEnabled) {
-                    audioManager.playBackgroundMusic();
-                } else {
-                    audioManager.stopMusic();
-                }
-
-                saveManager.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('music-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
-            });
-        }
-
-        const notificationsCheckbox = document.getElementById('mobile-notifications-enabled');
-        if (notificationsCheckbox) {
-            notificationsCheckbox.checked = gameManager.notificationsEnabled; // Ensure initial state is correct
-            notificationsCheckbox.addEventListener('change', (e) => {
-                gameManager.notificationsEnabled = e.target.checked;
-                saveManager.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('notifications-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
-            });
-        }
-
-        const autoSaveCheckbox = document.getElementById('mobile-auto-save-enabled');
-        if (autoSaveCheckbox) {
-            autoSaveCheckbox.checked = gameManager.autoSaveEnabled; // Ensure initial state is correct
-            autoSaveCheckbox.addEventListener('change', (e) => {
-                gameManager.autoSaveEnabled = e.target.checked;
-                saveManager.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('auto-save-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
-            });
-        }
-
-        // Update cloud save UI based on user sign-in state
-        const userInfo = document.getElementById('user-info');
-        const mobileUserInfo = document.getElementById('mobile-user-info');
-        const mobileSignInSection = document.getElementById('mobile-sign-in-section');
-
-        if (userInfo && userInfo.style.display !== 'none') {
-            // User is signed in
-            if (mobileUserInfo) mobileUserInfo.style.display = 'block';
-            if (mobileSignInSection) mobileSignInSection.style.display = 'none';
-            const userName = document.getElementById('user-name')?.textContent;
-            const mobileUserName = document.getElementById('mobile-user-name');
-            if (mobileUserName && userName) {
-                mobileUserName.textContent = userName;
-            }
-        } else {
-            // User is not signed in
-            if (mobileUserInfo) mobileUserInfo.style.display = 'none';
-            if (mobileSignInSection) mobileSignInSection.style.display = 'block';
-        }
     }
 }
-
-const instance = new UIManager();
-export default instance;
+// Global UI manager instance
+let uiManager;

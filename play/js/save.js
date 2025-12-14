@@ -1,149 +1,145 @@
-import gameManager from "./game.js";
-import audioManager from "./audio.js";
-import shopManager from "./shop.js";
-import uiManager from "./ui.js";
-import cloudSaveManager from "./cloud-save.js";
-
 // DogeMiner: Community Edition - Save/Load System
 class SaveManager {
-    constructor() {}
-
-    init() {
+    constructor(game) {
+        this.game = game;
         this.saveKey = 'dogeminer_ce_save';
         this.backupKey = 'dogeminer_ce_backup';
         this.autoSaveInterval = 30000; // 30 seconds
         this.lastSave = Date.now();
-
+        
         this.setupAutoSave();
         this.setupSaveFunctions();
         this.setupSettingsListeners();
     }
-
+    
     setupAutoSave() {
         setInterval(() => {
             this.autoSave();
         }, this.autoSaveInterval);
-
+        
         // Save before page unload
         window.addEventListener('beforeunload', () => {
             this.saveGame();
         });
     }
-
+    
     setupSaveFunctions() {
-        window.saveGame = (showNotification) => {
-            this.saveGame(showNotification);
+        window.saveGame = () => {
+            this.saveGame();
         };
-
+        
         window.loadGame = () => {
             this.loadGame();
         };
-
+        
         window.exportSave = () => {
             this.exportSave();
         };
-
+        
         window.importSave = () => {
             this.importSave();
         };
-
+        
         window.resetGame = () => {
             this.resetGame();
         };
     }
-
+    
     setupSettingsListeners() {
         // Listen for notifications setting changes
         const notificationsCheckbox = document.getElementById('notifications-enabled');
         if (notificationsCheckbox) {
             notificationsCheckbox.addEventListener('change', (e) => {
-                gameManager.notificationsEnabled = e.target.checked;
-
-                audioManager.playSound('check');
-                
+                this.game.notificationsEnabled = e.target.checked;
+                // Play check sound
+                if (window.audioManager) {
+                    window.audioManager.playSound('check');
+                }
                 // Trigger auto-save to save settings (don't show notification)
                 this.saveGame(false);
             });
         }
-
+        
         // Listen for auto-save setting changes
         const autoSaveCheckbox = document.getElementById('auto-save-enabled');
         if (autoSaveCheckbox) {
             autoSaveCheckbox.addEventListener('change', (e) => {
-                gameManager.autoSaveEnabled = e.target.checked;
+                this.game.autoSaveEnabled = e.target.checked;
                 // Play check sound
-                audioManager.playSound('check');
+                if (window.audioManager) {
+                    window.audioManager.playSound('check');
+                }
                 // Trigger auto-save to save settings (don't show notification)
                 this.saveGame(false);
             });
         }
     }
-
+    
     saveGame(showNotification = true) {
         try {
             const saveData = this.createSaveData();
             const saveString = JSON.stringify(saveData);
-
+            
             // Save to localStorage
             localStorage.setItem(this.saveKey, saveString);
-
+            
             // Create backup
             localStorage.setItem(this.backupKey, saveString);
-
+            
             this.lastSave = Date.now();
-
+            
             // Only show notification if requested and notifications are enabled
-            if (showNotification && gameManager.notificationsEnabled) {
-                gameManager.showNotification('Game saved successfully!');
+            if (showNotification && this.game.notificationsEnabled) {
+                this.game.showNotification('Game saved successfully!');
             }
-
+            
             console.log('Game saved:', saveData);
             return true;
         } catch (error) {
             console.error('Error saving game:', error);
-            if (gameManager.notificationsEnabled) {
-                gameManager.showNotification('Error saving game!');
+            if (this.game.notificationsEnabled) {
+                this.game.showNotification('Error saving game!');
             }
             return false;
         }
     }
-
+    
     loadGame() {
         try {
             const saveString = localStorage.getItem(this.saveKey);
             if (!saveString) {
-                gameManager.showNotification('No save data found!');
+                this.game.showNotification('No save data found!');
                 return false;
             }
-
+            
             const saveData = JSON.parse(saveString);
             this.applySaveData(saveData);
-
+            
             // Notification handled by main.js
             console.log('Game loaded:', saveData);
             return true;
         } catch (error) {
             console.error('Error loading game:', error);
-
+            
             // Try to load backup
             if (this.loadBackup()) {
-                gameManager.showNotification('Loaded from backup save!');
+                this.game.showNotification('Loaded from backup save!');
                 return true;
             }
             
-            gameManager.showNotification('Error loading game!');
+            this.game.showNotification('Error loading game!');
             return false;
         }
     }
-
+    
     loadBackup() {
         try {
             const backupString = localStorage.getItem(this.backupKey);
             if (!backupString) return false;
-
+            
             const saveData = JSON.parse(backupString);
             this.applySaveData(saveData);
-
+            
             console.log('Loaded from backup:', saveData);
             return true;
         } catch (error) {
@@ -151,7 +147,7 @@ class SaveManager {
             return false;
         }
     }
-
+    
     createSaveData() {
         const serializePlacedHelper = (helper) => {
             if (!helper) return null;
@@ -170,39 +166,39 @@ class SaveManager {
             return saveHelper;
         };
 
-        const currentPlaced = Array.isArray(gameManager.placedHelpers) ? gameManager.placedHelpers : [];
+        const currentPlaced = Array.isArray(this.game.placedHelpers) ? this.game.placedHelpers : [];
 
-        if (gameManager.currentLevel === 'earth') {
-            gameManager.earthPlacedHelpers = [...currentPlaced];
-        } else if (gameManager.currentLevel === 'moon') {
-            gameManager.moonPlacedHelpers = [...currentPlaced];
-        } else if (gameManager.currentLevel === 'mars') {
-            gameManager.marsPlacedHelpers = [...currentPlaced];
-        } else if (gameManager.currentLevel === 'jupiter') {
-            gameManager.jupiterPlacedHelpers = [...currentPlaced];
-        } else if (gameManager.currentLevel === 'titan') {
+        if (this.game.currentLevel === 'earth') {
+            this.game.earthPlacedHelpers = [...currentPlaced];
+        } else if (this.game.currentLevel === 'moon') {
+            this.game.moonPlacedHelpers = [...currentPlaced];
+        } else if (this.game.currentLevel === 'mars') {
+            this.game.marsPlacedHelpers = [...currentPlaced];
+        } else if (this.game.currentLevel === 'jupiter') {
+            this.game.jupiterPlacedHelpers = [...currentPlaced];
+        } else if (this.game.currentLevel === 'titan') {
             // Save titan placed helpers when creating save data from Titan planet
-            gameManager.titanPlacedHelpers = [...currentPlaced];
+            this.game.titanPlacedHelpers = [...currentPlaced];
         }
 
-        const earthPlacedHelpers = Array.isArray(gameManager.earthPlacedHelpers)
-            ? gameManager.earthPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
+        const earthPlacedHelpers = Array.isArray(this.game.earthPlacedHelpers)
+            ? this.game.earthPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
             : [];
 
-        const moonPlacedHelpers = Array.isArray(gameManager.moonPlacedHelpers)
-            ? gameManager.moonPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
+        const moonPlacedHelpers = Array.isArray(this.game.moonPlacedHelpers)
+            ? this.game.moonPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
             : [];
 
-        const marsPlacedHelpers = Array.isArray(gameManager.marsPlacedHelpers)
-            ? gameManager.marsPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
+        const marsPlacedHelpers = Array.isArray(this.game.marsPlacedHelpers)
+            ? this.game.marsPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
             : [];
 
-        const jupiterPlacedHelpers = Array.isArray(gameManager.jupiterPlacedHelpers)
-            ? gameManager.jupiterPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
+        const jupiterPlacedHelpers = Array.isArray(this.game.jupiterPlacedHelpers)
+            ? this.game.jupiterPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
             : [];
 
-        const titanPlacedHelpers = Array.isArray(gameManager.titanPlacedHelpers)
-            ? gameManager.titanPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
+        const titanPlacedHelpers = Array.isArray(this.game.titanPlacedHelpers)
+            ? this.game.titanPlacedHelpers.map(serializePlacedHelper).filter(Boolean)
             : [];
 
         const helperData = currentPlaced.map(serializePlacedHelper).filter(Boolean);
@@ -210,20 +206,20 @@ class SaveManager {
         return {
             version: '1.0.0',
             timestamp: Date.now(),
-            dogecoins: gameManager.dogecoins,
-            totalMined: gameManager.totalMined,
-            totalClicks: gameManager.totalClicks,
-            dps: gameManager.dps,
-            highestDps: gameManager.highestDps,
-            currentLevel: gameManager.currentLevel,
-            helpers: gameManager.helpers,
-            moonHelpers: gameManager.moonHelpers,
-            marsHelpers: gameManager.marsHelpers,
-            jupiterHelpers: gameManager.jupiterHelpers, // Keep Jupiter helper ownership synced across reloads.
-            titanHelpers: gameManager.titanHelpers, // Keep Titan helper ownership synced across reloads.
-            pickaxes: gameManager.pickaxes,
-            currentPickaxe: gameManager.currentPickaxe,
-            upgrades: gameManager.upgrades || {},
+            dogecoins: this.game.dogecoins,
+            totalMined: this.game.totalMined,
+            totalClicks: this.game.totalClicks,
+            dps: this.game.dps,
+            highestDps: this.game.highestDps,
+            currentLevel: this.game.currentLevel,
+            helpers: this.game.helpers,
+            moonHelpers: this.game.moonHelpers,
+            marsHelpers: this.game.marsHelpers,
+            jupiterHelpers: this.game.jupiterHelpers, // Keep Jupiter helper ownership synced across reloads.
+            titanHelpers: this.game.titanHelpers, // Keep Titan helper ownership synced across reloads.
+            pickaxes: this.game.pickaxes,
+            currentPickaxe: this.game.currentPickaxe,
+            upgrades: this.game.upgrades || {},
             placedHelpers: helperData,
             earthPlacedHelpers,
             moonPlacedHelpers,
@@ -231,21 +227,21 @@ class SaveManager {
             jupiterPlacedHelpers,
             titanPlacedHelpers,
             statistics: {
-                totalPlayTime: gameManager.totalPlayTime || 0,
-                highestDps: gameManager.highestDps || 0,
-                helpersBought: gameManager.helpersBought || 0,
-                pickaxesBought: gameManager.pickaxesBought || 0,
-                achievements: gameManager.achievements || [],
-                startTime: gameManager.startTime || Date.now()
+                totalPlayTime: this.game.totalPlayTime || 0,
+                highestDps: this.game.highestDps || 0,
+                helpersBought: this.game.helpersBought || 0,
+                pickaxesBought: this.game.pickaxesBought || 0,
+                achievements: this.game.achievements || [],
+                startTime: this.game.startTime || Date.now()
             },
             settings: {
-                soundEnabled: gameManager.soundEnabled !== false,
-                musicEnabled: gameManager.musicEnabled !== false,
-                notificationsEnabled: gameManager.notificationsEnabled !== false,
-                autoSaveEnabled: gameManager.autoSaveEnabled !== false
+                soundEnabled: this.game.soundEnabled !== false,
+                musicEnabled: this.game.musicEnabled !== false,
+                notificationsEnabled: this.game.notificationsEnabled !== false,
+                autoSaveEnabled: this.game.autoSaveEnabled !== false
             },
             cutscenes: {
-                moonLaunch: !!gameManager.hasPlayedMoonLaunch
+                moonLaunch: !!this.game.hasPlayedMoonLaunch
             }
         };
     }
@@ -255,44 +251,55 @@ class SaveManager {
             throw new Error('Invalid save data');
         }
 
-        gameManager.dogecoins = saveData.dogecoins || 0;
-        gameManager.totalMined = saveData.totalMined || 0;
-        gameManager.totalClicks = saveData.totalClicks || 0;
-        gameManager.dps = saveData.dps || 0;
-        gameManager.highestDps = saveData.highestDps || 0;
-        gameManager.currentLevel = saveData.currentLevel || 'earth';
-        gameManager.isTransitioning = false;
+        this.game.dogecoins = saveData.dogecoins || 0;
+        this.game.totalMined = saveData.totalMined || 0;
+        this.game.totalClicks = saveData.totalClicks || 0;
+        this.game.dps = saveData.dps || 0;
+        this.game.highestDps = saveData.highestDps || 0;
+        this.game.currentLevel = saveData.currentLevel || 'earth';
+        this.game.isTransitioning = false;
 
-        gameManager.helpers = Array.isArray(saveData.helpers)
+        this.game.helpers = Array.isArray(saveData.helpers)
             ? saveData.helpers.map(helper => ({ ...helper }))
             : [];
-        gameManager.moonHelpers = Array.isArray(saveData.moonHelpers)
+        this.game.moonHelpers = Array.isArray(saveData.moonHelpers)
             ? saveData.moonHelpers.map(helper => ({ ...helper }))
             : [];
-        gameManager.marsHelpers = Array.isArray(saveData.marsHelpers)
+        this.game.marsHelpers = Array.isArray(saveData.marsHelpers)
             ? saveData.marsHelpers.map(helper => ({ ...helper }))
             : [];
-        gameManager.jupiterHelpers = Array.isArray(saveData.jupiterHelpers)
+        this.game.jupiterHelpers = Array.isArray(saveData.jupiterHelpers)
             ? saveData.jupiterHelpers.map(helper => ({ ...helper }))
             : []; // Preserve Jupiter helper ownership for reloads.
-        gameManager.titanHelpers = Array.isArray(saveData.titanHelpers)
+        this.game.titanHelpers = Array.isArray(saveData.titanHelpers)
             ? saveData.titanHelpers.map(helper => ({ ...helper }))
             : []; // Preserve Titan helper ownership for reloads.
-        gameManager.pickaxes = saveData.pickaxes || ['standard'];
-        gameManager.currentPickaxe = saveData.currentPickaxe || 'standard';
-        gameManager.upgrades = saveData.upgrades || {};
+        this.game.pickaxes = saveData.pickaxes || ['standard'];
+        this.game.currentPickaxe = saveData.currentPickaxe || 'standard';
+        this.game.upgrades = saveData.upgrades || {};
 
         const rebuildPlacedHelpers = (helpersArray = [], planet = 'earth') => {
             if (!Array.isArray(helpersArray)) return [];
 
-            const shopCategory = shopManager.shopData.helpers[planet];
+            let shopCategory;
+            if (planet === 'moon') {
+                shopCategory = window.shopManager?.shopData?.moonHelpers;
+            } else if (planet === 'mars') {
+                shopCategory = window.shopManager?.shopData?.marsHelpers;
+            } else if (planet === 'jupiter') {
+                shopCategory = window.shopManager?.shopData?.jupiterHelpers;
+            } else if (planet === 'titan') {
+                shopCategory = window.shopManager?.shopData?.titanHelpers;
+            } else {
+                shopCategory = window.shopManager?.shopData?.helpers;
+            }
 
             return helpersArray
                 .map(savedHelper => {
                     if (!savedHelper) return null;
 
                     // Only use helpers that exist in the current planet's shop category
-                    const shopHelperData = shopCategory[savedHelper.type];
+                    const shopHelperData = shopCategory?.[savedHelper.type];
                     if (!shopHelperData) {
                         // Helper type doesn't exist on this planet, skip it
                         console.warn(`Skipping helper type '${savedHelper.type}' on ${planet} - not found in shop category`);
@@ -342,23 +349,23 @@ class SaveManager {
             }
         }
 
-        gameManager.earthPlacedHelpers = rebuildPlacedHelpers(rawEarth, 'earth');
-        gameManager.moonPlacedHelpers = rebuildPlacedHelpers(rawMoon, 'moon');
-        gameManager.marsPlacedHelpers = rebuildPlacedHelpers(rawMars, 'mars');
-        gameManager.jupiterPlacedHelpers = rebuildPlacedHelpers(rawJupiter, 'jupiter');
-        gameManager.titanPlacedHelpers = rebuildPlacedHelpers(rawTitan, 'titan');
+        this.game.earthPlacedHelpers = rebuildPlacedHelpers(rawEarth, 'earth');
+        this.game.moonPlacedHelpers = rebuildPlacedHelpers(rawMoon, 'moon');
+        this.game.marsPlacedHelpers = rebuildPlacedHelpers(rawMars, 'mars');
+        this.game.jupiterPlacedHelpers = rebuildPlacedHelpers(rawJupiter, 'jupiter');
+        this.game.titanPlacedHelpers = rebuildPlacedHelpers(rawTitan, 'titan');
 
         const helperListsForUnlock = [
-            gameManager.helpers,
-            gameManager.moonHelpers,
-            gameManager.marsHelpers,
-            gameManager.jupiterHelpers,
-            gameManager.titanHelpers,
-            gameManager.earthPlacedHelpers,
-            gameManager.moonPlacedHelpers,
-            gameManager.marsPlacedHelpers,
-            gameManager.jupiterPlacedHelpers,
-            gameManager.titanPlacedHelpers
+            this.game.helpers,
+            this.game.moonHelpers,
+            this.game.marsHelpers,
+            this.game.jupiterHelpers,
+            this.game.titanHelpers,
+            this.game.earthPlacedHelpers,
+            this.game.moonPlacedHelpers,
+            this.game.marsPlacedHelpers,
+            this.game.jupiterPlacedHelpers,
+            this.game.titanPlacedHelpers
         ]; // Include all planet helpers when checking unlock prerequisites.
 
         const hasMarsRocket = helperListsForUnlock.some(list =>
@@ -366,7 +373,7 @@ class SaveManager {
         );
 
         if (hasMarsRocket) {
-            gameManager.hasPlayedMoonLaunch = true;
+            this.game.hasPlayedMoonLaunch = true;
         }
 
         // Add missing helpers (owned but not placed) - spawn them in a clump for manual placement
@@ -386,7 +393,18 @@ class SaveManager {
             });
 
             // Get shop category for this planet
-            const shopCategory = shopManager.shopData.helpers[planet];
+            let shopCategory;
+            if (planet === 'moon') {
+                shopCategory = window.shopManager?.shopData?.moonHelpers;
+            } else if (planet === 'mars') {
+                shopCategory = window.shopManager?.shopData?.marsHelpers;
+            } else if (planet === 'jupiter') {
+                shopCategory = window.shopManager?.shopData?.jupiterHelpers;
+            } else if (planet === 'titan') {
+                shopCategory = window.shopManager?.shopData?.titanHelpers;
+            } else {
+                shopCategory = window.shopManager?.shopData?.helpers;
+            }
 
             // Spawn missing helpers in a clump (bottom-left of panel, away from rock)
             const baseX = 120; // Far left side of panel
@@ -404,7 +422,7 @@ class SaveManager {
                             // Create clump pattern with small random offsets
                             const offsetX = (Math.random() - 0.5) * 80;
                             const offsetY = (Math.random() - 0.5) * 80;
-
+                            
                             placedHelpers.push({
                                 type: type,
                                 x: baseX + offsetX,
@@ -423,100 +441,104 @@ class SaveManager {
             return placedHelpers;
         };
 
-        gameManager.earthPlacedHelpers = spawnMissingHelpers(gameManager.helpers, gameManager.earthPlacedHelpers, 'earth');
-        gameManager.moonPlacedHelpers = spawnMissingHelpers(gameManager.moonHelpers, gameManager.moonPlacedHelpers, 'moon');
-        gameManager.marsPlacedHelpers = spawnMissingHelpers(gameManager.marsHelpers, gameManager.marsPlacedHelpers, 'mars');
-        gameManager.jupiterPlacedHelpers = spawnMissingHelpers(gameManager.jupiterHelpers, gameManager.jupiterPlacedHelpers, 'jupiter');
-        gameManager.titanPlacedHelpers = spawnMissingHelpers(gameManager.titanHelpers, gameManager.titanPlacedHelpers, 'titan');
+        this.game.earthPlacedHelpers = spawnMissingHelpers(this.game.helpers, this.game.earthPlacedHelpers, 'earth');
+        this.game.moonPlacedHelpers = spawnMissingHelpers(this.game.moonHelpers, this.game.moonPlacedHelpers, 'moon');
+        this.game.marsPlacedHelpers = spawnMissingHelpers(this.game.marsHelpers, this.game.marsPlacedHelpers, 'mars');
+        this.game.jupiterPlacedHelpers = spawnMissingHelpers(this.game.jupiterHelpers, this.game.jupiterPlacedHelpers, 'jupiter');
+        this.game.titanPlacedHelpers = spawnMissingHelpers(this.game.titanHelpers, this.game.titanPlacedHelpers, 'titan');
 
-        if (gameManager.currentLevel === 'moon') {
-            gameManager.placedHelpers = [...gameManager.moonPlacedHelpers];
-        } else if (gameManager.currentLevel === 'mars') {
-            gameManager.placedHelpers = [...gameManager.marsPlacedHelpers];
-        } else if (gameManager.currentLevel === 'jupiter') {
-            gameManager.placedHelpers = [...gameManager.jupiterPlacedHelpers];
-        } else if (gameManager.currentLevel === 'titan') {
+        if (this.game.currentLevel === 'moon') {
+            this.game.placedHelpers = [...this.game.moonPlacedHelpers];
+        } else if (this.game.currentLevel === 'mars') {
+            this.game.placedHelpers = [...this.game.marsPlacedHelpers];
+        } else if (this.game.currentLevel === 'jupiter') {
+            this.game.placedHelpers = [...this.game.jupiterPlacedHelpers];
+        } else if (this.game.currentLevel === 'titan') {
             // Load Titan placed helpers when on Titan to prevent Earth helpers from appearing
-            gameManager.placedHelpers = [...gameManager.titanPlacedHelpers];
+            this.game.placedHelpers = [...this.game.titanPlacedHelpers];
         } else {
-            gameManager.placedHelpers = [...gameManager.earthPlacedHelpers];
+            this.game.placedHelpers = [...this.game.earthPlacedHelpers];
         }
 
         const body = document.body;
         if (body) {
-            const level = gameManager.currentLevel;
+            const level = this.game.currentLevel;
             document.body.classList.toggle('moon-theme', level === 'moon');
             document.body.classList.toggle('planet-mars', level === 'mars');
             document.body.classList.toggle('planet-jupiter', level === 'jupiter');
             document.body.classList.toggle('planet-titan', level === 'titan');
         }
 
-        gameManager.recreateHelperSprites();
-        gameManager.updateShopPrices();
+        this.game.recreateHelperSprites();
+        this.game.updateShopPrices();
 
-        gameManager.totalPlayTime = saveData.statistics?.totalPlayTime || 0;
-        gameManager.helpersBought = saveData.statistics?.helpersBought || 0;
-        gameManager.pickaxesBought = saveData.statistics?.pickaxesBought || 0;
-        gameManager.achievements = saveData.statistics?.achievements || [];
-        gameManager.startTime = saveData.statistics?.startTime || Date.now();
+        this.game.totalPlayTime = saveData.statistics?.totalPlayTime || 0;
+        this.game.helpersBought = saveData.statistics?.helpersBought || 0;
+        this.game.pickaxesBought = saveData.statistics?.pickaxesBought || 0;
+        this.game.achievements = saveData.statistics?.achievements || [];
+        this.game.startTime = saveData.statistics?.startTime || Date.now();
 
-        gameManager.soundEnabled = saveData.settings?.soundEnabled !== false;
-        gameManager.musicEnabled = saveData.settings?.musicEnabled !== false;
-        gameManager.notificationsEnabled = saveData.settings?.notificationsEnabled !== false;
-        gameManager.autoSaveEnabled = saveData.settings?.autoSaveEnabled !== false;
-        gameManager.hasPlayedMoonLaunch = saveData.cutscenes?.moonLaunch || false;
+        this.game.soundEnabled = saveData.settings?.soundEnabled !== false;
+        this.game.musicEnabled = saveData.settings?.musicEnabled !== false;
+        this.game.notificationsEnabled = saveData.settings?.notificationsEnabled !== false;
+        this.game.autoSaveEnabled = saveData.settings?.autoSaveEnabled !== false;
+        this.game.hasPlayedMoonLaunch = saveData.cutscenes?.moonLaunch || false;
 
-        audioManager.soundEnabled = gameManager.soundEnabled;
-        audioManager.musicEnabled = gameManager.musicEnabled;
+        if (window.audioManager) {
+            window.audioManager.soundEnabled = this.game.soundEnabled;
+            window.audioManager.musicEnabled = this.game.musicEnabled;
+        }
 
         const soundCheckbox = document.getElementById('sound-enabled');
         const musicCheckbox = document.getElementById('music-enabled');
         const notificationsCheckbox = document.getElementById('notifications-enabled');
         const autoSaveCheckbox = document.getElementById('auto-save-enabled');
 
-        if (soundCheckbox) soundCheckbox.checked = gameManager.soundEnabled;
-        if (musicCheckbox) musicCheckbox.checked = gameManager.musicEnabled;
-        if (notificationsCheckbox) notificationsCheckbox.checked = gameManager.notificationsEnabled;
-        if (autoSaveCheckbox) autoSaveCheckbox.checked = gameManager.autoSaveEnabled;
+        if (soundCheckbox) soundCheckbox.checked = this.game.soundEnabled;
+        if (musicCheckbox) musicCheckbox.checked = this.game.musicEnabled;
+        if (notificationsCheckbox) notificationsCheckbox.checked = this.game.notificationsEnabled;
+        if (autoSaveCheckbox) autoSaveCheckbox.checked = this.game.autoSaveEnabled;
 
-        gameManager.updateDPS();
-        gameManager.updateUI();
+        this.game.updateDPS();
+        this.game.updateUI();
 
-        if (gameManager.currentLevel === 'moon') {
-            document.body.classList.add('moon-theme');
-            document.body.classList.remove('planet-mars');
-            document.body.classList.remove('planet-jupiter');
-        } else if (gameManager.currentLevel === 'mars') {
-            document.body.classList.add('planet-mars');
-            document.body.classList.remove('moon-theme');
-            document.body.classList.remove('planet-jupiter');
-        } else if (gameManager.currentLevel === 'jupiter') {
-            document.body.classList.add('planet-jupiter');
-            document.body.classList.remove('moon-theme');
-            document.body.classList.remove('planet-mars');
-        } else {
-            document.body.classList.remove('moon-theme');
-            document.body.classList.remove('planet-mars');
-            document.body.classList.remove('planet-jupiter');
-        }
-
-        uiManager.updateBackground(gameManager.currentLevel);
-        if (gameManager.marsHelpers.length && !gameManager.moonHelpers.some(helper => helper.type === 'marsRocket')) {
-            const hasMarsRocketInMarsHelpers = gameManager.marsHelpers.some(helper => helper.type === 'marsRocket');
-            if (hasMarsRocketInMarsHelpers) {
-                gameManager.hasPlayedMoonLaunch = true;
-                gameManager.moonHelpers.push(...gameManager.marsHelpers.filter(helper => helper.type === 'marsRocket'));
+        if (window.uiManager) {
+            if (this.game.currentLevel === 'moon') {
+                document.body.classList.add('moon-theme');
+                document.body.classList.remove('planet-mars');
+                document.body.classList.remove('planet-jupiter');
+            } else if (this.game.currentLevel === 'mars') {
+                document.body.classList.add('planet-mars');
+                document.body.classList.remove('moon-theme');
+                document.body.classList.remove('planet-jupiter');
+            } else if (this.game.currentLevel === 'jupiter') {
+                document.body.classList.add('planet-jupiter');
+                document.body.classList.remove('moon-theme');
+                document.body.classList.remove('planet-mars');
+            } else {
+                document.body.classList.remove('moon-theme');
+                document.body.classList.remove('planet-mars');
+                document.body.classList.remove('planet-jupiter');
             }
+
+            uiManager.updateBackground(this.game.currentLevel);
+            if (this.game.marsHelpers.length && !this.game.moonHelpers.some(helper => helper.type === 'marsRocket')) {
+                const hasMarsRocketInMarsHelpers = this.game.marsHelpers.some(helper => helper.type === 'marsRocket');
+                if (hasMarsRocketInMarsHelpers) {
+                    this.game.hasPlayedMoonLaunch = true;
+                    this.game.moonHelpers.push(...this.game.marsHelpers.filter(helper => helper.type === 'marsRocket'));
+                }
+            }
+
+            uiManager.initializePlanetTabs?.();
+            uiManager.updatePlanetTabVisibility?.();
+
+            if (this.game.hasPlayedMoonLaunch) {
+                uiManager.hideMoonLocked?.();
+            }
+
+            uiManager.updateShopContent?.();
         }
-
-        uiManager.initializePlanetTabs?.();
-        uiManager.updatePlanetTabVisibility?.();
-
-        if (gameManager.hasPlayedMoonLaunch) {
-            uiManager.hideMoonLocked?.();
-        }
-
-        uiManager.updateShopContent?.();
     }
 
     validateSaveData(saveData) {
@@ -547,11 +569,11 @@ class SaveManager {
     }
 
     autoSave() {
-        if (gameManager.autoSaveEnabled !== false) {
+        if (this.game.autoSaveEnabled !== false) {
             this.saveGame();
 
-            if (cloudSaveManager.currentUser) {
-                cloudSaveManager.saveToCloudSilent();
+            if (window.cloudSaveManager && window.cloudSaveManager.currentUser && window.game != null) {
+                window.cloudSaveManager.saveToCloudSilent();
             }
         }
     }
@@ -573,11 +595,11 @@ class SaveManager {
 
             URL.revokeObjectURL(url);
 
-            gameManager.showNotification('Save exported successfully!');
+            this.game.showNotification('Save exported successfully!');
             return true;
         } catch (error) {
             console.error('Error exporting save:', error);
-            gameManager.showNotification('Error exporting save!');
+            this.game.showNotification('Error exporting save!');
             return false;
         }
     }
@@ -590,33 +612,33 @@ class SaveManager {
         input.onchange = (event) => {
             const file = event.target.files[0];
             if (!file) return;
-
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const saveData = JSON.parse(e.target.result);
-
+                    
                     if (this.validateSaveData(saveData)) {
                         if (confirm('This will overwrite your current save. Continue?')) {
                             this.applySaveData(saveData);
                             this.saveGame();
-                            gameManager.showNotification('Save imported successfully!');
+                            this.game.showNotification('Save imported successfully!');
                         }
                     } else {
-                        gameManager.showNotification('Invalid save file!');
+                        this.game.showNotification('Invalid save file!');
                     }
                 } catch (error) {
                     console.error('Error importing save:', error);
-                    gameManager.showNotification('Error importing save!');
+                    this.game.showNotification('Error importing save!');
                 }
             };
-
+            
             reader.readAsText(file);
         };
-
+        
         input.click();
     }
-
+    
     async resetGame() {
         if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
             if (confirm('This will permanently delete all your progress. Are you absolutely sure?')) {
@@ -624,7 +646,7 @@ class SaveManager {
                 localStorage.removeItem(this.saveKey);
                 localStorage.removeItem(this.backupKey);
                 localStorage.removeItem('dogeminer_save'); // Remove old save key
-
+                
                 // Clear any other dogeminer-related keys
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -632,47 +654,47 @@ class SaveManager {
                         localStorage.removeItem(key);
                     }
                 }
-
+                
                 // Delete cloud save if user is signed in to prevent restore on reload
-                if (cloudSaveManager.currentUser) {
-                    await cloudSaveManager.deleteCloudSave();
+                if (window.cloudSaveManager && window.cloudSaveManager.currentUser) {
+                    await window.cloudSaveManager.deleteCloudSave();
                 }
-
+                
                 // Reset game state directly
-                gameManager.dogecoins = 0;
-                gameManager.totalMined = 0;
-                gameManager.totalClicks = 0;
-                gameManager.dps = 0;
-                gameManager.helpers = [];
-                gameManager.moonHelpers = [];
-                gameManager.marsHelpers = [];
-                gameManager.jupiterHelpers = [];
-                gameManager.titanHelpers = [];
-                gameManager.earthPlacedHelpers = [];
-                gameManager.moonPlacedHelpers = [];
-                gameManager.marsPlacedHelpers = [];
-                gameManager.jupiterPlacedHelpers = [];
-                gameManager.titanPlacedHelpers = [];
-                gameManager.placedHelpers = [];
-                gameManager.helpersOnCursor = [];
-                gameManager.placementQueue = [];
-                gameManager.isPlacingHelpers = false;
-                gameManager.upgrades = [];
-                gameManager.pickaxes = [];
-                gameManager.currentPickaxe = 'standard';
-                gameManager.currentLevel = 'earth';
-                gameManager.hasPlayedMoonLaunch = false;
-                gameManager.isCutscenePlaying = false;
+                this.game.dogecoins = 0;
+                this.game.totalMined = 0;
+                this.game.totalClicks = 0;
+                this.game.dps = 0;
+                this.game.helpers = [];
+                this.game.moonHelpers = [];
+                this.game.marsHelpers = [];
+                this.game.jupiterHelpers = [];
+                this.game.titanHelpers = [];
+                this.game.earthPlacedHelpers = [];
+                this.game.moonPlacedHelpers = [];
+                this.game.marsPlacedHelpers = [];
+                this.game.jupiterPlacedHelpers = [];
+                this.game.titanPlacedHelpers = [];
+                this.game.placedHelpers = [];
+                this.game.helpersOnCursor = [];
+                this.game.placementQueue = [];
+                this.game.isPlacingHelpers = false;
+                this.game.upgrades = [];
+                this.game.pickaxes = [];
+                this.game.currentPickaxe = 'standard';
+                this.game.currentLevel = 'earth';
+                this.game.hasPlayedMoonLaunch = false;
+                this.game.isCutscenePlaying = false;
                 
                 // Clear all helper sprites from the DOM
-                gameManager.clearAllHelperSprites();
+                this.game.clearAllHelperSprites();
                 
                 // Update UI immediately
-                gameManager.updateUI();
-                gameManager.updateDPS();
+                this.game.updateUI();
+                this.game.updateDPS();
                 
                 // Show notification
-                gameManager.showNotification('Game reset successfully!');
+                this.game.showNotification('Game reset successfully!');
                 
                 // Reload after a short delay to ensure UI updates
                 setTimeout(() => {
@@ -681,11 +703,11 @@ class SaveManager {
             }
         }
     }
-
+    
     getSaveInfo() {
         const saveString = localStorage.getItem(this.saveKey);
         if (!saveString) return null;
-
+        
         try {
             const saveData = JSON.parse(saveString);
             return {
@@ -702,44 +724,44 @@ class SaveManager {
             return null;
         }
     }
-
+    
     // Cloud save functionality (placeholder for future implementation)
     async saveToCloud() {
         // This would integrate with a cloud service
         console.log('Cloud save not implemented yet');
         return false;
     }
-
+    
     async loadFromCloud() {
         // This would integrate with a cloud service
         console.log('Cloud load not implemented yet');
         return false;
     }
-
+    
     // Save validation and repair
     repairSave() {
         try {
             const saveString = localStorage.getItem(this.saveKey);
             if (!saveString) return false;
-
+            
             const saveData = JSON.parse(saveString);
-
+            
             // Repair common issues
             if (!saveData.helpers) saveData.helpers = [];
             if (!saveData.pickaxes) saveData.pickaxes = ['standard'];
             if (!saveData.upgrades) saveData.upgrades = {};
             if (!saveData.statistics) saveData.statistics = {};
             if (!saveData.settings) saveData.settings = {};
-
+            
             // Ensure minimum values
             saveData.dogecoins = Math.max(0, saveData.dogecoins || 0);
             saveData.totalMined = Math.max(0, saveData.totalMined || 0);
             saveData.totalClicks = Math.max(0, saveData.totalClicks || 0);
-
+            
             // Save repaired data
             localStorage.setItem(this.saveKey, JSON.stringify(saveData));
             
-            gameManager.showNotification('Save data repaired!');
+            this.game.showNotification('Save data repaired!');
             return true;
         } catch (error) {
             console.error('Error repairing save:', error);
@@ -748,5 +770,5 @@ class SaveManager {
     }
 }
 
-const instance = new SaveManager();
-export default instance;
+// Global save manager instance
+let saveManager;

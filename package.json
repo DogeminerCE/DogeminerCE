@@ -28,12 +28,8 @@
     "url": "https://github.com/your-username/dogeminer-community-edition/issues"
   },
   "homepage": "https://github.com/your-username/dogeminer-community-edition#readme",
-  "devDependencies": {
-    "@eslint/css": "^0.14.1",
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
-    "globals": "^16.5.0"
-  },
+  "devDependencies": {},
+  "dependencies": {},
   "engines": {
     "node": ">=14.0.0"
   }

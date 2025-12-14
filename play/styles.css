@@ -164,7 +164,6 @@
 
 .moon-theme .tab-btn {
     background: linear-gradient(to bottom, rgb(185, 215, 240) 50%, rgb(165, 210, 240) 50%);
-    background-color: rgb(185, 215, 240);
     border: 1px solid rgb(120, 185, 235);
     color: rgb(40, 95, 155);
 }
@@ -190,7 +189,6 @@
 
 .moon-theme .shop-buy-btn {
     background: linear-gradient(to bottom, rgb(185, 215, 240) 50%, rgb(165, 210, 240) 50%);
-    background-color: rgb(185, 215, 240);
     border: 1px solid rgb(120, 185, 235);
     color: rgb(40, 95, 155);
 }
@@ -253,7 +251,6 @@
 /* Buttons and tabs */
 .planet-mars .tab-btn {
     background: linear-gradient(to bottom, rgb(125, 30, 95) 50%, rgb(115, 25, 90) 50%);
-    background-color: rgb(125, 30, 95);
     border: 1px solid rgb(130, 80, 75);
 }
 
@@ -272,7 +269,6 @@
 
 .planet-mars .shop-buy-btn {
     background: linear-gradient(to bottom, rgb(125, 30, 95) 50%, rgb(115, 25, 90) 50%);
-    background-color: rgb(125, 30, 95);
     border: 1px solid rgb(130, 80, 75);
     color: white;
 }
@@ -295,8 +291,7 @@
     border: none;
     color: white;
     box-shadow: none;
-    padding: 0 18px;
-    /* Add side breathing room without reintroducing a shell */
+    padding: 0 18px; /* Add side breathing room without reintroducing a shell */
     border-radius: 0;
 }
 
@@ -324,19 +319,16 @@
 /* Mars settings tab styling */
 .planet-mars #settings-tab {
     background: linear-gradient(to bottom, rgba(75, 30, 25, 0.95), rgba(60, 20, 20, 0.95));
+    border: 1px solid rgb(130, 80, 75);
     color: white;
     box-shadow: 0 0 25px rgba(140, 70, 60, 0.35);
 }
 
 .planet-mars #settings-tab .settings-grid {
-    background: none;
-    /* Keep Mars settings sections flush without an extra wrapper shell */
-    border: none;
-    /* Remove wrapper border so only individual cards show outlines */
-    padding: 0;
-    /* Eliminate added spacing that wrapped the menu group */
-    border-radius: 0;
-    /* Prevent rounded outer container corners */
+    background: none; /* Keep Mars settings sections flush without an extra wrapper shell */
+    border: none; /* Remove wrapper border so only individual cards show outlines */
+    padding: 0; /* Eliminate added spacing that wrapped the menu group */
+    border-radius: 0; /* Prevent rounded outer container corners */
 }
 
 .planet-mars #settings-tab .settings-column,
@@ -457,7 +449,6 @@
 /* Buttons and tabs */
 .planet-jupiter .tab-btn {
     background: linear-gradient(to bottom, rgb(250, 205, 125) 50%, rgb(240, 190, 115) 50%);
-    background-color: rgb(250, 205, 125);
     border: 1px solid rgb(225, 180, 105);
 }
 
@@ -481,7 +472,6 @@
 
 .planet-jupiter .shop-buy-btn {
     background: linear-gradient(to bottom, rgb(250, 205, 125) 50%, rgb(240, 190, 115) 50%);
-    background-color: rgb(250, 205, 125);
     border: 1px solid rgb(225, 180, 105);
     color: #2d2416;
 }
@@ -576,7 +566,6 @@
 /* Buttons and tabs */
 .planet-titan .tab-btn {
     background: linear-gradient(to bottom, rgb(255, 235, 173) 50%, rgb(247, 221, 140) 50%);
-    background-color: rgb(255, 235, 173);
     border: 1px solid rgb(235, 190, 80);
 }
 
@@ -600,7 +589,6 @@
 
 .planet-titan .shop-buy-btn {
     background: linear-gradient(to bottom, rgb(255, 235, 173) 50%, rgb(247, 221, 140) 50%);
-    background-color: rgb(255, 235, 173);
     border: 1px solid rgb(235, 190, 80);
     color: #2d2416;
 }
@@ -653,8 +641,7 @@ img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    pointer-events: none;
-    /* Prevent dragging but allow click events */
+    pointer-events: none; /* Prevent dragging but allow click events */
 }
 
 /* Re-enable pointer events for interactive images */
@@ -676,13 +663,10 @@ body {
     font-family: 'DogeSans', sans-serif;
     background: #f0f0f0;
     color: #333;
-    overflow: hidden;
-    /* Prevent all scrolling */
+    overflow: hidden; /* Prevent all scrolling */
     user-select: none;
-    height: 100vh;
-    /* Fixed height to viewport */
-    width: 100vw;
-    /* Fixed width to viewport */
+    height: 100vh; /* Fixed height to viewport */
+    width: 100vw; /* Fixed width to viewport */
     margin: 0;
     padding: 0;
     /* Force consistent scaling - disable browser zoom */
@@ -731,24 +715,18 @@ body {
     position: absolute;
     z-index: 10;
     /* Fixed dimensions for 1920x1080 reference */
-    width: 1200px;
-    /* Fixed width - equivalent to 1920px minus ad spaces */
-    height: 590px;
-    /* Perfect size for bottom ad space */
+    width: 1200px; /* Fixed width - equivalent to 1920px minus ad spaces */
+    height: 590px; /* Perfect size for bottom ad space */
     margin: 0;
     padding: 0;
     display: flex;
     gap: 4px;
-    justify-content: center;
-    /* Center the panels within the container */
-    overflow: visible;
-    /* Allow version indicator to be visible */
+    justify-content: center; /* Center the panels within the container */
+    overflow: visible; /* Allow version indicator to be visible */
     /* Position at top with 20px gap */
-    top: 20px;
-    /* 20px from top of page */
+    top: 20px; /* 20px from top of page */
     left: 50%;
-    transform: translateX(-50%);
-    /* Only translate horizontally */
+    transform: translateX(-50%); /* Only translate horizontally */
 }
 
 /* Game Panels - Opaque Rounded Rectangles */
@@ -760,29 +738,21 @@ body {
 }
 
 #left-panel {
-    width: 630px;
-    /* Fixed width */
-    height: 100%;
-    /* Use full container height */
+    width: 630px; /* Fixed width */
+    height: 100%; /* Use full container height */
     flex: none;
-    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
-    /* Gradient with bottom color taking up more space */
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%); /* Gradient with bottom color taking up more space */
     border: 1px solid #d4af37;
 }
 
 #right-panel {
-    width: 510px;
-    /* Fixed width */
-    height: 100%;
-    /* Use full container height */
+    width: 510px; /* Fixed width */
+    height: 100%; /* Use full container height */
     flex: none;
-    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
-    /* Same gradient as left panel */
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%); /* Same gradient as left panel */
     border: 1px solid #d4af37;
-    margin-top: 60px;
-    /* Crop the top by 60px */
-    height: calc(100% - 60px);
-    /* Adjust height to account for top margin */
+    margin-top: 60px; /* Crop the top by 60px */
+    height: calc(100% - 60px); /* Adjust height to account for top margin */
     display: flex;
     flex-direction: column;
 }
@@ -790,10 +760,8 @@ body {
 /* Planet Tabs */
 #planet-tabs {
     position: absolute;
-    top: 10px;
-    /* Position at the top of the right panel */
-    left: calc(50% + 75px);
-    /* Left edge of the right panel */
+    top: 10px; /* Position at the top of the right panel */
+    left: calc(50% + 75px); /* Left edge of the right panel */
     display: flex;
     flex-direction: row;
     gap: 4px;
@@ -838,17 +806,14 @@ body {
 /* Version Indicator */
 #version-indicator {
     position: absolute;
-    bottom: -35px;
-    /* Position below the left panel */
-    left: 28px;
-    /* Move right by 28px to align with left panel */
+    bottom: -35px; /* Position below the left panel */
+    left: 28px; /* Move right by 28px to align with left panel */
     color: white;
     font-size: 12px;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
     z-index: 25;
-    pointer-events: none;
-    /* Prevent interaction */
+    pointer-events: none; /* Prevent interaction */
     background: rgba(0, 0, 0, 0.6);
     padding: 3px 6px;
     border-radius: 3px;
@@ -858,37 +823,28 @@ body {
 /* Left Panel - Mining Area */
 #mining-area {
     position: absolute;
-    top: calc(50% + 50px);
-    /* Move down 50 pixels */
-    left: calc(50% - 20px);
-    /* Move left 20 pixels */
+    top: calc(50% + 50px); /* Move down 50 pixels */
+    left: calc(50% - 20px); /* Move left 20 pixels */
     transform: translate(-50%, -50%);
     z-index: 20;
     display: flex;
     align-items: center;
-    gap: 5px;
-    /* Even closer together */
-    flex-direction: row-reverse;
-    /* This puts Doge on the right */
+    gap: 5px; /* Even closer together */
+    flex-direction: row-reverse; /* This puts Doge on the right */
 }
 
 /* Platform - Behind everything */
 #platform-container {
     position: absolute;
-    top: calc(50% + 125px);
-    /* 25px up from previous position (150px - 25px) */
-    left: calc(50% - 20px);
-    /* 50px left from previous position (30px - 50px) */
+    top: calc(50% + 125px); /* 25px up from previous position (150px - 25px) */
+    left: calc(50% - 20px); /* 50px left from previous position (30px - 50px) */
     transform: translate(-50%, -50%);
-    z-index: 0;
-    /* Behind everything else */
-    pointer-events: none;
-    /* Don't interfere with clicks */
+    z-index: 0; /* Behind everything else */
+    pointer-events: none; /* Don't interfere with clicks */
 }
 
 #platform {
-    width: 350px;
-    /* 50px bigger (300px + 50px) */
+    width: 350px; /* 50px bigger (300px + 50px) */
     height: auto;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
 }
@@ -900,10 +856,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
-    /* Allow clicks to pass through to mining area */
-    z-index: 5;
-    /* Above platform, below mining area */
+    pointer-events: none; /* Allow clicks to pass through to mining area */
+    z-index: 5; /* Above platform, below mining area */
 }
 
 /* Helper Wrapper */
@@ -921,13 +875,10 @@ body {
     width: 60px;
     height: 60px;
     pointer-events: none;
-    z-index: 10;
-    /* Higher than Doge (z-index: 2) to ensure helpers appear in front */
+    z-index: 10; /* Higher than Doge (z-index: 2) to ensure helpers appear in front */
     transition: transform 0.1s ease;
-    object-fit: contain;
-    /* Prevent stretching, maintain aspect ratio */
-    image-rendering: pixelated;
-    /* Keep pixel art crisp */
+    object-fit: contain; /* Prevent stretching, maintain aspect ratio */
+    image-rendering: pixelated; /* Keep pixel art crisp */
 }
 
 /* Ensure cursor-attached helpers never have pointer events */
@@ -959,7 +910,7 @@ body {
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.2s ease;
-    text-shadow:
+    text-shadow: 
         -1px -1px 0 #ff8c00,
         1px -1px 0 #ff8c00,
         -1px 1px 0 #ff8c00,
@@ -978,12 +929,10 @@ body {
         transform: scale(0.3);
         opacity: 0.7;
     }
-
     50% {
         transform: scale(1.2);
         opacity: 1;
     }
-
     100% {
         transform: scale(1);
         opacity: 1;
@@ -992,8 +941,7 @@ body {
 
 .helper-sprite.attached-to-mouse {
     pointer-events: none;
-    z-index: 1000;
-    /* Above everything when attached to mouse */
+    z-index: 1000; /* Above everything when attached to mouse */
 }
 
 .helper-sprite.mining {
@@ -1002,17 +950,14 @@ body {
 
 /* Helper size variations */
 .helper-sprite.shibe {
-    width: 30px;
-    /* 2x smaller than default 60px */
+    width: 30px; /* 2x smaller than default 60px */
     height: 30px;
 }
 
 /* Dogebility drive is 15% bigger */
 .helper-sprite.dogebility {
-    width: 69px;
-    /* 60px * 1.15 = 69px */
-    height: 69px;
-    /* 60px * 1.15 = 69px */
+    width: 69px; /* 60px * 1.15 = 69px */
+    height: 69px; /* 60px * 1.15 = 69px */
 }
 
 /* Rocket floating animation */
@@ -1021,55 +966,41 @@ body {
 }
 
 @keyframes rocketFloat {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
 }
 
 /* Moon helper sizes */
 .helper-sprite.moon-base,
 .helper-sprite.lander-shibe {
-    width: 90px;
-    /* 60px * 1.5 = 90px */
+    width: 90px; /* 60px * 1.5 = 90px */
     height: 90px;
 }
 
 .helper-sprite.mars-base {
-    width: 90px;
-    /* 1.5x default size */
+    width: 90px; /* 1.5x default size */
     height: 90px;
 }
 
 /* Jupiter helper sizing */
 .helper-sprite.jupiter-base {
-    width: 90px;
-    /* 1.5x default size */
+    width: 90px; /* 1.5x default size */
     height: 90px;
 }
-
 .helper-sprite.cloud-base,
 .helper-sprite.doge-air-ship,
 .helper-sprite.flying-doggo {
-    animation: rocketFloat 2.4s ease-in-out infinite;
-    /* Match rocket float motion */
+    animation: rocketFloat 2.4s ease-in-out infinite; /* Match rocket float motion */
 }
 
 .helper-sprite.dogestar {
-    width: 90px;
-    /* 1.5x default size */
+    width: 90px; /* 1.5x default size */
     height: 90px;
 }
 
 .helper-sprite.super-shibe,
 .helper-sprite.tardogeis {
-    width: 72px;
-    /* 60px * 1.2 */
+    width: 72px; /* 60px * 1.2 */
     height: 72px;
 }
 
@@ -1086,20 +1017,17 @@ body {
 
 /* Titan helper sizing */
 .helper-sprite.titan-base {
-    width: 90px;
-    /* 60px * 1.5 = 90px */
+    width: 90px; /* 60px * 1.5 = 90px */
     height: 90px;
 }
 
 .helper-sprite.altar-of-sundoge {
-    width: 90px;
-    /* 60px * 1.5 = 90px */
+    width: 90px; /* 60px * 1.5 = 90px */
     height: 90px;
 }
 
 .helper-sprite.time-travel-drex {
-    width: 72px;
-    /* 60px * 1.2 = 72px */
+    width: 72px; /* 60px * 1.2 = 72px */
     height: 72px;
 }
 
@@ -1109,15 +1037,8 @@ body {
 }
 
 @keyframes cursorFloat {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-6px);
-    }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
 }
 
 /* Rock Setup */
@@ -1127,13 +1048,11 @@ body {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    margin-top: 55px;
-    /* Move rock up 5 pixels */
+    margin-top: 55px; /* Move rock up 5 pixels */
 }
 
 #main-rock {
-    width: 137px;
-    /* 10% smaller than previous size */
+    width: 137px; /* 10% smaller than previous size */
     height: auto;
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
 }
@@ -1168,23 +1087,18 @@ body.planet-mars #main-rock {
     filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
     position: relative;
     z-index: 2;
-    order: 2;
-    /* Middle in flex order */
+    order: 2; /* Middle in flex order */
     /* Float animation will start after intro */
 }
 
 #main-character.bounce {
-    animation: bounce 0.2s ease-out;
-    /* Override float animation with bounce */
+    animation: bounce 0.2s ease-out; /* Override float animation with bounce */
 }
 
 @keyframes float {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateY(0px);
     }
-
     50% {
         transform: translateY(-10px);
     }
@@ -1194,11 +1108,9 @@ body.planet-mars #main-rock {
     0% {
         transform: translateY(0px);
     }
-
     50% {
         transform: translateY(-15px);
     }
-
     100% {
         transform: translateY(0px);
     }
@@ -1214,7 +1126,6 @@ body.planet-mars #main-rock {
     0% {
         transform: translateY(-520px);
     }
-
     100% {
         transform: translateY(0px);
     }
@@ -1235,7 +1146,6 @@ body.planet-mars #main-rock {
         transform: translateY(520px) scale(0.4, 0.4);
         opacity: 0.2;
     }
-
     100% {
         transform: translateY(0) scale(1, 1);
         opacity: 0.5;
@@ -1246,25 +1156,19 @@ body.planet-mars #main-rock {
     0% {
         transform: scaleY(1) scaleX(1);
     }
-
     30% {
-        transform: scaleY(0.9) scaleX(1.05);
-        /* Squash */
+        transform: scaleY(0.9) scaleX(1.05); /* Squash */
     }
-
     75% {
-        transform: scaleY(1.08) scaleX(0.97);
-        /* Stretch */
+        transform: scaleY(1.08) scaleX(0.97); /* Stretch */
     }
-
     100% {
-        transform: scaleY(1) scaleX(1);
-        /* Return to normal */
+        transform: scaleY(1) scaleX(1); /* Return to normal */
     }
 }
 
 #pickaxe.pickaxe-intro {
-    animation:
+    animation: 
         pickaxeDrop 1s linear 0.5s forwards,
         pickaxeSquash 0.35s ease-out 1.5s forwards;
     animation-fill-mode: both, forwards;
@@ -1274,23 +1178,18 @@ body.planet-mars #main-rock {
     0% {
         transform: rotate(30deg) translate(-160px, -560px);
     }
-
     20% {
         transform: rotate(30deg) translate(-140px, -500px);
     }
-
     40% {
         transform: rotate(30deg) translate(-110px, -380px);
     }
-
     60% {
         transform: rotate(30deg) translate(-70px, -240px);
     }
-
     80% {
         transform: rotate(30deg) translate(-35px, -120px);
     }
-
     100% {
         transform: rotate(30deg) translate(0px, 0px);
     }
@@ -1300,15 +1199,12 @@ body.planet-mars #main-rock {
     0% {
         transform: rotate(30deg) scale(1, 1);
     }
-
     30% {
         transform: rotate(30deg) scaleX(1.05) scaleY(0.9);
     }
-
     75% {
         transform: rotate(30deg) scaleX(0.97) scaleY(1.08);
     }
-
     100% {
         transform: rotate(30deg) scale(1, 1);
     }
@@ -1320,39 +1216,27 @@ body.planet-mars #main-rock {
 
 
 #character-shadow {
-    width: 100px;
-    /* Made bigger */
-    height: 30px;
-    /* Made bigger */
+    width: 100px; /* Made bigger */
+    height: 30px; /* Made bigger */
     background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     border-radius: 50%;
-    margin-top: -5px;
-    /* Move shadow up slightly */
-    margin-left: 10px;
-    /* Move shadow to the right */
-    order: 3;
-    /* Ensure it comes last in flex order */
+    margin-top: -5px; /* Move shadow up slightly */
+    margin-left: 10px; /* Move shadow to the right */
+    order: 3; /* Ensure it comes last in flex order */
     opacity: 0.5;
     transform: translateY(0) scale(1, 1);
 }
 
 #pickaxe {
     position: absolute;
-    width: 142px;
-    /* 5% smaller than 150px */
+    width: 142px; /* 5% smaller than 150px */
     height: auto;
-    top: -50px;
-    /* Moved down 10 more pixels (was -60px, now -50px) */
-    right: calc(20% - 50px);
-    /* Moved right 20 more pixels (was -30px, now -50px) */
-    transform: rotate(30deg);
-    /* 30 degree resting angle */
-    transform-origin: 50% 80%;
-    /* Rotate from 80% down the handle instead of bottom */
-    z-index: 3;
-    /* Above Doge */
-    order: 1;
-    /* First in flex order */
+    top: -50px; /* Moved down 10 more pixels (was -60px, now -50px) */
+    right: calc(20% - 50px); /* Moved right 20 more pixels (was -30px, now -50px) */
+    transform: rotate(30deg); /* 30 degree resting angle */
+    transform-origin: 50% 80%; /* Rotate from 80% down the handle instead of bottom */
+    z-index: 3; /* Above Doge */
+    order: 1; /* First in flex order */
 }
 
 #pickaxe.swinging {
@@ -1363,11 +1247,9 @@ body.planet-mars #main-rock {
     0% {
         transform: rotate(30deg);
     }
-
     45% {
         transform: rotate(-65deg);
     }
-
     100% {
         transform: rotate(30deg);
     }
@@ -1433,14 +1315,12 @@ body.planet-mars #main-rock {
 /* Specific colors for dogecoin and DPS amounts */
 #dogecoin-amount {
     color: rgb(60, 60, 60) !important;
-    font-weight: 900 !important;
-    /* Extra bold */
+    font-weight: 900 !important; /* Extra bold */
 }
 
 #dps-amount {
     color: rgb(115, 85, 45) !important;
-    font-weight: 900 !important;
-    /* Extra bold */
+    font-weight: 900 !important; /* Extra bold */
 }
 
 .planet-mars #dogecoin-amount,
@@ -1460,31 +1340,25 @@ body.planet-mars #main-rock {
 #panel-tabs {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    /* Align tabs to bottom of container */
+    align-items: flex-end; /* Align tabs to bottom of container */
     /* Rounded rectangle background with gradient */
     background: linear-gradient(to bottom, rgb(160, 155, 140) 50%, rgb(140, 130, 110) 50%);
     border: 1px solid rgb(140, 130, 110);
     border-radius: 8px;
-    padding: 4px 2px 0px 2px;
-    /* Remove bottom padding to let tabs sit at bottom */
-    margin: 4px;
-    /* Reduced margin to bring closer to panel edges */
+    padding: 4px 2px 0px 2px; /* Remove bottom padding to let tabs sit at bottom */
+    margin: 4px; /* Reduced margin to bring closer to panel edges */
 }
 
 .tabs-left {
     display: flex;
-    gap: 4px;
-    /* Consistent spacing between Shop and Upgrade tabs */
-    margin-left: 10px;
-    /* Move tabs 10px to the right */
+    gap: 4px; /* Consistent spacing between Shop and Upgrade tabs */
+    margin-left: 10px; /* Move tabs 10px to the right */
 }
 
 .tabs-right {
     display: flex;
     gap: 4px;
-    margin-right: 10px;
-    /* Move tabs 10px to the left */
+    margin-right: 10px; /* Move tabs 10px to the left */
 }
 
 .moon-theme .tabs-left,
@@ -1493,59 +1367,44 @@ body.planet-mars #main-rock {
     margin: 0 10px;
 }
 
-.tab-btn {
-    /* Button gradient background */
-    background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
-    border: 1px solid rgb(185, 150, 65);
-    color: rgb(80, 50, 0);
-    /* Changed to R: 80, G: 50, B: 0 */
-    padding: 12px 18px;
-    /* Made bigger - increased padding */
-    cursor: pointer;
-    background-color: rgb(255, 220, 115);
-    transition-property: transform !important;
-    transition-duration: 0.2s !important;
-    transition-timing-function: ease !important;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 18px;
-    /* Bigger font */
-    white-space: nowrap;
-    /* More rounded top, flat bottom */
-    border-radius: 10px 10px 0 0;
-    /* Rounded corners on top only */
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+    .tab-btn {
+        /* Button gradient background */
+        background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
+        border: 1px solid rgb(185, 150, 65);
+        color: rgb(80, 50, 0); /* Changed to R: 80, G: 50, B: 0 */
+        padding: 12px 18px; /* Made bigger - increased padding */
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 18px; /* Bigger font */
+        white-space: nowrap;
+        /* More rounded top, flat bottom */
+        border-radius: 10px 10px 0 0; /* Rounded corners on top only */
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
 
 /* Make Shop and Upgrades tabs uniform size */
 .tabs-left .tab-btn {
-    min-width: 100px;
-    /* Reduced to 100px width */
-    justify-content: center;
-    /* Center content within the button */
+    min-width: 100px; /* Reduced to 100px width */
+    justify-content: center; /* Center content within the button */
 }
 
 .tab-icon {
-    width: 24px;
-    /* Made even bigger */
-    height: 24px;
-    /* Made even bigger */
+    width: 24px; /* Made even bigger */
+    height: 24px; /* Made even bigger */
     filter: brightness(0) saturate(100%) invert(16%) sepia(100%) saturate(1000%) hue-rotate(30deg) brightness(90%) contrast(100%) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
-    pointer-events: none;
-    /* Allow clicks to pass through to button */
+    pointer-events: none; /* Allow clicks to pass through to button */
 }
 
 .tab-text {
-    font-weight: 600;
-    /* Slightly lighter base weight */
+    font-weight: 600; /* Slightly lighter base weight */
     text-transform: uppercase;
-    letter-spacing: -0.5px;
-    /* Tighter letter spacing */
-    pointer-events: none;
-    /* Allow clicks to pass through to button */
+    letter-spacing: -0.5px; /* Tighter letter spacing */
+    pointer-events: none; /* Allow clicks to pass through to button */
     color: inherit;
     text-shadow:
         0 0.35px 0 currentColor,
@@ -1559,12 +1418,9 @@ body.planet-mars #main-rock {
 }
 
 .tab-btn.active {
-    background: white;
-    /* White background when selected */
-    border-color: rgb(185, 150, 65);
-    /* Keep original border color */
-    color: rgb(10, 120, 200);
-    /* Highlighted blue */
+    background: white; /* White background when selected */
+    border-color: rgb(185, 150, 65); /* Keep original border color */
+    color: rgb(10, 120, 200); /* Highlighted blue */
     transform: translateY(1px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -1579,13 +1435,10 @@ body.planet-mars #main-rock {
 
 #panel-content {
     height: calc(100% - 35px);
-    overflow-y: auto;
-    /* Allow vertical scrolling */
-    overflow-x: hidden;
-    /* Prevent horizontal scrolling */
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     padding: 0px;
-    margin-top: -5px;
-    /* Tighter spacing with tabs */
+    margin-top: -5px; /* Tighter spacing with tabs */
 }
 
 /* Disable scrolling for settings tab */
@@ -1624,22 +1477,18 @@ body.planet-mars #main-rock {
     grid-template-rows: 1fr 1fr 1fr;
     row-gap: 4px;
     column-gap: 4px;
-    padding: 4px 4px 4px 4px;
-    /* 4px padding on all sides including bottom */
-    box-sizing: border-box;
-    /* Ensure padding is included in height calculation */
-    height: 100%;
-    /* Ensure it takes full height */
+    padding: 4px 4px 4px 4px; /* 4px padding on all sides including bottom */
+    box-sizing: border-box; /* Ensure padding is included in height calculation */
+    height: 100%; /* Ensure it takes full height */
 }
 
 .shop-grid-item {
-    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
-    /* Same gradient as panels */
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%); /* Same gradient as panels */
     border: 1px solid #d4af37;
     border-radius: 6px;
     padding: 6px;
     display: grid;
-    grid-template-areas:
+    grid-template-areas: 
         "title quantity"
         "dps quantity"
         "sprite description"
@@ -1916,29 +1765,24 @@ body.planet-mars #main-rock {
     background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
     border: 1px solid rgb(185, 150, 65);
     color: rgb(80, 50, 0);
-    padding: 7.2px 8px;
-    /* 10% smaller vertical padding (8px * 0.9) */
+    padding: 7.2px 8px; /* 10% smaller vertical padding (8px * 0.9) */
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: inherit;
     font-weight: 700;
-    width: 45%;
-    /* Default width - can be overridden by inline styles */
+    width: 45%; /* Default width - can be overridden by inline styles */
     position: relative;
     z-index: 10;
     pointer-events: auto;
     font-size: 13px;
     white-space: nowrap;
-    border-radius: 8px;
-    /* Rounded on all 4 corners */
+    border-radius: 8px; /* Rounded on all 4 corners */
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    /* Increased gap for bigger logo */
-    width: 80%;
-    /* Smaller horizontally */
+    gap: 6px; /* Increased gap for bigger logo */
+    width: 80%; /* Smaller horizontally */
     margin-left: auto;
     margin-right: auto;
 }
@@ -1957,21 +1801,16 @@ body.planet-mars #main-rock {
 }
 
 .buy-btn-icon {
-    width: 28px;
-    /* 4px bigger (24px + 4px) */
-    height: 28px;
-    /* 4px bigger (24px + 4px) */
+    width: 28px; /* 4px bigger (24px + 4px) */
+    height: 28px; /* 4px bigger (24px + 4px) */
     object-fit: contain;
 }
 
 .buy-btn-price {
-    font-weight: 900;
-    /* Extra bold */
+    font-weight: 900; /* Extra bold */
     color: rgb(80, 50, 0);
-    font-size: 22.5px;
-    /* 25% smaller (30px * 0.75) */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    /* Add text shadow for extra boldness */
+    font-size: 22.5px; /* 25% smaller (30px * 0.75) */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Add text shadow for extra boldness */
 }
 
 .tab-content {
@@ -1999,23 +1838,19 @@ body.planet-mars #main-rock {
     flex-direction: column;
 }
 
-.tab-content.slide-out-left,
-.mobile-tab-content.slide-out-left {
+.tab-content.slide-out-left {
     animation: slideOutLeft 0.3s ease forwards;
 }
 
-.tab-content.slide-in-right,
-.mobile-tab-content.slide-in-right {
+.tab-content.slide-in-right {
     animation: slideInRight 0.3s ease forwards;
 }
 
-.tab-content.slide-out-right,
-.mobile-tab-content.slide-out-right {
+.tab-content.slide-out-right {
     animation: slideOutRight 0.3s ease forwards;
 }
 
-.tab-content.slide-in-left,
-.mobile-tab-content.slide-in-left {
+.tab-content.slide-in-left {
     animation: slideInLeft 0.3s ease forwards;
 }
 
@@ -2024,7 +1859,6 @@ body.planet-mars #main-rock {
         opacity: 1;
         transform: translateX(0);
     }
-
     to {
         opacity: 0;
         transform: translateX(-100%);
@@ -2036,7 +1870,6 @@ body.planet-mars #main-rock {
         opacity: 0;
         transform: translateX(100%);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
@@ -2048,7 +1881,6 @@ body.planet-mars #main-rock {
         opacity: 1;
         transform: translateX(0);
     }
-
     to {
         opacity: 0;
         transform: translateX(100%);
@@ -2060,7 +1892,6 @@ body.planet-mars #main-rock {
         opacity: 0;
         transform: translateX(-100%);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
@@ -2109,8 +1940,7 @@ body.planet-mars #main-rock {
     flex-direction: column;
     padding: 15px;
     margin-bottom: 10px;
-    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
-    /* Same gradient as panels */
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%); /* Same gradient as panels */
     border-radius: 15px;
     border: 2px solid #d4af37;
     transition: all 0.2s ease;
@@ -2584,12 +2414,10 @@ body.planet-mars #main-rock {
     0% {
         opacity: 1;
     }
-
     50% {
         opacity: 1;
         clip-path: circle(100%);
     }
-
     100% {
         opacity: 0;
         clip-path: circle(0% at center);
@@ -2639,19 +2467,9 @@ body.planet-mars #main-rock {
 
 /* Animations */
 @keyframes shake {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    25% {
-        transform: translateY(3px);
-    }
-
-    75% {
-        transform: translateY(-3px);
-    }
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(3px); }
+    75% { transform: translateY(-3px); }
 }
 
 .shake {
@@ -2659,15 +2477,8 @@ body.planet-mars #main-rock {
 }
 
 @keyframes glow {
-
-    0%,
-    100% {
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-    }
-
-    50% {
-        box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
-    }
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); }
 }
 
 .glow {
@@ -2768,12 +2579,10 @@ body.planet-mars #main-rock {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
-
     50% {
         opacity: 0.8;
         transform: translate(calc(-50% + var(--dx) * 0.5), calc(-50% + var(--dy) * 0.5)) scale(0.8) rotate(180deg);
     }
-
     100% {
         opacity: 0;
         transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.3) rotate(360deg);
@@ -2818,8 +2627,7 @@ body.planet-mars #main-rock {
 
 .section-title {
     color: #8b4513;
-    margin: 0 0 15px 90px;
-    /* Add left margin to account for searchdog */
+    margin: 0 0 15px 90px; /* Add left margin to account for searchdog */
     font-size: 16px;
     font-weight: 600;
     border-bottom: 2px solid #d4af37;
@@ -2859,1178 +2667,4 @@ body.planet-mars #main-rock {
     font-size: 14px;
     padding: 20px;
     opacity: 0.7;
-}
-
-/* ========================================
-   MOBILE STYLES
-   ======================================== */
-
-/* Hide mobile elements by default (on desktop) */
-.mobile-only {
-    display: none;
-}
-
-/* Mobile Media Query - Applies to screens 768px and below */
-@media screen and (max-width: 768px) {
-
-    /* Show mobile elements */
-    .mobile-only {
-        display: block;
-    }
-
-    /* Hide desktop right panel on mobile */
-    #right-panel {
-        display: none !important;
-    }
-
-    /* Hide planet tabs on mobile */
-    #planet-tabs {
-        display: none !important;
-    }
-
-    /* Hide version indicator on mobile */
-    #version-indicator {
-        display: none !important;
-    }
-
-    /* Adjust body for mobile */
-    body {
-        overflow: hidden;
-        width: 100vw;
-        height: 100vh;
-        position: fixed;
-        touch-action: pan-y;
-        -webkit-user-select: none;
-        user-select: none;
-        -webkit-touch-callout: none;
-    }
-
-    /* Prevent pinch zoom and unwanted interactions on all mobile elements */
-    * {
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Scale down game elements on mobile - centered by platform */
-    #doge-container {
-        transform: scale(0.7);
-        transform-origin: bottom center;
-    }
-
-    #platform {
-        transform: scale(0.7);
-        transform-origin: bottom center;
-    }
-
-    /* Adjust game container for mobile - full width, single panel */
-    #game-container {
-        width: 100vw;
-        height: calc(100vh - 80px);
-        /* Leave space for mobile menu toggle button */
-        top: 0;
-        left: 0;
-        transform: none;
-        padding: 0;
-        margin: 0;
-        gap: 0;
-    }
-
-    /* Left panel takes full width on mobile */
-    #left-panel {
-        width: 100vw;
-        height: 100%;
-        border-radius: 0;
-        margin: 0;
-    }
-
-    /* Adjust stats display for mobile */
-    #stats-display {
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 400px;
-    }
-
-    .stat-item {
-        flex: 1;
-    }
-
-    /* Mobile swipe animation for tab content */
-    @keyframes swipeIn {
-        from {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* Mobile Menu Toggle Button */
-    #mobile-menu-toggle {
-        display: block;
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 80px;
-        background: transparent;
-        border: none;
-        border-radius: 50%;
-        z-index: 1001;
-        cursor: pointer;
-        padding: 0;
-        transition: bottom 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
-    }
-
-    /* Move button up when menu is open - sits exactly on top of menu */
-    #mobile-menu-toggle.menu-open {
-        bottom: calc(40vh - 33px);
-    }
-
-    #mobile-menu-toggle:active {
-        transform: translateX(-50%) scale(0.95);
-    }
-
-    #mobile-toggle-icon {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        pointer-events: auto;
-    }
-
-    /* Mobile Bottom Menu */
-    #mobile-bottom-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 40vh;
-        background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
-        border-top: 2px solid #d4af37;
-        border-radius: 0;
-        z-index: 2100;
-        display: flex;
-        flex-direction: column;
-        transform: translateY(100%);
-        transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    #mobile-bottom-menu.open {
-        transform: translateY(0);
-    }
-
-    /* Mobile Panel Tabs */
-    #mobile-panel-tabs {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding: 6px 12px 0 12px;
-        flex-shrink: 0;
-        height: 54px;
-        margin: 4px 12px 0 12px;
-        background: linear-gradient(to bottom, rgb(160, 155, 140) 50%, rgb(140, 130, 110) 50%);
-        border: 1px solid rgb(140, 130, 110);
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .mobile-tabs-left,
-    .mobile-tabs-right {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-    }
-
-    .mobile-tab-btn {
-        position: relative;
-        z-index: 1;
-        background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
-        border: 1px solid rgb(185, 150, 65);
-        color: rgb(80, 50, 0);
-        padding: 10px 14px;
-        cursor: pointer;
-        background-color: rgb(255, 220, 115);
-        transition-property: transform !important;
-        transition-duration: 0.2s !important;
-        transition-timing-function: ease !important;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        border-radius: 8px 8px 0 0;
-        font-size: 12px;
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .mobile-tab-btn:active {
-        pointer-events: auto;
-    }
-
-    .mobile-tab-btn.active {
-        background: white;
-        border-color: rgb(185, 150, 65);
-        color: rgb(10, 120, 200);
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .mobile-tab-btn.active .tab-icon {
-        filter: brightness(0) saturate(100%) invert(34%) sepia(89%) saturate(1230%) hue-rotate(166deg) brightness(96%) contrast(91%);
-    }
-
-    /* Moon Theme Mobile Tabs */
-    .moon-theme .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(185, 215, 240) 50%, rgb(165, 210, 240) 50%);
-        background-color: rgb(185, 215, 240);
-        border: 1px solid rgb(120, 185, 235);
-        color: rgb(40, 95, 155);
-    }
-
-    .moon-theme .mobile-tab-btn.active {
-        background: white;
-        border-color: rgb(120, 185, 235);
-        color: rgb(40, 95, 155);
-    }
-
-    .moon-theme .mobile-tab-btn .tab-icon,
-    .moon-theme .mobile-tab-btn.active .tab-icon {
-        filter: brightness(0) saturate(100%) invert(30%) sepia(13%) saturate(1698%) hue-rotate(178deg) brightness(90%) contrast(89%);
-    }
-
-    /* Mars Theme Mobile Tabs */
-    .planet-mars .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(125, 30, 95) 50%, rgb(115, 25, 90) 50%);
-        background-color: rgb(125, 30, 95);
-        border: 1px solid rgb(130, 80, 75);
-    }
-
-    .planet-mars .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgb(145, 50, 115) 50%, rgb(135, 45, 110) 50%);
-        border-color: rgb(160, 90, 85);
-    }
-
-    .planet-mars .mobile-tab-btn .tab-text,
-    .planet-mars .mobile-tab-btn.active .tab-text {
-        color: white;
-    }
-
-    .planet-mars .mobile-tab-btn .tab-icon,
-    .planet-mars .mobile-tab-btn.active .tab-icon {
-        filter: brightness(0) saturate(100%) invert(100%);
-    }
-
-    /* Jupiter Theme Mobile Tabs */
-    .planet-jupiter .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(250, 205, 125) 50%, rgb(240, 190, 115) 50%);
-        background-color: rgb(250, 205, 125);
-        border: 1px solid rgb(225, 180, 105);
-    }
-
-    .planet-jupiter .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 30%, rgba(245, 245, 245, 0.95) 70%);
-        border-color: rgb(235, 190, 115);
-        color: rgb(240, 160, 60);
-    }
-
-    .planet-jupiter .mobile-tab-btn.active .tab-text {
-        color: rgb(240, 160, 60);
-    }
-
-    .planet-jupiter .mobile-tab-btn .tab-text {
-        color: #2d2416;
-    }
-
-    .planet-jupiter .mobile-tab-btn .tab-icon,
-    .planet-jupiter .mobile-tab-btn.active .tab-icon {
-        filter: brightness(0) saturate(100%) invert(0%);
-    }
-
-    /* Titan Theme Mobile Tabs */
-    .planet-titan .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(255, 235, 173) 50%, rgb(247, 221, 140) 50%);
-        background-color: rgb(255, 235, 173);
-        border: 1px solid rgb(235, 190, 80);
-    }
-
-    .planet-titan .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 30%, rgba(245, 245, 245, 0.95) 70%);
-        border-color: rgb(235, 190, 80);
-        color: rgb(250, 175, 70);
-    }
-
-    .planet-titan .mobile-tab-btn.active .tab-text {
-        color: rgb(250, 175, 70);
-    }
-
-    .planet-titan .mobile-tab-btn .tab-text {
-        color: #2d2416;
-    }
-
-    .planet-titan .mobile-tab-btn .tab-icon,
-    .planet-titan .mobile-tab-btn.active .tab-icon {
-        filter: brightness(0) saturate(100%) invert(0%);
-    }
-
-    .mobile-tab-btn .tab-text {
-        font-size: 12px;
-        font-family: 'DogeSans', sans-serif;
-    }
-
-    /* Hide text on icon-only buttons on smaller screens */
-    @media screen and (max-width: 400px) {
-        .mobile-tabs-right .mobile-tab-btn .tab-text {
-            display: none;
-        }
-    }
-
-    /* Mobile Panel Content */
-    #mobile-panel-content {
-        flex: 1;
-        overflow: hidden;
-        position: relative;
-        height: calc(40vh - 50px);
-    }
-
-    .mobile-tab-content {
-        display: none;
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .mobile-tab-content.active {
-        display: block;
-        pointer-events: auto;
-    }
-
-    /* Mobile Shop Scroll Container */
-    .mobile-shop-scroll {
-        display: flex;
-        gap: 12px;
-        padding: 4px 12px 12px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        height: 100%;
-        scroll-snap-type: x mandatory;
-        scroll-padding-inline: 12px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Mobile Shop Item - Full width cards with tab-aligned margins */
-    .mobile-shop-scroll .shop-grid-item {
-        flex: 0 0 100%;
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-    }
-
-    #mobile-shop-content {
-        width: 100%;
-        margin: 0;
-        box-sizing: border-box;
-    }
-
-    #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
-        border: 1px solid #d4af37;
-        border-radius: 12px;
-        padding: 15px;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        position: relative;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        backdrop-filter: blur(5px);
-        outline: 1px solid rgb(135, 125, 105);
-        min-height: auto;
-    }
-
-    /* Mobile shop item - quantity badge in top right (no border/background) */
-    #mobile-shop-content .shop-item-quantity {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #000;
-        font-family: 'DogeSans', sans-serif;
-    }
-
-    #mobile-shop-content .shop-item-title {
-        /* Allow multi-line titles so helper names stay readable on narrow screens */
-        font-size: 24px;
-        font-weight: 700;
-        color: #000;
-        text-align: left;
-        font-family: 'DogeSans', sans-serif;
-        order: 1;
-        line-height: 1.2;
-        margin-bottom: 4px;
-        display: block;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: unset;
-    }
-
-    #mobile-shop-content .shop-item-dps {
-        font-size: 15px;
-        color: #000;
-        font-weight: 400;
-        text-align: left;
-        font-family: 'DogeSans', sans-serif;
-        order: 2;
-        margin-bottom: 12px;
-        display: block;
-        line-height: 1.3;
-    }
-
-    /* Sprite and description container */
-    #mobile-shop-content .shop-sprite-description-container {
-        /* Keep sprite block tucked under DPS text with desktop-like spacing */
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-        order: 3;
-        margin: -2px 0 10px 0;
-    }
-
-    #mobile-shop-content .shop-item-sprite {
-        /* Slightly smaller (≈10%) sprite frame so art feels proportional */
-        width: 108px;
-        height: 108px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: -4px;
-        margin-left: -2px;
-    }
-
-    #mobile-shop-content .shop-item-sprite img {
-        /* Match frame reduction so helper art scales with the new size */
-        width: 99px;
-        height: 99px;
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        pointer-events: auto;
-    }
-
-    #mobile-shop-content .shop-item-info {
-        /* Stack description and button vertically to mirror desktop layout */
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        flex: 1;
-    }
-
-    #mobile-shop-content .shop-item-description {
-        font-size: 14px;
-        color: #000;
-        text-align: left;
-        font-family: 'DogeSans', sans-serif;
-        line-height: 1.4;
-        flex: 1;
-    }
-
-    #mobile-shop-content .shop-buy-btn {
-        /* Desktop-style buy button: sits beneath description with similar footprint */
-        width: clamp(150px, 60%, 220px);
-        padding: 11px 16px;
-        background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
-        border: 1px solid rgb(185, 150, 65);
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: 700;
-        font-family: 'DogeSans', sans-serif;
-        order: 4;
-        color: rgb(80, 50, 0);
-        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        margin: 6px auto 0 auto;
-        align-self: center;
-    }
-
-    #mobile-shop-content .buy-btn-icon {
-        width: 24px;
-        height: 24px;
-    }
-
-    #mobile-shop-content .buy-btn-price {
-        font-size: 18px;
-        font-family: 'DogeSans', sans-serif;
-    }
-
-    #mobile-shop-content .shop-buy-btn:hover:not(:disabled) {
-        background: linear-gradient(to bottom, rgb(255, 230, 125) 50%, rgb(255, 220, 80) 50%);
-    }
-
-    #mobile-shop-content .shop-buy-btn:active:not(:disabled) {
-        transform: scale(0.95);
-        background: linear-gradient(to bottom, rgb(255, 240, 135) 50%, rgb(255, 230, 90) 50%);
-    }
-
-    .moon-theme #mobile-shop-content .shop-buy-btn {
-        background: linear-gradient(to bottom, rgb(185, 215, 240) 50%, rgb(165, 210, 240) 50%);
-        background-color: rgb(185, 215, 240);
-        border: 1px solid rgb(120, 185, 235);
-        color: rgb(40, 95, 155);
-    }
-
-    .moon-theme #mobile-shop-content .shop-buy-btn:hover:not(:disabled) {
-        background: linear-gradient(to bottom, rgb(195, 225, 245) 50%, rgb(175, 215, 245) 50%);
-    }
-
-    .moon-theme #mobile-shop-content .shop-buy-btn:disabled {
-        background: linear-gradient(to bottom, rgb(200, 210, 220) 50%, rgb(185, 200, 215) 50%);
-        border: 1px solid rgb(150, 180, 210);
-        color: rgb(110, 130, 150);
-    }
-
-    .planet-mars #mobile-shop-content .shop-buy-btn {
-        background: linear-gradient(to bottom, rgb(125, 30, 95) 50%, rgb(115, 25, 90) 50%);
-        background-color: rgb(125, 30, 95);
-        border: 1px solid rgb(130, 80, 75);
-        color: white;
-    }
-
-    .planet-mars #mobile-shop-content .shop-buy-btn:hover:not(:disabled) {
-        background: linear-gradient(to bottom, rgb(135, 40, 105) 50%, rgb(125, 35, 100) 50%);
-    }
-
-    .planet-mars #mobile-shop-content .shop-buy-btn:disabled {
-        background: linear-gradient(to bottom, rgb(80, 35, 50) 50%, rgb(70, 30, 45) 50%);
-        border: 1px solid rgb(100, 60, 65);
-        color: rgba(255, 255, 255, 0.4);
-    }
-
-    .planet-jupiter #mobile-shop-content .shop-buy-btn {
-        background: linear-gradient(to bottom, rgb(250, 205, 125) 50%, rgb(240, 190, 115) 50%);
-        background-color: rgb(250, 205, 125);
-        border: 1px solid rgb(225, 180, 105);
-        color: #2d2416;
-    }
-
-    .planet-jupiter #mobile-shop-content .shop-buy-btn:hover:not(:disabled) {
-        background: linear-gradient(to bottom, rgb(255, 215, 135) 50%, rgb(250, 200, 125) 50%);
-    }
-
-    .planet-jupiter #mobile-shop-content .shop-buy-btn:disabled {
-        background: linear-gradient(to bottom, rgb(180, 150, 100) 50%, rgb(170, 140, 90) 50%);
-        border: 1px solid rgb(160, 130, 80);
-        color: rgba(45, 36, 22, 0.4);
-    }
-
-    .planet-titan #mobile-shop-content .shop-buy-btn {
-        background: linear-gradient(to bottom, rgb(255, 235, 173) 50%, rgb(247, 221, 140) 50%);
-        background-color: rgb(255, 235, 173);
-        border: 1px solid rgb(235, 190, 80);
-        color: #2d2416;
-    }
-
-    .planet-titan #mobile-shop-content .shop-buy-btn:hover:not(:disabled) {
-        background: linear-gradient(to bottom, rgb(255, 245, 183) 50%, rgb(252, 231, 150) 50%);
-    }
-
-    .planet-titan #mobile-shop-content .shop-buy-btn:disabled {
-        background: linear-gradient(to bottom, rgb(180, 150, 100) 50%, rgb(175, 140, 90) 50%);
-        border: 1px solid rgb(110, 120, 50);
-        color: rgba(45, 36, 22, 0.4);
-    }
-
-    #mobile-shop-content .shop-buy-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        pointer-events: auto;
-    }
-
-    #mobile-shop-content .shop-item-empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-    }
-
-    #mobile-shop-content .empty-text {
-        font-size: 16px;
-        color: #8b4513;
-        opacity: 0.5;
-    }
-
-    /* Mobile Upgrades Container */
-    #mobile-upgrades-container {
-        padding: 15px;
-        height: 100%;
-        overflow-y: auto;
-    }
-
-    /* Mobile Achievements Content */
-    #mobile-achievements-content {
-        padding: 15px;
-        height: 100%;
-        overflow-y: auto;
-    }
-
-    /* Mobile Settings Content */
-    #mobile-settings-content {
-        padding: 15px;
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    #mobile-settings-content::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    #mobile-settings-content::-webkit-scrollbar-track {
-        background: rgba(212, 175, 55, 0.2);
-        border-radius: 3px;
-    }
-
-    #mobile-settings-content::-webkit-scrollbar-thumb {
-        background: #d4af37;
-        border-radius: 3px;
-    }
-
-    /* Adjust mining area for mobile */
-    #mining-area {
-        transform: translate(-50%, -50%) scale(0.9);
-    }
-
-    /* Adjust helper container for mobile */
-    #helper-container {
-        transform: scale(0.9);
-    }
-
-    /* Moon theme mobile adjustments */
-    .moon-theme #mobile-bottom-menu {
-        background: linear-gradient(to bottom, rgba(225, 235, 240, 0.98) 20%, rgba(210, 230, 240, 0.98) 80%);
-        border-top-color: rgb(160, 200, 225);
-    }
-
-    .moon-theme #mobile-panel-tabs {
-        background: linear-gradient(to bottom, rgb(240, 250, 250) 50%, rgb(220, 235, 245) 50%);
-        border-bottom-color: rgb(120, 185, 235);
-    }
-
-    .moon-theme .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(185, 215, 240) 50%, rgb(165, 210, 240) 50%);
-        background-color: rgb(185, 215, 240);
-        border-color: rgb(120, 185, 235);
-        color: rgb(40, 95, 155);
-    }
-
-    .moon-theme .mobile-tab-btn.active {
-        background: white;
-        border-color: rgb(120, 185, 235);
-    }
-
-    .moon-theme #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(210, 225, 235, 0.95) 20%, rgba(220, 235, 245, 0.95) 80%);
-        border-color: rgb(160, 200, 225);
-        outline-color: rgb(120, 185, 235);
-    }
-
-    /* Mars theme mobile adjustments */
-    .planet-mars #mobile-bottom-menu {
-        background: linear-gradient(to bottom, rgba(80, 35, 30, 0.98) 20%, rgba(90, 30, 25, 0.98) 80%);
-        border-top-color: rgb(130, 80, 75);
-    }
-
-    .planet-mars #mobile-panel-tabs {
-        background: linear-gradient(to bottom, rgb(130, 65, 60) 50%, rgb(100, 40, 35) 50%);
-        border-bottom-color: rgb(130, 80, 75);
-    }
-
-    .planet-mars .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(125, 30, 95) 50%, rgb(115, 25, 90) 50%);
-        background-color: rgb(125, 30, 95);
-        border-color: rgb(130, 80, 75);
-        color: white;
-    }
-
-    .planet-mars .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgb(145, 50, 115) 50%, rgb(135, 45, 110) 50%);
-        border-color: rgb(160, 90, 85);
-    }
-
-    .planet-mars #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(80, 35, 30, 0.95) 20%, rgba(90, 30, 25, 0.95) 80%);
-        border-color: rgb(130, 80, 75);
-        outline-color: rgb(160, 90, 85);
-    }
-
-    .planet-mars #mobile-shop-content .shop-item-title,
-    .planet-mars #mobile-shop-content .shop-item-description,
-    .planet-mars #mobile-shop-content .buy-btn-price {
-        color: white;
-    }
-
-    /* Jupiter theme mobile adjustments */
-    .planet-jupiter #mobile-bottom-menu {
-        background: linear-gradient(to bottom, rgba(225, 190, 135, 0.98) 20%, rgba(240, 215, 160, 0.98) 80%);
-        border-top-color: rgb(225, 180, 105);
-    }
-
-    .planet-jupiter #mobile-panel-tabs {
-        background: linear-gradient(to bottom, rgb(155, 145, 125) 50%, rgb(135, 125, 105) 50%);
-        border-bottom-color: rgb(225, 180, 105);
-    }
-
-    .planet-jupiter .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(250, 205, 125) 50%, rgb(240, 190, 115) 50%);
-        background-color: rgb(250, 205, 125);
-        border-color: rgb(225, 180, 105);
-        color: #2d2416;
-    }
-
-    .planet-jupiter .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 30%, rgba(245, 245, 245, 0.95) 70%);
-        border-color: rgb(235, 190, 115);
-        color: rgb(240, 160, 60);
-    }
-
-    .planet-jupiter #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(225, 190, 135, 0.95) 20%, rgba(240, 215, 160, 0.95) 80%);
-        border-color: rgb(225, 180, 105);
-        outline-color: rgb(240, 160, 60);
-    }
-
-    /* Titan theme mobile adjustments */
-    .planet-titan #mobile-bottom-menu {
-        background: linear-gradient(to bottom, rgba(245, 210, 100, 0.98) 20%, rgba(250, 175, 70, 0.98) 80%);
-        border-top-color: rgb(110, 120, 50);
-    }
-
-    .planet-titan #mobile-panel-tabs {
-        background: linear-gradient(to bottom, rgb(180, 150, 100) 50%, rgb(175, 140, 90) 50%);
-        border-bottom-color: rgb(110, 120, 50);
-    }
-
-    .planet-titan .mobile-tab-btn {
-        background: linear-gradient(to bottom, rgb(255, 235, 173) 50%, rgb(247, 221, 140) 50%);
-        background-color: rgb(255, 235, 173);
-        border-color: rgb(235, 190, 80);
-        color: #2d2416;
-    }
-
-    .planet-titan .mobile-tab-btn.active {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 30%, rgba(245, 245, 245, 0.95) 70%);
-        border-color: rgb(235, 190, 80);
-        color: rgb(250, 175, 70);
-    }
-
-
-    .planet-titan #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(245, 210, 100, 0.95) 20%, rgba(250, 175, 70, 0.95) 80%);
-        border-color: rgb(110, 120, 50);
-        outline-color: rgb(250, 175, 70);
-    }
-
-    /* Mobile Content Styling - Moon Theme */
-    .moon-theme #mobile-settings-content,
-    .moon-theme #mobile-achievements-content,
-    .moon-theme #mobile-upgrades-container {
-        color: rgb(40, 95, 155) !important;
-    }
-
-    .moon-theme #mobile-settings-content h3,
-    .moon-theme #mobile-achievements-content h3 {
-        border-bottom-color: rgb(120, 185, 235) !important;
-    }
-
-    /* Mobile Content Styling - Mars Theme */
-    .planet-mars #mobile-settings-content,
-    .planet-mars #mobile-achievements-content,
-    .planet-mars #mobile-upgrades-container {
-        color: #ffe7d9 !important;
-    }
-
-    .planet-mars #mobile-settings-content h3,
-    .planet-mars #mobile-achievements-content h3 {
-        border-bottom-color: rgba(165, 95, 145, 0.6) !important;
-    }
-
-    /* Mobile Content Styling - Jupiter Theme */
-    .planet-jupiter #mobile-settings-content,
-    .planet-jupiter #mobile-achievements-content,
-    .planet-jupiter #mobile-upgrades-container {
-        color: #2d2416 !important;
-    }
-
-    .planet-jupiter #mobile-settings-content h3,
-    .planet-jupiter #mobile-achievements-content h3 {
-        border-bottom-color: rgb(225, 180, 105) !important;
-    }
-
-    /* Mobile Content Styling - Titan Theme */
-    .planet-titan #mobile-settings-content,
-    .planet-titan #mobile-achievements-content,
-    .planet-titan #mobile-upgrades-container {
-        color: #2d2416 !important;
-    }
-
-    .planet-titan #mobile-settings-content h3,
-    .planet-titan #mobile-achievements-content h3 {
-        border-bottom-color: rgb(235, 190, 80) !important;
-    }
-
-    /* Override inline styles from JavaScript */
-    .moon-theme #mobile-settings-content>div,
-    .moon-theme #mobile-achievements-content>div {
-        color: rgb(40, 95, 155) !important;
-    }
-
-    .planet-mars #mobile-settings-content>div,
-    .planet-mars #mobile-achievements-content>div {
-        color: #ffe7d9 !important;
-    }
-
-    .planet-jupiter #mobile-settings-content>div,
-    .planet-jupiter #mobile-achievements-content>div {
-        color: #2d2416 !important;
-    }
-
-    .planet-titan #mobile-settings-content>div,
-    .planet-titan #mobile-achievements-content>div {
-        color: #2d2416 !important;
-    }
-
-    /* Moon Shop Alignment Fix */
-    .moon-theme #mobile-shop-content .shop-grid-item {
-        background: linear-gradient(to bottom, rgba(210, 225, 235, 0.95) 20%, rgba(220, 235, 245, 0.95) 80%);
-        border-color: rgb(160, 200, 225);
-        outline-color: rgb(120, 185, 235);
-    }
-
-    /* Mobile Stats/Settings Outlines - Match Desktop */
-    #mobile-achievements-content .stat-row,
-    #mobile-settings-content .setting-item {
-        border: 2px solid #d4af37;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 10px;
-        padding: 12px 15px;
-        margin-bottom: 10px;
-    }
-
-    /* Planet-specific mobile stat row and settings borders */
-    .moon-theme #mobile-achievements-content .stat-row,
-    .moon-theme #mobile-settings-content .setting-item {
-        border: 2px solid rgb(120, 185, 235) !important;
-        background: rgba(240, 250, 250, 0.95);
-    }
-
-    .planet-mars #mobile-achievements-content .stat-row,
-    .planet-mars #mobile-settings-content .setting-item {
-        border: 2px solid rgba(165, 95, 145, 0.6) !important;
-        background: rgba(75, 30, 25, 0.95);
-    }
-
-    .planet-jupiter #mobile-achievements-content .stat-row,
-    .planet-jupiter #mobile-settings-content .setting-item {
-        border: 2px solid rgb(225, 180, 105) !important;
-        background: rgba(255, 255, 255, 0.95);
-    }
-
-    .planet-titan #mobile-achievements-content .stat-row,
-    .planet-titan #mobile-settings-content .setting-item {
-        border: 2px solid rgb(235, 190, 80) !important;
-        background: rgba(255, 255, 255, 0.95);
-    }
-
-    /* Mobile Content Classes (replacing inline styles) */
-    .mobile-content-wrapper {
-        padding: 10px;
-    }
-
-    .mobile-section-header {
-        margin-bottom: 10px;
-        border-bottom: 2px solid #d4af37;
-        padding-bottom: 6px;
-        font-size: 16px;
-    }
-
-    .mobile-stats-list,
-    .mobile-settings-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    #mobile-achievements-content .stat-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #mobile-settings-content .setting-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .stat-label,
-    .setting-label {
-        font-size: 14px;
-    }
-
-    .stat-value {
-        font-weight: 700;
-        font-size: 14px;
-    }
-
-    .setting-item input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-    }
-
-    /* Mobile Planet Toggle */
-    #mobile-planet-toggle {
-        position: fixed;
-        bottom: calc(20px + env(safe-area-inset-bottom));
-        left: 20px;
-        width: 70px;
-        height: 85px;
-        z-index: 1001;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-    }
-
-    #mobile-planet-toggle:active {
-        transform: scale(0.9);
-    }
-
-    #mobile-current-planet-icon {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-        pointer-events: none;
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-    }
-
-    #mobile-planet-name {
-        font-family: 'DogeSans', sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        color: white;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-        margin-top: 2px;
-        text-align: center;
-        width: 100%;
-    }
-
-    /* Mobile Menu Toggle Button - Update positioning */
-    #mobile-menu-toggle {
-        bottom: calc(20px + env(safe-area-inset-bottom));
-    }
-
-    #mobile-menu-toggle.menu-open {
-        bottom: calc(40vh - 33px);
-    }
-
-    /* Mobile Planet Menu */
-    #mobile-planet-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(255, 255, 255, 0.98);
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
-        z-index: 2000;
-        transform: translateY(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        display: flex;
-        flex-direction: column;
-        max-height: 80vh;
-    }
-
-    /* Planet Menu Theming */
-    .planet-moon #mobile-planet-menu {
-        background: rgba(20, 20, 30, 0.98);
-        border: 2px solid #4a90e2;
-        border-bottom: none;
-    }
-
-    .planet-moon .mobile-planet-menu-header span,
-    .planet-moon #close-planet-menu,
-    .planet-moon .mobile-planet-tab span {
-        color: #fff;
-    }
-
-    .planet-moon .mobile-planet-menu-header {
-        border-bottom-color: #4a90e2;
-    }
-
-    .planet-mars #mobile-planet-menu {
-        background: rgba(40, 10, 10, 0.98);
-        border: 2px solid #e74c3c;
-        border-bottom: none;
-    }
-
-    .planet-mars .mobile-planet-menu-header span,
-    .planet-mars #close-planet-menu,
-    .planet-mars .mobile-planet-tab span {
-        color: #fff;
-    }
-
-    .planet-mars .mobile-planet-menu-header {
-        border-bottom-color: #e74c3c;
-    }
-
-    .planet-jupiter #mobile-planet-menu {
-        background: rgba(30, 20, 10, 0.98);
-        border: 2px solid #e1b469;
-        border-bottom: none;
-    }
-
-    .planet-jupiter .mobile-planet-menu-header span,
-    .planet-jupiter #close-planet-menu,
-    .planet-jupiter .mobile-planet-tab span {
-        color: #fff;
-    }
-
-    .planet-jupiter .mobile-planet-menu-header {
-        border-bottom-color: #e1b469;
-    }
-
-    .planet-titan #mobile-planet-menu {
-        background: rgba(20, 20, 10, 0.98);
-        border: 2px solid #ebbe50;
-        border-bottom: none;
-    }
-
-    .planet-titan .mobile-planet-menu-header span,
-    .planet-titan #close-planet-menu,
-    .planet-titan .mobile-planet-tab span {
-        color: #fff;
-    }
-
-    .planet-titan .mobile-planet-menu-header {
-        border-bottom-color: #ebbe50;
-    }
-
-    #mobile-planet-menu.open {
-        transform: translateY(0);
-    }
-
-    .mobile-planet-menu-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .mobile-planet-menu-header span {
-        font-family: 'DogeSans', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        color: #8b4513;
-    }
-
-    #close-planet-menu {
-        background: none;
-        border: none;
-        font-size: 28px;
-        color: #8b4513;
-        cursor: pointer;
-        padding: 0 10px;
-        line-height: 1;
-    }
-
-    .mobile-planet-list {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 15px;
-        overflow-y: auto;
-    }
-
-    .mobile-planet-tab {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        background: none;
-        border: 2px solid transparent;
-        border-radius: 12px;
-        padding: 10px;
-        cursor: pointer;
-        position: relative;
-        transition: all 0.2s ease;
-    }
-
-    .mobile-planet-tab.active {
-        background: rgba(212, 175, 55, 0.1);
-        border-color: #d4af37;
-    }
-
-    .mobile-planet-tab img {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-    }
-
-    .mobile-planet-tab span {
-        font-family: 'DogeSans', sans-serif;
-        font-size: 14px;
-        font-weight: 600;
-        color: #8b4513;
-    }
-
-    .mobile-planet-tab:disabled {
-        opacity: 0.7;
-        filter: grayscale(0.8);
-        cursor: not-allowed;
-    }
-
-    .mobile-lock-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-15deg);
-        background: #d32f2f;
-        color: white;
-        padding: 2px 8px;
-        font-size: 10px;
-        font-weight: 700;
-        border-radius: 4px;
-        border: 1px solid white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        pointer-events: none;
-        display: none;
-    }
-
-    .mobile-planet-tab:disabled .mobile-lock-overlay {
-        display: block;
-    }
 }

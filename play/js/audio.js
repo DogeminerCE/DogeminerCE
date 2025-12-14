@@ -1,7 +1,3 @@
-import { Howl, Howler } from 'https://cdn.jsdelivr.net/npm/howler@2.2.4/+esm'
-import gameManager from './game.js';
-import saveManager from './save.js';
-
 // DogeMiner: Community Edition - Audio Manager using Howler.js
 class AudioManager {
     constructor() {
@@ -19,38 +15,18 @@ class AudioManager {
     }
 
     init() {
-        try {
-            // Check if Howler.js is loaded
-            if (typeof Howl === 'undefined') {
-                console.error('Howler.js library not loaded! Audio will be disabled.');
-                this.musicEnabled = false;
-                this.soundEnabled = false;
-                return;
-            }
-
-            try {
-                // Load background music
-                this.loadLevel1Music();
-                this.loadMoonMusic();
-                this.loadMarsMusic();
-                this.loadJupiterMusic();
-                this.loadTitanMusic();
-                
-                // Load sound effects
-                this.loadSoundEffects();
-                
-                // Listen for settings changes
-                this.setupSettingsListeners();
-            } catch (error) {
-                console.error('Error initializing audio:', error);
-                console.error('Audio will be disabled');
-                this.musicEnabled = false;
-                this.soundEnabled = false;
-            }
-        } catch (error) {
-            console.error('Failed to initialize audio manager:', error);
-            console.warn('Game will continue without audio');
-        }
+        // Load background music
+        this.loadLevel1Music();
+        this.loadMoonMusic();
+        this.loadMarsMusic();
+        this.loadJupiterMusic();
+        this.loadTitanMusic();
+        
+        // Load sound effects
+        this.loadSoundEffects();
+        
+        // Listen for settings changes
+        this.setupSettingsListeners();
     }
 
     loadSoundEffects() {
@@ -95,7 +71,9 @@ class AudioManager {
             musicCheckbox.addEventListener('change', (e) => {
                 this.musicEnabled = e.target.checked;
                 // Sync with game settings
-                gameManager.musicEnabled = e.target.checked;
+                if (window.game) {
+                    window.game.musicEnabled = e.target.checked;
+                }
                 if (!this.musicEnabled) {
                     this.stopMusic();
                 } else {
@@ -104,7 +82,9 @@ class AudioManager {
                 // Play check sound
                 this.playSound('check');
                 // Trigger auto-save to save settings (don't show notification)
-                saveManager.saveManager.saveGame(false);
+                if (window.saveManager) {
+                    window.saveManager.saveGame(false);
+                }
             });
         }
 
@@ -114,11 +94,15 @@ class AudioManager {
             soundCheckbox.addEventListener('change', (e) => {
                 this.soundEnabled = e.target.checked;
                 // Sync with game settings
-                gameManager.soundEnabled = e.target.checked;
+                if (window.game) {
+                    window.game.soundEnabled = e.target.checked;
+                }
                 // Play check sound
                 this.playSound('check');
                 // Trigger auto-save to save settings (don't show notification)
-                saveManager.saveGame(false);
+                if (window.saveManager) {
+                    window.saveManager.saveGame(false);
+                }
             });
         }
     }
@@ -192,7 +176,7 @@ class AudioManager {
     playBackgroundMusic() {
         if (!this.musicEnabled) return;
         
-        const currentLevel = gameManager.currentLevel || 'earth';
+        const currentLevel = window.game?.currentLevel || 'earth';
 
         if (this.currentMusicPlanet === currentLevel) {
             if (currentLevel === 'moon' && this.isPlaying(this.moonLoop)) {
@@ -346,5 +330,5 @@ class AudioManager {
     }
 }
 
-const instance = new AudioManager();
-export default instance;
+// Global audio manager instance
+let audioManager;

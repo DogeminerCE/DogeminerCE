@@ -1,20 +1,7 @@
-import gameManager from './game.js';
-import uiManager from './ui.js';
-import shopManager from './shop.js';
-import saveManager from './save.js';
-import audioManager  from './audio.js';
-import notificationManager from './notification.js';
-import cloudSaveManager from './cloud-save.js';
-
 // DogeMiner: Community Edition - Main Initialization
-const startGameWhenReady = () => initializeGame();
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startGameWhenReady);
-} else {
-    // Fallback loader inserts scripts after DOM is ready, so boot immediately in that case.
-    startGameWhenReady();
-}
+document.addEventListener('DOMContentLoaded', () => {
+    initializeGame();
+});
 
 // Prevent context menu on right click everywhere
 document.addEventListener('contextmenu', (e) => {
@@ -23,38 +10,35 @@ document.addEventListener('contextmenu', (e) => {
 
 async function initializeGame() {
     try {
-        uiManager.showLoadingScreen();
-
-        uiManager.updateLoadingInfo('Initializing game engine...');
-        gameManager.init();
-
-        uiManager.updateLoadingInfo('Setting up shop system...');
-        shopManager.init();
-
-        uiManager.updateLoadingInfo('Building user interface...');
-        uiManager.init();
-
-        uiManager.updateLoadingInfo('Loading audio system...');
-        audioManager.init();
-
-        uiManager.updateLoadingInfo('Initializing save system...');
-        saveManager.init();
-
-        uiManager.updateLoadingInfo('Preparing notifications...');
-        notificationManager.init();
-
-        uiManager.updateLoadingInfo('Setting up cloud save...');
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {cloudSaveManager.init()});
-        } else {
-            cloudSaveManager.init();
-        }
-
-        uiManager.updateLoadingInfo('Loading game data...');
+        showLoadingScreen();
+        updateLoadingInfo('Initializing game engine...');
         
-        /* TODO - does this play nicely with cloud-save?
-        I think we should fetch local save (since fetching from localstore is essentially instant), then attempt to load from cloud save
-        */
+        // Initialize game instance
+        game = new DogeMinerGame();
+        updateLoadingInfo('Setting up shop system...');
+        
+        // Initialize shop manager first (needed by UI manager)
+        shopManager = new ShopManager(game);
+        window.shopManager = shopManager; // Make available immediately
+        updateLoadingInfo('Building user interface...');
+        
+        // Initialize UI manager (depends on shop manager)
+        uiManager = new UIManager(game);
+        window.uiManager = uiManager; // Expose early for save/load routines
+        updateLoadingInfo('Loading audio system...');
+        
+        // Initialize audio manager
+        audioManager = new AudioManager();
+        audioManager.init();
+        window.audioManager = audioManager; // Make available for SaveManager
+        updateLoadingInfo('Initializing save system...');
+        
+        saveManager = new SaveManager(game);
+        updateLoadingInfo('Preparing notifications...');
+        
+        notificationManager = new NotificationManager(game);
+        updateLoadingInfo('Loading game data...');
+        
         // Try to load existing save
         const saveLoaded = saveManager.loadGame();
         if (!saveLoaded) {
@@ -66,9 +50,9 @@ async function initializeGame() {
             const mainRock = document.getElementById('main-rock');
             const platform = document.getElementById('platform');
             
-            if (mainCharacter && mainRock) {
+            if (mainCharacter && mainRock && game) {
                 // Set correct character sprite
-                if (gameManager.currentLevel === 'earth') {
+                if (game.currentLevel === 'earth') {
                     mainCharacter.src = 'assets/general/character/standard.png';
                     mainRock.src = 'assets/general/rocks/earth.png';
                     if (platform) {
@@ -78,7 +62,7 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
-                    gameManager.backgrounds = [
+                    game.backgrounds = [
                         'backgrounds/bg1.jpg',
                         'backgrounds/bg3.jpg',
                         'backgrounds/bg4.jpg',
@@ -88,7 +72,7 @@ async function initializeGame() {
                         'backgrounds/bg9.jpg',
                         'backgrounds/bg-new.jpg'
                     ];
-                } else if (gameManager.currentLevel === 'moon') {
+                } else if (game.currentLevel === 'moon') {
                     mainCharacter.src = 'assets/general/character/spacehelmet.png';
                     mainRock.src = 'assets/general/rocks/moon.png';
                     if (platform) {
@@ -99,8 +83,10 @@ async function initializeGame() {
                     document.body.classList.remove('planet-titan');
                     
                     // Make sure moon is unlocked in UI
-                    uiManager.hideMoonLocked();
-                } else if (gameManager.currentLevel === 'mars') {
+                    if (uiManager) {
+                        uiManager.hideMoonLocked();
+                    }
+                } else if (game.currentLevel === 'mars') {
                     mainCharacter.src = 'assets/general/character/party.png';
                     mainRock.src = 'assets/general/rocks/mars.png';
                     if (platform) {
@@ -110,7 +96,7 @@ async function initializeGame() {
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-mars');
-                    gameManager.backgrounds = [
+                    game.backgrounds = [
                         'backgrounds/bg6.jpg',
                         'assets/backgrounds/bg101.jpg', // Mars extras live under play/assets/backgrounds/
                         'assets/backgrounds/bg102.jpg',
@@ -119,7 +105,7 @@ async function initializeGame() {
                         'assets/backgrounds/bg105.jpg',
                         'backgrounds/bg-new.jpg'
                     ];
-                } else if (gameManager.currentLevel === 'jupiter') {
+                } else if (game.currentLevel === 'jupiter') {
                     // Jupiter reuses the space suit but swaps to the dedicated platform art.
                     mainCharacter.src = 'assets/general/character/spacehelmet.png';
                     mainRock.src = 'assets/general/rocks/jupiter.png';
@@ -130,13 +116,13 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-jupiter');
-                    gameManager.backgrounds = [
+                    game.backgrounds = [
                         'assets/backgrounds/bgjup01.jpg',
                         'assets/backgrounds/bgjup02.jpg',
                         'assets/backgrounds/bgjup03.jpg',
                         'assets/backgrounds/dogewow.jpg'
                     ];
-                } else if (gameManager.currentLevel === 'titan') {
+                } else if (game.currentLevel === 'titan') {
                     // Titan uses the space helmet like Jupiter and Moon
                     mainCharacter.src = 'assets/general/character/spacehelmet.png';
                     mainRock.src = 'assets/general/rocks/titan.png';
@@ -148,7 +134,7 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.add('planet-titan');
-                    gameManager.backgrounds = [
+                    game.backgrounds = [
                         'assets/backgrounds/titan02.jpg',
                         'assets/backgrounds/titan03.jpg',
                         'assets/backgrounds/titan04.jpg',
@@ -157,10 +143,10 @@ async function initializeGame() {
                 }
 
                 // Make sure the background DOM nodes reflect the resolved pool for this load-in planet.
-                gameManager.syncBackgroundImages?.(true);
+                game.syncBackgroundImages?.(true);
                 
                 // Force update shop content and planet tabs if on Moon, Mars, Jupiter, or Titan
-                if ((gameManager.currentLevel === 'moon' || gameManager.currentLevel === 'mars' || gameManager.currentLevel === 'jupiter' || gameManager.currentLevel === 'titan') && uiManager) {
+                if ((game.currentLevel === 'moon' || game.currentLevel === 'mars' || game.currentLevel === 'jupiter' || game.currentLevel === 'titan') && uiManager) {
                     uiManager.initializePlanetTabs?.();
                     setTimeout(() => {
                         uiManager.updateShopContent();
@@ -170,24 +156,31 @@ async function initializeGame() {
         }
         
         // CloudSaveManager will be initialized by cloud-save.js
-        uiManager.updateLoadingInfo('Finalizing...');
+        updateLoadingInfo('Finalizing...');
         
-        uiManager.updateLoadingInfo('Ready!');
+        updateLoadingInfo('Ready!');
         
         // Hide loading screen after a short delay
         setTimeout(() => {
-            uiManager.hideLoadingScreen();
-            gameManager.isPlaying = true;
+            hideLoadingScreen();
+            game.isPlaying = true;
+            // Make game and managers globally available
+            window.game = game;
+            window.uiManager = uiManager;
+            // window.shopManager already assigned above
+            window.saveManager = saveManager;
+            window.notificationManager = notificationManager;
+            // window.audioManager already assigned above
             
             // Play doge intro animation
-            if (gameManager.currentLevel === 'earth') {
-                gameManager.playDogeIntro();
+            if (game.currentLevel === 'earth') {
+                game.playDogeIntro();
             } else {
-                gameManager.playDogeIntro(true);
+                game.playDogeIntro(true);
             }
             
             // Start background music only if enabled
-            if (audioManager && gameManager && gameManager.musicEnabled) {
+            if (audioManager && game && game.musicEnabled) {
                 audioManager.playBackgroundMusic();
             }
             
@@ -196,11 +189,105 @@ async function initializeGame() {
         
     } catch (error) {
         console.error('Error initializing game:', error);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-        console.error('Error name:', error.name);
-        uiManager.hideLoadingScreen();
-        alert('Error initializing game: ' + (error.message || error.toString()) + '. Please check console and refresh.');
+        hideLoadingScreen();
+        alert('Error initializing game. Please refresh the page.');
+    }
+}
+
+// Global functions for UI interactions
+function switchMainTab(tabName) {
+    if (uiManager) {
+        uiManager.switchMainTab(tabName);
+    }
+}
+
+function switchAchievementsTab(tabName) {
+    if (uiManager) {
+        uiManager.switchAchievementsTab(tabName);
+    }
+}
+
+
+
+function saveGame() {
+    if (saveManager) {
+        saveManager.saveGame();
+    }
+}
+
+function loadGame() {
+    if (saveManager) {
+        saveManager.loadGame();
+    }
+}
+
+function exportSave() {
+    if (saveManager) {
+        saveManager.exportSave();
+    }
+}
+
+function importSave() {
+    if (saveManager) {
+        saveManager.importSave();
+    }
+}
+
+function resetGame() {
+    if (saveManager) {
+        saveManager.resetGame();
+    }
+}
+
+// Loading screen functions
+function showLoadingScreen(useFade = false) {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'flex';
+        loadingScreen.classList.remove('hidden', 'fade-out');
+
+        if (useFade) {
+            loadingScreen.classList.remove('fade-in');
+            loadingScreen.style.opacity = '0';
+            // Force reflow to allow transition to restart
+            void loadingScreen.offsetWidth;
+            loadingScreen.classList.add('fade-in');
+            requestAnimationFrame(() => {
+                loadingScreen.style.removeProperty('opacity');
+            });
+        } else {
+            loadingScreen.classList.remove('fade-in');
+            loadingScreen.style.opacity = '1';
+        }
+    }
+}
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.remove('fade-in');
+        loadingScreen.classList.add('fade-out');
+
+        // Remove inline opacity on next frame so CSS transition can take over
+        requestAnimationFrame(() => {
+            loadingScreen.style.removeProperty('opacity');
+        });
+
+        const fadeDuration = parseFloat(getComputedStyle(loadingScreen).getPropertyValue('--loading-fade-duration') || '1.5');
+        const timeout = isNaN(fadeDuration) ? 1500 : fadeDuration * 1000;
+
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            loadingScreen.classList.remove('fade-out');
+            loadingScreen.style.opacity = '';
+        }, timeout);
+    }
+}
+
+function updateLoadingInfo(info) {
+    const loadingInfo = document.getElementById('loading-info');
+    if (loadingInfo) {
+        loadingInfo.textContent = info;
     }
 }
 
@@ -260,66 +347,178 @@ async function preloadAssets() {
     }
 }
 
+// Performance monitoring
+class PerformanceMonitor {
+    constructor() {
+        this.fps = 0;
+        this.frameCount = 0;
+        this.lastTime = performance.now();
+        this.fpsElement = null;
+    }
+    
+    start() {
+        this.fpsElement = document.createElement('div');
+        this.fpsElement.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 10000;
+        `;
+        document.body.appendChild(this.fpsElement);
+        
+        this.update();
+    }
+    
+    update() {
+        this.frameCount++;
+        const currentTime = performance.now();
+        
+        if (currentTime - this.lastTime >= 1000) {
+            this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+            this.frameCount = 0;
+            this.lastTime = currentTime;
+            
+            if (this.fpsElement) {
+                this.fpsElement.textContent = `FPS: ${this.fps}`;
+            }
+        }
+        
+        requestAnimationFrame(() => this.update());
+    }
+}
+
+// Debug mode
+let debugMode = false;
+
+function toggleDebugMode() {
+    debugMode = !debugMode;
+    
+    if (debugMode) {
+        // Enable debug features
+        if (!window.performanceMonitor) {
+            window.performanceMonitor = new PerformanceMonitor();
+            window.performanceMonitor.start();
+        }
+        
+        // Add debug console
+        addDebugConsole();
+        
+        console.log('Debug mode enabled');
+    } else {
+        // Disable debug features
+        if (window.performanceMonitor) {
+            window.performanceMonitor.fpsElement?.remove();
+            window.performanceMonitor = null;
+        }
+        
+        removeDebugConsole();
+        
+        console.log('Debug mode disabled');
+    }
+}
+
+function addDebugConsole() {
+    const debugConsole = document.createElement('div');
+    debugConsole.id = 'debug-console';
+    debugConsole.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 10000;
+        max-width: 300px;
+    `;
+    
+    debugConsole.innerHTML = `
+        <div>Debug Console</div>
+        <button onclick="game.dogecoins += 1000">+1000 Coins</button>
+        <button onclick="game.dogecoins += 10000">+10000 Coins</button>
+        <button onclick="game.dogecoins = 40000000000000000; game.updateUI();" style="background: #ff6b6b; color: white;">+40 Quadrillion Coins</button>
+        <button onclick="game.dps += 100">+100 DPS</button>
+        <button onclick="game.rotateBackground()">Rotate Background</button>
+        <button onclick="game.forceRickSpawn()">Spawn Rick</button>
+        <button onclick="saveManager.repairSave()">Repair Save</button>
+        <button onclick="toggleDebugMode()">Close Debug</button>
+    `;
+    
+    document.body.appendChild(debugConsole);
+}
+
+function removeDebugConsole() {
+    const debugConsole = document.getElementById('debug-console');
+    if (debugConsole) {
+        debugConsole.remove();
+    }
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    // Toggle debug mode with Ctrl+\ ()
-    if (e.ctrlKey && (e.key === '\\' || e.key === 'å')) {
+    // Toggle debug mode with Ctrl+\
+    if (e.ctrlKey && e.key === '\\') {
         e.preventDefault();
-        uiManager.toggleDebugMode();
+        toggleDebugMode();
     }
     
     // Quick save with Ctrl+S
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        saveManager.saveGame();
+        saveGame();
     }
     
     // Quick load with Ctrl+L
     if (e.ctrlKey && e.key === 'l') {
         e.preventDefault();
-        saveManager.loadGame();
+        loadGame();
     }
     
     // Toggle shop with S
     if (e.key === 's' && !e.ctrlKey) {
-        uiManager.switchMainTab('shop');
+        switchMainTab('shop');
     }
     
     // Toggle upgrades with U
     if (e.key === 'u') {
-        uiManager.switchMainTab('upgrades');
+        switchMainTab('upgrades');
     }
     
     // Toggle achievements with A
     if (e.key === 'a') {
-        uiManager.switchMainTab('achievements');
+        switchMainTab('achievements');
     }
     
     // Rotate background with B
     if (e.key === 'b') {
-        gameManager.rotateBackground();
+        if (game) {
+            game.rotateBackground();
+        }
     }
 });
 
 // Error handling
 window.addEventListener('error', (e) => {
     console.error('Game error:', e.error);
-    console.error('Error message:', e.message);
-    console.error('Error filename:', e.filename);
-    console.error('Error line:', e.lineno, 'col:', e.colno);
-    console.error('Full event:', e);
     
     if (notificationManager) {
-        notificationManager.showError('An error occurred: ' + (e.message || 'Unknown error'));
+        notificationManager.showError('An error occurred. Check console for details.');
     }
 });
 
 window.addEventListener('unhandledrejection', (e) => {
     console.error('Unhandled promise rejection:', e.reason);
-    console.error('Promise:', e.promise);
     
     if (notificationManager) {
-        notificationManager.showError('Promise error: ' + (e.reason?.message || e.reason));
+        notificationManager.showError('An error occurred. Check console for details.');
     }
 });
 
@@ -335,3 +534,5 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
+// Global variables are now properly declared at the top of the file
