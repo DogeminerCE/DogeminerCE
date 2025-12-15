@@ -1026,7 +1026,8 @@ class DogeMinerGame {
                 helperBar.appendChild(item);
 
                 // Add tap handler to open shop and scroll to this helper
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent ensuring container click doesn't close it instantly
                     this.openMobileShopToHelper(helperType);
                 });
             }
@@ -1046,6 +1047,17 @@ class DogeMinerGame {
                 badge.textContent = count;
             }
         });
+
+        // Add click listener to the bar itself to open menu if clicking empty space
+        if (!helperBar.dataset.hasClickListener) {
+            helperBar.addEventListener('click', () => {
+                if (window.uiManager && !uiManager.mobileMenuOpen) {
+                    uiManager.toggleMobileMenu();
+                    uiManager.switchMobileTab('shop');
+                }
+            });
+            helperBar.dataset.hasClickListener = 'true';
+        }
 
         // Start animation loop if not already running
         if (!this.mobileHelperAnimationInterval) {

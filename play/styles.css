@@ -3123,12 +3123,16 @@ body.planet-mars #main-rock {
         /* Above menu */
         cursor: pointer;
         padding: 0;
-        transition: margin-bottom 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        transition: margin-bottom 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.2s ease;
+        opacity: 0;
+        pointer-events: none;
     }
 
-    /* When menu is open, remove the extra margin so it sits flush on the menu */
+    /* When menu is open, show the button and remove margin */
     #mobile-menu-toggle.menu-open {
         margin-bottom: 0;
+        opacity: 1;
+        pointer-events: auto;
     }
 
     #mobile-menu-toggle:active {
