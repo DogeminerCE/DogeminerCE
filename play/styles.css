@@ -3004,8 +3004,8 @@ body.planet-mars #main-rock {
         align-items: flex-end;
         gap: 8px;
         z-index: 500;
-        max-width: calc(100vw - 200px);
-        /* Reduced to fit right-side button */
+        max-width: calc(100vw - 105px);
+        /* Reverted to wider width */
         overflow-x: auto;
         padding: 6px 15px;
         /* Increased padding by 5px */
@@ -3110,9 +3110,10 @@ body.planet-mars #main-rock {
         bottom: 100%;
         margin-bottom: env(safe-area-inset-bottom);
         /* Clear home bar */
-        left: auto;
-        right: 20px;
-        transform: none;
+        left: 50%;
+        /* Centered */
+        transform: translateX(-50%);
+        right: auto;
 
         width: 80px;
         height: 80px;
@@ -3136,7 +3137,7 @@ body.planet-mars #main-rock {
     }
 
     #mobile-menu-toggle:active {
-        transform: scale(0.95);
+        transform: translateX(-50%) scale(0.95);
     }
 
     #mobile-toggle-icon {
