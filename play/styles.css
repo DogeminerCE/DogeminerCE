@@ -3100,12 +3100,13 @@ body.planet-mars #main-rock {
 
     /* Mobile Menu Toggle Button */
 
+    /* Mobile Menu Toggle Button */
     #mobile-menu-toggle {
         display: block;
         position: absolute;
         /* Attached to the menu container */
-        top: -50px;
-        /* Positioned closer to the menu (was -75px) */
+        top: -110px;
+        /* Positioned higher to avoid home bar when closed */
         left: 50%;
         transform: translateX(-50%);
         bottom: auto;
@@ -3119,13 +3120,14 @@ body.planet-mars #main-rock {
         /* Above menu */
         cursor: pointer;
         padding: 0;
-        transition: transform 0.1s ease;
-        /* Only for click effect */
+        transition: top 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.1s ease;
+        /* Animated top for state change */
     }
 
-
-
-
+    /* Move button down closer to menu when open */
+    #mobile-menu-toggle.menu-open {
+        top: -50px;
+    }
 
     #mobile-menu-toggle:active {
         transform: translateX(-50%) scale(0.95);
