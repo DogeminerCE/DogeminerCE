@@ -3004,8 +3004,8 @@ body.planet-mars #main-rock {
         align-items: flex-end;
         gap: 8px;
         z-index: 500;
-        max-width: calc(100vw - 105px);
-        /* Extended further right (smaller gap) */
+        max-width: calc(100vw - 200px);
+        /* Reduced to fit right-side button */
         overflow-x: auto;
         padding: 6px 15px;
         /* Increased padding by 5px */
@@ -3101,16 +3101,19 @@ body.planet-mars #main-rock {
     /* Mobile Menu Toggle Button */
 
     /* Mobile Menu Toggle Button */
+    /* Mobile Menu Toggle Button */
     #mobile-menu-toggle {
         display: block;
         position: absolute;
         /* Attached to the menu container */
-        top: -110px;
-        /* Positioned higher to avoid home bar when closed */
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: auto;
-        /* Reset bottom */
+        top: auto;
+        bottom: 100%;
+        margin-bottom: env(safe-area-inset-bottom);
+        /* Clear home bar */
+        left: auto;
+        right: 20px;
+        transform: none;
+
         width: 80px;
         height: 80px;
         background: transparent;
@@ -3120,17 +3123,16 @@ body.planet-mars #main-rock {
         /* Above menu */
         cursor: pointer;
         padding: 0;
-        transition: top 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.1s ease;
-        /* Animated top for state change */
+        transition: margin-bottom 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
     }
 
-    /* Move button down closer to menu when open */
+    /* When menu is open, remove the extra margin so it sits flush on the menu */
     #mobile-menu-toggle.menu-open {
-        top: -50px;
+        margin-bottom: 0;
     }
 
     #mobile-menu-toggle:active {
-        transform: translateX(-50%) scale(0.95);
+        transform: scale(0.95);
     }
 
     #mobile-toggle-icon {
