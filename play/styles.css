@@ -3004,8 +3004,8 @@ body.planet-mars #main-rock {
         align-items: flex-end;
         gap: 8px;
         z-index: 500;
-        max-width: calc(100vw - 120px);
-        /* Fill remaining width */
+        max-width: calc(100vw - 105px);
+        /* Extended further right (smaller gap) */
         overflow-x: auto;
         padding: 6px 15px;
         /* Increased padding by 5px */
@@ -3104,8 +3104,8 @@ body.planet-mars #main-rock {
         display: block;
         position: absolute;
         /* Attached to the menu container */
-        top: -75px;
-        /* Positioned above the menu */
+        top: -50px;
+        /* Positioned closer to the menu (was -75px) */
         left: 50%;
         transform: translateX(-50%);
         bottom: auto;
