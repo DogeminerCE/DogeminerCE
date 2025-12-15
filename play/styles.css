@@ -2921,8 +2921,8 @@ body.planet-mars #main-rock {
     }
 
     #platform {
-        transform: scale(0.8);
-        /* Adjusted: 0.9 was too big, 0.7 too small. 0.8 is just right. */
+        transform: scale(0.8) translateY(-25px);
+        /* Adjusted: moved up 25px */
         transform-origin: bottom center;
     }
 
@@ -2993,21 +2993,22 @@ body.planet-mars #main-rock {
     /* Mobile Helper Bar - Grouped helpers at bottom of screen */
     #mobile-helper-bar {
         position: fixed;
-        bottom: 130px;
-        /* Moved up to avoid menu button overlap */
-        left: 50%;
-        transform: translateX(-50%) scale(0.85);
-        /* Slightly smaller scale */
+        bottom: calc(20px + env(safe-area-inset-bottom));
+        /* Aligned with planet switcher */
+        left: 100px;
+        /* Right of planet switcher (20px + 70px + 10px gap) */
+        transform: scale(0.85);
+        transform-origin: bottom left;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-end;
         gap: 8px;
         z-index: 500;
-        /* Below pull-up menu (2100) and toggle (1001) */
-        max-width: 85vw;
-        /* Reduced max-width to avoid planet switcher */
+        max-width: calc(100vw - 120px);
+        /* Fill remaining width */
         overflow-x: auto;
-        padding: 6px 10px;
+        padding: 6px 15px;
+        /* Increased padding by 5px */
         background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
         border: 2px solid #d4af37;
         border-radius: 12px;
