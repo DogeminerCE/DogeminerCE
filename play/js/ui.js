@@ -615,9 +615,17 @@ class UIManager {
                     </div>
                 ` : '';
 
+                // Determine font size class based on name length to prevent cut-off
+                let titleSizeClass = '';
+                if (displayName.length > 22) {
+                    titleSizeClass = 'title-xs';
+                } else if (displayName.length > 18) {
+                    titleSizeClass = 'title-sm';
+                }
+
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title">${displayName}</div>
+                    <div class="shop-item-title ${titleSizeClass}">${displayName}</div>
                     <div class="shop-item-dps">${displayDps} ĐPS</div>
                     <div class="shop-item-sprite">
                         <img src="${displayIcon}" alt="${displayName}">

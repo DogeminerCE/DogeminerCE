@@ -1957,6 +1957,15 @@ body[data-planet="mars"] #santa-hat {
     text-overflow: ellipsis;
 }
 
+/* Smaller title sizes for longer upgrade names */
+.shop-item-title.title-sm {
+    font-size: 15px;
+}
+
+.shop-item-title.title-xs {
+    font-size: 13px;
+}
+
 .shop-item-dps {
     grid-area: dps;
     color: #000;
