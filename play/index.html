@@ -67,8 +67,9 @@
             <div id="mining-area">
                 <!-- Character with Shadow Circle -->
                 <div id="character-container">
-                    <img src="assets/items/pickaxes/standard.png" alt="Pickaxe" id="pickaxe">
+                    <img src="assets/items/pickaxes/redcane.png" alt="Pickaxe" id="pickaxe">
                     <img src="assets/general/character/standard.png" alt="Doge" id="main-character">
+                    <img src="assets/general/christmas-hat.png" alt="Santa Hat" id="santa-hat">
                     <div id="character-shadow"></div>
                 </div>
 
@@ -102,7 +103,7 @@
         </div>
 
         <!-- Version Indicator -->
-        <div id="version-indicator">v0.03 (ALPHA)</div>
+        <div id="version-indicator">v0.04 (ALPHA)</div>
 
         <!-- Planet Tabs -->
         <div id="planet-tabs">
@@ -308,6 +309,7 @@
                                     <button class="setting-btn" onclick="loadGame()">Load Game</button>
                                     <button class="setting-btn" onclick="exportSave()">Export Save</button>
                                     <button class="setting-btn" onclick="importSave()">Import Save</button>
+                                    <button class="setting-btn warning" onclick="repairSave()">Repair Save</button>
                                     <button class="setting-btn danger" onclick="resetGame()">Reset Game</button>
                                 </div>
                             </div>
@@ -632,7 +634,7 @@
 
             const gameScripts = [
                 'js/audio.js',
-                'js/game.js?v=35',
+                'js/game.js?v=37',
                 'js/ui.js',
                 'js/shop.js',
                 'js/save.js',

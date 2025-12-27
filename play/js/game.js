@@ -23,7 +23,7 @@ class DogeMinerGame {
             'Jerry', 'Terry', 'Larry', 'Barry', 'Carrie', 'Perry', 'Gary', 'Harry', 'Marie', 'Sporklin',
             'Lafite', 'Dimi', 'RKN little helper', 'Ed', 'Jared', 'Dennis', 'Betty', 'Leonard', 'James', 'Jimmy',
             'Timmy', 'Mary', 'Martha', 'Linda', 'Jimothy', 'Scout', 'Barley', 'Cherry', 'Vader', 'Mochatitan',
-            'Babylion122', 'rkn', 'Raspy', 'Melon', 'News', 'Rick', 'Sam', 'Josiah', 'Miya', 'Creedoo',
+            'Babylion122', 'rkn', 'Raspy', 'Melon', 'News', 'Rick', 'Sam', 'Josiah', 'Ren', 'Creedoo',
             'Cottage', 'Cheese', 'Bikini', 'Silver', 'Sorrel', 'Kyle', 'DwellingStars', 'Done', 'Peanut', 'Fry',
             'Bruno', 'Charlie', 'Emmet', 'Lucy', 'Vincent', 'tothestars693', 'Cherie', 'Crush', 'RockMelon', 'HoneyMelon', 'Karvão',
         ];
@@ -103,7 +103,8 @@ class DogeMinerGame {
         this.helperBeingPlaced = null;
         this.helperSpriteBeingPlaced = null;
         this.placedHelpers = [];
-        this.helpersOnCursor = []; // Array to hold multiple helpers being placed // Array of placed helper objects with positions
+        this.helpersOnCursor = []; // Array to hold multiple helpers being placed
+        this.helperUpgradeLevels = {}; // Tracks upgrade level per helper type (e.g., { miningShibe: 3 })
 
         // Background rotation
         this.backgrounds = [
@@ -159,6 +160,9 @@ class DogeMinerGame {
         // Unlock system
         this.unlockedLevels = new Set(['earth']);
         this.unlockedAchievements = new Set();
+
+        // Uncleared save flag for future rewards
+        this.HasPlayed_v0_04 = true;
 
         // UI state flags
 
@@ -1157,8 +1161,12 @@ class DogeMinerGame {
 
         // Create sprites for each helper on cursor with stacking offset
         this.helpersOnCursor.forEach((helperData, index) => {
+            // Get upgrade-level sprite for this helper type
+            const upgradeLevel = this.helperUpgradeLevels?.[helperData.type] || 0;
+            const spritePaths = this.getHelperSpritePaths(helperData.type, upgradeLevel);
+
             const helperSprite = document.createElement('img');
-            helperSprite.src = helperData.helper.icon;
+            helperSprite.src = spritePaths.idle || helperData.helper.icon;
             helperSprite.className = 'helper-sprite attached-to-mouse';
             helperSprite.style.opacity = '0.7';
             helperSprite.dataset.stackIndex = index;
@@ -1431,7 +1439,9 @@ class DogeMinerGame {
                 y: placeY,
                 id: Date.now() + Math.random() + index, // Unique ID
                 isMining: false,
-                name: helperData.helper?.name || helperData.name || this.getHelperName(helperData.type) // Use helper data name
+                name: (helperData.type === 'miningShibe')
+                    ? this.getHelperName(helperData.type) // Force nickname for shibes
+                    : (helperData.helper?.name || helperData.name || this.getHelperName(helperData.type)) // Use shop name for others
             };
 
             // Add to placed helpers array
@@ -1463,6 +1473,63 @@ class DogeMinerGame {
             setTimeout(() => {
                 this.playMoonLaunchCutscene();
             }, 200);
+        }
+    }
+
+    updateHelperSpritesByType(helperType) {
+        console.log('=== updateHelperSpritesByType ===');
+        console.log('helperType:', helperType);
+        console.log('placedHelpers length:', this.placedHelpers?.length);
+        console.log('helperUpgradeLevels:', JSON.stringify(this.helperUpgradeLevels));
+
+        let foundCount = 0;
+        let matchCount = 0;
+
+        // Iterate through all placed helpers to find matching types
+        this.placedHelpers.forEach((placedHelper, index) => {
+            console.log(`Helper ${index}: type=${placedHelper.type}, id=${placedHelper.id}, isMining=${placedHelper.isMining}`);
+            if (placedHelper.type === helperType) {
+                matchCount++;
+                const helperSprite = document.querySelector(`img[data-helper-id="${placedHelper.id}"]`);
+                console.log(`  Match found! Sprite element:`, helperSprite);
+                if (helperSprite) {
+                    foundCount++;
+                    console.log(`  Current src: ${helperSprite.src}`);
+                    console.log(`  Animation interval: ${helperSprite.dataset.animationInterval}`);
+
+                    // Stop existing animation
+                    this.stopHelperAnimation(helperSprite);
+                    console.log(`  After stop - interval: ${helperSprite.dataset.animationInterval}`);
+
+                    // Get new sprite path based on current upgrade level
+                    const upgradeLevel = this.helperUpgradeLevels?.[helperType] || 0;
+                    const spritePaths = this.getHelperSpritePaths(helperType, upgradeLevel);
+                    console.log(`  New upgrade level: ${upgradeLevel}`);
+                    console.log(`  New sprite paths:`, spritePaths);
+
+                    // Update sprite source
+                    helperSprite.src = spritePaths.idle;
+                    console.log(`  Set src to: ${spritePaths.idle}`);
+
+                    // Restart animation loop with new sprites if it was mining
+                    if (placedHelper.isMining) {
+                        console.log(`  Restarting animation (isMining=true)`);
+                        this.startHelperAnimation(placedHelper, helperSprite);
+                        console.log(`  After restart - interval: ${helperSprite.dataset.animationInterval}`);
+                    } else {
+                        console.log(`  NOT restarting animation (isMining=false)`);
+                    }
+                } else {
+                    console.log(`  WARNING: Could not find sprite element!`);
+                }
+            }
+        });
+
+        console.log(`Summary: ${matchCount} matches, ${foundCount} sprites found`);
+
+        // Also clear cached upgrades so the upgrade tab refreshes
+        if (window.uiManager) {
+            window.uiManager._cachedUpgrades = null;
         }
     }
 
@@ -1696,6 +1763,64 @@ class DogeMinerGame {
         return true;
     }
 
+    /**
+     * Find a valid placement spot near the requested position.
+     * Searches in a spiral pattern outward from the original position.
+     * @param {number} x - Requested x position
+     * @param {number} y - Requested y position
+     * @param {number} helperSize - Size of the helper being placed
+     * @returns {{x: number, y: number} | null} Valid position or null if none found
+     */
+    findValidPlacementSpot(x, y, helperSize = 60) {
+        // First check if original position is valid
+        if (this.isValidHelperPosition(x, y, helperSize)) {
+            return { x, y };
+        }
+
+        // Search in spiral pattern
+        const maxSearchRadius = 200; // Maximum distance to search
+        const stepSize = 20; // Distance between search points
+
+        for (let radius = stepSize; radius <= maxSearchRadius; radius += stepSize) {
+            // Check 8 points at this radius (like a compass)
+            const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+            for (const angleDeg of angles) {
+                const angleRad = (angleDeg * Math.PI) / 180;
+                const testX = x + Math.cos(angleRad) * radius;
+                const testY = y + Math.sin(angleRad) * radius;
+
+                if (this.isValidHelperPosition(testX, testY, helperSize)) {
+                    return { x: testX, y: testY };
+                }
+            }
+        }
+
+        // If no valid spot found in spiral, try corners of the panel as fallback
+        const leftPanel = document.getElementById('left-panel');
+        if (leftPanel) {
+            const margin = 20;
+            const fallbackPositions = [
+                { x: margin, y: margin },
+                { x: leftPanel.offsetWidth - helperSize - margin, y: margin },
+                { x: margin, y: leftPanel.offsetHeight - helperSize - margin },
+                { x: leftPanel.offsetWidth - helperSize - margin, y: leftPanel.offsetHeight - helperSize - margin },
+                { x: leftPanel.offsetWidth / 2 - helperSize / 2, y: margin },
+                { x: leftPanel.offsetWidth / 2 - helperSize / 2, y: leftPanel.offsetHeight - helperSize - margin }
+            ];
+
+            for (const pos of fallbackPositions) {
+                if (this.isValidHelperPosition(pos.x, pos.y, helperSize)) {
+                    return pos;
+                }
+            }
+        }
+
+        // Last resort: just return a position, let it overlap
+        // This ensures the helper is always placed rather than stuck
+        console.warn('No valid placement spot found, using default position');
+        return { x: 50, y: 450 };
+    }
+
     placeHelper(x, y) {
         // Create the placed helper object
         const placedHelper = {
@@ -1798,8 +1923,16 @@ class DogeMinerGame {
             }
         }
 
+        // Determine sprite path - use upgrade-level sprites for Earth helpers
+        let spritePath = placedHelper.helper.icon;
+        const upgradeLevel = this.helperUpgradeLevels?.[placedHelper.type] || 0;
+        const spritePaths = this.getHelperSpritePaths(placedHelper.type, upgradeLevel);
+        if (spritePaths && spritePaths.idle) {
+            spritePath = spritePaths.idle;
+        }
+
         const helperSprite = document.createElement('img');
-        helperSprite.src = placedHelper.helper.icon; // Use icon as idle sprite
+        helperSprite.src = spritePath;
         helperSprite.className = 'helper-sprite';
         helperSprite.style.left = placedHelper.x + 'px';
         helperSprite.style.top = placedHelper.y + 'px';
@@ -1854,9 +1987,16 @@ class DogeMinerGame {
         // Add name tooltip as a separate element
         const nameTooltip = document.createElement('div');
         nameTooltip.className = 'helper-name-tooltip';
-        const helperName = placedHelper.name
+        let helperName = placedHelper.name
             || placedHelper.helper?.name
             || this.getHelperName(placedHelper.type);
+
+        // Fix for Mining Shibes that lost their nicknames (retroactive fix)
+        if (placedHelper.type === 'miningShibe' && helperName === 'Mining Shibe') {
+            helperName = this.getHelperName(placedHelper.type);
+            placedHelper.name = helperName; // Persist the new nickname
+        }
+
         nameTooltip.textContent = helperName;
         nameTooltip.dataset.helperId = placedHelper.id;
 
@@ -1936,10 +2076,12 @@ class DogeMinerGame {
             helperSprite.classList.remove('place-bounce');
         }, 600); // Match animation duration
 
-        // Start mining animation after a short delay
-        setTimeout(() => {
-            this.startHelperMining(placedHelper);
-        }, 1000);
+        // Start mining animation after a short delay (only if not already mining from save load)
+        if (!placedHelper.isMining) {
+            setTimeout(() => {
+                this.startHelperMining(placedHelper);
+            }, 1000);
+        }
     }
 
     addDragAndDropToHelper(helperSprite, placedHelper, nameTooltip) {
@@ -1974,11 +2116,11 @@ class DogeMinerGame {
         };
 
         // Helper function to handle move (used by both mouse and touch)
-        const handleMove = () => {
+        const handleMove = (e) => {
             if (isDragging && !hasMoved) {
                 // First movement - pick up the helper immediately
                 hasMoved = true;
-                pickedUpHelper = this.pickupHelper(placedHelper, helperSprite, nameTooltip);
+                pickedUpHelper = this.pickupHelper(placedHelper, helperSprite, nameTooltip, e);
             }
         };
 
@@ -2009,7 +2151,7 @@ class DogeMinerGame {
         helperSprite.addEventListener('mousedown', startDrag);
 
         document.addEventListener('mousemove', (e) => {
-            handleMove();
+            handleMove(e);
         });
 
         document.addEventListener('mouseup', (e) => {
@@ -2033,7 +2175,7 @@ class DogeMinerGame {
                 // Update mouse position for touch
                 this.mouseX = touch.clientX;
                 this.mouseY = touch.clientY;
-                handleMove();
+                handleMove({ clientX: touch.clientX, clientY: touch.clientY });
             }
         }, { passive: false });
 
@@ -2045,7 +2187,13 @@ class DogeMinerGame {
         });
     }
 
-    pickupHelper(placedHelper, helperSprite, nameTooltip) {
+    pickupHelper(placedHelper, helperSprite, nameTooltip, event) {
+        // Update mouse coordinates from event if provided
+        if (event) {
+            this.mouseX = event.clientX;
+            this.mouseY = event.clientY;
+        }
+
         // Store the original name for preservation
         const originalName = placedHelper.name;
 
@@ -2257,9 +2405,11 @@ class DogeMinerGame {
     stopHelperMining(placedHelper) {
         const helperSprite = document.querySelector(`img[data-helper-id="${placedHelper.id}"]`);
         if (helperSprite) {
-            // Stop animation and reset to idle sprite
+            // Stop animation and reset to idle sprite (use current upgrade level)
             this.stopHelperAnimation(helperSprite);
-            helperSprite.src = placedHelper.helper.icon;
+            const upgradeLevel = this.helperUpgradeLevels?.[placedHelper.type] || 0;
+            const spritePaths = this.getHelperSpritePaths(placedHelper.type, upgradeLevel);
+            helperSprite.src = spritePaths.idle;
             placedHelper.isMining = false;
         }
     }
@@ -2272,12 +2422,17 @@ class DogeMinerGame {
         const isSlowAnimation = placedHelper.type === 'timeMachineRig' || placedHelper.type === 'infiniteDogebility';
         const animationInterval = isSlowAnimation ? 1000 : 333; // 1fps = 1000ms, 3fps = 333ms
 
+        // Get upgrade-level sprites for this helper type
+        const upgradeLevel = this.helperUpgradeLevels?.[placedHelper.type] || 0;
+        const spritePaths = this.getHelperSpritePaths(placedHelper.type, upgradeLevel);
+        const idleSprite = spritePaths.idle;
+        const miningSprite = spritePaths.mining;
 
         const intervalId = setInterval(() => {
             if (isIdle) {
-                helperSprite.src = placedHelper.helper.miningSprite || placedHelper.helper.icon;
+                helperSprite.src = miningSprite;
             } else {
-                helperSprite.src = placedHelper.helper.icon;
+                helperSprite.src = idleSprite;
             }
             isIdle = !isIdle;
         }, animationInterval);
@@ -2363,9 +2518,17 @@ class DogeMinerGame {
     // Pickaxe system will be implemented later
 
     updateDPS() {
-        // Calculate Earth helpers DPS
+        // Helper function to get DPS for a helper type based on upgrade level
+        const getHelperDPS = (helperType) => {
+            if (!window.shopManager) return 0;
+            const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(helperType);
+            return upgradeInfo ? upgradeInfo.dps : 0;
+        };
+
+        // Calculate Earth helpers DPS using upgrade-based DPS
         const earthDPS = this.helpers.reduce((total, helper) => {
-            return total + helper.dps;
+            const upgradeDPS = getHelperDPS(helper.type);
+            return total + (upgradeDPS || helper.dps);
         }, 0);
 
         // Calculate Moon helpers DPS
@@ -2384,6 +2547,63 @@ class DogeMinerGame {
         if (this.dps > this.highestDps) {
             this.highestDps = this.dps;
         }
+    }
+
+
+    // Get sprite paths for a helper type at a specific upgrade level
+    getHelperSpritePaths(helperType, upgradeLevel = 0) {
+        const spriteMap = {
+            // Earth helpers
+            miningShibe: { folder: 'shibes', prefix: 'shibes' },
+            dogeKennels: { folder: 'kennels', prefix: 'kennels' },
+            streamerKittens: { folder: 'kittens', prefix: 'kittens' },
+            spaceRocket: { folder: 'rockets', prefix: 'rockets' },
+            timeMachineRig: { folder: 'rigs', prefix: 'rigs' },
+            infiniteDogebility: { folder: 'dogebility', prefix: 'dogebility' },
+            // Moon helpers
+            moonBase: { folder: 'bases', prefix: 'bases' },
+            moonShibe: { folder: 'moonshibe', prefix: 'moonshibe' },
+            dogeCar: { folder: 'dogecar', prefix: 'dogecar' },
+            landerShibe: { folder: 'landershibe', prefix: 'landershibe' },
+            marsRocket: { folder: 'marsrocket', prefix: 'marsrocket' },
+            dogeGate: { folder: 'dogegate', prefix: 'dogegate' },
+            // Mars helpers
+            marsBase: { folder: 'marsbase', prefix: 'marsbase' },
+            partyShibe: { folder: 'partyshibe', prefix: 'partyshibe' },
+            curiosiDoge: { folder: 'curiosidoge', prefix: 'curiosidoge' },
+            djKittenz: { folder: 'djkittenz', prefix: 'djkittenz' },
+            spaceBass: { folder: 'spacebass', prefix: 'spacebass' },
+            jupiterRocket: { folder: 'juprocket', prefix: 'juprocket' },
+            // Jupiter helpers
+            cloudBase: { folder: 'jupiterbase', prefix: 'jupiterbase' },
+            superShibe: { folder: 'supershibe', prefix: 'supershibe' },
+            dogeAirShip: { folder: 'airship', prefix: 'airship' },
+            flyingDoggo: { folder: 'flyingdoge', prefix: 'flyingdoge' },
+            tardogeis: { folder: 'tardogeis', prefix: 'tardogeis' },
+            dogeStar: { folder: 'dogestar', prefix: 'dogestar' },
+            // Titan helpers
+            titanBase: { folder: 'titanbase', prefix: 'titanbase' },
+            roboShibe: { folder: 'roboshibe', prefix: 'roboshibe' },
+            heavyDogeWalker: { folder: 'walker', prefix: 'walker' },
+            coinSeeker5000: { folder: 'seeker', prefix: 'seeker' },
+            timeTravelDRex: { folder: 'trex', prefix: 'trex' },
+            altarOfTheSunDoge: { folder: 'altarofthesundoge', prefix: 'altarofthesundoge' }
+        };
+
+        const info = spriteMap[helperType];
+        if (!info) {
+            // Return default for other helper types (assumes lowercase folder/prefix matching helperType)
+            const lowerType = helperType.toLowerCase();
+            return {
+                idle: `assets/helpers/${lowerType}/${lowerType}-idle-0.png`,
+                mining: `assets/helpers/${lowerType}/${lowerType}-mine-0.png`
+            };
+        }
+
+        return {
+            idle: `assets/helpers/${info.folder}/${info.prefix}-idle-${upgradeLevel}.png`,
+            mining: `assets/helpers/${info.folder}/${info.prefix}-mine-${upgradeLevel}.png`
+        };
     }
 
     updateShopPrices() {
@@ -2597,13 +2817,15 @@ class DogeMinerGame {
     }
 
     startSearchdogAnimation() {
-        const searchdogs = document.querySelectorAll('.searchdog');
-        if (searchdogs.length === 0) return;
+        // Store reference to avoid multiple intervals
+        if (this.searchdogAnimationInterval) return;
 
         let isFrame1 = true;
 
         // Alternate between the two frames every 1000ms (1 second) for all searchdogs
-        setInterval(() => {
+        // Re-query elements on each frame to catch dynamically added searchdogs
+        this.searchdogAnimationInterval = setInterval(() => {
+            const searchdogs = document.querySelectorAll('.searchdog');
             searchdogs.forEach(searchdog => {
                 if (searchdog) {
                     searchdog.src = isFrame1

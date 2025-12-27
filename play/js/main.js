@@ -20,6 +20,10 @@ async function initializeGame() {
 
         // Initialize game instance
         game = new DogeMinerGame();
+
+        // Set initial planet attribute for CSS targeting
+        document.body.dataset.planet = game.currentLevel;
+
         updateLoadingInfo('Setting up shop system...');
 
         // Initialize shop manager first (needed by UI manager)

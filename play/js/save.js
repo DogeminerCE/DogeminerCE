@@ -43,6 +43,10 @@ class SaveManager {
         window.resetGame = () => {
             this.resetGame();
         };
+
+        window.repairSave = () => {
+            this.repairSave();
+        };
     }
 
     setupSettingsListeners() {
@@ -149,6 +153,9 @@ class SaveManager {
     }
 
     createSaveData() {
+        // Note: helpersOnCursor is NOT saved - they stay in memory during placement
+        // If the page is closed mid-placement, they are lost (intentional - no incomplete placements in saves)
+
         const serializePlacedHelper = (helper) => {
             if (!helper) return null;
             const saveHelper = {
@@ -220,6 +227,7 @@ class SaveManager {
             pickaxes: this.game.pickaxes,
             currentPickaxe: this.game.currentPickaxe,
             upgrades: this.game.upgrades || {},
+            helperUpgradeLevels: this.game.helperUpgradeLevels || {},
             placedHelpers: helperData,
             earthPlacedHelpers,
             moonPlacedHelpers,
@@ -243,7 +251,8 @@ class SaveManager {
             cutscenes: {
                 moonLaunch: !!this.game.hasPlayedMoonLaunch
             },
-            unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth']
+            unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth'],
+            HasPlayed_v0_04: this.game.HasPlayed_v0_04
         };
     }
 
@@ -259,6 +268,11 @@ class SaveManager {
         this.game.highestDps = saveData.highestDps || 0;
         this.game.currentLevel = saveData.currentLevel || 'earth';
         this.game.isTransitioning = false;
+
+        // Update data-planet attribute for CSS targeting
+        document.body.dataset.planet = this.game.currentLevel;
+
+        this.game.HasPlayed_v0_04 = saveData.HasPlayed_v0_04 || false;
 
         this.game.helpers = Array.isArray(saveData.helpers)
             ? saveData.helpers.map(helper => ({ ...helper }))
@@ -278,6 +292,7 @@ class SaveManager {
         this.game.pickaxes = saveData.pickaxes || ['standard'];
         this.game.currentPickaxe = saveData.currentPickaxe || 'standard';
         this.game.upgrades = saveData.upgrades || {};
+        this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
 
         const rebuildPlacedHelpers = (helpersArray = [], planet = 'earth') => {
             if (!Array.isArray(helpersArray)) return [];
@@ -701,6 +716,7 @@ class SaveManager {
                 this.game.placementQueue = [];
                 this.game.isPlacingHelpers = false;
                 this.game.upgrades = [];
+                this.game.helperUpgradeLevels = {};
                 this.game.pickaxes = [];
                 this.game.currentPickaxe = 'standard';
                 this.game.currentLevel = 'earth';
@@ -761,33 +777,153 @@ class SaveManager {
 
     // Save validation and repair
     repairSave() {
+        if (!confirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Fixing invalid data\n\nProceed?')) {
+            return false;
+        }
+
         try {
-            const saveString = localStorage.getItem(this.saveKey);
-            if (!saveString) return false;
+            let repairsMade = 0;
+            const repairLog = [];
 
-            const saveData = JSON.parse(saveString);
+            // Repair placed helpers that are stacked on top of each other
+            const repairPlacedHelpers = (helpers, planetName) => {
+                if (!Array.isArray(helpers)) return [];
 
-            // Repair common issues
-            if (!saveData.helpers) saveData.helpers = [];
-            if (!saveData.pickaxes) saveData.pickaxes = ['standard'];
-            if (!saveData.upgrades) saveData.upgrades = {};
-            if (!saveData.statistics) saveData.statistics = {};
-            if (!saveData.settings) saveData.settings = {};
+                let localRepairs = 0;
+                const positionMap = new Map(); // Track positions to find duplicates
 
-            // Ensure minimum values
-            saveData.dogecoins = Math.max(0, saveData.dogecoins || 0);
-            saveData.totalMined = Math.max(0, saveData.totalMined || 0);
-            saveData.totalClicks = Math.max(0, saveData.totalClicks || 0);
+                helpers.forEach((helper, index) => {
+                    if (!helper) return;
 
-            // Save repaired data
-            localStorage.setItem(this.saveKey, JSON.stringify(saveData));
+                    // Ensure valid properties
+                    if (helper.x === undefined || helper.x === null) {
+                        helper.x = 50 + (index % 10) * 40;
+                        localRepairs++;
+                    }
+                    if (helper.y === undefined || helper.y === null) {
+                        helper.y = 400 + Math.floor(index / 10) * 40;
+                        localRepairs++;
+                    }
 
-            this.game.showNotification('Save data repaired!');
+                    // Add missing name based on type
+                    if (!helper.name && helper.type) {
+                        helper.name = this.getHelperNameFromType(helper.type);
+                        localRepairs++;
+                    }
+
+                    // Check for stacked helpers (same x/y)
+                    const posKey = `${Math.round(helper.x)}_${Math.round(helper.y)}`;
+                    if (positionMap.has(posKey)) {
+                        // Spread out this helper
+                        const offset = positionMap.get(posKey);
+                        helper.x += (offset % 5) * 30 + 20;
+                        helper.y += Math.floor(offset / 5) * 30 + 20;
+                        positionMap.set(posKey, offset + 1);
+                        localRepairs++;
+                    } else {
+                        positionMap.set(posKey, 1);
+                    }
+
+                    // Ensure valid ID
+                    if (!helper.id) {
+                        helper.id = Date.now() + Math.random() + index;
+                        localRepairs++;
+                    }
+                });
+
+                if (localRepairs > 0) {
+                    repairLog.push(`${planetName}: Fixed ${localRepairs} issues`);
+                }
+                repairsMade += localRepairs;
+
+                return helpers.filter(h => h !== null && h !== undefined);
+            };
+
+            // Repair helpers in current memory
+            this.game.earthPlacedHelpers = repairPlacedHelpers(this.game.earthPlacedHelpers || [], 'Earth');
+            this.game.moonPlacedHelpers = repairPlacedHelpers(this.game.moonPlacedHelpers || [], 'Moon');
+            this.game.marsPlacedHelpers = repairPlacedHelpers(this.game.marsPlacedHelpers || [], 'Mars');
+            this.game.jupiterPlacedHelpers = repairPlacedHelpers(this.game.jupiterPlacedHelpers || [], 'Jupiter');
+            this.game.titanPlacedHelpers = repairPlacedHelpers(this.game.titanPlacedHelpers || [], 'Titan');
+
+            // Also repair current placedHelpers
+            this.game.placedHelpers = repairPlacedHelpers(this.game.placedHelpers || [], 'Current');
+
+            // Clean up helpers array (remove null entries, ensure required fields)
+            if (Array.isArray(this.game.helpers)) {
+                const originalCount = this.game.helpers.length;
+                this.game.helpers = this.game.helpers.filter(h => h && h.type);
+                if (this.game.helpers.length !== originalCount) {
+                    const removed = originalCount - this.game.helpers.length;
+                    repairLog.push(`Removed ${removed} invalid helper entries`);
+                    repairsMade += removed;
+                }
+            }
+
+            // Clear any stuck placement state
+            if (this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+                repairLog.push(`Cleared ${this.game.helpersOnCursor.length} stuck helpers on cursor`);
+                repairsMade += this.game.helpersOnCursor.length;
+                this.game.helpersOnCursor = [];
+            }
+            this.game.isPlacingHelpers = false;
+
+            // Recalculate DPS
+            this.game.updateDPS();
+
+            // Save the repaired data
+            this.saveGame(false);
+
+            // Clear and rebuild helper sprites
+            this.game.clearAllHelperSprites();
+            this.game.placedHelpers.forEach(helper => {
+                this.game.createHelperSprite(helper);
+            });
+
+            // Show result
+            if (repairsMade > 0) {
+                const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}`;
+                alert(message);
+                this.game.showNotification(`Repaired ${repairsMade} issues!`);
+            } else {
+                this.game.showNotification('No issues found in save data.');
+            }
+
             return true;
         } catch (error) {
             console.error('Error repairing save:', error);
+            alert('Error repairing save: ' + error.message);
             return false;
         }
+    }
+
+    // Helper to get display name from helper type
+    getHelperNameFromType(type) {
+        const nameMap = {
+            'miningShibe': 'Mining Shibe',
+            'dogeKennels': 'Doge Kennels',
+            'streamerKittens': 'Streamer Kittens',
+            'spaceRocket': 'Space Rocket',
+            'timeMachineRig': 'Time Machine Mining Rig',
+            'moonShibe': 'Moon Shibe',
+            'moonBase': 'Moon Base',
+            'landerShibe': 'Lander Shibe',
+            'partyShibe': 'Party Shibe',
+            'djKittenz': 'DJ Kittenz',
+            'spaceBass': 'Space Bass',
+            'curiosiDoge': 'CuriosiDoge',
+            'marsBase': 'Mars Base',
+            'cloudDancer': 'Cloud Dancer',
+            'stormChaser': 'Storm Chaser',
+            'gasGiant': 'Gas Giant',
+            'cloudBase': 'Cloud Base',
+            'infiniteDogebility': 'Infinite Dogebility',
+            'titanBase': 'Titan Base',
+            'dogeStar': 'DogeStar',
+            'timeTravelDRex': 'Time Travel D-Rex',
+            'altarOfTheSunDoge': 'Altar of the Sun Doge'
+        };
+        return nameMap[type] || type;
     }
 }
 

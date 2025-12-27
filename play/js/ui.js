@@ -94,6 +94,11 @@ class UIManager {
             if (tabName === 'shop') {
                 this.updateShopContent();
             }
+
+            // Update upgrade content if switching to upgrades
+            if (tabName === 'upgrades') {
+                this.updateUpgradeContent();
+            }
         };
 
         // Planet tab switching with loading transition
@@ -220,6 +225,9 @@ class UIManager {
 
                 // Update game state to reflect planet change
                 this.game.currentLevel = planetName;
+
+                // Set data-planet attribute on body for CSS targeting
+                document.body.dataset.planet = planetName;
 
                 // Update mobile display
                 this.updateMobilePlanetDisplay();
@@ -526,6 +534,29 @@ class UIManager {
                 const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
                 const canAfford = this.game.dogecoins >= cost;
 
+                // Get upgrade-based info for Earth helpers
+                let displayName = helper.name;
+                let displayDesc = helper.description;
+                let displayDps = helper.baseDps;
+                let displayIcon = helper.icon;
+
+                if (this.game.currentLevel === 'earth' && window.shopManager) {
+                    const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(type);
+                    if (upgradeInfo) {
+                        displayName = upgradeInfo.name;
+                        displayDps = upgradeInfo.dps;
+                        if (upgradeInfo.shopDesc) {
+                            displayDesc = upgradeInfo.shopDesc;
+                        }
+                    }
+                    // Get upgrade-level sprite
+                    const upgradeLevel = this.game.helperUpgradeLevels?.[type] || 0;
+                    const spritePaths = this.game.getHelperSpritePaths(type, upgradeLevel);
+                    if (spritePaths && spritePaths.idle) {
+                        displayIcon = spritePaths.idle;
+                    }
+                }
+
                 let lockReason = null;
                 if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
@@ -586,12 +617,12 @@ class UIManager {
 
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title">${helper.name}</div>
-                    <div class="shop-item-dps">${helper.baseDps} ĐPS</div>
+                    <div class="shop-item-title">${displayName}</div>
+                    <div class="shop-item-dps">${displayDps} ĐPS</div>
                     <div class="shop-item-sprite">
-                        <img src="${helper.icon}" alt="${helper.name}">
+                        <img src="${displayIcon}" alt="${displayName}">
                     </div>
-                    <div class="shop-item-description">${helper.description}</div>
+                    <div class="shop-item-description">${displayDesc}</div>
                     <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" 
                             ${buttonDisabled} style="width: ${buttonWidth};">
                         <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
@@ -619,17 +650,58 @@ class UIManager {
         this.setupShopButtonListeners();
     }
 
+    // Render upgrade button for Earth helpers that have upgrades available
+    renderUpgradeButton(helperType, owned) {
+        // Only show upgrade button if player owns at least one of this helper
+        if (owned < 1) return '';
+
+        // Only show for Earth helpers (upgrades not yet implemented for other planets)
+        if (this.game.currentLevel !== 'earth') return '';
+
+        const nextUpgrade = window.shopManager?.getNextHelperUpgrade(helperType);
+        if (!nextUpgrade) return ''; // Max level reached or no upgrades
+
+        const canAfford = window.shopManager?.canAffordHelperUpgrade(helperType);
+        const currentLevel = window.shopManager?.getHelperUpgradeLevel(helperType) || 0;
+        const priceText = this.game.formatNumber(nextUpgrade.price);
+
+        return `
+            <button class="shop-upgrade-btn${canAfford ? '' : ' unaffordable'}" 
+                    data-upgrade-type="${helperType}" 
+                    ${canAfford ? '' : 'disabled'}>
+                <span class="upgrade-label">⬆ Lvl ${currentLevel + 1}: ${nextUpgrade.upgradeName}</span>
+                <span class="upgrade-price">${priceText}</span>
+            </button>
+        `;
+    }
+
     setupShopButtonListeners() {
         // Add event listeners to all buy buttons
         // Desktop helper cards render inside #shop-content, so bind listeners to that node.
         const shopContainer = document.getElementById('shop-content');
         if (!shopContainer) return;
+
+        // Buy buttons
         const buyButtons = shopContainer.querySelectorAll('.shop-buy-btn[data-helper-type]');
         buyButtons.forEach((button) => {
             // Remove any existing listeners to prevent duplicates
             button.removeEventListener('click', this.boundHandleBuyButtonClick);
             // Add new listener
             button.addEventListener('click', this.boundHandleBuyButtonClick);
+        });
+
+        // Upgrade buttons
+        const upgradeButtons = shopContainer.querySelectorAll('.shop-upgrade-btn[data-upgrade-type]');
+        upgradeButtons.forEach((button) => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const helperType = button.getAttribute('data-upgrade-type');
+                if (helperType && window.shopManager) {
+                    window.shopManager.buyHelperUpgrade(helperType);
+                    // Re-render shop to update UI
+                    this.updateShopContent();
+                }
+            });
         });
     }
 
@@ -1016,16 +1088,166 @@ class UIManager {
         }
     }
 
-    updateUpgradeContent() {
-        // This will be populated later with actual upgrade content
-        // For now, just ensure the sections are visible
+    updateUpgradeContent(fadeInSectionIndex) {
+        // Get all available helper upgrades for Earth helpers the player owns
+        const availableUpgrades = this.getAvailableHelperUpgrades();
+
+        // Only shuffle once - store the order to prevent changes on scroll
+        if (!this._cachedUpgrades || this._cachedUpgrades.length !== availableUpgrades.length) {
+            this._cachedUpgrades = availableUpgrades.sort(() => Math.random() - 0.5).slice(0, 3);
+        }
+        const displayUpgrades = this._cachedUpgrades;
+
+        // Populate the 3 upgrade sections
         const upgradeSections = document.querySelectorAll('.upgrade-section');
-        upgradeSections.forEach(section => {
-            const grid = section.querySelector('.upgrades-grid');
-            if (grid && grid.children.length === 0) {
-                // Add placeholder content if empty
-                grid.innerHTML = '<div class="upgrade-placeholder">Upgrade content coming soon!</div>';
+        upgradeSections.forEach((section, index) => {
+            if (index < displayUpgrades.length) {
+                const upgrade = displayUpgrades[index];
+                const canAfford = this.game.dogecoins >= upgrade.price;
+                const priceText = this.game.formatNumber(upgrade.price);
+
+                // Get sprite path for the upgraded helper
+                const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
+                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.png';
+
+                // Calculate total DPS (new DPS * helper count)
+                const totalDps = upgrade.newDps * upgrade.helperCount;
+                const dpsIncrease = (upgrade.newDps - upgrade.currentDps).toFixed(1);
+
+                // Replace entire section content with the upgrade
+                section.innerHTML = `
+                    <div class="upgrade-item-full">
+                        <div class="upgrade-helper-sprite">
+                            <img src="${helperSprite}" alt="${upgrade.helperName}">
+                        </div>
+                        <div class="upgrade-content">
+                            <div class="upgrade-header">
+                                <div class="upgrade-name">${upgrade.upgradeName}</div>
+                                <div class="upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
+                            </div>
+                            <div class="upgrade-description">${upgrade.upgradeDesc}</div>
+                            <div class="upgrade-footer">
+                                <button class="shop-buy-btn upgrade-buy-btn${canAfford ? '' : ' disabled'}" 
+                                        data-upgrade-helper="${upgrade.helperType}"
+                                        ${canAfford ? '' : 'disabled'}>
+                                    <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                                    <span class="buy-btn-price">${priceText}</span>
+                                </button>
+                                <div class="upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                section.classList.add('has-upgrade');
+            } else {
+                // No upgrade available - show "Looking for Upgrades" state
+                section.innerHTML = `
+                    <div class="upgrade-empty-state">
+                        <div class="upgrade-empty-text">LOOKING FOR UPGRADES...</div>
+                        <div class="searchdog-container-centered">
+                            <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog" data-section="${index}">
+                        </div>
+                    </div>
+                `;
+                section.classList.remove('has-upgrade');
             }
+
+            // Only add fade-in animation to the specific section that was just purchased
+            if (fadeInSectionIndex !== undefined && index === fadeInSectionIndex) {
+                section.classList.add('upgrade-fade-in');
+                // Remove the class after animation completes so it can be reused
+                setTimeout(() => {
+                    section.classList.remove('upgrade-fade-in');
+                }, 400);
+            }
+        });
+
+        // Attach event listeners for upgrade buy buttons
+        this.setupUpgradeBuyListeners();
+    }
+
+    getAvailableHelperUpgrades() {
+        const upgrades = [];
+
+        console.log('getAvailableHelperUpgrades called');
+        console.log('shopManager:', window.shopManager);
+        console.log('game.helpers:', this.game.helpers);
+
+        if (!window.shopManager) {
+            console.log('No shopManager found');
+            return upgrades;
+        }
+
+        // Always show Earth helper upgrades (they apply globally)
+        // Get Earth helper types that the player owns
+        const earthHelpers = this.game.helpers || [];
+        console.log('Earth helpers array:', earthHelpers);
+
+        const ownedHelperTypes = new Set(earthHelpers.map(h => h.type));
+        console.log('Owned helper types:', [...ownedHelperTypes]);
+
+        // Check each owned helper type for available upgrades
+        ownedHelperTypes.forEach(helperType => {
+            const nextUpgrade = window.shopManager.getNextHelperUpgrade(helperType);
+            console.log('Checking helper type:', helperType, 'nextUpgrade:', nextUpgrade);
+
+            if (nextUpgrade) {
+                const currentInfo = window.shopManager.getCurrentHelperUpgradeInfo(helperType);
+                const helperCount = earthHelpers.filter(h => h.type === helperType).length;
+
+                upgrades.push({
+                    helperType: helperType,
+                    helperName: currentInfo.name,
+                    nextLevel: nextUpgrade.level,
+                    upgradeName: nextUpgrade.upgradeName,
+                    upgradeDesc: nextUpgrade.upgradeDesc,
+                    price: nextUpgrade.price,
+                    currentDps: currentInfo.dps,
+                    newDps: nextUpgrade.dps,
+                    helperCount: helperCount
+                });
+            }
+        });
+
+        console.log('Final available upgrades:', upgrades);
+        return upgrades;
+    }
+
+    setupUpgradeBuyListeners() {
+        const upgradeButtons = document.querySelectorAll('.upgrade-buy-btn[data-upgrade-helper]');
+        upgradeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const helperType = button.getAttribute('data-upgrade-helper');
+                if (helperType && window.shopManager) {
+                    const success = window.shopManager.buyHelperUpgrade(helperType);
+                    if (success) {
+                        // Find the upgrade section that contains this button
+                        const section = button.closest('.upgrade-section');
+                        if (section) {
+                            // Get the section index
+                            const allSections = document.querySelectorAll('.upgrade-section');
+                            let sectionIndex = -1;
+                            allSections.forEach((sec, idx) => {
+                                if (sec === section) sectionIndex = idx;
+                            });
+
+                            // Add fade-out class for animation
+                            section.classList.add('upgrade-fade-out');
+
+                            // Wait for animation to complete, then update content
+                            setTimeout(() => {
+                                section.classList.remove('upgrade-fade-out');
+                                // Pass the section index to only fade-in that one
+                                this.updateUpgradeContent(sectionIndex);
+                            }, 500);
+                        } else {
+                            // Fallback if section not found
+                            this.updateUpgradeContent();
+                        }
+                    }
+                }
+            });
         });
     }
 
@@ -1575,7 +1797,7 @@ class UIManager {
                             <img src="${helper.icon}" alt="${helper.name}">
                         </div>
                         <div class="shop-item-info">
-                            <div class="shop-item-description">${helper.description}</div>
+                            <div class="shop-item-description ${helper.description.length > 75 ? 'long-description' : ''}">${helper.description}</div>
                             <button class="shop-buy-btn" data-helper-type="${type}" ${buttonDisabled}>
                                 <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
                                 <span class="buy-btn-price">${priceText}</span>
@@ -1800,6 +2022,7 @@ class UIManager {
                     <button onclick="loadGame()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Load Game</button>
                     <button onclick="exportSave()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Export Save</button>
                     <button onclick="importSave()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(240, 220, 130, 0.95) 50%, rgba(255, 235, 150, 0.95) 50%); border: 2px solid #d4af37; border-radius: 6px; color: #8b4513; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Import Save</button>
+                    <button onclick="repairSave()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(255, 180, 80, 0.95) 50%, rgba(230, 150, 50, 0.95) 50%); border: 2px solid #c90; border-radius: 6px; color: #333; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Repair Save</button>
                     <button onclick="resetGame()" style="width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(220, 100, 100, 0.95) 50%, rgba(200, 80, 80, 0.95) 50%); border: 2px solid #a00; border-radius: 6px; color: white; font-weight: 700; font-size: 13px; font-family: 'DogeSans', sans-serif;">Reset Game</button>
                 </div>
             </div>

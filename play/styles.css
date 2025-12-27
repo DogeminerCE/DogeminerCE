@@ -1314,8 +1314,19 @@ body.planet-mars #main-rock {
     }
 }
 
+/* Float class still used as trigger but animation is on container */
 #main-character.float {
+    /* Animation now handled by container */
+}
+
+/* When doge is floating, float the entire container (including santa hat) */
+#character-container:has(#main-character.float) {
     animation: float 3s ease-in-out infinite;
+}
+
+/* When doge is bouncing, bounce the entire container */
+#character-container:has(#main-character.bounce) {
+    animation: bounce 0.2s ease-out;
 }
 
 
@@ -1336,6 +1347,78 @@ body.planet-mars #main-rock {
     transform: translateY(0) scale(1, 1);
 }
 
+/* Counter-animate shadow to keep it stationary when container floats */
+#character-container:has(#main-character.float) #character-shadow {
+    animation: shadowCounterFloat 3s ease-in-out infinite;
+}
+
+@keyframes shadowCounterFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px) scale(1, 1);
+    }
+
+    50% {
+        transform: translateY(10px) scale(1, 1);
+    }
+}
+
+#santa-hat {
+    position: absolute;
+    width: 140px;
+    height: auto;
+    top: -65px;
+    left: 7px;
+    z-index: 20;
+    pointer-events: none;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    /* Rotate slightly for style */
+    transform: rotate(-10deg);
+    /* Animations handled by container */
+}
+
+/* Planet-specific santa hat adjustments */
+/* Moon, Jupiter, Titan: move 7px to the left */
+body[data-planet="moon"] #santa-hat,
+body[data-planet="jupiter"] #santa-hat,
+body[data-planet="titan"] #santa-hat {
+    left: 0px;
+}
+
+/* Mars: smaller and adjusted position */
+body[data-planet="mars"] #santa-hat {
+    width: 110px;
+    left: 15px;
+    top: -45px;
+}
+
+@keyframes santaHatFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(-10deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(-10deg);
+    }
+}
+
+@keyframes santaHatBounce {
+    0% {
+        transform: translateY(0px) rotate(-10deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(-10deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(-10deg);
+    }
+}
+
 #pickaxe {
     position: absolute;
     width: 142px;
@@ -1349,8 +1432,8 @@ body.planet-mars #main-rock {
     /* 30 degree resting angle */
     transform-origin: 50% 80%;
     /* Rotate from 80% down the handle instead of bottom */
-    z-index: 3;
-    /* Above Doge */
+    z-index: 25;
+    /* Above santa hat and Doge */
     order: 1;
     /* First in flex order */
 }
@@ -1956,6 +2039,53 @@ body.planet-mars #main-rock {
     opacity: 0.7;
 }
 
+/* Helper Upgrade Buttons */
+.shop-upgrade-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    margin-top: 6px;
+    width: 100%;
+    border-radius: 6px;
+    background: linear-gradient(to bottom, #4ade80 50%, #22c55e 50%);
+    border: 2px solid #16a34a;
+    color: #166534;
+    font-family: 'DogeSans', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.shop-upgrade-btn:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #86efac 50%, #4ade80 50%);
+    transform: scale(1.02);
+}
+
+.shop-upgrade-btn:disabled,
+.shop-upgrade-btn.unaffordable {
+    background: linear-gradient(to bottom, rgb(180, 180, 180) 50%, rgb(160, 160, 160) 50%);
+    border-color: rgb(140, 140, 140);
+    color: rgb(100, 100, 100);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.shop-upgrade-btn .upgrade-label {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shop-upgrade-btn .upgrade-price {
+    flex-shrink: 0;
+    font-weight: 700;
+}
+
 .buy-btn-icon {
     width: 28px;
     /* 4px bigger (24px + 4px) */
@@ -2337,7 +2467,7 @@ body.planet-mars #main-rock {
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid #d4af37;
     color: #8b4513;
-    padding: 10px 16px;
+    padding: 7px 16px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2360,6 +2490,15 @@ body.planet-mars #main-rock {
 
 .setting-btn.danger:hover {
     background: rgba(231, 76, 60, 0.1);
+}
+
+.setting-btn.warning {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+
+.setting-btn.warning:hover {
+    background: rgba(243, 156, 18, 0.1);
 }
 
 /* Cloud Save Styling */
@@ -2785,21 +2924,73 @@ body.planet-mars #main-rock {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 6px;
-    padding: 10px;
+    gap: 2px;
+    padding: 4px;
 }
 
 .upgrade-section {
     flex: 1 1 0;
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #d4af37;
-    border-radius: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
     padding: 15px;
     overflow: hidden;
     position: relative;
     min-height: 0;
+}
+
+/* Corner brackets - decorative corners only */
+.upgrade-section::before,
+.upgrade-section::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-color: #c9a227;
+    border-style: solid;
+    pointer-events: none;
+}
+
+/* Top-left corner */
+.upgrade-section::before {
+    top: 5px;
+    left: 5px;
+    border-width: 3px 0 0 3px;
+}
+
+/* Bottom-right corner */
+.upgrade-section::after {
+    bottom: 5px;
+    right: 5px;
+    border-width: 0 3px 3px 0;
+}
+
+/* Additional corners using inner pseudo elements on the empty state container */
+.upgrade-empty-state::before,
+.upgrade-empty-state::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-color: #c9a227;
+    border-style: solid;
+    pointer-events: none;
+}
+
+/* Top-right corner */
+.upgrade-empty-state::before {
+    top: 5px;
+    right: 5px;
+    border-width: 3px 3px 0 0;
+}
+
+/* Bottom-left corner */
+.upgrade-empty-state::after {
+    bottom: 5px;
+    left: 5px;
+    border-width: 0 0 3px 3px;
 }
 
 /* Searchdog Container - Positioned at top left of each section */
@@ -2814,6 +3005,39 @@ body.planet-mars #main-rock {
     width: 80px;
     height: auto;
     pointer-events: auto;
+}
+
+/* Empty state for upgrade sections - "Looking for Upgrades" */
+.upgrade-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.upgrade-empty-text {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: rgb(100, 85, 60);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.searchdog-container-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchdog-container-centered .searchdog {
+    width: 90px;
+    height: auto;
 }
 
 .section-title {
@@ -2847,6 +3071,215 @@ body.planet-mars #main-rock {
 .upgrades-grid::-webkit-scrollbar-thumb {
     background: #d4af37;
     border-radius: 3px;
+}
+
+/* Upgrade Item Styling */
+.upgrade-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+}
+
+/* Full upgrade item that fills entire section */
+.upgrade-item-full {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    padding: 8px 12px;
+    position: relative;
+}
+
+/* Helper sprite in the corner */
+.upgrade-helper-sprite {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upgrade-helper-sprite img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+/* Main content area */
+.upgrade-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+/* Header with name and total DPS */
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.upgrade-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #5a4a2a;
+    text-align: left;
+}
+
+.upgrade-total-dps {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #c9a227;
+    white-space: nowrap;
+}
+
+.upgrade-description {
+    font-size: 14px;
+    color: #7a6a4a;
+    line-height: 1.3;
+    text-align: left;
+}
+
+/* Footer with buy button and DPS increase */
+.upgrade-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+/* Small compact buy button */
+.upgrade-buy-btn-small {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: linear-gradient(180deg, #f5d571 0%, #d4a827 100%);
+    border: 2px solid #b8941f;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5a4a2a;
+    transition: all 0.15s ease;
+}
+
+.upgrade-buy-btn-small:hover:not(:disabled) {
+    background: linear-gradient(180deg, #ffe082 0%, #e0b830 100%);
+    transform: scale(1.03);
+}
+
+.upgrade-buy-btn-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.buy-btn-icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+.buy-btn-price-small {
+    font-size: 12px;
+}
+
+.upgrade-dps-increase {
+    font-size: 14px;
+    color: #2a8a2a;
+    font-weight: 600;
+}
+
+.upgrade-section.has-upgrade {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+/* Fade-out animation when upgrade is purchased */
+.upgrade-section.upgrade-fade-out {
+    animation: upgradeFadeOut 0.5s ease-out forwards;
+}
+
+@keyframes upgradeFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Fade-in animation when new upgrade appears */
+.upgrade-section.upgrade-fade-in {
+    animation: upgradeFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes upgradeFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.upgrade-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8b4513;
+}
+
+.upgrade-target {
+    font-size: 10px;
+    color: #666;
+    font-style: italic;
+}
+
+.upgrade-description {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.3;
+    padding: 0 5px;
+}
+
+.upgrade-dps {
+    font-size: 10px;
+    font-weight: 600;
+    color: #22c55e;
+}
+
+.upgrade-buy-btn {
+    margin-top: 4px;
+    width: 80%;
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+.upgrade-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    font-style: italic;
+    font-size: 12px;
 }
 
 .upgrades-grid::-webkit-scrollbar-thumb:hover {
@@ -3496,6 +3929,12 @@ body.planet-mars #main-rock {
         font-family: 'DogeSans', sans-serif;
         line-height: 1.4;
         flex: 1;
+    }
+
+    /* Smaller text for long descriptions to prevent button bleeding */
+    #mobile-shop-content .shop-item-description.long-description {
+        font-size: 11px;
+        line-height: 1.25;
     }
 
     #mobile-shop-content .shop-buy-btn {

@@ -384,6 +384,66 @@ class ShopManager {
                     description: 'Make helpers more efficient',
                     maxLevel: 50
                 }
+            },
+
+            // Helper upgrades - levels 1+ are purchasable upgrades
+            helperUpgrades: {
+                miningShibe: [
+                    { level: 0, name: 'Mining Shibe', dps: 0.2, shopDesc: 'Very kind shibe to mine much dogecoin.' },
+                    { level: 1, name: 'Mining Shibe', dps: 0.7, price: 1000, upgradeName: 'Euphoria', upgradeDesc: 'Replace the Mining Shibe with Fedoras for increased tipping.', shopDesc: 'Very enlightened shibe to mine much dogecoin.' },
+                    { level: 2, name: 'Mining Shibe', dps: 1, price: 3500, upgradeName: 'Golden Pickaxes', upgradeDesc: 'Replace the Mining Shibe pickaxes with Golden Pickaxes.', shopDesc: 'Very enlightened shibe to mine much dogecoin. With golden pickaxes.' },
+                    { level: 3, name: 'Mining Shibe', dps: 2, price: 32500, upgradeName: 'Salary Raise', upgradeDesc: 'Raise the Mining Shibes salaries, which will lead to better work ethics.', shopDesc: 'Well-paid, happy shibe to mine much dogecoin.' },
+                    { level: 4, name: 'Rapping Shibe', dps: 5, price: 4500000, upgradeName: 'Rapper Shibes', upgradeDesc: 'Mining Shibes become Rapper Shibes, to bring da bling!', shopDesc: 'A rapping shibe makes mostest dogecoin.' },
+                    { level: 5, name: 'Space Shibe', dps: 19, price: 25000000, upgradeName: 'Space Shibes', upgradeDesc: 'Make shibes space-worthy with astronaut helmets.', shopDesc: 'A space shibe to mine much dogecoin.' },
+                    { level: 6, name: 'Space Shibe w/Gold Helmet', dps: 35, price: 55000000, upgradeName: 'Gold Helmet Upgrade', upgradeDesc: 'Use Gold instead of plywood for better protection.', shopDesc: 'A space shibe to mine much dogecoin.' },
+                    { level: 7, name: 'Space Shibe w/Diamond Helmet', dps: 69, price: 55000000, upgradeName: 'Diamond Helmet Upgrade', upgradeDesc: 'Make space shibes truly magnificent with diamond helmets.', shopDesc: 'A space shibe to mine mucherer dogecoin.' }
+                ],
+                dogeKennels: [
+                    { level: 0, name: 'Doge Kennels', dps: 2, shopDesc: 'Wow very efficiency, entire kennels to mine dogecoin.' },
+                    { level: 1, name: 'Axequipped Kennels', dps: 3.2, price: 1100, upgradeName: 'More Axes', upgradeDesc: 'Supply the kennels with more pickaxes to use for mining.', shopDesc: 'Wow very efficiency. Entire kennels to mine Dogecoin. With many axes.' },
+                    { level: 2, name: 'Pink Kennels', dps: 4.3, price: 4000, upgradeName: 'Paint Job', upgradeDesc: 'Repaint the Kennels to a more friendlier color. Much happy.', shopDesc: 'Wow very efficiency. Entire Kennels to mine Dogecoin. In style.' },
+                    { level: 3, name: 'Rocket Kennels', dps: 5, price: 42000, upgradeName: 'Micro-Rockets', upgradeDesc: 'Attach micro-rockets to the kennels. To the moon!', shopDesc: 'WOOOW very efficiency, entire kennels to mine Dogecoin with ROCKET POWER!' },
+                    { level: 4, name: 'Free Running Doges', dps: 7, price: 125000, upgradeName: 'Release the Doge', upgradeDesc: 'Who let the Doge out? Dismantle kennels, creating Free Running Doges.', shopDesc: 'Wow very freedom, free running Doges mine much more Dogecoin than not free running!' },
+                    { level: 5, name: 'Jet-Pack Doges', dps: 11, price: 3000000, upgradeName: 'Jet Packs', upgradeDesc: 'Supply the Kennels with jet packs.', shopDesc: 'Equipped with Jet Packs, Doges travel very fast to mine much Dogecoin!' },
+                    { level: 6, name: 'Space Doges', dps: 20, price: 30000000, upgradeName: 'Safety First', upgradeDesc: 'Give the Jet-Pack-Doges space helmets. For safety.', shopDesc: 'Equipped with Jet Packs & Space Helmets, Doges travel very fast to mine much Dogecoin!' },
+                    { level: 7, name: 'Space Doges', dps: 33, price: 80000000, upgradeName: 'Golden Improvement', upgradeDesc: 'Space Doges get a golden improvement for increased income.', shopDesc: 'Space Doges travel very fast to mine much Dogecoin in space!' },
+                    { level: 8, name: 'Space Doges', dps: 61, price: 151000000, upgradeName: 'Diamond Improvement', upgradeDesc: 'Give Space Doges a diamond-based improvement.', shopDesc: 'Space Doges travel very fast to mine much Dogecoin in space!' }
+                ],
+                streamerKittens: [
+                    { level: 0, name: 'Streamer Kittens', dps: 4, shopDesc: 'Kittens to stream cute videos to the internet for dogecoin.' },
+                    { level: 1, name: 'Streamer Kittens HD', dps: 7, price: 4200, upgradeName: 'High Quality Pussy-cat', upgradeDesc: 'Upgrade the kittens webcam to HD for better streams.', shopDesc: 'Many kittens to stream cute HD videos to the internet for Dogecoin.' },
+                    { level: 2, name: 'Streamer Kitten Gang', dps: 9, price: 99000, upgradeName: 'More Kittens', upgradeDesc: 'Increase the cute-level with more kittens.', shopDesc: 'Many kittens to stream cute HD videos to the internet for Dogecoin.' },
+                    { level: 3, name: 'Speedy Kitten Streamers', dps: 12, price: 392000, upgradeName: 'High-Speed Interwebs', upgradeDesc: 'Connects the kittens PC to the global Doge Fiber network.', shopDesc: 'Many kittens to stream cute HD videos to the internet for dogecoin at high speeds.' },
+                    { level: 4, name: 'Enlightened Kittens', dps: 18, price: 3250000, upgradeName: 'Intelligence', upgradeDesc: 'Enlighten the kittens.', shopDesc: 'Enlightened kittens creates amaze podcasts for very much dogecoin.' },
+                    { level: 5, name: 'Stock Kittens', dps: 21, price: 6500000, upgradeName: 'Stock Kittens', upgradeDesc: 'Teach the kittens how to effectively trade in dogecoin stocks for profit.', shopDesc: 'Stock kittens invest dogecoin in dogecoin for more dogecoin. Such profit!' },
+                    { level: 6, name: 'Space-Proof Kittens', dps: 23, price: 82000000, upgradeName: 'Catstronaut', upgradeDesc: 'Give the kittens space helmets. It helps them feel safe.', shopDesc: 'Space-Proof Kittens invest dogecoin in dogecoin for much dogecoin. (Space capable)' },
+                    { level: 7, name: 'Space-Hardened Kittens', dps: 45, price: 169000000, upgradeName: 'Goldened Helmets', upgradeDesc: 'Improved kitty-helmets for improved kittyness.', shopDesc: 'Space-Hardened Kittens Invest dogecoin in dogecoin for much dogecoin. (Space skilled)' },
+                    { level: 8, name: 'Catstronaut Kittens', dps: 70, price: 290000000, upgradeName: 'Diamond Helmets', upgradeDesc: 'Really strong helmets for all kitten catstronauts.', shopDesc: 'Catstronaut Kittens invest dogecoin in dogecoin for so much dogecoin. (Space masters)' }
+                ],
+                spaceRocket: [
+                    { level: 0, name: 'Space Rocket', dps: 9, shopDesc: 'A rocket to fly to the moon.' },
+                    { level: 1, name: 'Space Rocket', dps: 11, price: 52000, upgradeName: 'Blue-Flame', upgradeDesc: 'Upgrade the rocket engine with blue-flame rockets.', shopDesc: 'A rocket to fly to the moon with blue flame.' },
+                    { level: 2, name: 'Warp Rocket', dps: 14, price: 1500000, upgradeName: 'Warp Drive', upgradeDesc: 'Upgrade the rocket with a warp drive engine for superfast travel.', shopDesc: 'A warp drive rocket to travel to the moon to find much dogecoin.' },
+                    { level: 3, name: 'Shiny Rocket', dps: 23, price: 500000000, upgradeName: 'Hull Upgrade', upgradeDesc: 'Upgrade the hull of the Space Rocket. Shiny.', shopDesc: 'A shiny space rocket to find much dogecoin in space.' },
+                    { level: 4, name: 'Olie Rocket', dps: 28, price: 600000000, upgradeName: 'Olie Upgrade', upgradeDesc: 'Lets all find dogecoin together. Okay? Upgrade to olie-style doge rocket.', shopDesc: 'Awesome rocket for doge to travel to the moon to find much dogecoin.' },
+                    { level: 5, name: 'Space-Olie Rocket', dps: 48, price: 1000000000, upgradeName: 'Space Helmets', upgradeDesc: 'Give Pilot-Doge a space helmet to increase time spent in space.', shopDesc: 'Awesome rocket for space doge to travel to moon to find dogecoin.' },
+                    { level: 6, name: 'Gold-Olie Rocket', dps: 79, price: 1300000000, upgradeName: 'Golden Helmet', upgradeDesc: 'If it\'s not gold, it\'s not good enough. Unless it\'s better.', shopDesc: 'Awesome rocket for golden doge to travel to the moon to find dogecoin.' },
+                    { level: 7, name: 'Diamond-Olie Rocket', dps: 159, price: 1600000000, upgradeName: 'Diamond Helmet', upgradeDesc: 'This helmet is better. It\'s not cheap, but really really strong.', shopDesc: 'Awesome rocket for diamond doge to travel to the moon to find dogecoin.' }
+                ],
+                timeMachineRig: [
+                    { level: 0, name: 'Time Machine Mining Rig', dps: 66, shopDesc: 'Mines into the future where infinite dogecoins exist.' },
+                    { level: 1, name: 'Flying Time Machine Mining Rig', dps: 88, price: 24200000, upgradeName: 'Roads?', upgradeDesc: 'Where doge is going, he doesn\'t need roads. Gives the Time Machine Mining Rig flight capabilities.', shopDesc: 'Mines into the future where infinite dogecoins exist. While flying.' },
+                    { level: 2, name: 'Golden Flying Time Machine', dps: 122, price: 72000000, upgradeName: 'Bling Bling', upgradeDesc: 'Paints the Flying Time Machine Mining Rig golden.', shopDesc: 'Mining the essence of space, backwards and forwards through time, in style.' },
+                    { level: 3, name: 'Diamond Flying Time Machine', dps: 178, price: 240000000, upgradeName: 'Diamond Bling', upgradeDesc: 'Put diamond paint on the Golden Flying Time Machine Mining Rig.', shopDesc: 'Mining the essence of space, backwards and forwards through time, in REAL style.' }
+                ],
+                infiniteDogebility: [
+                    { level: 0, name: 'Infinite Dogebility Drive', dps: 999, shopDesc: 'A ship that instantaneously travels to any place in the Universe. Result? Many Dogecoins.' },
+                    { level: 1, name: 'Infinite Delivery Drive', dps: 1950, price: 20000000000, upgradeName: 'Delivery Service', upgradeDesc: 'The Infinite Dogebility Drive ship will now deliver packages across the universe in exchange for more dogecoins.', shopDesc: 'A ship that instantaneously delivers packages to any place in the universe. Result? Amazon.' },
+                    { level: 2, name: 'Infinite Delivery Drive w/Crew', dps: 3456, price: 45000000000, upgradeName: 'Hire a Crew', upgradeDesc: 'A miner\'s goal is simple. Find a crew, get dogecoins, keep mining.', shopDesc: 'A crew on a ship that instantaneously delivers packages to any place in the universe.' },
+                    { level: 3, name: 'Upside-Down Infinite Delivery', dps: 4210, price: 75000000000, upgradeName: 'Upside Doge', upgradeDesc: 'Silly Doge drives the ship upside down.', shopDesc: 'A weird crew on a ship instantaneously delivers packages to any place in the universe.' },
+                    { level: 4, name: 'Golden Infinite Delivery', dps: 5420, price: 150000000000, upgradeName: 'The Upside of Gold', upgradeDesc: 'Shiny golden plating for the Infinite Dogebility Drive.', shopDesc: 'A weird crew on a ship instantaneously delivers packages to any place in the universe.' },
+                    { level: 5, name: 'Diamond Infinite Delivery', dps: 6900, price: 300000000000, upgradeName: 'The Cost of Diamonds', upgradeDesc: 'Very shiny diamond plating for the Infinite Dogebility Drive.', shopDesc: 'A weird crew on a ship that instantaneously delivers packages to any place in the universe.' }
+                ]
             }
         };
     }
@@ -476,6 +536,82 @@ class ShopManager {
         this.game.upgrades[upgradeType] = level + 1;
 
         this.game.showNotification(`Bought ${upgrade.name} Level ${level + 1}!`);
+        this.game.playSound('check.wav');
+
+        return true;
+    }
+
+    // Helper upgrade methods
+    getHelperUpgradeLevel(helperType) {
+        return this.game.helperUpgradeLevels?.[helperType] || 0;
+    }
+
+    getHelperUpgradeData(helperType) {
+        return this.shopData.helperUpgrades?.[helperType] || null;
+    }
+
+    getNextHelperUpgrade(helperType) {
+        const upgrades = this.getHelperUpgradeData(helperType);
+        if (!upgrades) return null;
+
+        const currentLevel = this.getHelperUpgradeLevel(helperType);
+        const nextLevel = currentLevel + 1;
+
+        if (nextLevel >= upgrades.length) return null; // Max level reached
+        return upgrades[nextLevel];
+    }
+
+    getCurrentHelperUpgradeInfo(helperType) {
+        const upgrades = this.getHelperUpgradeData(helperType);
+        if (!upgrades) return null;
+
+        const currentLevel = this.getHelperUpgradeLevel(helperType);
+        return upgrades[currentLevel] || upgrades[0];
+    }
+
+    canAffordHelperUpgrade(helperType) {
+        const nextUpgrade = this.getNextHelperUpgrade(helperType);
+        if (!nextUpgrade) return false;
+        return this.game.dogecoins >= nextUpgrade.price;
+    }
+
+    hasHelperUpgradeAvailable(helperType) {
+        return this.getNextHelperUpgrade(helperType) !== null;
+    }
+
+    buyHelperUpgrade(helperType) {
+        const nextUpgrade = this.getNextHelperUpgrade(helperType);
+        if (!nextUpgrade) {
+            this.game.showNotification('Max upgrade level reached!');
+            return false;
+        }
+
+        if (!this.canAffordHelperUpgrade(helperType)) {
+            this.game.showNotification('Not enough dogecoins!');
+            return false;
+        }
+
+        // Deduct cost
+        this.game.dogecoins -= nextUpgrade.price;
+
+        // Increment upgrade level
+        if (!this.game.helperUpgradeLevels) {
+            this.game.helperUpgradeLevels = {};
+        }
+        this.game.helperUpgradeLevels[helperType] = (this.game.helperUpgradeLevels[helperType] || 0) + 1;
+
+        // Update DPS for all placed helpers of this type
+        console.log('=== buyHelperUpgrade calling updateHelperSpritesByType ===');
+        console.log('helperType:', helperType);
+        console.log('this.game:', this.game);
+        console.log('this.game.updateHelperSpritesByType:', this.game.updateHelperSpritesByType);
+        this.game.updateHelperSpritesByType(helperType);
+
+        // Recalculate total DPS
+        this.game.updateDPS();
+        this.game.updateUI();
+        this.game.updateShopPrices();
+
         this.game.playSound('check.wav');
 
         return true;
