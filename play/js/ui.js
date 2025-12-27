@@ -576,6 +576,12 @@ class UIManager {
                     if (type !== 'cloudBase' && !jupiterBaseOwned) {
                         lockReason = 'cloudBase';
                     }
+                } else if (this.game.currentLevel === 'titan') {
+                    const titanHelpers = Array.isArray(this.game.titanHelpers) ? this.game.titanHelpers : [];
+                    const titanBaseOwned = titanHelpers.some(helper => helper.type === 'titanBase');
+                    if (type !== 'titanBase' && !titanBaseOwned) {
+                        lockReason = 'titanBase';
+                    }
                 }
                 const isLocked = lockReason !== null;
 
@@ -606,6 +612,7 @@ class UIManager {
                 else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
+                else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
 
                 const lockOverlayHtml = isLocked ? `
                     <div class="helper-lock-overlay">
@@ -1802,6 +1809,12 @@ class UIManager {
                 } else if (this.game.currentLevel === 'jupiter') {
                     if (type !== 'cloudBase' && !jupiterBaseOwned) {
                         lockReason = 'cloudBase';
+                    }
+                } else if (this.game.currentLevel === 'titan') {
+                    const titanHelpers = Array.isArray(this.game.titanHelpers) ? this.game.titanHelpers : [];
+                    const titanBaseOwned = titanHelpers.some(h => h.type === 'titanBase');
+                    if (type !== 'titanBase' && !titanBaseOwned) {
+                        lockReason = 'titanBase';
                     }
                 }
                 const isLocked = lockReason !== null;
