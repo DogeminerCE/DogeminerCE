@@ -443,6 +443,46 @@ class ShopManager {
                     { level: 3, name: 'Upside-Down Infinite Delivery', dps: 4210, price: 75000000000, upgradeName: 'Upside Doge', upgradeDesc: 'Silly Doge drives the ship upside down.', shopDesc: 'A weird crew on a ship instantaneously delivers packages to any place in the universe.' },
                     { level: 4, name: 'Golden Infinite Delivery', dps: 5420, price: 150000000000, upgradeName: 'The Upside of Gold', upgradeDesc: 'Shiny golden plating for the Infinite Dogebility Drive.', shopDesc: 'A weird crew on a ship instantaneously delivers packages to any place in the universe.' },
                     { level: 5, name: 'Diamond Infinite Delivery', dps: 6900, price: 300000000000, upgradeName: 'The Cost of Diamonds', upgradeDesc: 'Very shiny diamond plating for the Infinite Dogebility Drive.', shopDesc: 'A weird crew on a ship that instantaneously delivers packages to any place in the universe.' }
+                ],
+                // Moon Helper Upgrades
+                moonBase: [
+                    { level: 0, name: 'Moon Base', dps: 12, shopDesc: 'A base on the moon to extract much dogecoin.' },
+                    { level: 1, name: 'Improved Moon Base', dps: 15, price: 60000, upgradeName: 'Excavator Assistance', upgradeDesc: 'Add a doge-excavator to assist the moon base.', shopDesc: 'A base on the moon to extract much dogecoin.' },
+                    { level: 2, name: 'Improved Moon Base', dps: 17, price: 315000, upgradeName: 'More Axes v2', upgradeDesc: 'Add more axes to the moon base.', shopDesc: 'A base on the moon to extract much dogecoin. With axes & excavator.' },
+                    { level: 3, name: 'Golden Moon Base', dps: 29, price: 2250000, upgradeName: 'Gold-Coated Base', upgradeDesc: 'Coat the Moon Base and excavator in gold for increased income.', shopDesc: 'A golden base on the moon to extract much dogecoin. Much shiny.' },
+                    { level: 4, name: 'Diamond Moon Base', dps: 90, price: 65000000, upgradeName: 'Diamond-coated Base', upgradeDesc: 'Replace the gold coating with pure diamond instead. Somehow really good.', shopDesc: 'A diamond base on the moon to extract much dogecoin. Much improved.' }
+                ],
+                moonShibe: [
+                    { level: 0, name: 'Moon Shibe', dps: 9, shopDesc: 'Astronaut moon shibe to mine much dogecoin.' },
+                    { level: 1, name: 'Moon Shibe', dps: 13, price: 54000, upgradeName: 'Suit Up', upgradeDesc: 'Give the Moon Shibe a full space suit to wear. Very safer.', shopDesc: 'Space-suited astronaut moon shibe to mine much dogecoin.' },
+                    { level: 2, name: 'Moon Shibe', dps: 15, price: 290000, upgradeName: 'Head-Mounted Pickaxes', upgradeDesc: 'Put Micro-Pickaxes © on the helmet of the Moon Shibe.', shopDesc: 'Astronaut Moon Shibe to mine much dogecoin. With Micro-Pickaxes ©' },
+                    { level: 3, name: 'Golden Moon Shibe', dps: 19, price: 2000000, upgradeName: 'Gold-Suit Up', upgradeDesc: 'Replace the Moon Shibes space suit with a golden space suit.', shopDesc: 'Golden moon shibe to mine much dogecoin. Shiny!' },
+                    { level: 4, name: 'Diamond Moon Shibe!', dps: 49, price: 24000000, upgradeName: 'Diamond-Suit Up', upgradeDesc: 'Replace the Moon Shibes space suit with a diamond space suit.', shopDesc: 'Diamond moon shibe to mine much dogecoin. Shiny!' }
+                ],
+                dogeCar: [
+                    { level: 0, name: 'Doge Car', dps: 12, shopDesc: 'Wow! Much fast doge car with such doge driver. Very Wise. How it mines, no one knows.' },
+                    { level: 1, name: 'Doge Car', dps: 15, price: 64500, upgradeName: 'Shade Miner', upgradeDesc: 'Give the Doge Driver of the Doge Car some cool shades.', shopDesc: 'Wow! Much fast doge car with such COOL doge driver. Very Wise.' },
+                    { level: 2, name: 'Doge Tank', dps: 20, price: 400000, upgradeName: 'Tank', upgradeDesc: 'Replace the Doge Car wheels with tank tracks, better traction on the moon.', shopDesc: 'Much traction Doge Tank with such cool doge driver. Very Wise.' },
+                    { level: 3, name: 'Doge Tank', dps: 24, price: 5000000, upgradeName: 'Roof Miner', upgradeDesc: 'Attach a giant GPU-Pickaxe to the roof of the Doge Tank.', shopDesc: 'WOW mining tanky doge car mines bestest dogecoin. Very Wise.' },
+                    { level: 4, name: 'Golden Doge Tank', dps: 75, price: 30000000, upgradeName: 'Gold Miner', upgradeDesc: 'Replace the Doge Tanks exterior with gold for much mining power.', shopDesc: 'WOW mining tanky doge car mines bestest dogecoin. Very shine.' },
+                    { level: 5, name: 'Diamond Doge Tank', dps: 159, price: 99000000, upgradeName: 'Diamond Miner', upgradeDesc: 'Replace the Doge Tanks exterior with diamond for superior mining.', shopDesc: 'WOW mining tanky doge car mines bestest dogecoin. Most shibe.' }
+                ],
+                landerShibe: [
+                    { level: 0, name: 'Lander Shibe', dps: 20, shopDesc: 'Lander shibe explores other planets and moons in pursuit of dogecoin.' },
+                    { level: 1, name: 'Lander Shibe', dps: 24, price: 550000, upgradeName: 'Candy-Lander Shibe', upgradeDesc: 'Upgrade the Lander Shibe to a Candy-Lander Shibe. Such Improvement', shopDesc: 'Candy-Lander shibe explores other planets and moons in pursuit of dogecoin.' },
+                    { level: 2, name: 'Double-Lander Shibe', dps: 26, price: 4000000, upgradeName: 'Double-Lander Shibe', upgradeDesc: 'Upgrade the Lander Shibe to a Double-Lander Shibe.', shopDesc: 'Double-Lander shibe explores other planets and moons in the solar system in pursuit of dogecoin.' },
+                    { level: 3, name: 'Triple-Lander Shibe', dps: 35, price: 75000000, upgradeName: 'Triple-Lander Shibe', upgradeDesc: 'Upgrade the Double-Lander Shibe to a Triple-Lander Shibe.', shopDesc: 'Triple-Lander shibe explores other planets and moons in the solar system in pursuit of dogecoin.' },
+                    { level: 4, name: 'Diamond Triple-Lander', dps: 105, price: 175000000, upgradeName: 'Diamond for the Lander', upgradeDesc: 'Diamond plating for the Triple-Lander Shibe makes it super shiny.', shopDesc: 'Triple-Lander shibe explores other planets and moons in the solar system in pursuit of dogecoin.' }
+                ],
+                marsRocket: [
+                    { level: 0, name: 'Mars Rocket', dps: 50, shopDesc: 'A rocket to fly to Mars, much red planet, such adventure.' },
+                    { level: 1, name: 'Golden Mars Rocket', dps: 90, price: 22500000, upgradeName: 'Golden Rocket Plating', upgradeDesc: 'Replace the Mars Rocket paper plating with gold. Much improved.', shopDesc: 'A golden rocket to fly to Mars.' },
+                    { level: 2, name: 'Diamond Mars Rocket', dps: 150, price: 85000000, upgradeName: 'Diamond Rocket Plating', upgradeDesc: 'Replace the Mars Rocket gold plating with Diamond: Very improved.', shopDesc: 'A diamond rocket to fly to Mars.' }
+                ],
+                dogeGate: [
+                    { level: 0, name: 'Doge Gate', dps: 155, shopDesc: 'A Doge Gate for instant galaxy-wide dogecoin transfers.' },
+                    { level: 1, name: 'Golden Doge Gate', dps: 575, price: 6900000000, upgradeName: 'Golden Gate', upgradeDesc: 'Gold plated Doge Gates.', shopDesc: 'A golden Doge Gate for instant, galaxy-wide dogecoin transfers.' },
+                    { level: 2, name: 'Diamond Doge Gate', dps: 1875, price: 9900000000, upgradeName: 'Diamond Gate', upgradeDesc: 'Diamond plated Doge Gates. Yeah.', shopDesc: 'A diamond Doge Gate for instant, galaxy-wide dogecoin transfers.' }
                 ]
             }
         };

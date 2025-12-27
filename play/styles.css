@@ -3249,6 +3249,37 @@ body[data-planet="mars"] #santa-hat {
     }
 }
 
+/* Moon theme styling for upgrade sections */
+.moon-theme .upgrade-section::before,
+.moon-theme .upgrade-section::after {
+    border-color: rgb(120, 185, 235);
+}
+
+.moon-theme .upgrade-empty-state::before,
+.moon-theme .upgrade-empty-state::after {
+    border-color: rgb(120, 185, 235);
+}
+
+.moon-theme .upgrade-section.has-upgrade {
+    background: linear-gradient(135deg, rgba(120, 185, 235, 0.15) 0%, rgba(240, 250, 255, 0.95) 100%);
+}
+
+.moon-theme .upgrade-name {
+    color: rgb(40, 95, 155);
+}
+
+.moon-theme .upgrade-total-dps {
+    color: rgb(120, 185, 235);
+}
+
+.moon-theme .upgrade-description {
+    color: rgb(80, 120, 160);
+}
+
+.moon-theme .upgrade-dps-increase {
+    color: #2a8a2a;
+}
+
 .upgrade-name {
     font-size: 13px;
     font-weight: 700;
@@ -4268,6 +4299,28 @@ body[data-planet="mars"] #santa-hat {
             opacity: 1;
             transform: scale(1);
         }
+    }
+
+    /* Moon theme styling for mobile upgrade sections */
+    .moon-theme .mobile-upgrade-section::before,
+    .moon-theme .mobile-upgrade-section::after {
+        border-color: rgb(120, 185, 235);
+    }
+
+    .moon-theme .mobile-upgrade-name {
+        color: rgb(40, 95, 155);
+    }
+
+    .moon-theme .mobile-upgrade-total-dps {
+        color: rgb(120, 185, 235);
+    }
+
+    .moon-theme .mobile-upgrade-description {
+        color: rgb(80, 120, 160);
+    }
+
+    .moon-theme .mobile-upgrade-empty-text {
+        color: rgb(40, 95, 155);
     }
 
     /* Mobile Achievements Content */

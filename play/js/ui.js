@@ -1179,19 +1179,32 @@ class UIManager {
 
         console.log('getAvailableHelperUpgrades called');
         console.log('shopManager:', window.shopManager);
-        console.log('game.helpers:', this.game.helpers);
+        console.log('currentLevel:', this.game.currentLevel);
 
         if (!window.shopManager) {
             console.log('No shopManager found');
             return upgrades;
         }
 
-        // Always show Earth helper upgrades (they apply globally)
-        // Get Earth helper types that the player owns
-        const earthHelpers = this.game.helpers || [];
-        console.log('Earth helpers array:', earthHelpers);
+        // Get the helper array for the current level
+        let helperArray = [];
+        const currentLevel = this.game.currentLevel;
 
-        const ownedHelperTypes = new Set(earthHelpers.map(h => h.type));
+        if (currentLevel === 'earth') {
+            helperArray = this.game.helpers || [];
+        } else if (currentLevel === 'moon') {
+            helperArray = this.game.moonHelpers || [];
+        } else if (currentLevel === 'mars') {
+            helperArray = this.game.marsHelpers || [];
+        } else if (currentLevel === 'jupiter') {
+            helperArray = this.game.jupiterHelpers || [];
+        } else if (currentLevel === 'titan') {
+            helperArray = this.game.titanHelpers || [];
+        }
+
+        console.log('Helpers array for level:', helperArray);
+
+        const ownedHelperTypes = new Set(helperArray.map(h => h.type));
         console.log('Owned helper types:', [...ownedHelperTypes]);
 
         // Check each owned helper type for available upgrades
@@ -1201,7 +1214,7 @@ class UIManager {
 
             if (nextUpgrade) {
                 const currentInfo = window.shopManager.getCurrentHelperUpgradeInfo(helperType);
-                const helperCount = earthHelpers.filter(h => h.type === helperType).length;
+                const helperCount = helperArray.filter(h => h.type === helperType).length;
 
                 upgrades.push({
                     helperType: helperType,
@@ -1861,7 +1874,7 @@ class UIManager {
         const mobileUpgradesContainer = document.getElementById('mobile-upgrades-container');
         if (!mobileUpgradesContainer) return;
 
-        // Get all available helper upgrades for Earth helpers the player owns
+        // Get all available helper upgrades for the current level's helpers
         const availableUpgrades = this.getAvailableHelperUpgrades();
 
         // Only shuffle once - store the order to prevent changes on scroll
