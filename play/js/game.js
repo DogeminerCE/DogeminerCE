@@ -1017,12 +1017,19 @@ class DogeMinerGame {
                 // Create helper icon
                 const icon = document.createElement('img');
                 icon.className = 'mobile-helper-icon';
+
+                // Get upgrade-aware sprites
+                const upgradeLevel = this.helperUpgradeLevels[helperType] || 0;
+                const spritePaths = this.getHelperSpritePaths(helperType, upgradeLevel);
+                const idleSprite = spritePaths?.idle || helperData.icon;
+                const miningSprite = spritePaths?.mining || helperData.miningSprite || helperData.icon;
+
                 // Store sprites for animation
-                icon.dataset.idleSrc = helperData.icon;
-                icon.dataset.miningSrc = helperData.miningSprite || helperData.icon;
+                icon.dataset.idleSrc = idleSprite;
+                icon.dataset.miningSrc = miningSprite;
                 icon.dataset.isMining = 'false';
                 // Set initial source
-                icon.src = helperData.icon;
+                icon.src = idleSprite;
                 icon.alt = helperData.name || helperType;
 
                 item.appendChild(countBadge);
@@ -1049,6 +1056,26 @@ class DogeMinerGame {
             const badge = item.querySelector('.mobile-helper-count');
             if (badge) {
                 badge.textContent = count;
+            }
+
+            // Update sprites for existing items (in case of upgrade)
+            if (!isNew) {
+                const icon = item.querySelector('.mobile-helper-icon');
+                if (icon) {
+                    const upgradeLevel = this.helperUpgradeLevels[helperType] || 0;
+                    const spritePaths = this.getHelperSpritePaths(helperType, upgradeLevel);
+                    const idleSprite = spritePaths?.idle || helperData.icon;
+                    const miningSprite = spritePaths?.mining || helperData.miningSprite || helperData.icon;
+
+                    icon.dataset.idleSrc = idleSprite;
+                    icon.dataset.miningSrc = miningSprite;
+                    // Update current src based on mining state
+                    if (icon.dataset.isMining === 'true') {
+                        icon.src = miningSprite;
+                    } else {
+                        icon.src = idleSprite;
+                    }
+                }
             }
         });
 

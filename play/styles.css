@@ -4068,9 +4068,197 @@ body[data-planet="mars"] #santa-hat {
 
     /* Mobile Upgrades Container */
     #mobile-upgrades-container {
-        padding: 15px;
+        padding: 8px;
         height: 100%;
         overflow-y: auto;
+    }
+
+    /* Mobile Upgrade Sections Container */
+    .mobile-upgrade-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        height: 100%;
+    }
+
+    /* Mobile Upgrade Section Card */
+    .mobile-upgrade-section {
+        flex: 1 1 0;
+        position: relative;
+        padding: 12px;
+        min-height: 80px;
+        background: transparent;
+    }
+
+    /* Corner brackets for mobile upgrade sections */
+    .mobile-upgrade-section::before,
+    .mobile-upgrade-section::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-color: #c9a227;
+        border-style: solid;
+        pointer-events: none;
+    }
+
+    .mobile-upgrade-section::before {
+        top: 4px;
+        left: 4px;
+        border-width: 2px 0 0 2px;
+    }
+
+    .mobile-upgrade-section::after {
+        bottom: 4px;
+        right: 4px;
+        border-width: 0 2px 2px 0;
+    }
+
+    /* Mobile Upgrade Item Layout */
+    .mobile-upgrade-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        height: 100%;
+    }
+
+    /* Mobile Upgrade Helper Sprite */
+    .mobile-upgrade-helper-sprite {
+        flex-shrink: 0;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-upgrade-helper-sprite img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        image-rendering: pixelated;
+    }
+
+    /* Mobile Upgrade Content Area */
+    .mobile-upgrade-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    /* Mobile Upgrade Header */
+    .mobile-upgrade-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6px;
+    }
+
+    .mobile-upgrade-name {
+        font-family: 'DogeSans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #5a4a2a;
+        text-align: left;
+    }
+
+    .mobile-upgrade-total-dps {
+        font-family: 'DogeSans', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: #c9a227;
+        white-space: nowrap;
+    }
+
+    .mobile-upgrade-description {
+        font-size: 11px;
+        color: #7a6a4a;
+        line-height: 1.2;
+        text-align: left;
+    }
+
+    /* Mobile Upgrade Footer */
+    .mobile-upgrade-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .mobile-upgrade-buy-btn {
+        padding: 4px 10px !important;
+        font-size: 11px !important;
+    }
+
+    .mobile-upgrade-buy-btn .buy-btn-icon {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .mobile-upgrade-dps-increase {
+        font-size: 11px;
+        color: #2a8a2a;
+        font-weight: 600;
+    }
+
+    /* Mobile Upgrade Empty State */
+    .mobile-upgrade-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 8px;
+    }
+
+    .mobile-upgrade-empty-text {
+        font-family: 'DogeSans', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: #8b4513;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    .mobile-upgrade-empty .searchdog-container-centered .searchdog {
+        width: 35px;
+        height: auto;
+    }
+
+    /* Mobile Upgrade Fade Animations */
+    .mobile-upgrade-section.mobile-upgrade-fade-out {
+        animation: mobileUpgradeFadeOut 0.5s ease-out forwards;
+    }
+
+    .mobile-upgrade-section.mobile-upgrade-fade-in {
+        animation: mobileUpgradeFadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes mobileUpgradeFadeOut {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    }
+
+    @keyframes mobileUpgradeFadeIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
     /* Mobile Achievements Content */

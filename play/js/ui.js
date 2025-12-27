@@ -1788,16 +1788,39 @@ class UIManager {
                 const priceText = this.game.formatNumber(cost);
                 const buttonDisabled = (!canAfford || isLocked) ? 'disabled' : '';
 
+                // Get upgrade-based info for Earth helpers (same as desktop)
+                let displayName = helper.name;
+                let displayDesc = helper.description;
+                let displayDps = helper.baseDps;
+                let displayIcon = helper.icon;
+
+                if (this.game.currentLevel === 'earth' && window.shopManager) {
+                    const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(type);
+                    if (upgradeInfo) {
+                        displayName = upgradeInfo.name;
+                        displayDps = upgradeInfo.dps;
+                        if (upgradeInfo.shopDesc) {
+                            displayDesc = upgradeInfo.shopDesc;
+                        }
+                    }
+                    // Get upgrade-level sprite
+                    const upgradeLevel = this.game.helperUpgradeLevels?.[type] || 0;
+                    const spritePaths = this.game.getHelperSpritePaths(type, upgradeLevel);
+                    if (spritePaths && spritePaths.idle) {
+                        displayIcon = spritePaths.idle;
+                    }
+                }
+
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title">${helper.name}</div>
-                    <div class="shop-item-dps">${helper.baseDps} ĐPS</div>
+                    <div class="shop-item-title">${displayName}</div>
+                    <div class="shop-item-dps">${displayDps} ĐPS</div>
                     <div class="shop-sprite-description-container">
                         <div class="shop-item-sprite">
-                            <img src="${helper.icon}" alt="${helper.name}">
+                            <img src="${displayIcon}" alt="${displayName}">
                         </div>
                         <div class="shop-item-info">
-                            <div class="shop-item-description ${helper.description.length > 75 ? 'long-description' : ''}">${helper.description}</div>
+                            <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
                             <button class="shop-buy-btn" data-helper-type="${type}" ${buttonDisabled}>
                                 <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
                                 <span class="buy-btn-price">${priceText}</span>
@@ -1826,17 +1849,133 @@ class UIManager {
     }
 
     // Update mobile upgrades content
-    updateMobileUpgradesContent() {
+    updateMobileUpgradesContent(fadeInSectionIndex) {
         const mobileUpgradesContainer = document.getElementById('mobile-upgrades-container');
         if (!mobileUpgradesContainer) return;
 
-        // Copy the desktop upgrades content structure
-        mobileUpgradesContainer.innerHTML = `
-            <div style="text-align: center; color: #8b4513; padding: 20px;">
-                <p>Upgrades system coming soon!</p>
-                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">Tap the shop to purchase helpers</p>
-            </div>
-        `;
+        // Get all available helper upgrades for Earth helpers the player owns
+        const availableUpgrades = this.getAvailableHelperUpgrades();
+
+        // Only shuffle once - store the order to prevent changes on scroll
+        if (!this._cachedMobileUpgrades || this._cachedMobileUpgrades.length !== availableUpgrades.length) {
+            this._cachedMobileUpgrades = availableUpgrades.sort(() => Math.random() - 0.5).slice(0, 3);
+        }
+        const displayUpgrades = this._cachedMobileUpgrades;
+
+        // Build HTML for upgrade sections
+        let html = '<div class="mobile-upgrade-sections">';
+
+        for (let i = 0; i < 3; i++) {
+            if (i < displayUpgrades.length) {
+                const upgrade = displayUpgrades[i];
+                const canAfford = this.game.dogecoins >= upgrade.price;
+                const priceText = this.game.formatNumber(upgrade.price);
+
+                // Get sprite path for the upgraded helper
+                const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
+                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.png';
+
+                // Calculate total DPS (new DPS * helper count)
+                const totalDps = upgrade.newDps * upgrade.helperCount;
+                const dpsIncrease = (upgrade.newDps - upgrade.currentDps).toFixed(1);
+
+                html += `
+                    <div class="mobile-upgrade-section${fadeInSectionIndex === i ? ' mobile-upgrade-fade-in' : ''}" data-section-index="${i}">
+                        <div class="mobile-upgrade-item">
+                            <div class="mobile-upgrade-helper-sprite">
+                                <img src="${helperSprite}" alt="${upgrade.helperName}">
+                            </div>
+                            <div class="mobile-upgrade-content">
+                                <div class="mobile-upgrade-header">
+                                    <div class="mobile-upgrade-name">${upgrade.upgradeName}</div>
+                                    <div class="mobile-upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
+                                </div>
+                                <div class="mobile-upgrade-description">${upgrade.upgradeDesc}</div>
+                                <div class="mobile-upgrade-footer">
+                                    <button class="shop-buy-btn mobile-upgrade-buy-btn${canAfford ? '' : ' disabled'}" 
+                                            data-upgrade-helper="${upgrade.helperType}"
+                                            data-section-index="${i}"
+                                            ${canAfford ? '' : 'disabled'}>
+                                        <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                                        <span class="buy-btn-price">${priceText}</span>
+                                    </button>
+                                    <div class="mobile-upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // No upgrade available - show "Looking for Upgrades" state
+                html += `
+                    <div class="mobile-upgrade-section mobile-upgrade-empty" data-section-index="${i}">
+                        <div class="mobile-upgrade-empty-state">
+                            <div class="mobile-upgrade-empty-text">LOOKING FOR UPGRADES...</div>
+                            <div class="searchdog-container-centered">
+                                <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        html += '</div>';
+        mobileUpgradesContainer.innerHTML = html;
+
+        // Attach event listeners for mobile upgrade buy buttons
+        this.setupMobileUpgradeBuyListeners();
+
+        // Remove fade-in class after animation completes
+        if (fadeInSectionIndex !== undefined) {
+            setTimeout(() => {
+                const section = mobileUpgradesContainer.querySelector(`[data-section-index="${fadeInSectionIndex}"]`);
+                if (section) {
+                    section.classList.remove('mobile-upgrade-fade-in');
+                }
+            }, 400);
+        }
+    }
+
+    // Setup mobile upgrade buy button listeners
+    setupMobileUpgradeBuyListeners() {
+        const upgradeButtons = document.querySelectorAll('.mobile-upgrade-buy-btn[data-upgrade-helper]');
+        upgradeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const helperType = button.getAttribute('data-upgrade-helper');
+                const sectionIndex = parseInt(button.getAttribute('data-section-index'), 10);
+
+                if (helperType && window.shopManager) {
+                    const success = window.shopManager.buyHelperUpgrade(helperType);
+                    if (success) {
+                        // Find the upgrade section that contains this button
+                        const section = button.closest('.mobile-upgrade-section');
+                        if (section) {
+                            // Add fade-out class for animation
+                            section.classList.add('mobile-upgrade-fade-out');
+
+                            // Wait for animation to complete, then update content
+                            setTimeout(() => {
+                                section.classList.remove('mobile-upgrade-fade-out');
+                                // Clear cached upgrades to get fresh list
+                                this._cachedMobileUpgrades = null;
+                                // Pass the section index to only fade-in that one
+                                this.updateMobileUpgradesContent(sectionIndex);
+                                // Also update mobile shop and helper bar
+                                this.updateMobileShopContent();
+                                this.game.updateMobileHelperBar();
+                            }, 500);
+                        } else {
+                            this._cachedMobileUpgrades = null;
+                            this.updateMobileUpgradesContent();
+                            this.updateMobileShopContent();
+                            this.game.updateMobileHelperBar();
+                        }
+                    }
+                }
+            });
+        });
     }
 
     // Update mobile achievements content
