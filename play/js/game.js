@@ -1207,7 +1207,7 @@ class DogeMinerGame {
             // Add special classes for different helper types
             if (helperData.type === 'spaceRocket') {
                 helperSprite.classList.add('rocket');
-            } else if (helperData.type === 'miningShibe' || helperData.type === 'moonShibe') {
+            } else if (helperData.type === 'miningShibe' || helperData.type === 'moonShibe' || helperData.type === 'partyShibe' || helperData.type === 'roboShibe') {
                 helperSprite.classList.add('shibe');
             } else if (helperData.type === 'infiniteDogebility') {
                 helperSprite.classList.add('dogebility');
@@ -1354,7 +1354,7 @@ class DogeMinerGame {
                 // Use the first helper's size for collision detection
                 const firstHelper = this.helpersOnCursor[0];
                 let helperSize = 60;
-                if (firstHelper.type === 'miningShibe' || firstHelper.type === 'moonShibe') {
+                if (firstHelper.type === 'miningShibe' || firstHelper.type === 'moonShibe' || firstHelper.type === 'partyShibe' || firstHelper.type === 'roboShibe') {
                     helperSize = 30;
                 } else if (firstHelper.type === 'moonBase' || firstHelper.type === 'landerShibe' || firstHelper.type === 'titanBase' || firstHelper.type === 'altarOfTheSunDoge') {
                     helperSize = 90; // 1.5x helpers
@@ -1974,7 +1974,7 @@ class DogeMinerGame {
         // Add special classes for different helper types
         if (placedHelper.type === 'spaceRocket') {
             helperSprite.classList.add('rocket');
-        } else if (placedHelper.type === 'miningShibe' || placedHelper.type === 'moonShibe') {
+        } else if (placedHelper.type === 'miningShibe' || placedHelper.type === 'moonShibe' || placedHelper.type === 'partyShibe' || placedHelper.type === 'roboShibe') {
             helperSprite.classList.add('shibe');
         } else if (placedHelper.type === 'infiniteDogebility') {
             helperSprite.classList.add('dogebility');
@@ -2050,7 +2050,7 @@ class DogeMinerGame {
             verticalOffset = 10; // Rockets: moved up
         } else if (placedHelper.type === 'dogeKennels') {
             centerOffset = 30;
-        } else if (placedHelper.type === 'miningShibe' || placedHelper.type === 'moonShibe') {
+        } else if (placedHelper.type === 'miningShibe' || placedHelper.type === 'moonShibe' || placedHelper.type === 'partyShibe' || placedHelper.type === 'roboShibe') {
             centerOffset = 15; // Small shibes (30px): ~half width
         } else if (placedHelper.type === 'moonBase') {
             centerOffset = 45; // Moon Base (90px): ~half width
