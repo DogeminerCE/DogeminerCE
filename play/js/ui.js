@@ -161,7 +161,12 @@ class UIManager {
                     if (window.audioManager) {
                         audioManager.playSound('uhoh');
                     }
-                    window.notificationManager?.showWarning?.('LOCKED: Requires DogeStar');
+                    // Show specific missing requirement
+                    if (!this.playerHasDogeStar()) {
+                        window.notificationManager?.showWarning?.('LOCKED: Requires DogeStar');
+                    } else if (!this.playerHasCloudBaseSensorPackage()) {
+                        window.notificationManager?.showWarning?.('LOCKED: Requires Cloud Base Sensor Package');
+                    }
                     return;
                 }
             }
@@ -1396,9 +1401,15 @@ class UIManager {
         return hasDogeStar;
     }
 
+    playerHasCloudBaseSensorPackage() {
+        // Check if player has the Sensor Package upgrade for Cloud Base (level >= 1)
+        const cloudBaseLevel = this.game.helperUpgradeLevels?.cloudBase || 0;
+        return cloudBaseLevel >= 1;
+    }
+
     isTitanUnlocked() {
-        // Titan requires owning at least one DogeStar from Jupiter
-        return this.playerHasDogeStar();
+        // Titan requires owning DogeStar AND having Sensor Package upgrade for Cloud Base
+        return this.playerHasDogeStar() && this.playerHasCloudBaseSensorPackage();
     }
 
     updatePlanetTabVisibility() {

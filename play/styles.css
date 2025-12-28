@@ -3327,6 +3327,53 @@ body[data-planet="mars"] #santa-hat {
     color: white;
 }
 
+/* Jupiter theme styling for upgrade sections */
+.planet-jupiter .upgrade-section::before,
+.planet-jupiter .upgrade-section::after {
+    border-color: rgb(225, 180, 105);
+}
+
+.planet-jupiter .upgrade-empty-state::before,
+.planet-jupiter .upgrade-empty-state::after {
+    border-color: rgb(225, 180, 105);
+}
+
+.planet-jupiter .upgrade-section.has-upgrade {
+    background: linear-gradient(135deg, rgba(250, 205, 125, 0.25) 0%, rgba(255, 250, 240, 0.95) 100%);
+}
+
+.planet-jupiter .upgrade-name {
+    color: #2d2416;
+}
+
+.planet-jupiter .upgrade-total-dps {
+    color: rgb(200, 140, 50);
+}
+
+.planet-jupiter .upgrade-header .upgrade-name {
+    color: #2d2416;
+}
+
+.planet-jupiter .upgrade-description {
+    color: #5a4a2a;
+}
+
+.planet-jupiter .upgrade-dps-increase {
+    color: #2a8a2a;
+}
+
+.planet-jupiter .upgrade-empty-text {
+    color: #2d2416;
+}
+
+.planet-jupiter .upgrade-content .upgrade-header .upgrade-total-dps {
+    color: rgb(200, 140, 50);
+}
+
+.planet-jupiter .upgrade-item-full .upgrade-content .upgrade-header .upgrade-name {
+    color: #2d2416;
+}
+
 .upgrade-name {
     font-size: 13px;
     font-weight: 700;
@@ -4394,6 +4441,32 @@ body[data-planet="mars"] #santa-hat {
 
     .planet-mars .mobile-upgrade-empty-text {
         color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Jupiter theme styling for mobile upgrade sections */
+    .planet-jupiter .mobile-upgrade-section::before,
+    .planet-jupiter .mobile-upgrade-section::after {
+        border-color: rgb(225, 180, 105);
+    }
+
+    .planet-jupiter .mobile-upgrade-name {
+        color: #2d2416;
+    }
+
+    .planet-jupiter .mobile-upgrade-total-dps {
+        color: rgb(200, 140, 50);
+    }
+
+    .planet-jupiter .mobile-upgrade-description {
+        color: #5a4a2a;
+    }
+
+    .planet-jupiter .mobile-upgrade-dps-increase {
+        color: #2a8a2a;
+    }
+
+    .planet-jupiter .mobile-upgrade-empty-text {
+        color: #2d2416;
     }
 
     /* Mobile Achievements Content */

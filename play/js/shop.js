@@ -523,6 +523,44 @@ class ShopManager {
                     { level: 0, name: 'Jupiter Rocket', dps: 100, shopDesc: 'A rocket to fly to Jupiter.' },
                     { level: 1, name: 'Golden Jupiter Rocket', dps: 200, price: 125000000, upgradeName: 'Golden Rocket Plating', upgradeDesc: 'Replace the Jupiter Rocket wooden plating with gold. Much improved.', shopDesc: 'A golden rocket to fly to Jupiter.' },
                     { level: 2, name: 'Diamond Jupiter Rocket', dps: 298, price: 240000000, upgradeName: 'Diamond Rocket Plating', upgradeDesc: 'Replace the Jupiter Rocket gold plating with diamond. Very improved.', shopDesc: 'A diamond rocket to fly to Jupiter.' }
+                ],
+                // Jupiter Helper Upgrades
+                cloudBase: [
+                    { level: 0, name: 'Cloud Base', dps: 100, shopDesc: 'A flying base in the clouds of Jupiter.' },
+                    { level: 1, name: 'Cloud Base', dps: 139, price: 30000000, upgradeName: 'Sensor Package', upgradeDesc: 'Improve the scanning capabilities of the Cloud Base.', shopDesc: 'A flying base in the clouds of Jupiter.' },
+                    { level: 2, name: 'Smart Cloud Base', dps: 169, price: 100000000, upgradeName: 'AI Package', upgradeDesc: 'An artificial intelligence control system for the Cloud Base.', shopDesc: 'A flying base in the clouds of Jupiter.' },
+                    { level: 3, name: 'Smart Golden Cloud Base', dps: 310, price: 285000000, upgradeName: 'What Else But Gold', upgradeDesc: 'Gold plating for the Cloud Base increases its power.', shopDesc: 'A golden flying base in the clouds of Jupiter.' },
+                    { level: 4, name: 'Smart Diamond Cloud Base', dps: 446, price: 780000000, upgradeName: 'Are Those Real Diamonds?', upgradeDesc: 'Diamond plating for the Cloud Base, much shiny.', shopDesc: 'A diamond flying base in the clouds of Jupiter.' }
+                ],
+                superShibe: [
+                    { level: 0, name: 'Super Shibe', dps: 55, shopDesc: 'Strong shibes who fly around mining everything.' },
+                    { level: 1, name: 'Juiced Super Shibe', dps: 79, price: 35000000, upgradeName: 'Cloud Juice', upgradeDesc: 'Adds some of Jupiters gasses to the Super Shibe\'s protein shakes.', shopDesc: 'Scary-strong shibe enhanced with Jupiter Juice.' },
+                    { level: 2, name: 'Juiced Super Shibe', dps: 140, price: 77000000, upgradeName: 'Helmet Factor Two', upgradeDesc: 'Shiny golden helmet for the Super Shibes.', shopDesc: 'Scary-strong shibe enhanced with Jupiter juice and golden helmet.' },
+                    { level: 3, name: 'Juiced Super Shibe', dps: 209, price: 180000000, upgradeName: 'We Can Do Better', upgradeDesc: 'Very hard diamond helmet for the Super Shibes.', shopDesc: 'Scary-strong shibe enhanced with Jupiter juice and diamond helmet.' }
+                ],
+                dogeAirShip: [
+                    { level: 0, name: 'Doge Air Ship', dps: 90, shopDesc: 'A slow flying ship piloted by astro shibes.' },
+                    { level: 1, name: 'Doge Rocket Ship', dps: 140, price: 160000000, upgradeName: 'Rockets Beats Balloons', upgradeDesc: 'Replace balloons with rockets because ..awesome.', shopDesc: 'A very fast flying ship piloted by astro shibes.' },
+                    { level: 2, name: 'Doge Rocket Ship', dps: 180, price: 220000000, upgradeName: 'Golden Rockets', upgradeDesc: 'Replace the metal of the rockets with gold.', shopDesc: 'A very fast flying ship piloted by astro shibes.' },
+                    { level: 3, name: 'Doge Rocket Ship', dps: 230, price: 350000000, upgradeName: 'Diamond Rockets', upgradeDesc: 'Replace the metal of the rockets with diamonds.', shopDesc: 'A very fast flying ship piloted by astro shibes.' }
+                ],
+                flyingDoggo: [
+                    { level: 0, name: 'Flying Doggo', dps: 110, shopDesc: 'It comes wif two sub-woofers.' },
+                    { level: 1, name: 'Flying Doggo', dps: 140, price: 65000000, upgradeName: 'Doggo Bling', upgradeDesc: 'Give the Flying Doggo some bling-bling.', shopDesc: 'It comes wif two sub-woofers.' },
+                    { level: 2, name: 'Rocket-Boosted Flying Doggo', dps: 165, price: 100000000, upgradeName: 'Gotta Go Fast', upgradeDesc: 'Attach rocket boosters on top of the Flying Doggo.', shopDesc: 'It comes wif two sub-woofers.' },
+                    { level: 3, name: 'Gold-Rocketed Flying Doggo', dps: 260, price: 280000000, upgradeName: 'Gotta Go Faster', upgradeDesc: 'Replace the Flying Doggos rockets with shiny golden ones.', shopDesc: 'It comes wif two sub-woofers. Goldified.' },
+                    { level: 4, name: 'Diamond-Rocketed Flying Doggo', dps: 485, price: 510000000, upgradeName: 'Gotta Go Really Fast', upgradeDesc: 'Replace the Flying Doggos rockets with shinier diamond ones.', shopDesc: 'It comes wif two sub-woofers. Diamondfied.' }
+                ],
+                tardogeis: [
+                    { level: 0, name: 'TARDogeIS', dps: 150, shopDesc: 'Time and Relative Doge in Space exists everywhere at the same time. Sort of.' },
+                    { level: 1, name: 'TARDogeIS', dps: 192, price: 195000000, upgradeName: 'Rockets Equals Wow', upgradeDesc: 'Add rockets to the TARDogeIS for better maneuverability.', shopDesc: 'Time and Relative Doge in Space exists everywhere at the same time. Sort of.' },
+                    { level: 2, name: 'TARDogeIS', dps: 300, price: 300000000, upgradeName: 'Better, Faster Rockets', upgradeDesc: 'Golden rockets for the TARDogeIS for much speed.', shopDesc: 'Time and Relative Doge in Space exists everywhere at the same time. Sort of.' },
+                    { level: 3, name: 'TARDogeIS', dps: 499, price: 480000000, upgradeName: 'Hard Rock Ets', upgradeDesc: 'Diamond rockets for the TARDogeIS for super hard shinyness.', shopDesc: 'Time and Relative Doge in Space exists everywhere at the same time. Sort of.' }
+                ],
+                dogeStar: [
+                    { level: 0, name: 'DogeStar', dps: 600, shopDesc: 'A space station the size of a small moon, equipped with a mining laser.' },
+                    { level: 1, name: 'Golden DogeStar', dps: 920, price: 7500000000, upgradeName: 'That\'s Gold Jerry!', upgradeDesc: 'Replace the hull of the DogeStar with golden plates.', shopDesc: 'A golden space station the size of a small moon, equipped with a mining laser.' },
+                    { level: 2, name: 'Diamond DogeStar', dps: 2770, price: 12500000000, upgradeName: 'Are Those Diamonds Jerry?!', upgradeDesc: 'Replace the hull of the DogeStar with diamond plates.', shopDesc: 'A diamond space station the size of a small moon, equipped with a mining laser.' }
                 ]
             }
         };

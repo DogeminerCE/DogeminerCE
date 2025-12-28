@@ -1,121 +1,108 @@
-**`UPGRADES (MARS)`**
+**`UPGRADES (JUPITER)`**
 
-`Mars Base`  
+`Cloud Base`  
 `Level 1`  
-`Double Mars Bases				Shibe Name: 2x Mars Base`  
-*`Double the amount of Mars bases with smaller bases. Efficiency is key.`*  
-`Price: 750,000 Doge								DPS: 31`  
-`Shop Desc: Two bases on Mars to mine ludicrous amounts of Dogecoin.`  
+`Sensor Package				Shibe Name: Cloud Base`  
+*`Improve the scanning capabilities of the Cloud Base.`*  
+`Price: 30,000,000 Doge								DPS: 139`  
+`Shop Desc: A flying base in the clouds of Jupiter.`  
 `Level 2`  
-`Quad Mars Base				Shibe Name: 4x Mars Base`  
-*`Quadruple the amount of Mars bases.`*  
-`Price: 6,000,000 Doge								DPS: 38`  
-`Shop Desc: Four bases on mars to mine ludicrous amounts of Dogecoin.`  
+`AI Package					Shibe Name: Smart Cloud Base`  
+*`An artificial intelligence control system for the Cloud Base.`*  
+`Price: 100,000,000 Doge								DPS: 169`  
+`Shop Desc: A flying base in the clouds of Jupiter.`  
 `Level 3`  
-`Heckin-Ton of Bases			Shibe Name: 36x Mars Base`  
-*`A heckin lot of Mars Bases. 36 to be exact.`*  
-`Price: 400,000,000 Doge								DPS: 47`  
-`Shop Desc: A lot of bases on Mars to mine silly amounts of Dogecoin.`  
+`What Else But Gold				Shibe Name: Smart Golden Cloud Base`  
+*`Gold plating for the Cloud Base increases its power.`*  
+`Price: 285,000,000 Doge								DPS: 310`  
+`Shop Desc: A golden flying base in the clouds of Jupiter.`  
 `Level 4`  
-`Spray It With Gold				Shibe Name: 36x Goldy Mars Bases`  
-*`Spray the 36x Mars Bases with gold for extra shine.`*  
-`Price: 800,000,000 Doge								DPS: 99`  
-`Shop Desc: A lot of goldy bases on Mars to mine muchest dogecoins.`  
-`Level 5`  
-`Apply To Outside Only			Shibe Name: 36x Diamondy Mars Bases`  
-*`Expensive diamond coating for the 36x Mars Bases.`*  
-`Price: 1,600,000,000 Doge								DPS: 280`  
-`Shop Desc: Shiny bases on Mars to mine ridiculous amounts of Dogecoin.`
+`Are Those Real Diamonds?			Shibe Name: Smart Diamond Cloud Base`  
+*`Diamond plating for the Cloud Base, much shiny.`*  
+`Price: 780,000,000 Doge								DPS: 446`  
+`Shop Desc: A diamond flying base in the clouds of Jupiter.`
 
-`Party Shibe`  
+`Super Shibe`  
 `Level 1`  
-`Proper Raving				Shibe Name: Rave Shibe`   
-*`Give the Party Shibe some glowsticks instead of pickaxes.`*  
-`Price: 610,000 Doge								DPS: 35`  
-`Shop Desc: Cool space rave party shibes to rave much Dogecoin. With glowsticks.`  
+`Cloud Juice					Shibe Name: Juiced Super Shibe`  
+*`Adds some of Jupiters gasses to the Super Shibe’s protein shakes.`*  
+`Price: 35,000,000 Doge								DPS: 79`  
+`Shop Desc: Scary-strong shibe enhanced with Jupiter Juice.`  
 `Level 2`  
-`Dual-Wielding Ravers			Shibe Name: DW Rave Shibe`  
-*`Additional glowsticks for Rave Shibes.`*  
-`Price: 1,250,000 Doge								DPS: 40`  
-`Shop Desc: Cool space rave party shibes to rave much dogecoin.`
-
+`Helmet Factor Two				Shibe Name: Juiced Super Shibe`  
+*`Shiny golden helmet for the Super Shibes.`*  
+`Price: 77,000,000 Doge								DPS: 140`  
+`Shop Desc: Scary-strong shibe enhanced with Jupiter juice and golden helmet.`  
 `Level 3`  
-`Sugar Baby					Shibe Name: Sugar-Rushed Shibe`  
-*`Give the shibes lots of sugary treats to speed them up.`*  
-`Price: 38,000,000 Doge								DPS: 78`  
-`Shop Desc: Cool sugary rave party shibes to rave much dogecoin.`  
-`Level 4`  
-`Shiny Shibe					Shibe Name: Shiny E-Shibe`  
-*`Give the shibes shiny golden shirts for higher blingability`*`.`  
-`Price: 99,000,000 Doge								DPS: 139`  
-`Shop Desc: Cool shiny space rave party shibe to race much dogecoin.`  
-`Level 5`  
-`Shinier Shibe				Shibe Name: Very Shiny E-Shibe`  
-*`Give the shibes shiny diamond shirts for even more bling.`*  
-`Price: 320,000,000 Doge								DPS: 199`  
-`Shop Desc: Cool shiny space rave party shibe to rave much dogecoin.`
+`We Can Do Better				Shibe Name: Juiced Super Shibe`  
+*`Very hard diamond helmet for the Super Shibes.`*  
+`Price: 180,000,000 Doge								DPS: 209`  
+`Shop Desc: Scary-strong shibe enhanced with Jupiter juice and diamond helmet.`
 
-`CuriousiDoge`  
+`Doge Air Ship`  
 `Level 1`  
-`Party Mode					Shibe Name: CuriousiDoge`  
-*`Engage Party Mode for CuriousiDoge.`*  
-`Price: 620,000 Doge								DPS: 38`  
-`Shop Desc: Much curious Doge to explore Mars riches. Party mode.`  
+`Rockets Beats Balloons			Shibe Name: Doge Rocket Ship`  
+*`Replace balloons with rockets because ..awesome.`*  
+`Price: 160,000,000 Doge								DPS: 140`  
+`Shop Desc: A very fast flying ship piloted by astro shibes.`  
 `Level 2`  
-`Party Hydra					Shibe Name: CuriousiDoge`  
-*`The Party Hydra upgrade gives CuriosiDoge a lot more heads.`*  
-`Price: 2,250,000 Doge								DPS: 48`  
-`Shop Desc: Much curious Doge to explore Mars riches. Party hydra.`
-
-`DJ Kittens`  
-`Level 1`  
-`D.I.S.C.O.					Shibe Name: DJ Kittenz`  
-*`It’s disco time.`*  
-`Price: 1,450,000									DPS: 57`  
-`Shop Desc: Very music creation. Now playing disco.`  
-`Level 2`  
-`Swag Upgrade					Shibe Name: DJ Kittenz`  
-*`Give DJ Kittenz some fresh swag.`*  
-`Price: 37,500,000 Doge								DPS: 75`  
-`Shop Desc: Very music creation. Now playing hiphop.`  
+`Golden Rockets				Shibe Name: Doge Rocket Ship`  
+*`Replace the metal of the rockets with gold.`*  
+`Price: 220,000,000 Doge								DPS: 180`  
+`Shop Desc: A very fast flying ship piloted by astro shibes.`  
 `Level 3`  
-`Wash-Oops					Shibe Name: DJ Kittenz`  
-*`Accidentally color DJ Kittenz swag purple in the washer.`*  
-`Price: 120,000,000 Doge								DPS: 99`  
-`Shop Desc: Very music creation. Now playing: EDM.`
+`Diamond Rockets				Shibe Name: Doge Rocket Ship`  
+*`Replace the metal of the rockets with diamonds.`*  
+`Price: 350,000,000 Doge								DPS: 230`  
+`Shop Desc: A very fast flying ship piloted by astro shibes.`
 
+`Flying Doggo`  
+`Level 1`  
+`Doggo Bling					Shibe Name: Flying Doggo`  
+*`Give the Flying Doggo some bling-bling.`*  
+`Price: 65,000,000 Doge								DPS: 140`  
+`Shop Desc: It comes wif two sub-woofers.`  
+`Level 2`  
+`Gotta Go Fast				Shibe Name: Rocket-Boosted Flying Doggo`  
+*`Attach rocket boosters on top of the Flying Doggo.`*  
+`Price: 100,000,000 Doge								DPS: 165`  
+`Shop Desc: It comes wif two sub-woofers.`  
+`Level 3`  
+`Gotta Go Faster				Shibe Name: Gold-Rocketed Flying Doggo`  
+*`Replace the Flying Doggos rockets with shiny golden ones.`*  
+`Price: 280,000,000 Doge								DPS: 260`  
+`Shop Desc: It comes wif two sub-woofers. Goldified.`  
 `Level 4`  
-`Golden Hits					Shibe Name: DJ Kittenz`  
-*`Enter the golden disco era with DJ Kittenz.`*  
-`Price: 290,000,000 Doge								DPS: 133`  
-`Shop Desc: Very music creation. Now playing: Golden Hits.`  
-`Level 5`  
-`Diamond Hits?				Shibe Name: DJ Kittenz`  
-*`There’s a diamond disco era. Feat. DJ Kittenz`*  
-`Price: 525,000,000 Doge								DPS: 200`  
-`Shop Desc: Very music creation. Now playing: Diamond Hits.`
+`Gotta Go Really Fast			Shibe Name: Diamond-Rocketed Flying Doggo`  
+*`Replace the Flying Doggos rockets with shinier diamond ones.`*  
+`Price: 510,000,000 Doge								DPS: 485`  
+`Shop Desc: It comes wif two sub-woofers. Diamondfied.`
 
-`Space Bass`  
+`TARDogeIS`  
 `Level 1`  
-`Golden Bass					Shibe Name: Golden Space Bass`  
-*`Give the Space Bass the Golden Bass upgrade for extra bling.`*  
-`Price: 265,000,000 Doge								DPS: 122`  
-`Shop Desc: Golden vibrations. In space.`  
+`Rockets Equals Wow				Shibe Name: TARDogeIS`  
+*`Add rockets to the TARDogeIS for better maneuverability.`*  
+`Price: 195,000,000 Doge								DPS: 192`  
+`Shop Desc: Time and Relative Doge in Space exists everywhere at the same time. Sort of.`  
 `Level 2`  
-`Diamond Bass					Shibe Name: Diamond Space Bass`  
-*`Give the Space Bass the Diamond Bass upgrade for very shine.`*  
-`Price: 565,000,000 Doge								DPS: 229`  
-`Shop Desc: Diamond vibrations in space.`
+`Better, Faster Rockets			Shibe Name: TARDogeIS`  
+*`Golden rockets for the TARDogeIS for much speed.`*  
+`Price: 300,000,000 Doge								DPS: 300`  
+`Shop Desc: Time and Relative Doge in Space exists everywhere at the same time. Sort of.`  
+`Level 3`  
+`Hard Rock Ets				Shibe Name: TARDogeIS`  
+*`Diamond rockets for the TARDogeIS for super hard shinyness.`*  
+`Price: 480,000,000 Doge								DPS: 499`  
+`Shop Desc: Time and Relative Doge in Space exists everywhere at the same time. Sort of.`
 
-`Jupiter Rocket`  
+`DogeStar`  
 `Level 1`  
-`Golden Rocket Plating			Shibe Name: Golden Jupiter Rocket`  
-*`Replace the Jupiter Rocket wooden plating with gold. Much improved.`*  
-`Price: 125,000,000 Doge								DPS: 200`  
-`Shop Desc: A golden rocket to fly to Jupiter.`  
+`That’s Gold Jerry!				Shibe Name: Golden DogeStar`  
+*`Replace the hull of the DogeStar with golden plates.`*  
+`Price: 7,500,000,000 Doge								DPS: 920`  
+`Shop Desc: A golden space station the size of a small moon, equipped with a mining laser.`  
 `Level 2`  
-`Diamond Rocket Plating			Shibe Name: Diamond Jupiter Rocket`  
-*`Replace the Jupiter Rocket gold plating with diamond. Very improved.`*  
-`Price: 240,000,000 Doge								DPS: 298`  
-`Shop Desc: A diamond rocket to fly to Jupiter.`
-
+`Are Those Diamonds Jerry?!		Shibe Name: Diamond DogeStar`  
+*`Replace the hull of the DogeStar with diamond plates.`*  
+`Price: 12,500,000,000 Doge							DPS: 2,770`  
+`Shop Desc: A diamond space station the size of a small moon, equipped with a mining laser.`
