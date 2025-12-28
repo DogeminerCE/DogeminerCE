@@ -605,6 +605,13 @@ class SaveManager {
     }
 
     autoSave() {
+        // Don't auto-save during planet transitions to prevent race condition
+        // where helpers get saved to the wrong planet's array
+        if (this.game.isTransitioning) {
+            console.log('Skipping auto-save during planet transition');
+            return;
+        }
+
         if (this.game.autoSaveEnabled !== false) {
             this.saveGame();
 
