@@ -2558,15 +2558,29 @@ class DogeMinerGame {
             return total + (upgradeDPS || helper.dps);
         }, 0);
 
-        // Calculate Moon helpers DPS
+        // Calculate Moon helpers DPS using upgrade-based DPS
         const moonDPS = this.moonHelpers.reduce((total, helper) => {
-            return total + helper.dps;
+            const upgradeDPS = getHelperDPS(helper.type);
+            return total + (upgradeDPS || helper.dps);
         }, 0);
 
-        // Calculate Mars, Jupiter, and Titan helpers DPS
-        const marsDPS = this.marsHelpers.reduce((total, helper) => total + helper.dps, 0);
-        const jupiterDPS = this.jupiterHelpers.reduce((total, helper) => total + helper.dps, 0);
-        const titanDPS = this.titanHelpers.reduce((total, helper) => total + helper.dps, 0);
+        // Calculate Mars helpers DPS using upgrade-based DPS
+        const marsDPS = this.marsHelpers.reduce((total, helper) => {
+            const upgradeDPS = getHelperDPS(helper.type);
+            return total + (upgradeDPS || helper.dps);
+        }, 0);
+
+        // Calculate Jupiter helpers DPS using upgrade-based DPS
+        const jupiterDPS = this.jupiterHelpers.reduce((total, helper) => {
+            const upgradeDPS = getHelperDPS(helper.type);
+            return total + (upgradeDPS || helper.dps);
+        }, 0);
+
+        // Calculate Titan helpers DPS using upgrade-based DPS
+        const titanDPS = this.titanHelpers.reduce((total, helper) => {
+            const upgradeDPS = getHelperDPS(helper.type);
+            return total + (upgradeDPS || helper.dps);
+        }, 0);
 
         this.dps = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
 

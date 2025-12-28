@@ -226,6 +226,10 @@ class UIManager {
                 // Update game state to reflect planet change
                 this.game.currentLevel = planetName;
 
+                // Clear upgrade caches so they refresh for the new planet
+                this._cachedUpgrades = null;
+                this._cachedMobileUpgrades = null;
+
                 // Set data-planet attribute on body for CSS targeting
                 document.body.dataset.planet = planetName;
 
@@ -534,13 +538,13 @@ class UIManager {
                 const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
                 const canAfford = this.game.dogecoins >= cost;
 
-                // Get upgrade-based info for Earth helpers
+                // Get upgrade-based info for helpers (applies to all levels with upgrades)
                 let displayName = helper.name;
                 let displayDesc = helper.description;
                 let displayDps = helper.baseDps;
                 let displayIcon = helper.icon;
 
-                if (this.game.currentLevel === 'earth' && window.shopManager) {
+                if (window.shopManager) {
                     const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(type);
                     if (upgradeInfo) {
                         displayName = upgradeInfo.name;
@@ -1828,7 +1832,7 @@ class UIManager {
                 let displayDps = helper.baseDps;
                 let displayIcon = helper.icon;
 
-                if (this.game.currentLevel === 'earth' && window.shopManager) {
+                if (window.shopManager) {
                     const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(type);
                     if (upgradeInfo) {
                         displayName = upgradeInfo.name;
