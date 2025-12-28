@@ -3280,6 +3280,53 @@ body[data-planet="mars"] #santa-hat {
     color: #2a8a2a;
 }
 
+/* Mars theme styling for upgrade sections */
+.planet-mars .upgrade-section::before,
+.planet-mars .upgrade-section::after {
+    border-color: rgb(130, 80, 75);
+}
+
+.planet-mars .upgrade-empty-state::before,
+.planet-mars .upgrade-empty-state::after {
+    border-color: rgb(130, 80, 75);
+}
+
+.planet-mars .upgrade-section.has-upgrade {
+    background: linear-gradient(135deg, rgba(125, 30, 95, 0.25) 0%, rgba(80, 35, 30, 0.95) 100%);
+}
+
+.planet-mars .upgrade-name {
+    color: white;
+}
+
+.planet-mars .upgrade-total-dps {
+    color: rgb(255, 180, 160);
+}
+
+.planet-mars .upgrade-header .upgrade-name {
+    color: white;
+}
+
+.planet-mars .upgrade-description {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.planet-mars .upgrade-dps-increase {
+    color: #6ee76e;
+}
+
+.planet-mars .upgrade-empty-text {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.planet-mars .upgrade-content .upgrade-header .upgrade-total-dps {
+    color: rgb(255, 180, 160);
+}
+
+.planet-mars .upgrade-item-full .upgrade-content .upgrade-header .upgrade-name {
+    color: white;
+}
+
 .upgrade-name {
     font-size: 13px;
     font-weight: 700;
@@ -4321,6 +4368,32 @@ body[data-planet="mars"] #santa-hat {
 
     .moon-theme .mobile-upgrade-empty-text {
         color: rgb(40, 95, 155);
+    }
+
+    /* Mars theme styling for mobile upgrade sections */
+    .planet-mars .mobile-upgrade-section::before,
+    .planet-mars .mobile-upgrade-section::after {
+        border-color: rgb(130, 80, 75);
+    }
+
+    .planet-mars .mobile-upgrade-name {
+        color: white;
+    }
+
+    .planet-mars .mobile-upgrade-total-dps {
+        color: rgb(255, 180, 160);
+    }
+
+    .planet-mars .mobile-upgrade-description {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .planet-mars .mobile-upgrade-dps-increase {
+        color: #6ee76e;
+    }
+
+    .planet-mars .mobile-upgrade-empty-text {
+        color: rgba(255, 255, 255, 0.9);
     }
 
     /* Mobile Achievements Content */

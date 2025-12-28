@@ -483,6 +483,46 @@ class ShopManager {
                     { level: 0, name: 'Doge Gate', dps: 155, shopDesc: 'A Doge Gate for instant galaxy-wide dogecoin transfers.' },
                     { level: 1, name: 'Golden Doge Gate', dps: 575, price: 6900000000, upgradeName: 'Golden Gate', upgradeDesc: 'Gold plated Doge Gates.', shopDesc: 'A golden Doge Gate for instant, galaxy-wide dogecoin transfers.' },
                     { level: 2, name: 'Diamond Doge Gate', dps: 1875, price: 9900000000, upgradeName: 'Diamond Gate', upgradeDesc: 'Diamond plated Doge Gates. Yeah.', shopDesc: 'A diamond Doge Gate for instant, galaxy-wide dogecoin transfers.' }
+                ],
+                // Mars Helper Upgrades
+                marsBase: [
+                    { level: 0, name: 'Mars Base', dps: 23, shopDesc: 'A base on Mars to mine ludicrous amounts of Dogecoin.' },
+                    { level: 1, name: '2x Mars Base', dps: 31, price: 750000, upgradeName: 'Double Mars Bases', upgradeDesc: 'Double the amount of Mars bases with smaller bases. Efficiency is key.', shopDesc: 'Two bases on Mars to mine ludicrous amounts of Dogecoin.' },
+                    { level: 2, name: '4x Mars Base', dps: 38, price: 6000000, upgradeName: 'Quad Mars Base', upgradeDesc: 'Quadruple the amount of Mars bases.', shopDesc: 'Four bases on mars to mine ludicrous amounts of Dogecoin.' },
+                    { level: 3, name: '36x Mars Base', dps: 47, price: 400000000, upgradeName: 'Heckin-Ton of Bases', upgradeDesc: 'A heckin lot of Mars Bases. 36 to be exact.', shopDesc: 'A lot of bases on Mars to mine silly amounts of Dogecoin.' },
+                    { level: 4, name: '36x Goldy Mars Bases', dps: 99, price: 800000000, upgradeName: 'Spray It With Gold', upgradeDesc: 'Spray the 36x Mars Bases with gold for extra shine.', shopDesc: 'A lot of goldy bases on Mars to mine muchest dogecoins.' },
+                    { level: 5, name: '36x Diamondy Mars Bases', dps: 280, price: 1600000000, upgradeName: 'Apply To Outside Only', upgradeDesc: 'Expensive diamond coating for the 36x Mars Bases.', shopDesc: 'Shiny bases on Mars to mine ridiculous amounts of Dogecoin.' }
+                ],
+                partyShibe: [
+                    { level: 0, name: 'Party Shibe', dps: 26, shopDesc: 'Cool space rave party shibes to rave much dogecoin.' },
+                    { level: 1, name: 'Rave Shibe', dps: 35, price: 610000, upgradeName: 'Proper Raving', upgradeDesc: 'Give the Party Shibe some glowsticks instead of pickaxes.', shopDesc: 'Cool space rave party shibes to rave much Dogecoin. With glowsticks.' },
+                    { level: 2, name: 'DW Rave Shibe', dps: 40, price: 1250000, upgradeName: 'Dual-Wielding Ravers', upgradeDesc: 'Additional glowsticks for Rave Shibes.', shopDesc: 'Cool space rave party shibes to rave much dogecoin.' },
+                    { level: 3, name: 'Sugar-Rushed Shibe', dps: 78, price: 38000000, upgradeName: 'Sugar Baby', upgradeDesc: 'Give the shibes lots of sugary treats to speed them up.', shopDesc: 'Cool sugary rave party shibes to rave much dogecoin.' },
+                    { level: 4, name: 'Shiny E-Shibe', dps: 139, price: 99000000, upgradeName: 'Shiny Shibe', upgradeDesc: 'Give the shibes shiny golden shirts for higher blingability.', shopDesc: 'Cool shiny space rave party shibe to race much dogecoin.' },
+                    { level: 5, name: 'Very Shiny E-Shibe', dps: 199, price: 320000000, upgradeName: 'Shinier Shibe', upgradeDesc: 'Give the shibes shiny diamond shirts for even more bling.', shopDesc: 'Cool shiny space rave party shibe to rave much dogecoin.' }
+                ],
+                curiosiDoge: [
+                    { level: 0, name: 'CuriosiDoge', dps: 30, shopDesc: 'Much curious Doge to explore Mars riches.' },
+                    { level: 1, name: 'CuriosiDoge', dps: 38, price: 620000, upgradeName: 'Party Mode', upgradeDesc: 'Engage Party Mode for CuriousiDoge.', shopDesc: 'Much curious Doge to explore Mars riches. Party mode.' },
+                    { level: 2, name: 'CuriosiDoge', dps: 48, price: 2250000, upgradeName: 'Party Hydra', upgradeDesc: 'The Party Hydra upgrade gives CuriosiDoge a lot more heads.', shopDesc: 'Much curious Doge to explore Mars riches. Party hydra.' }
+                ],
+                djKittenz: [
+                    { level: 0, name: 'DJ Kittenz', dps: 45, shopDesc: 'Very music creation. DJ Kittenz specializes in House music.' },
+                    { level: 1, name: 'DJ Kittenz', dps: 57, price: 1450000, upgradeName: 'D.I.S.C.O.', upgradeDesc: 'It\'s disco time.', shopDesc: 'Very music creation. Now playing disco.' },
+                    { level: 2, name: 'DJ Kittenz', dps: 75, price: 37500000, upgradeName: 'Swag Upgrade', upgradeDesc: 'Give DJ Kittenz some fresh swag.', shopDesc: 'Very music creation. Now playing hiphop.' },
+                    { level: 3, name: 'DJ Kittenz', dps: 99, price: 120000000, upgradeName: 'Wash-Oops', upgradeDesc: 'Accidentally color DJ Kittenz swag purple in the washer.', shopDesc: 'Very music creation. Now playing: EDM.' },
+                    { level: 4, name: 'DJ Kittenz', dps: 133, price: 290000000, upgradeName: 'Golden Hits', upgradeDesc: 'Enter the golden disco era with DJ Kittenz.', shopDesc: 'Very music creation. Now playing: Golden Hits.' },
+                    { level: 5, name: 'DJ Kittenz', dps: 200, price: 525000000, upgradeName: 'Diamond Hits?', upgradeDesc: 'There\'s a diamond disco era. Feat. DJ Kittenz', shopDesc: 'Very music creation. Now playing: Diamond Hits.' }
+                ],
+                spaceBass: [
+                    { level: 0, name: 'Space Bass', dps: 70, shopDesc: 'It is said to vibrate the essence of gravity itself.' },
+                    { level: 1, name: 'Golden Space Bass', dps: 122, price: 265000000, upgradeName: 'Golden Bass', upgradeDesc: 'Give the Space Bass the Golden Bass upgrade for extra bling.', shopDesc: 'Golden vibrations. In space.' },
+                    { level: 2, name: 'Diamond Space Bass', dps: 229, price: 565000000, upgradeName: 'Diamond Bass', upgradeDesc: 'Give the Space Bass the Diamond Bass upgrade for very shine.', shopDesc: 'Diamond vibrations in space.' }
+                ],
+                jupiterRocket: [
+                    { level: 0, name: 'Jupiter Rocket', dps: 100, shopDesc: 'A rocket to fly to Jupiter.' },
+                    { level: 1, name: 'Golden Jupiter Rocket', dps: 200, price: 125000000, upgradeName: 'Golden Rocket Plating', upgradeDesc: 'Replace the Jupiter Rocket wooden plating with gold. Much improved.', shopDesc: 'A golden rocket to fly to Jupiter.' },
+                    { level: 2, name: 'Diamond Jupiter Rocket', dps: 298, price: 240000000, upgradeName: 'Diamond Rocket Plating', upgradeDesc: 'Replace the Jupiter Rocket gold plating with diamond. Very improved.', shopDesc: 'A diamond rocket to fly to Jupiter.' }
                 ]
             }
         };
