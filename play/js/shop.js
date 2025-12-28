@@ -561,6 +561,42 @@ class ShopManager {
                     { level: 0, name: 'DogeStar', dps: 600, shopDesc: 'A space station the size of a small moon, equipped with a mining laser.' },
                     { level: 1, name: 'Golden DogeStar', dps: 920, price: 7500000000, upgradeName: 'That\'s Gold Jerry!', upgradeDesc: 'Replace the hull of the DogeStar with golden plates.', shopDesc: 'A golden space station the size of a small moon, equipped with a mining laser.' },
                     { level: 2, name: 'Diamond DogeStar', dps: 2770, price: 12500000000, upgradeName: 'Are Those Diamonds Jerry?!', upgradeDesc: 'Replace the hull of the DogeStar with diamond plates.', shopDesc: 'A diamond space station the size of a small moon, equipped with a mining laser.' }
+                ],
+                // Titan Helper Upgrades
+                titanBase: [
+                    { level: 0, name: 'Titan Base', dps: 165, shopDesc: 'A base on Titan to mine dogecoins and manufacture robots.' },
+                    { level: 1, name: 'Golden Titan Base', dps: 400, price: 1000000000, upgradeName: 'Golden Plates', upgradeDesc: 'Replace the plating of the Titan Base with gold plates.', shopDesc: 'A golden base on Titan to mine dogecoins and manufacture robots.' },
+                    { level: 2, name: 'Diamond Titan Base', dps: 700, price: 2000000000, upgradeName: 'Diamond Plates', upgradeDesc: 'Replace the plating of the Titan Base with diamond plates.', shopDesc: 'A diamond base on Titan to mine dogecoins and manufacture robots.' }
+                ],
+                roboShibe: [
+                    { level: 0, name: 'Robo Shibe', dps: 195, shopDesc: 'A robotic shibe to mine the riches on Titan.' },
+                    { level: 1, name: 'Smart-ish Robo Shibe', dps: 852, price: 195000000, upgradeName: 'Deeper Learning', upgradeDesc: 'Machine-Learning chip for the Robo Shibe to make it smarter.', shopDesc: 'A smart-ish robotic shibe to mine Titan\'s Riches.' },
+                    { level: 2, name: 'Superintelligent Robo Shibe', dps: 502, price: 295000000, upgradeName: 'SuperIntelligence', upgradeDesc: 'Upgrade the Robo Shibe AI chip to make it superintelligent.', shopDesc: 'A superintelligent robotic shibe to mine Titan\'s Riches.' },
+                    { level: 3, name: 'Superintelligent Golden Shibe', dps: 895, price: 620000000, upgradeName: 'Super-Gold', upgradeDesc: 'Goldifies the Robo Shibe.', shopDesc: 'A superintelligent robotic shibe to mine Titan\'s Riches.' },
+                    { level: 4, name: 'Superintelligent Diamond Shibe', dps: 1337, price: 1337000000, upgradeName: 'Super-Hard', upgradeDesc: 'Diamond body for the Robo Shibe.', shopDesc: 'A superintelligent robotic shibe to mine Titan\'s Riches.' }
+                ],
+                heavyDogeWalker: [
+                    { level: 0, name: 'Heavy Doge Walker', dps: 400, shopDesc: 'Large vehicle. Much cargo, Very carry.' },
+                    { level: 1, name: 'Heavy Doge Hoverer', dps: 850, price: 7200000000, upgradeName: 'Advanced Hover Tech', upgradeDesc: 'Turn the Heavy Doge Walker into a hovercraft.', shopDesc: 'Large hovercraft. Much cargo. Very hover.' },
+                    { level: 2, name: 'Heavy Diamond Doge Hoverer', dps: 1700, price: 20100000000, upgradeName: 'Advanced Diamond Tech', upgradeDesc: 'Put shiny diamond tech on the Heavy Doge Hoverer.', shopDesc: 'Large hovercraft. Much cargo. Very diamond.' }
+                ],
+                coinSeeker5000: [
+                    { level: 0, name: 'Coin Seeker 5000', dps: 500, shopDesc: 'Advanced robotic dogecoin seeking predator.' },
+                    { level: 1, name: 'Coin Seeker 6000', dps: 900, price: 6400000000, upgradeName: 'Golden Backpack', upgradeDesc: 'Give the Coin Seeker 5000 a backpack to carry much dogecoins.', shopDesc: 'Advanced robotic dogecoin seeking predator. With backpack.' },
+                    { level: 2, name: 'Coin Seeker 7000', dps: 1800, price: 23500000000, upgradeName: 'Needs More Gold', upgradeDesc: 'Polish the Coin Seeker so it can seek out more coins.', shopDesc: 'Advanced robotic dogecoin seeking predator. Extra shiny.' },
+                    { level: 3, name: 'Coin Seeker 8000', dps: 3420, price: 34000000000, upgradeName: 'Switch To Diamond', upgradeDesc: 'Switch out the Coin Seeker body for a diamond hull.', shopDesc: 'Advanced robotic dogecoin seeking predator. Extra expensive.' }
+                ],
+                timeTravelDRex: [
+                    { level: 0, name: 'Time Travel D-Rex', dps: 620, shopDesc: 'Half terrifying, half amazing. Rawr.' },
+                    { level: 1, name: 'Time Travel Laser D-Rex', dps: 1100, price: 9000000000, upgradeName: 'Freakin Lazorz', upgradeDesc: 'Equip the Time Travel D-Rex with freakin Lazorz man.', shopDesc: 'Half terrifying, half amazing, with lazors.' },
+                    { level: 2, name: 'Rocket Boosted Time Travel Laser D-Rex', dps: 1850, price: 17000000000, upgradeName: 'Rocketrex', upgradeDesc: 'Rocket upgrade for D-Rex, Because faster.', shopDesc: 'Mostly terrifying, yet amazing.' },
+                    { level: 3, name: 'Xtra Rocket Boosted Time Travel Laser D-Rex', dps: 2950, price: 20000000000, upgradeName: 'More Rocket', upgradeDesc: 'More rocket for Time Travel D-Rex, Pffaaaiuuueuu.', shopDesc: '100% terrifying.' },
+                    { level: 4, name: 'Smart Rocket Time Travel Laser D-Rex', dps: 8650, price: 50000000000, upgradeName: 'Clever Girl', upgradeDesc: 'Implant the D-Rex with a cybernetic implant to make it smart.', shopDesc: '1000% terrifying.' }
+                ],
+                altarOfTheSunDoge: [
+                    { level: 0, name: 'Altar of the SunDoge', dps: 1200, shopDesc: 'An altar of calling to an enlightened Doge above our WOW.' },
+                    { level: 1, name: 'Awakened Altar of the SunDoge', dps: 1900, price: 200000000000, upgradeName: 'Awaken the Inner SunDoge', upgradeDesc: 'Awaken the altar by coating it in exceedingly hot Titan magma.', shopDesc: 'An awakened altar of calling to an enlightened Doge above our WOW.' },
+                    { level: 2, name: 'Shiny Awakened Altar of the SunDoge', dps: 4999, price: 600000000000, upgradeName: 'Cover Me With Diamonds!', upgradeDesc: 'Show your loyalty to the SunDoge by coating the Altar with Diamonds. Very shiny.', shopDesc: 'A very shiny awakened altar of calling to an enlightened Doge above our WOW. Much loyalty. Very Sun.' }
                 ]
             }
         };

@@ -417,6 +417,31 @@
     background: rgb(60, 20, 20);
 }
 
+/* Mars helper lock overlay styling */
+.planet-mars .helper-lock-overlay::before {
+    background: rgba(100, 40, 70, 0.85);
+    border: 2px solid rgba(130, 80, 75, 0.9);
+    box-shadow: inset 0 2px 8px rgba(50, 20, 30, 0.4);
+}
+
+.planet-mars .helper-lock-icon {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.planet-mars .helper-lock-text {
+    color: white;
+    text-shadow:
+        0 0 0 rgba(100, 40, 70, 0.8),
+        0.45px 0.45px 0 rgba(100, 40, 70, 0.8),
+        0.45px -0.45px 0 rgba(100, 40, 70, 0.8),
+        -0.45px 0.45px 0 rgba(100, 40, 70, 0.8),
+        -0.45px -0.45px 0 rgba(100, 40, 70, 0.8);
+}
+
+.planet-mars .helper-lock-subtext {
+    color: rgba(255, 255, 255, 0.85);
+}
+
 /* Jupiter Theme - Custom golden/orange color palette */
 .planet-jupiter #left-panel,
 .planet-jupiter #right-panel {
@@ -891,6 +916,62 @@ body {
     /* 50px bigger (300px + 50px) */
     height: auto;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Particle Container */
+#particle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+    overflow: hidden;
+}
+
+/* Base particle styling */
+.earth-particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    z-index: 15;
+    animation: particleFly 0.6s ease-out forwards;
+    image-rendering: pixelated;
+}
+
+/* Particle fly animation using CSS custom properties set by JS */
+@keyframes particleFly {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px))) scale(0.5);
+    }
+}
+
+/* Moon particles - gray/silver color (desaturate the brown) */
+.earth-particle.moon-particle {
+    filter: saturate(0%) brightness(1.4);
+}
+
+/* Mars particles - red/rust color (shift hue towards red) */
+.earth-particle.mars-particle {
+    filter: hue-rotate(-25deg) saturate(180%) brightness(0.9);
+}
+
+/* Jupiter particles - orange/amber color */
+.earth-particle.jupiter-particle {
+    filter: hue-rotate(15deg) saturate(150%) brightness(1.1);
+}
+
+/* Titan particles - golden/yellow color */
+.earth-particle.titan-particle {
+    filter: hue-rotate(30deg) saturate(170%) brightness(1.2);
 }
 
 /* Helper Container */
@@ -2911,6 +2992,18 @@ body[data-planet="mars"] #santa-hat {
     filter: grayscale(80%) brightness(1.1);
 }
 
+.earth-particle.mars-particle {
+    filter: hue-rotate(-30deg) saturate(1.5) brightness(0.9);
+}
+
+.earth-particle.jupiter-particle {
+    filter: hue-rotate(20deg) saturate(1.3) brightness(1.1);
+}
+
+.earth-particle.titan-particle {
+    filter: hue-rotate(10deg) saturate(0.8) brightness(0.85);
+}
+
 @keyframes particle-fly {
     0% {
         opacity: 1;
@@ -3325,6 +3418,36 @@ body[data-planet="mars"] #santa-hat {
 
 .planet-mars .upgrade-item-full .upgrade-content .upgrade-header .upgrade-name {
     color: white;
+}
+
+/* Mars upgrade buy button styling */
+.planet-mars .upgrade-buy-btn-small {
+    background: linear-gradient(180deg, rgb(145, 50, 115) 0%, rgb(115, 25, 90) 100%);
+    border: 2px solid rgb(130, 80, 75);
+    color: white;
+}
+
+.planet-mars .upgrade-buy-btn-small:hover:not(:disabled) {
+    background: linear-gradient(180deg, rgb(165, 60, 130) 0%, rgb(135, 40, 105) 100%);
+}
+
+.planet-mars .upgrade-buy-btn-small:disabled {
+    background: linear-gradient(180deg, rgb(80, 35, 50) 0%, rgb(60, 25, 40) 100%);
+    border-color: rgb(100, 60, 65);
+    opacity: 0.7;
+}
+
+.planet-mars .buy-btn-price-small {
+    color: white;
+}
+
+/* Mars upgrades grid scrollbar styling */
+.planet-mars .upgrades-grid::-webkit-scrollbar-track {
+    background: rgba(130, 80, 75, 0.2);
+}
+
+.planet-mars .upgrades-grid::-webkit-scrollbar-thumb {
+    background: rgb(130, 80, 75);
 }
 
 /* Jupiter theme styling for upgrade sections */

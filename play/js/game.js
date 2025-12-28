@@ -640,6 +640,12 @@ class DogeMinerGame {
             particle.className = 'earth-particle';
             if (this.currentLevel === 'moon') {
                 particle.classList.add('moon-particle');
+            } else if (this.currentLevel === 'mars') {
+                particle.classList.add('mars-particle');
+            } else if (this.currentLevel === 'jupiter') {
+                particle.classList.add('jupiter-particle');
+            } else if (this.currentLevel === 'titan') {
+                particle.classList.add('titan-particle');
             }
             particle.style.left = x + 'px';
             particle.style.top = y + 'px';
