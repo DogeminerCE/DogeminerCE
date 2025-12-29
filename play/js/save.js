@@ -17,9 +17,11 @@ class SaveManager {
             this.autoSave();
         }, this.autoSaveInterval);
 
-        // Save before page unload
+        // Save before page unload (skip during transitions to prevent data corruption)
         window.addEventListener('beforeunload', () => {
-            this.saveGame();
+            if (!this.game.isTransitioning) {
+                this.saveGame();
+            }
         });
     }
 
@@ -175,17 +177,21 @@ class SaveManager {
 
         const currentPlaced = Array.isArray(this.game.placedHelpers) ? this.game.placedHelpers : [];
 
-        if (this.game.currentLevel === 'earth') {
-            this.game.earthPlacedHelpers = [...currentPlaced];
-        } else if (this.game.currentLevel === 'moon') {
-            this.game.moonPlacedHelpers = [...currentPlaced];
-        } else if (this.game.currentLevel === 'mars') {
-            this.game.marsPlacedHelpers = [...currentPlaced];
-        } else if (this.game.currentLevel === 'jupiter') {
-            this.game.jupiterPlacedHelpers = [...currentPlaced];
-        } else if (this.game.currentLevel === 'titan') {
-            // Save titan placed helpers when creating save data from Titan planet
-            this.game.titanPlacedHelpers = [...currentPlaced];
+        // Only sync placedHelpers to planet arrays if NOT transitioning
+        // During transitions, currentLevel and placedHelpers can be temporarily out of sync
+        // which would cause helpers to be saved to the wrong planet
+        if (!this.game.isTransitioning) {
+            if (this.game.currentLevel === 'earth') {
+                this.game.earthPlacedHelpers = [...currentPlaced];
+            } else if (this.game.currentLevel === 'moon') {
+                this.game.moonPlacedHelpers = [...currentPlaced];
+            } else if (this.game.currentLevel === 'mars') {
+                this.game.marsPlacedHelpers = [...currentPlaced];
+            } else if (this.game.currentLevel === 'jupiter') {
+                this.game.jupiterPlacedHelpers = [...currentPlaced];
+            } else if (this.game.currentLevel === 'titan') {
+                this.game.titanPlacedHelpers = [...currentPlaced];
+            }
         }
 
         const earthPlacedHelpers = Array.isArray(this.game.earthPlacedHelpers)
