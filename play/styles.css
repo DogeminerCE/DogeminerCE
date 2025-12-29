@@ -3193,20 +3193,19 @@ body[data-planet="mars"] #santa-hat {
     align-items: center;
     gap: 2px;
     height: 100%;
-    padding: 4px 12px 12px 65px;
+    padding: 4px 12px 12px 12px;
     position: relative;
     overflow: visible;
     box-sizing: border-box;
 }
 
-/* Helper sprite in the corner */
+/* Helper sprite in top left corner */
 .upgrade-helper-sprite {
     position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    left: 8px;
+    top: 8px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3274,8 +3273,7 @@ body[data-planet="mars"] #santa-hat {
     line-height: 1.2;
     text-align: center;
     padding: 0 5px;
-    height: 2.4em;
-    min-height: 2.4em;
+    max-height: 2.4em;
     overflow: hidden;
     text-overflow: ellipsis;
 }
