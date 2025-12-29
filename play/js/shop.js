@@ -766,7 +766,10 @@ class ShopManager {
         this.game.updateUI();
         this.game.updateShopPrices();
 
-        this.game.playSound('check.wav');
+        // Play ching sound (same as buying a helper)
+        if (window.audioManager) {
+            window.audioManager.playSound('ching');
+        }
 
         return true;
     }

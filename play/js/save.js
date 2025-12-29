@@ -17,11 +17,9 @@ class SaveManager {
             this.autoSave();
         }, this.autoSaveInterval);
 
-        // Save before page unload (skip during transitions to prevent data corruption)
+        // Save before page unload
         window.addEventListener('beforeunload', () => {
-            if (!this.game.isTransitioning) {
-                this.saveGame();
-            }
+            this.saveGame();
         });
     }
 
@@ -611,12 +609,8 @@ class SaveManager {
     }
 
     autoSave() {
-        // Don't auto-save during planet transitions to prevent race condition
-        // where helpers get saved to the wrong planet's array
-        if (this.game.isTransitioning) {
-            console.log('Skipping auto-save during planet transition');
-            return;
-        }
+        // Note: createSaveData() handles the isTransitioning check for placed helpers
+        // to prevent them from being saved to the wrong planet
 
         if (this.game.autoSaveEnabled !== false) {
             this.saveGame();
