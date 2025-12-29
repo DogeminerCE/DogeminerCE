@@ -1147,7 +1147,10 @@ class UIManager {
                         <div class="upgrade-content">
                             <div class="upgrade-header">
                                 <div class="upgrade-name">${upgrade.upgradeName}</div>
-                                <div class="upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
+                                <div class="upgrade-dps-row">
+                                    <div class="upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
+                                    <div class="upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
+                                </div>
                             </div>
                             <div class="upgrade-description">${upgrade.upgradeDesc}</div>
                             <div class="upgrade-footer">
@@ -1157,7 +1160,6 @@ class UIManager {
                                     <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
                                     <span class="buy-btn-price">${priceText}</span>
                                 </button>
-                                <div class="upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
                             </div>
                         </div>
                     </div>
