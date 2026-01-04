@@ -355,18 +355,36 @@ class SaveManager {
         let rawTitan = Array.isArray(saveData.titanPlacedHelpers) ? saveData.titanPlacedHelpers : [];
 
         if (!rawEarth.length && !rawMoon.length && !rawMars.length && !rawJupiter.length && !rawTitan.length && Array.isArray(saveData.placedHelpers)) {
-            const savedLevel = saveData.currentLevel || 'earth';
-            if (savedLevel === 'moon') {
-                rawMoon = saveData.placedHelpers;
-            } else if (savedLevel === 'mars') {
-                rawMars = saveData.placedHelpers;
-            } else if (savedLevel === 'jupiter') {
-                rawJupiter = saveData.placedHelpers;
-            } else if (savedLevel === 'titan') {
-                rawTitan = saveData.placedHelpers;
-            } else {
-                rawEarth = saveData.placedHelpers;
-            }
+            // Old save format: sort helpers to correct planets based on their type
+            const helperToPlanet = {
+                // Earth helpers
+                'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
+                'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+                // Moon helpers
+                'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
+                // Mars helpers
+                'partyShibe': 'mars', 'djKittenz': 'mars', 'spaceBass': 'mars',
+                'curiosiDoge': 'mars', 'marsBase': 'mars', 'jupiterRocket': 'mars',
+                // Jupiter helpers
+                'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
+                'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
+                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
+                // Titan helpers
+                'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
+                'timeTravelDRex': 'titan', 'altarOfTheSunDoge': 'titan'
+            };
+
+            saveData.placedHelpers.forEach(helper => {
+                if (!helper || !helper.type) return;
+                const planet = helperToPlanet[helper.type] || 'earth';
+                if (planet === 'moon') rawMoon.push(helper);
+                else if (planet === 'mars') rawMars.push(helper);
+                else if (planet === 'jupiter') rawJupiter.push(helper);
+                else if (planet === 'titan') rawTitan.push(helper);
+                else rawEarth.push(helper);
+            });
+            console.log('Migrated old save: sorted helpers to correct planets by type');
         }
 
         this.game.earthPlacedHelpers = rebuildPlacedHelpers(rawEarth, 'earth');
@@ -579,6 +597,63 @@ class SaveManager {
 
             uiManager.updateShopContent?.();
         }
+
+        // Check for cross-planet helpers and notify player
+        this.checkForCrossPlanetHelpers();
+    }
+
+    // Detect if any helpers are on the wrong planet and notify player
+    checkForCrossPlanetHelpers() {
+        const helperToPlanet = {
+            // Earth helpers
+            'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
+            'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+            // Moon helpers
+            'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
+            // Mars helpers
+            'partyShibe': 'mars', 'djKittenz': 'mars', 'spaceBass': 'mars',
+            'curiosiDoge': 'mars', 'marsBase': 'mars', 'jupiterRocket': 'mars',
+            // Jupiter helpers
+            'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
+            'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
+            'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+            'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
+            // Titan helpers
+            'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
+            'timeTravelDRex': 'titan', 'altarOfTheSunDoge': 'titan'
+        };
+
+        const planetArrays = {
+            'earth': this.game.earthPlacedHelpers || [],
+            'moon': this.game.moonPlacedHelpers || [],
+            'mars': this.game.marsPlacedHelpers || [],
+            'jupiter': this.game.jupiterPlacedHelpers || [],
+            'titan': this.game.titanPlacedHelpers || []
+        };
+
+        let misplacedCount = 0;
+
+        // Scan each planet's array for misplaced helpers
+        Object.keys(planetArrays).forEach(planet => {
+            const helpers = planetArrays[planet];
+            if (!Array.isArray(helpers)) return;
+
+            helpers.forEach(helper => {
+                if (!helper || !helper.type) return;
+                const correctPlanet = helperToPlanet[helper.type];
+                if (correctPlanet && correctPlanet !== planet) {
+                    misplacedCount++;
+                }
+            });
+        });
+
+        if (misplacedCount > 0) {
+            console.warn(`Detected ${misplacedCount} helpers on wrong planets!`);
+            // Show notification after a short delay to let UI initialize
+            setTimeout(() => {
+                this.game.showNotification(`⚠️ Save issue detected! ${misplacedCount} helpers on wrong planets. Go to Settings > Repair Save to fix.`, 8000);
+            }, 2000);
+        }
     }
 
     validateSaveData(saveData) {
@@ -784,7 +859,7 @@ class SaveManager {
 
     // Save validation and repair
     repairSave() {
-        if (!confirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Fixing invalid data\n\nProceed?')) {
+        if (!confirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Moving helpers to correct planets\n• Fixing invalid data\n\nProceed?')) {
             return false;
         }
 
@@ -855,6 +930,98 @@ class SaveManager {
 
             // Also repair current placedHelpers
             this.game.placedHelpers = repairPlacedHelpers(this.game.placedHelpers || [], 'Current');
+
+            // === NEW: Cross-planet helper repair ===
+            // Define which helper types belong to which planets
+            const helperToPlanet = {
+                // Earth helpers
+                'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
+                'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+                // Moon helpers
+                'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
+                // Mars helpers
+                'partyShibe': 'mars', 'djKittenz': 'mars', 'spaceBass': 'mars',
+                'curiosiDoge': 'mars', 'marsBase': 'mars', 'jupiterRocket': 'mars',
+                // Jupiter helpers
+                'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
+                'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
+                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
+                // Titan helpers
+                'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
+                'timeTravelDRex': 'titan', 'altarOfTheSunDoge': 'titan'
+            };
+
+            // Helper arrays by planet
+            const planetArrays = {
+                'earth': this.game.earthPlacedHelpers,
+                'moon': this.game.moonPlacedHelpers,
+                'mars': this.game.marsPlacedHelpers,
+                'jupiter': this.game.jupiterPlacedHelpers,
+                'titan': this.game.titanPlacedHelpers
+            };
+
+            // Track helpers to move
+            const helpersToMove = [];
+
+            // Scan each planet's array for misplaced helpers
+            Object.keys(planetArrays).forEach(planet => {
+                const helpers = planetArrays[planet];
+                if (!Array.isArray(helpers)) return;
+
+                for (let i = helpers.length - 1; i >= 0; i--) {
+                    const helper = helpers[i];
+                    if (!helper || !helper.type) continue;
+
+                    const correctPlanet = helperToPlanet[helper.type];
+                    if (correctPlanet && correctPlanet !== planet) {
+                        // This helper is on the wrong planet!
+                        helpersToMove.push({
+                            helper: helper,
+                            fromPlanet: planet,
+                            toPlanet: correctPlanet
+                        });
+                        helpers.splice(i, 1); // Remove from wrong planet
+                    }
+                }
+            });
+
+            // Move helpers to correct planets
+            let movedCount = 0;
+            helpersToMove.forEach(({ helper, fromPlanet, toPlanet }) => {
+                const targetArray = planetArrays[toPlanet];
+                if (targetArray) {
+                    targetArray.push(helper);
+                    repairLog.push(`Moved ${helper.name || helper.type} from ${fromPlanet} to ${toPlanet}`);
+                    movedCount++;
+                }
+            });
+
+            if (movedCount > 0) {
+                repairsMade += movedCount;
+                repairLog.push(`Total cross-planet helpers fixed: ${movedCount}`);
+            }
+
+            // Update the game arrays with the fixed versions
+            this.game.earthPlacedHelpers = planetArrays['earth'];
+            this.game.moonPlacedHelpers = planetArrays['moon'];
+            this.game.marsPlacedHelpers = planetArrays['mars'];
+            this.game.jupiterPlacedHelpers = planetArrays['jupiter'];
+            this.game.titanPlacedHelpers = planetArrays['titan'];
+
+            // Also update current placedHelpers based on currentLevel
+            if (this.game.currentLevel === 'moon') {
+                this.game.placedHelpers = this.game.moonPlacedHelpers;
+            } else if (this.game.currentLevel === 'mars') {
+                this.game.placedHelpers = this.game.marsPlacedHelpers;
+            } else if (this.game.currentLevel === 'jupiter') {
+                this.game.placedHelpers = this.game.jupiterPlacedHelpers;
+            } else if (this.game.currentLevel === 'titan') {
+                this.game.placedHelpers = this.game.titanPlacedHelpers;
+            } else {
+                this.game.placedHelpers = this.game.earthPlacedHelpers;
+            }
+            // === END: Cross-planet helper repair ===
 
             // Clean up helpers array (remove null entries, ensure required fields)
             if (Array.isArray(this.game.helpers)) {
