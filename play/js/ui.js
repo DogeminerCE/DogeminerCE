@@ -397,6 +397,7 @@ class UIManager {
 
                 // Update the shop to show the appropriate helpers
                 this.updateShopContent();
+                this.updateUpgradeContent();
                 this.updatePlanetTabVisibility();
 
                 // Delay a bit to simulate loading
