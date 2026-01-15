@@ -305,7 +305,7 @@ class ShopManager {
                     name: 'Standard Pickaxe',
                     cost: 0,
                     multiplier: 1,
-                    icon: 'assets/items/items/pickaxes/standard.png',
+                    icon: 'assets/items/pickaxes/standard.png',
                     description: 'Basic mining tool',
                     unlocked: true
                 },
@@ -313,7 +313,7 @@ class ShopManager {
                     name: 'Stronger Pickaxe',
                     cost: 100,
                     multiplier: 2,
-                    icon: 'assets/items/items/pickaxes/stronger.png',
+                    icon: 'assets/items/pickaxes/stronger.png',
                     description: 'More powerful mining',
                     unlocked: true
                 },
@@ -321,7 +321,7 @@ class ShopManager {
                     name: 'Golden Pickaxe',
                     cost: 500,
                     multiplier: 5,
-                    icon: 'assets/items/items/pickaxes/golden.png',
+                    icon: 'assets/items/pickaxes/golden.png',
                     description: 'Luxury mining equipment',
                     unlocked: true
                 },
@@ -329,7 +329,7 @@ class ShopManager {
                     name: 'Rocket Pickaxe',
                     cost: 2000,
                     multiplier: 10,
-                    icon: 'assets/items/items/pickaxes/rocketaxe.png',
+                    icon: 'assets/items/pickaxes/rocketaxe.png',
                     description: 'Space-age mining technology',
                     unlocked: true
                 },
@@ -337,7 +337,7 @@ class ShopManager {
                     name: 'Diamond Pickaxe',
                     cost: 10000,
                     multiplier: 25,
-                    icon: 'assets/items/items/pickaxes/diasword.png',
+                    icon: 'assets/items/pickaxes/diasword.png',
                     description: 'Crystal-clear mining power',
                     unlocked: true
                 },
@@ -345,7 +345,7 @@ class ShopManager {
                     name: 'Nuclear Pickaxe',
                     cost: 50000,
                     multiplier: 100,
-                    icon: 'assets/items/items/pickaxes/nuke.png',
+                    icon: 'assets/items/pickaxes/nuke.png',
                     description: 'Explosive mining capability',
                     unlocked: true
                 }

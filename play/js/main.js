@@ -362,17 +362,18 @@ async function preloadAssets() {
         'assets/general/logo.png',
 
         // Helper icons
-        'assets/helpers/helpers/shibes/shibes-idle-0.png',
-        'assets/helpers/helpers/kittens/kittens-idle-0.png',
-        'assets/helpers/helpers/kennels/kennels-idle-0.png',
-        'assets/helpers/helpers/rockets/rockets-idle-0.png',
-        'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
+        'assets/helpers/shibes/shibes-idle-0.png',
+        'assets/helpers/kittens/kittens-idle-0.png',
+        'assets/helpers/kennels/kennels-idle-0.png',
+        'assets/helpers/rockets/rockets-idle-0.png',
+        'assets/helpers/marsbase/marsbase-idle-0.png',
+
 
         // Pickaxe icons
-        'assets/items/items/pickaxes/standard.png',
-        'assets/items/items/pickaxes/stronger.png',
-        'assets/items/items/pickaxes/golden.png',
-        'assets/items/items/pickaxes/rocketaxe.png'
+        'assets/items/pickaxes/standard.png',
+        'assets/items/pickaxes/stronger.png',
+        'assets/items/pickaxes/golden.png',
+        'assets/items/pickaxes/rocketaxe.png'
     ];
 
     const loadPromises = assets.map(asset => {
