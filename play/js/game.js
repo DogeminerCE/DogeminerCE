@@ -571,6 +571,11 @@ class DogeMinerGame {
     regenerateRock() {
         this.isRockRegenerating = true;
 
+        // 90% chance to expel coin piles when rock breaks
+        if (Math.random() < 0.9) {
+            this.expelCoinPiles();
+        }
+
         setTimeout(() => {
             this.rockHealth = 100;
             this.lastDamageThreshold = 100;
@@ -688,12 +693,17 @@ class DogeMinerGame {
         img.draggable = false;
         pile.appendChild(img);
 
-        // Random position around the rock
-        const offsetX = (Math.random() - 0.5) * 200; // -100 to 100
-        const offsetY = (Math.random() - 0.5) * 100 + 50; // -50 to 150
+        // Final position: below the rock, spread horizontally
+        // X offset: -120 to 120 (spread out left/right)
+        const finalOffsetX = (Math.random() - 0.5) * 240;
+        // Y offset: always positive (below rock), range 80 to 160
+        const finalOffsetY = 80 + Math.random() * 80;
 
-        pile.style.left = `calc(50% + ${offsetX}px)`;
-        pile.style.top = `calc(50% + ${offsetY}px)`;
+        // Start at center (0,0), animate to final position
+        pile.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
+        pile.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
+        pile.style.left = '50%';
+        pile.style.top = '50%';
 
         // Store the amount on the element
         pile.dataset.amount = amount;
@@ -707,8 +717,8 @@ class DogeMinerGame {
         // Add to DOM
         rockContainer.appendChild(pile);
 
-        // Animate entrance
-        pile.style.animation = 'coinPileSpawn 0.3s ease-out forwards';
+        // Animate from center outward
+        pile.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
 
         // Auto-despawn after 5 seconds if not clicked
         setTimeout(() => {
