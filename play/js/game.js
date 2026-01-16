@@ -669,7 +669,7 @@ class DogeMinerGame {
 
             // Stagger the pile creation slightly
             setTimeout(() => {
-                this.createCoinPile(amount, sprite);
+                this.createCoinPile(amount, sprite, percentage);
             }, i * 100);
         }
     }
@@ -721,12 +721,22 @@ class DogeMinerGame {
     /**
      * Creates a clickable coin pile element near the rock
      */
-    createCoinPile(amount, spritePath) {
+    createCoinPile(amount, spritePath, percentage = 50) {
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
 
         const pile = document.createElement('div');
         pile.className = 'coin-pile';
+
+        // Add size class based on percentage
+        // Small: 1-24% (small_stack and medium_stack_1/2)
+        // Medium: 25-45% (medium_stack_3/4)
+        // Large: 46-75% (large_stack) - default size
+        if (percentage <= 24) {
+            pile.classList.add('pile-small');
+        } else if (percentage <= 45) {
+            pile.classList.add('pile-medium');
+        }
 
         const img = document.createElement('img');
         img.src = spritePath;

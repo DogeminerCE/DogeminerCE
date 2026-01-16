@@ -1312,6 +1312,16 @@ body.planet-mars #main-rock {
     pointer-events: auto;
 }
 
+/* Small coin pile size (1-10% rewards) */
+.coin-pile.pile-small img {
+    width: 25px;
+}
+
+/* Medium coin pile size (11-45% rewards) */
+.coin-pile.pile-medium img {
+    width: 40px;
+}
+
 .coin-pile:hover {
     filter: brightness(1.15);
 }
@@ -1361,14 +1371,14 @@ body.planet-mars #main-rock {
         transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1);
     }
 
-    50% {
-        opacity: 1;
-        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1.3);
+    40% {
+        opacity: 0.9;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1.4);
     }
 
     100% {
         opacity: 0;
-        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px) - 40px)) scale(0.5);
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1.8);
     }
 }
 
