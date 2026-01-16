@@ -164,6 +164,11 @@ class DogeMinerGame {
         // Uncleared save flag for future rewards
         this.HasPlayed_v0_04 = true;
 
+        // Rock health system
+        this.rockHealth = 100;
+        this.lastDamageThreshold = 100; // Tracks 75, 50, 25 thresholds for coin pile expulsion
+        this.isRockRegenerating = false;
+
         // UI state flags
 
         // Rick Doge system
@@ -439,6 +444,7 @@ class DogeMinerGame {
 
     handleRockClick(event = null) {
         if (!this.isPlaying || this.isIntroPlaying || this.isCutscenePlaying || this.isTransitioning) return;
+        if (this.isRockRegenerating) return;
 
         this.totalClicks++;
 
@@ -455,6 +461,16 @@ class DogeMinerGame {
         }
         if (this.particles.length < this.maxParticles) {
             this.createParticleEffect(event);
+        }
+
+        // Rock health system
+        this.rockHealth--;
+        this.updateRockSprite();
+        this.checkCoinPileExpulsion();
+        this.updateRockHealthDisplay();
+
+        if (this.rockHealth <= 0) {
+            this.regenerateRock();
         }
 
         this.updateUI();
@@ -513,6 +529,251 @@ class DogeMinerGame {
             }
         }, 200);
     }
+
+    // ========== ROCK HEALTH SYSTEM ==========
+
+    /**
+     * Updates the rock sprite based on current health percentage
+     */
+    updateRockSprite() {
+        const rock = document.getElementById('main-rock');
+        if (!rock) return;
+
+        const planet = this.currentLevel;
+        let spriteSuffix = '';
+
+        // Determine which damage sprite to use based on health
+        if (this.rockHealth > 90) {
+            spriteSuffix = ''; // Original sprite
+        } else if (this.rockHealth > 75) {
+            spriteSuffix = '_dmg_small1';
+        } else if (this.rockHealth > 50) {
+            spriteSuffix = '_dmg_small2';
+        } else if (this.rockHealth > 25) {
+            spriteSuffix = '_dmg_medium1';
+        } else if (this.rockHealth > 0) {
+            spriteSuffix = '_dmg_medium2';
+        } else {
+            spriteSuffix = '_dmg_large1';
+        }
+
+        // Build the sprite path
+        const spritePath = spriteSuffix === ''
+            ? `assets/general/rocks/${planet}.png`
+            : `assets/general/rocks/${planet}${spriteSuffix}.png`;
+
+        rock.src = spritePath;
+    }
+
+    /**
+     * Regenerates the rock after it's been destroyed
+     */
+    regenerateRock() {
+        this.isRockRegenerating = true;
+
+        setTimeout(() => {
+            this.rockHealth = 100;
+            this.lastDamageThreshold = 100;
+            this.isRockRegenerating = false;
+            this.updateRockSprite();
+            this.updateRockHealthDisplay();
+        }, 500);
+    }
+
+    /**
+     * Checks if coin piles should be expelled at damage thresholds
+     */
+    checkCoinPileExpulsion() {
+        const thresholds = [75, 50, 25];
+
+        for (const threshold of thresholds) {
+            // Check if we just crossed this threshold
+            if (this.lastDamageThreshold > threshold && this.rockHealth <= threshold) {
+                this.lastDamageThreshold = threshold;
+
+                // 50% chance to expel coin piles
+                if (Math.random() < 0.5) {
+                    this.expelCoinPiles();
+                }
+                break; // Only trigger once per threshold crossing
+            }
+        }
+    }
+
+    /**
+     * Expels 1-3 coin piles near the rock
+     */
+    expelCoinPiles() {
+        // Determine pile count: 40% = 1, 50% = 2, 10% = 3
+        const rand = Math.random();
+        let pileCount;
+        if (rand < 0.4) {
+            pileCount = 1;
+        } else if (rand < 0.9) {
+            pileCount = 2;
+        } else {
+            pileCount = 3;
+        }
+
+        for (let i = 0; i < pileCount; i++) {
+            // Get weighted random percentage (1-75% of current coins)
+            const percentage = this.getWeightedCoinPercentage();
+            const amount = Math.max(1, Math.floor(this.dogecoins * (percentage / 100)));
+            const sprite = this.getCoinPileSprite(percentage);
+
+            // Stagger the pile creation slightly
+            setTimeout(() => {
+                this.createCoinPile(amount, sprite);
+            }, i * 100);
+        }
+    }
+
+    /**
+     * Returns a weighted random percentage (1-75%), with higher values being less likely
+     */
+    getWeightedCoinPercentage() {
+        // Use exponential distribution to favor lower percentages
+        // Roll a random value and square it to skew towards lower values
+        const roll = Math.random();
+        const skewed = roll * roll; // Squares favor lower values
+        const percentage = Math.floor(skewed * 74) + 1; // Range: 1-75
+        return percentage;
+    }
+
+    /**
+     * Returns appropriate sprite path based on coin percentage
+     */
+    getCoinPileSprite(percentage) {
+        let sprites;
+
+        if (percentage <= 10) {
+            sprites = [
+                'assets/general/icons/small_stack_1.png',
+                'assets/general/icons/small_stack_2.png',
+                'assets/general/icons/small_stack_3.png'
+            ];
+        } else if (percentage <= 24) {
+            sprites = [
+                'assets/general/icons/medium_stack_1.png',
+                'assets/general/icons/medium_stack_2.png'
+            ];
+        } else if (percentage <= 45) {
+            sprites = [
+                'assets/general/icons/medium_stack_3.png',
+                'assets/general/icons/medium_stack_4.png'
+            ];
+        } else {
+            sprites = [
+                'assets/general/icons/large_stack_1.png',
+                'assets/general/icons/large_stack_2.png'
+            ];
+        }
+
+        return sprites[Math.floor(Math.random() * sprites.length)];
+    }
+
+    /**
+     * Creates a clickable coin pile element near the rock
+     */
+    createCoinPile(amount, spritePath) {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        const pile = document.createElement('div');
+        pile.className = 'coin-pile';
+
+        const img = document.createElement('img');
+        img.src = spritePath;
+        img.alt = 'Coin Pile';
+        img.draggable = false;
+        pile.appendChild(img);
+
+        // Random position around the rock
+        const offsetX = (Math.random() - 0.5) * 200; // -100 to 100
+        const offsetY = (Math.random() - 0.5) * 100 + 50; // -50 to 150
+
+        pile.style.left = `calc(50% + ${offsetX}px)`;
+        pile.style.top = `calc(50% + ${offsetY}px)`;
+
+        // Store the amount on the element
+        pile.dataset.amount = amount;
+
+        // Add click handler to collect
+        pile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.collectCoinPile(pile, amount);
+        });
+
+        // Add to DOM
+        rockContainer.appendChild(pile);
+
+        // Animate entrance
+        pile.style.animation = 'coinPileSpawn 0.3s ease-out forwards';
+
+        // Auto-despawn after 5 seconds if not clicked
+        setTimeout(() => {
+            if (pile.parentNode) {
+                pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                setTimeout(() => {
+                    if (pile.parentNode) {
+                        pile.parentNode.removeChild(pile);
+                    }
+                }, 500);
+            }
+        }, 5000);
+    }
+
+    /**
+     * Collects a coin pile and adds coins to the player
+     */
+    collectCoinPile(pile, amount) {
+        if (!pile.parentNode) return;
+
+        // Add coins
+        this.dogecoins += amount;
+        this.totalMined += amount;
+
+        // Play sound
+        this.playSound('ching');
+
+        // Show floating text
+        const rect = pile.getBoundingClientRect();
+        const floatingCoins = document.getElementById('floating-coins');
+        if (floatingCoins) {
+            const text = document.createElement('div');
+            text.className = 'coin-pile-collected';
+            text.textContent = '+' + this.formatNumber(amount);
+            text.style.left = (rect.left + rect.width / 2 - floatingCoins.getBoundingClientRect().left) + 'px';
+            text.style.top = (rect.top - floatingCoins.getBoundingClientRect().top) + 'px';
+            floatingCoins.appendChild(text);
+
+            setTimeout(() => {
+                if (text.parentNode) text.parentNode.removeChild(text);
+            }, 1000);
+        }
+
+        // Remove pile with animation
+        pile.style.animation = 'coinPileCollect 0.3s ease-out forwards';
+        setTimeout(() => {
+            if (pile.parentNode) pile.parentNode.removeChild(pile);
+        }, 300);
+
+        // Update UI
+        this.updateUI();
+    }
+
+    /**
+     * Updates the rock health percentage display
+     */
+    updateRockHealthDisplay() {
+        const healthText = document.getElementById('rock-health-text');
+        if (healthText) {
+            healthText.textContent = Math.max(0, this.rockHealth) + '%';
+        }
+    }
+
+    // ========== END ROCK HEALTH SYSTEM ==========
+
 
     playDogeIntro(force = false) {
         if ((this.isTransitioning || this.isCutscenePlaying) && !force) return;
