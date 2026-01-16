@@ -1236,7 +1236,7 @@ body.planet-mars #main-rock {
     pointer-events: none;
     z-index: 15;
     filter: blur(1px);
-    animation: rockSmokeRotateFade 0.9s ease-out forwards;
+    animation: rockSmokeRotateFade 0.8s ease-out forwards;
 }
 
 @keyframes rockSmokeRotateFade {
@@ -1245,19 +1245,24 @@ body.planet-mars #main-rock {
         transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(var(--smoke-rotation-start, 0deg)) scale(0.6);
     }
 
-    15% {
+    12% {
         opacity: 0.4;
-        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 8deg)) scale(0.9);
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 5deg)) scale(0.9);
     }
 
-    50% {
+    40% {
         opacity: 0.35;
-        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 25deg)) scale(1.1) translateY(-10px);
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 18deg)) scale(1.05) translateY(-8px);
     }
 
-    80% {
-        opacity: 0.2;
-        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 38deg)) scale(1.15) translateY(-18px);
+    65% {
+        opacity: 0.28;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 30deg)) scale(1.1) translateY(-14px);
+    }
+
+    85% {
+        opacity: 0.15;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 40deg)) scale(1.15) translateY(-20px);
     }
 
     100% {

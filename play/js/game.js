@@ -597,12 +597,12 @@ class DogeMinerGame {
 
             rockContainer.appendChild(smoke);
 
-            // Remove after animation completes (500ms)
+            // Remove after animation completes (0.8s animation)
             setTimeout(() => {
                 if (smoke.parentNode) {
                     smoke.parentNode.removeChild(smoke);
                 }
-            }, 550);
+            }, 900);
         }
     }
 
