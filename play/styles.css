@@ -1224,6 +1224,48 @@ body.planet-mars #main-rock {
     width: 151px;
 }
 
+/* Rock Smoke Effect */
+.rock-smoke {
+    position: absolute;
+    width: 80px;
+    height: auto;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(var(--smoke-rotation-start, 0deg));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+    filter: blur(1px);
+    animation: rockSmokeRotateFade 0.9s ease-out forwards;
+}
+
+@keyframes rockSmokeRotateFade {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(var(--smoke-rotation-start, 0deg)) scale(0.6);
+    }
+
+    15% {
+        opacity: 0.4;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 8deg)) scale(0.9);
+    }
+
+    50% {
+        opacity: 0.35;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 25deg)) scale(1.1) translateY(-10px);
+    }
+
+    80% {
+        opacity: 0.2;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 38deg)) scale(1.15) translateY(-18px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 45deg)) scale(1.2) translateY(-25px);
+    }
+}
+
 /* Rock health text removed - simplified mining */
 
 /* Rock Health Display */

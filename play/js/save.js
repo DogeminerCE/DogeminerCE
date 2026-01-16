@@ -368,7 +368,7 @@ class SaveManager {
                 // Jupiter helpers
                 'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
                 'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
                 'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
                 // Titan helpers
                 'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -607,7 +607,7 @@ class SaveManager {
         const helperToPlanet = {
             // Earth helpers
             'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
-            'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+            'spaceRocket': 'earth', 'timeMachineRig': 'earth', 'infiniteDogebility': 'earth',
             // Moon helpers
             'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
             // Mars helpers
@@ -616,7 +616,7 @@ class SaveManager {
             // Jupiter helpers
             'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
             'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-            'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+            'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
             'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
             // Titan helpers
             'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -936,7 +936,7 @@ class SaveManager {
             const helperToPlanet = {
                 // Earth helpers
                 'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
-                'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+                'spaceRocket': 'earth', 'timeMachineRig': 'earth', 'infiniteDogebility': 'earth',
                 // Moon helpers
                 'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
                 // Mars helpers
@@ -945,7 +945,7 @@ class SaveManager {
                 // Jupiter helpers
                 'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
                 'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
                 'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
                 // Titan helpers
                 'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -1056,9 +1056,13 @@ class SaveManager {
 
             // Show result
             if (repairsMade > 0) {
-                const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}`;
+                const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}\n\nThe game will now refresh.`;
                 alert(message);
                 this.game.showNotification(`Repaired ${repairsMade} issues!`);
+                // Auto-refresh after repair
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
             } else {
                 this.game.showNotification('No issues found in save data.');
             }

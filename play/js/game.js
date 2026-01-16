@@ -562,7 +562,48 @@ class DogeMinerGame {
             ? `assets/general/rocks/${planet}.png`
             : `assets/general/rocks/${planet}${spriteSuffix}.png`;
 
-        rock.src = spritePath;
+        // Only update and trigger smoke if sprite actually changed
+        if (rock.src !== spritePath && !rock.src.endsWith(spritePath)) {
+            rock.src = spritePath;
+            // Don't trigger smoke on initial load or regeneration to 100%
+            if (this.rockHealth < 100 || spriteSuffix !== '') {
+                this.createRockSmokeEffect();
+            }
+        }
+    }
+
+    /**
+     * Creates a smoke effect over the rock when it changes damage state
+     */
+    createRockSmokeEffect() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        // Create 3 smoke sprites with different rotations
+        for (let i = 0; i < 3; i++) {
+            const smoke = document.createElement('img');
+            smoke.src = 'assets/general/cartoonsmoke.png';
+            smoke.className = 'rock-smoke';
+            smoke.alt = '';
+            smoke.draggable = false;
+
+            // Set initial rotation offset for each smoke
+            const rotationOffset = i * 120; // 0, 120, 240 degrees
+            smoke.style.setProperty('--smoke-rotation-start', `${rotationOffset}deg`);
+
+            // Slight position variation for each
+            const offsetX = (i - 1) * 15; // -15, 0, 15
+            smoke.style.setProperty('--smoke-offset-x', `${offsetX}px`);
+
+            rockContainer.appendChild(smoke);
+
+            // Remove after animation completes (500ms)
+            setTimeout(() => {
+                if (smoke.parentNode) {
+                    smoke.parentNode.removeChild(smoke);
+                }
+            }, 550);
+        }
     }
 
     /**
