@@ -1619,6 +1619,11 @@ body.planet-mars #main-rock {
     animation: shadowCounterFloat 3s ease-in-out infinite;
 }
 
+/* Counter-animate shadow to keep it stationary when container bounces */
+#character-container:has(#main-character.bounce) #character-shadow {
+    animation: shadowCounterBounce 0.2s ease-out;
+}
+
 @keyframes shadowCounterFloat {
 
     0%,
@@ -1628,6 +1633,20 @@ body.planet-mars #main-rock {
 
     50% {
         transform: translateY(10px) scale(1, 1);
+    }
+}
+
+@keyframes shadowCounterBounce {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(15px);
+    }
+
+    100% {
+        transform: translateY(0px);
     }
 }
 
