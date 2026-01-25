@@ -530,6 +530,7 @@ class UIManager {
         const marsBaseOwned = marsHelpers.some(helper => helper.type === 'marsBase');
         const jupiterBaseOwned = jupiterHelpers.some(helper => helper.type === 'cloudBase');
         const landerShibeOwned = moonHelpers.some(helper => helper.type === 'landerShibe');
+        const jupiterReached = jupiterHelpers.length > 0 || (Array.isArray(this.game.jupiterPlacedHelpers) && this.game.jupiterPlacedHelpers.length > 0);
 
         // Create 6 helper items (2x3 grid)
         for (let i = 0; i < 6; i++) {
@@ -573,6 +574,8 @@ class UIManager {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
                         lockReason = 'landerShibe';
+                    } else if (type === 'dogeGate' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
                     }
                 } else if (this.game.currentLevel === 'mars') {
                     if (type !== 'marsBase' && !marsBaseOwned) {
@@ -623,6 +626,7 @@ class UIManager {
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
                 else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
+                else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
 
                 const lockOverlayHtml = isLocked ? `
                     <div class="helper-lock-overlay">
