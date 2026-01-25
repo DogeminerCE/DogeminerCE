@@ -569,7 +569,16 @@ class UIManager {
                 }
 
                 let lockReason = null;
-                if (this.game.currentLevel === 'moon') {
+                if (this.game.currentLevel === 'earth') {
+                    // Time Machine Mining Rig is locked with special message
+                    if (type === 'timeMachineRig') {
+                        lockReason = 'notInvented';
+                    }
+                    // Infinite Dogebility Drive requires further progress
+                    else if (type === 'infiniteDogebility' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
+                    }
+                } else if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
@@ -627,6 +636,7 @@ class UIManager {
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
                 else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
                 else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
+                else if (lockReason === 'notInvented') lockText = 'HAS NOT BEEN INVENTED YET.';
 
                 const lockOverlayHtml = isLocked ? `
                     <div class="helper-lock-overlay">
@@ -779,7 +789,7 @@ class UIManager {
             return;
         }
 
-        if (button.disabled) {
+        if (button.disabled || button.classList.contains('locked')) {
             return;
         }
 
@@ -1813,12 +1823,24 @@ class UIManager {
                 const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
                 const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
                 const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
+                const jupiterReached = jupiterHelpers.length > 0 || (Array.isArray(this.game.jupiterPlacedHelpers) && this.game.jupiterPlacedHelpers.length > 0);
 
-                if (this.game.currentLevel === 'moon') {
+                if (this.game.currentLevel === 'earth') {
+                    // Time Machine Mining Rig is locked with special message
+                    if (type === 'timeMachineRig') {
+                        lockReason = 'notInvented';
+                    }
+                    // Infinite Dogebility Drive requires further progress
+                    else if (type === 'infiniteDogebility' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
+                    }
+                } else if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
                         lockReason = 'landerShibe';
+                    } else if (type === 'dogeGate' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
                     }
                 } else if (this.game.currentLevel === 'mars') {
                     if (type !== 'marsBase' && !marsBaseOwned) {
@@ -1867,6 +1889,24 @@ class UIManager {
                     }
                 }
 
+                // Build lock text based on lock reason
+                let lockText = 'REQUIRES MOON BASE';
+                if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
+                else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
+                else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
+                else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
+                else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
+                else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
+                else if (lockReason === 'notInvented') lockText = 'HAS NOT BEEN INVENTED YET.';
+
+                const lockOverlayHtml = isLocked ? `
+                    <div class="helper-lock-overlay">
+                        <div class="helper-lock-icon" aria-hidden="true"></div>
+                        <div class="helper-lock-text">LOCKED</div>
+                        <div class="helper-lock-subtext">${lockText}</div>
+                    </div>
+                ` : '';
+
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
                     <div class="shop-item-title">${displayName}</div>
@@ -1877,13 +1917,18 @@ class UIManager {
                         </div>
                         <div class="shop-item-info">
                             <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
-                            <button class="shop-buy-btn" data-helper-type="${type}" ${buttonDisabled}>
+                            <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" ${buttonDisabled}>
                                 <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
                                 <span class="buy-btn-price">${priceText}</span>
                             </button>
                         </div>
                     </div>
+                    ${lockOverlayHtml}
                 `;
+
+                if (isLocked) {
+                    item.classList.add('helper-locked');
+                }
 
                 // Add click listener to buy button using shared handler to avoid duplicate stacking
                 const buyBtn = item.querySelector('.shop-buy-btn');
