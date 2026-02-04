@@ -169,6 +169,25 @@ class DogeMinerGame {
         this.lastDamageThreshold = 100; // Tracks 75, 50, 25 thresholds for coin pile expulsion
         this.isRockRegenerating = false;
 
+        // Pickaxe system
+        this.pickaxeData = {
+            normal: {
+                id: 'normal',
+                name: 'Normal Pickaxe',
+                rarity: 'common',
+                description: 'Normal yet faithful.',
+                dpc: 1,
+                icon: 'assets/items/pickaxes/standard.png'
+            }
+        };
+        this.equippedPickaxe = 'normal';
+        this.ownedPickaxes = ['normal'];
+
+        // Fortune system (placeholder)
+        this.fortuneData = {};
+        this.equippedFortune = null;
+        this.ownedFortunes = [];
+
         // UI state flags
 
         // Rick Doge system
@@ -835,6 +854,130 @@ class DogeMinerGame {
 
     // ========== END ROCK HEALTH SYSTEM ==========
 
+    // ========== PICKAXE & FORTUNE SYSTEM ==========
+
+    /**
+     * Opens the pickaxe selection modal
+     */
+    openPickaxeModal() {
+        const modal = document.getElementById('pickaxe-modal');
+        if (modal) {
+            modal.classList.add('active');
+            this.renderPickaxeGrid();
+        }
+    }
+
+    /**
+     * Closes the pickaxe selection modal
+     */
+    closePickaxeModal() {
+        const modal = document.getElementById('pickaxe-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Opens the fortune selection modal
+     */
+    openFortuneModal() {
+        const modal = document.getElementById('fortune-modal');
+        if (modal) {
+            modal.classList.add('active');
+            this.renderFortuneGrid();
+        }
+    }
+
+    /**
+     * Closes the fortune selection modal
+     */
+    closeFortuneModal() {
+        const modal = document.getElementById('fortune-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Renders the pickaxe cards in the modal grid
+     */
+    renderPickaxeGrid() {
+        const grid = document.getElementById('pickaxe-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        this.ownedPickaxes.forEach(pickaxeId => {
+            const pickaxe = this.pickaxeData[pickaxeId];
+            if (!pickaxe) return;
+
+            const card = document.createElement('div');
+            card.className = `item-card rarity-${pickaxe.rarity}`;
+            if (this.equippedPickaxe === pickaxeId) {
+                card.classList.add('equipped');
+            }
+
+            card.innerHTML = `
+                <img src="${pickaxe.icon}" alt="${pickaxe.name}" class="item-card-icon">
+                <div class="item-card-name">${pickaxe.name}</div>
+                <div class="item-card-rarity">${pickaxe.rarity}</div>
+                <div class="item-card-description">${pickaxe.description}</div>
+                <div class="item-card-stat">
+                    <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                    <span>${pickaxe.dpc}</span>
+                </div>
+            `;
+
+            card.addEventListener('click', () => this.equipPickaxe(pickaxeId));
+            grid.appendChild(card);
+        });
+    }
+
+    /**
+     * Renders the fortune cards in the modal grid
+     */
+    renderFortuneGrid() {
+        const grid = document.getElementById('fortune-grid');
+        if (!grid) return;
+
+        if (this.ownedFortunes.length === 0) {
+            grid.innerHTML = '<p class="no-items-message">No fortunes available yet!</p>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        // Fortune rendering would go here when fortunes are implemented
+    }
+
+    /**
+     * Equips a pickaxe
+     */
+    equipPickaxe(pickaxeId) {
+        if (!this.pickaxeData[pickaxeId]) return;
+        if (!this.ownedPickaxes.includes(pickaxeId)) return;
+
+        this.equippedPickaxe = pickaxeId;
+        this.renderPickaxeGrid();
+
+        // Update pickaxe sprite in game
+        const pickaxeImg = document.getElementById('pickaxe');
+        if (pickaxeImg) {
+            pickaxeImg.src = this.pickaxeData[pickaxeId].icon;
+        }
+
+        this.showNotification(`Equipped ${this.pickaxeData[pickaxeId].name}!`);
+        this.playSound('check');
+    }
+
+    /**
+     * Gets the current DPC (Dogecoin Per Click) based on equipped pickaxe
+     */
+    getPickaxeDPC() {
+        const pickaxe = this.pickaxeData[this.equippedPickaxe];
+        return pickaxe ? pickaxe.dpc : 1;
+    }
+
+    // ========== END PICKAXE & FORTUNE SYSTEM ==========
 
     playDogeIntro(force = false) {
         if ((this.isTransitioning || this.isCutscenePlaying) && !force) return;

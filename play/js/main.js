@@ -278,6 +278,31 @@ function importSave() {
     }
 }
 
+// Pickaxe & Fortune modal functions
+function openPickaxeModal() {
+    if (window.game) {
+        window.game.openPickaxeModal();
+    }
+}
+
+function closePickaxeModal() {
+    if (window.game) {
+        window.game.closePickaxeModal();
+    }
+}
+
+function openFortuneModal() {
+    if (window.game) {
+        window.game.openFortuneModal();
+    }
+}
+
+function closeFortuneModal() {
+    if (window.game) {
+        window.game.closeFortuneModal();
+    }
+}
+
 function resetGame() {
     if (saveManager) {
         saveManager.resetGame();

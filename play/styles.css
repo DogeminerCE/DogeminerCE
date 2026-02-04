@@ -793,6 +793,244 @@ body {
     background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
     /* Gradient with bottom color taking up more space */
     border: 1px solid #d4af37;
+    position: relative;
+}
+
+/* Switcher Buttons (Pickaxes & Fortunes) */
+#switcher-buttons {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    z-index: 25;
+}
+
+.switcher-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f5e6b3, #d4a853);
+    border: 3px solid #b8860b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    padding: 6px;
+}
+
+.switcher-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.switcher-btn:active {
+    transform: scale(0.95);
+}
+
+.switcher-btn img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.switcher-label {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 7px;
+    font-weight: bold;
+    color: #5a4a2a;
+    text-transform: uppercase;
+    margin-top: 2px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Switcher Modal (Pickaxe & Fortune) */
+.switcher-modal {
+    display: none;
+    position: absolute;
+    top: 0;
+    /* Center: (1200px container - 1144px panels) / 2 = 28px offset */
+    left: 28px;
+    /* 630px left + 4px gap + 510px right = 1144px total */
+    width: 1144px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.75);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.switcher-modal.active {
+    display: flex;
+}
+
+.switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
+    border: 3px solid #b8860b;
+    border-radius: 15px;
+    padding: 20px 25px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.modal-title {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 32px;
+    color: #5a4a2a;
+    text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.5);
+    margin-bottom: 5px;
+}
+
+.modal-subtitle {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    color: #7a6a4a;
+    margin-bottom: 20px;
+}
+
+.switcher-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Pickaxe/Fortune Card */
+.item-card {
+    width: 140px;
+    padding: 15px 10px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(240, 235, 220, 0.9));
+    border: 3px solid #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.item-card.equipped {
+    border-color: #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Rarity Colors */
+.item-card.rarity-common {
+    border-color: #888888;
+    background: linear-gradient(to bottom, rgba(220, 220, 220, 0.9), rgba(200, 200, 200, 0.9));
+}
+
+.item-card.rarity-improved {
+    border-color: #6b8e23;
+    background: linear-gradient(to bottom, rgba(200, 230, 200, 0.9), rgba(180, 210, 180, 0.9));
+}
+
+.item-card.rarity-rare {
+    border-color: #4169e1;
+    background: linear-gradient(to bottom, rgba(200, 210, 240, 0.9), rgba(180, 190, 220, 0.9));
+}
+
+.item-card.rarity-epic {
+    border-color: #9932cc;
+    background: linear-gradient(to bottom, rgba(230, 200, 240, 0.9), rgba(210, 180, 220, 0.9));
+}
+
+.item-card.rarity-legendary {
+    border-color: #ffa500;
+    background: linear-gradient(to bottom, rgba(255, 240, 200, 0.9), rgba(255, 220, 150, 0.9));
+}
+
+.item-card-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 10px;
+    display: block;
+    object-fit: contain;
+}
+
+.item-card-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #4a3a2a;
+    margin-bottom: 3px;
+}
+
+.item-card-rarity {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    color: #6a5a4a;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.item-card-description {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    font-style: italic;
+    color: #7a6a5a;
+    margin-bottom: 10px;
+}
+
+/* DPC Stat (Pickaxes only) */
+.item-card-stat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.item-card-stat img {
+    width: 18px;
+    height: 18px;
+}
+
+.item-card-stat span {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #5a4a2a;
+}
+
+.modal-close-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #5a4a2a;
+    background: linear-gradient(145deg, #f5e6b3, #d4a853);
+    border: 2px solid #b8860b;
+    border-radius: 8px;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    background: linear-gradient(145deg, #fffacd, #e5c464);
+    transform: scale(1.05);
+}
+
+.no-items-message {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    color: #7a6a5a;
+    font-style: italic;
+    padding: 30px;
 }
 
 #right-panel {

@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
     <link rel="manifest" href="../favicon_io/site.webmanifest">
 
-    <link rel="stylesheet" href="styles.css?v=35">
+    <link rel="stylesheet" href="styles.css?v=36">
     <style>
         @font-face {
             font-family: 'DogeSans';
@@ -58,6 +58,18 @@
     <div id="game-container">
         <!-- Left Panel - Mining Area -->
         <div id="left-panel" class="game-panel">
+            <!-- Switcher Buttons (Pickaxes & Fortunes) -->
+            <div id="switcher-buttons">
+                <button class="switcher-btn" id="pickaxe-btn" onclick="openPickaxeModal()">
+                    <img src="assets/quickUI/Pickaxe.png" alt="Pickaxes">
+                    <span class="switcher-label">PICKAXES</span>
+                </button>
+                <button class="switcher-btn" id="fortune-btn" onclick="openFortuneModal()">
+                    <img src="assets/general/dogecoin_70x70.png" alt="Fortunes">
+                    <span class="switcher-label">FORTUNES</span>
+                </button>
+            </div>
+
             <!-- Platform (behind everything) -->
             <div id="platform-container">
                 <img src="../assets/quickUI/dogeplatform.png" alt="Platform" id="platform">
@@ -124,6 +136,30 @@
             <button class="planet-tab" data-planet="titan" onclick="switchPlanet('titan')">
                 <img src="assets/general/titan_tab.png" alt="Titan">
             </button>
+        </div>
+
+        <!-- Pickaxe Modal -->
+        <div id="pickaxe-modal" class="switcher-modal">
+            <div class="switcher-modal-content">
+                <h2 class="modal-title">PICKAXES</h2>
+                <p class="modal-subtitle">CLICK TO EQUIP</p>
+                <div class="switcher-grid" id="pickaxe-grid">
+                    <!-- Pickaxe cards will be dynamically generated -->
+                </div>
+                <button class="modal-close-btn" onclick="closePickaxeModal()">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- Fortune Modal -->
+        <div id="fortune-modal" class="switcher-modal">
+            <div class="switcher-modal-content">
+                <h2 class="modal-title">FORTUNES</h2>
+                <p class="modal-subtitle">PASSIVE</p>
+                <div class="switcher-grid" id="fortune-grid">
+                    <p class="no-items-message">No fortunes available yet!</p>
+                </div>
+                <button class="modal-close-btn" onclick="closeFortuneModal()">CLOSE</button>
+            </div>
         </div>
 
         <!-- Right Panel - UI -->
