@@ -843,6 +843,43 @@ class DogeMinerGame {
     }
 
     /**
+     * Collects the nearest coin pile (used by controller X button)
+     */
+    collectNearestCoinPile() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        const piles = rockContainer.querySelectorAll('.coin-pile');
+        if (piles.length === 0) return;
+
+        // Find the pile closest to the centre of the rock
+        const rock = document.getElementById('main-rock');
+        if (!rock) return;
+        const rockRect = rock.getBoundingClientRect();
+        const cx = rockRect.left + rockRect.width / 2;
+        const cy = rockRect.top + rockRect.height / 2;
+
+        let closest = null;
+        let closestDist = Infinity;
+
+        piles.forEach(pile => {
+            const r = pile.getBoundingClientRect();
+            const px = r.left + r.width / 2;
+            const py = r.top + r.height / 2;
+            const dist = Math.hypot(px - cx, py - cy);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closest = pile;
+            }
+        });
+
+        if (closest) {
+            const amount = parseInt(closest.dataset.amount, 10) || 0;
+            this.collectCoinPile(closest, amount);
+        }
+    }
+
+    /**
      * Updates the rock health percentage display
      */
     updateRockHealthDisplay() {

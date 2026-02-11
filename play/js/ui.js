@@ -51,8 +51,11 @@ class UIManager {
             // Update tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
+                // Match button by onclick attribute (works for both DOM clicks and controller calls)
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
 
             // Add slide-out animation to current tab
             if (isMovingRight) {

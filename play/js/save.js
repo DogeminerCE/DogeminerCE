@@ -77,6 +77,22 @@ class SaveManager {
                 this.saveGame(false);
             });
         }
+
+        // Listen for controller indicators setting changes
+        const controllerIndicatorsCheckbox = document.getElementById('controller-indicators-enabled');
+        if (controllerIndicatorsCheckbox) {
+            controllerIndicatorsCheckbox.addEventListener('change', (e) => {
+                if (window.controllerManager) {
+                    window.controllerManager.setShowIndicators(e.target.checked);
+                }
+                // Play check sound
+                if (window.audioManager) {
+                    window.audioManager.playSound('check');
+                }
+                // Trigger auto-save to save settings (don't show notification)
+                this.saveGame(false);
+            });
+        }
     }
 
     saveGame(showNotification = true) {
@@ -250,7 +266,8 @@ class SaveManager {
                 soundEnabled: this.game.soundEnabled !== false,
                 musicEnabled: this.game.musicEnabled !== false,
                 notificationsEnabled: this.game.notificationsEnabled !== false,
-                autoSaveEnabled: this.game.autoSaveEnabled !== false
+                autoSaveEnabled: this.game.autoSaveEnabled !== false,
+                controllerIndicators: window.controllerManager ? window.controllerManager.showIndicators !== false : true
             },
             cutscenes: {
                 moonLaunch: !!this.game.hasPlayedMoonLaunch
@@ -556,6 +573,14 @@ class SaveManager {
         if (musicCheckbox) musicCheckbox.checked = this.game.musicEnabled;
         if (notificationsCheckbox) notificationsCheckbox.checked = this.game.notificationsEnabled;
         if (autoSaveCheckbox) autoSaveCheckbox.checked = this.game.autoSaveEnabled;
+
+        // Restore controller indicators preference
+        const controllerIndicatorsEnabled = saveData.settings?.controllerIndicators !== false;
+        const controllerIndicatorsCheckbox = document.getElementById('controller-indicators-enabled');
+        if (controllerIndicatorsCheckbox) controllerIndicatorsCheckbox.checked = controllerIndicatorsEnabled;
+        if (window.controllerManager) {
+            window.controllerManager.setShowIndicators(controllerIndicatorsEnabled);
+        }
 
         this.game.updateDPS();
         this.game.updateUI();

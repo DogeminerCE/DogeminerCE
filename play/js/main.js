@@ -67,6 +67,16 @@ async function initializeGame() {
         updateLoadingInfo('Preparing notifications...');
 
         notificationManager = new NotificationManager(game);
+
+        // Initialize controller support (Xbox gamepad / any standard gamepad)
+        updateLoadingInfo('Setting up controller support...');
+        try {
+            controllerManager = new ControllerManager(game, uiManager, shopManager);
+            window.controllerManager = controllerManager;
+        } catch (error) {
+            console.warn('Controller support unavailable:', error);
+        }
+
         updateLoadingInfo('Loading game data...');
 
         // Try to load existing save
