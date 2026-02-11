@@ -560,7 +560,59 @@ class ControllerManager {
             return;
         }
 
-        // Shop / Upgrades / Settings
+        // Settings: true 2-column navigation based on DOM columns
+        if (this.focusContext === 'settings') {
+            const items = this._getFocusableItems();
+            if (items.length === 0) return;
+
+            const container = document.getElementById('settings-tab');
+            const columns = container ? container.querySelectorAll('.settings-column') : [];
+
+            // Split items into left and right column groups
+            const leftCol = [];
+            const rightCol = [];
+            items.forEach(item => {
+                if (columns[0] && columns[0].contains(item)) leftCol.push(item);
+                else rightCol.push(item);
+            });
+
+            const currentItem = items[this.focusIndex];
+            const inLeftCol = leftCol.includes(currentItem);
+            const currentColItems = inLeftCol ? leftCol : rightCol;
+            const colIdx = currentColItems.indexOf(currentItem);
+
+            if (moveX > 0 && inLeftCol && rightCol.length > 0) {
+                // Move to right column, same row or nearest
+                const targetIdx = Math.min(colIdx, rightCol.length - 1);
+                this.focusIndex = items.indexOf(rightCol[targetIdx]);
+            } else if (moveX < 0) {
+                if (!inLeftCol && leftCol.length > 0) {
+                    // Move to left column, same row or nearest
+                    const targetIdx = Math.min(colIdx, leftCol.length - 1);
+                    this.focusIndex = items.indexOf(leftCol[targetIdx]);
+                } else {
+                    // Already in left column — go back to mining
+                    this.focusContext = 'mining';
+                    this.focusIndex = 0;
+                    this._updateFocus();
+                    return;
+                }
+            } else if (moveY !== 0) {
+                // Move within current column
+                let newIdx = colIdx + (moveY > 0 ? 1 : -1);
+                newIdx = Math.max(0, Math.min(newIdx, currentColItems.length - 1));
+                this.focusIndex = items.indexOf(currentColItems[newIdx]);
+            }
+
+            this.focusIndex = Math.max(0, Math.min(this.focusIndex, items.length - 1));
+            this._updateFocus();
+            if (items[this.focusIndex]) {
+                items[this.focusIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            return;
+        }
+
+        // Shop / Upgrades
         const items = this._getFocusableItems();
         if (items.length === 0) return;
 
