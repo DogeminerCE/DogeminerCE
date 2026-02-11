@@ -162,7 +162,21 @@
             </div>
         </div>
 
-        <!-- Right Panel - UI -->
+        <!-- Controller-friendly dialog (replaces browser confirm/alert when controller is active) -->
+        <div id="controller-dialog" class="controller-dialog-overlay">
+            <div class="controller-dialog-box">
+                <h3 id="controller-dialog-title" class="controller-dialog-title">Confirm</h3>
+                <p id="controller-dialog-message" class="controller-dialog-message"></p>
+                <div class="controller-dialog-buttons">
+                    <button id="controller-dialog-confirm" class="controller-dialog-btn confirm">Confirm</button>
+                    <button id="controller-dialog-cancel" class="controller-dialog-btn cancel">Cancel</button>
+                </div>
+                <div class="controller-dialog-hints">
+                    <span class="dialog-hint"><kbd>A</kbd> Confirm</span>
+                    <span class="dialog-hint"><kbd>B</kbd> Cancel</span>
+                </div>
+            </div>
+        </div>
         <div id="right-panel" class="game-panel">
             <!-- Panel Tabs -->
             <div id="panel-tabs">

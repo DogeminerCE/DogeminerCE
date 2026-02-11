@@ -757,12 +757,15 @@ class SaveManager {
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
                     const saveData = JSON.parse(e.target.result);
 
                     if (this.validateSaveData(saveData)) {
-                        if (confirm('This will overwrite your current save. Continue?')) {
+                        const ok = await gameConfirm('This will overwrite your current save. Continue?', {
+                            title: 'Import Save'
+                        });
+                        if (ok) {
                             this.applySaveData(saveData);
                             this.saveGame();
                             this.game.showNotification('Save imported successfully!');
@@ -783,8 +786,14 @@ class SaveManager {
     }
 
     async resetGame() {
-        if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
-            if (confirm('This will permanently delete all your progress. Are you absolutely sure?')) {
+        const ok1 = await gameConfirm('Are you sure you want to reset your game? This cannot be undone!', {
+            title: 'Reset Game'
+        });
+        if (ok1) {
+            const ok2 = await gameConfirm('This will permanently delete all your progress. Are you absolutely sure?', {
+                title: 'Final Warning'
+            });
+            if (ok2) {
                 // Clear all possible save data
                 localStorage.removeItem(this.saveKey);
                 localStorage.removeItem(this.backupKey);
@@ -883,8 +892,11 @@ class SaveManager {
     }
 
     // Save validation and repair
-    repairSave() {
-        if (!confirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Moving helpers to correct planets\n• Fixing invalid data\n\nProceed?')) {
+    async repairSave() {
+        const ok = await gameConfirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Moving helpers to correct planets\n• Fixing invalid data\n\nProceed?', {
+            title: 'Repair Save'
+        });
+        if (!ok) {
             return false;
         }
 
@@ -1082,7 +1094,7 @@ class SaveManager {
             // Show result
             if (repairsMade > 0) {
                 const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}\n\nThe game will now refresh.`;
-                alert(message);
+                await gameAlert(message, { title: 'Repair Complete' });
                 this.game.showNotification(`Repaired ${repairsMade} issues!`);
                 // Auto-refresh after repair
                 setTimeout(() => {
@@ -1095,7 +1107,7 @@ class SaveManager {
             return true;
         } catch (error) {
             console.error('Error repairing save:', error);
-            alert('Error repairing save: ' + error.message);
+            await gameAlert('Error repairing save: ' + error.message, { title: 'Repair Error' });
             return false;
         }
     }

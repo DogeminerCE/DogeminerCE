@@ -3735,8 +3735,11 @@ class DogeMinerGame {
         return false;
     }
 
-    resetGame() {
-        if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
+    async resetGame() {
+        const ok = await gameConfirm('Are you sure you want to reset your game? This cannot be undone!', {
+            title: 'Reset Game'
+        });
+        if (ok) {
             localStorage.removeItem('dogeminer_save');
             location.reload();
         }

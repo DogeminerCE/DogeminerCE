@@ -151,6 +151,11 @@ class ControllerManager {
         // Coin pile observer — attaches X-button icons to new coin piles
         this._coinPileObserver = null;
 
+        // In-game dialog state (replaces browser confirm/alert)
+        this._dialogOpen = false;
+        this._dialogResolve = null;
+        this._dialogFocusIdx = 0;   // 0 = Confirm, 1 = Cancel
+
         // Bind the loop
         this._pollLoop = this._pollLoop.bind(this);
 
@@ -267,6 +272,14 @@ class ControllerManager {
         };
 
         // ── Handle input ─────────────────────────────────────────────────
+
+        // If the in-game dialog is open, route all input there
+        if (this._dialogOpen) {
+            this._handleDialogInput(justPressed, GP, axes);
+            this.prevButtons = buttons;
+            this.prevAxes = axes;
+            return;
+        }
 
         // A Button — Mine or confirm
         if (justPressed(GP.A)) {
@@ -950,6 +963,117 @@ class ControllerManager {
         }
     }
 
+    // ── In-game Dialog System ─────────────────────────────────────────────
+
+    /**
+     * Show an in-game dialog. Returns a Promise that resolves to true/false.
+     * @param {string} message - Text body
+     * @param {object} opts
+     * @param {string} opts.title - Heading (default 'Confirm')
+     * @param {boolean} opts.alertOnly - If true, shows only an OK button
+     * @param {string} opts.confirmText - Custom confirm button label
+     * @param {string} opts.cancelText  - Custom cancel button label
+     */
+    showDialog(message, opts = {}) {
+        return new Promise(resolve => {
+            const overlay = document.getElementById('controller-dialog');
+            const titleEl = document.getElementById('controller-dialog-title');
+            const msgEl = document.getElementById('controller-dialog-message');
+            const confirmBtn = document.getElementById('controller-dialog-confirm');
+            const cancelBtn = document.getElementById('controller-dialog-cancel');
+            if (!overlay) { resolve(false); return; }
+
+            titleEl.textContent = opts.title || 'Confirm';
+            msgEl.textContent = message;
+            confirmBtn.textContent = opts.confirmText || (opts.alertOnly ? 'OK' : 'Confirm');
+            cancelBtn.textContent = opts.cancelText || 'Cancel';
+
+            overlay.classList.toggle('alert-mode', !!opts.alertOnly);
+            overlay.classList.add('active');
+
+            this._dialogOpen = true;
+            this._dialogResolve = resolve;
+            this._dialogFocusIdx = 0;
+            this._updateDialogFocus();
+
+            // Mouse/touch fallback
+            const onConfirm = () => { cleanup(); this._closeDialog(true); };
+            const onCancel = () => { cleanup(); this._closeDialog(false); };
+            confirmBtn.addEventListener('click', onConfirm);
+            cancelBtn.addEventListener('click', onCancel);
+
+            const cleanup = () => {
+                confirmBtn.removeEventListener('click', onConfirm);
+                cancelBtn.removeEventListener('click', onCancel);
+            };
+            this._dialogCleanup = cleanup;
+        });
+    }
+
+    _closeDialog(result) {
+        const overlay = document.getElementById('controller-dialog');
+        if (overlay) {
+            overlay.classList.remove('active', 'alert-mode');
+        }
+        this._dialogOpen = false;
+        if (this._dialogCleanup) {
+            this._dialogCleanup();
+            this._dialogCleanup = null;
+        }
+        if (this._dialogResolve) {
+            this._dialogResolve(result);
+            this._dialogResolve = null;
+        }
+    }
+
+    _updateDialogFocus() {
+        const confirmBtn = document.getElementById('controller-dialog-confirm');
+        const cancelBtn = document.getElementById('controller-dialog-cancel');
+        if (!confirmBtn || !cancelBtn) return;
+
+        confirmBtn.classList.toggle('controller-focus', this._dialogFocusIdx === 0);
+        cancelBtn.classList.toggle('controller-focus', this._dialogFocusIdx === 1);
+    }
+
+    _handleDialogInput(justPressed, GP, axes) {
+        // A = select focused button
+        if (justPressed(GP.A)) {
+            if (this._dialogFocusIdx === 0) {
+                this._closeDialog(true);
+            } else {
+                this._closeDialog(false);
+            }
+            return;
+        }
+
+        // B = cancel / dismiss
+        if (justPressed(GP.B)) {
+            this._closeDialog(false);
+            return;
+        }
+
+        // D-pad or analog stick left/right to switch between confirm and cancel
+        const overlay = document.getElementById('controller-dialog');
+        const isAlertMode = overlay && overlay.classList.contains('alert-mode');
+        if (!isAlertMode) {
+            let moveX = 0;
+            // D-pad
+            if (justPressed(GP.DPAD_LEFT)) moveX = -1;
+            if (justPressed(GP.DPAD_RIGHT)) moveX = 1;
+            // Analog stick (check if just crossed dead zone)
+            if (axes && Math.abs(axes[AXIS.LEFT_X]) > this.DEAD_ZONE) {
+                const prevAxisX = this.prevAxes[AXIS.LEFT_X] || 0;
+                if (Math.abs(prevAxisX) <= this.DEAD_ZONE) {
+                    moveX = axes[AXIS.LEFT_X] > 0 ? 1 : -1;
+                }
+            }
+            if (moveX !== 0) {
+                this._dialogFocusIdx = this._dialogFocusIdx === 0 ? 1 : 0;
+                this._updateDialogFocus();
+            }
+        }
+    }
+
     // ── Cleanup ──────────────────────────────────────────────────────────
 
     destroy() {
@@ -958,8 +1082,29 @@ class ControllerManager {
         this._removePrompts();
         this._clearFocusHighlight();
         this._stopCoinPileObserver();
+        if (this._dialogOpen) this._closeDialog(false);
         document.body.classList.remove('controller-mode', 'xbox-mode');
     }
+}
+
+// ── Global Dialog Helpers ─────────────────────────────────────────────────────
+// These functions check if a controller is active and use the in-game dialog;
+// otherwise they fall back to native browser confirm/alert.
+
+function gameConfirm(message, opts = {}) {
+    if (window.controllerManager && window.controllerManager.controllerMode) {
+        return window.controllerManager.showDialog(message, opts);
+    }
+    // Fallback to native browser confirm (returns boolean wrapped in a Promise)
+    return Promise.resolve(confirm(message));
+}
+
+function gameAlert(message, opts = {}) {
+    if (window.controllerManager && window.controllerManager.controllerMode) {
+        return window.controllerManager.showDialog(message, { ...opts, alertOnly: true });
+    }
+    alert(message);
+    return Promise.resolve(true);
 }
 
 // Global instance placeholder
