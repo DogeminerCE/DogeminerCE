@@ -2302,6 +2302,34 @@ body.planet-mars #main-rock {
     margin-top: 2px;
 }
 
+.moon-theme .helper-lock-overlay::before {
+    background: rgba(200, 225, 240, 0.92);
+    border: 2px solid rgba(120, 170, 200, 0.6);
+    box-shadow: inset 0 2px 6px rgba(40, 80, 120, 0.15);
+}
+
+.moon-theme .helper-lock-icon {
+    background-color: rgb(60, 110, 150);
+}
+
+.moon-theme .helper-lock-text {
+    color: rgb(50, 100, 140);
+    text-shadow:
+        0 0 0 rgb(50, 100, 140),
+        0.6px 0 0 rgb(50, 100, 140),
+        -0.6px 0 0 rgb(50, 100, 140),
+        0 0.6px 0 rgb(50, 100, 140),
+        0 -0.6px 0 rgb(50, 100, 140),
+        0.45px 0.45px 0 rgb(50, 100, 140),
+        -0.45px 0.45px 0 rgb(50, 100, 140),
+        0.45px -0.45px 0 rgb(50, 100, 140),
+        -0.45px -0.45px 0 rgb(50, 100, 140);
+}
+
+.moon-theme .helper-lock-subtext {
+    color: rgb(70, 120, 160);
+}
+
 .planet-mars .helper-lock-overlay::before {
     background: rgba(120, 60, 120, 0.85);
     border: 2px solid rgba(180, 110, 200, 0.9);
