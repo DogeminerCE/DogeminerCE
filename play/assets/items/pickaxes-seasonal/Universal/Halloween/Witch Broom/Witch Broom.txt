@@ -1,0 +1,13 @@
+"NAME"
+Witch Broom
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+A broom from a witch! Wow! Can it fly? The wood is rugged and bent from usage.
+
+"STATS"
++% Luck
++% Wow
++ Holiday Spirit
