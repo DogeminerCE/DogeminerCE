@@ -1,0 +1,12 @@
+"NAME"
+Used Rocket
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+It has run out of fuel.
+
+"STATS"
++% Wow
+- Sadness

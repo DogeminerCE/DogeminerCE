@@ -1,0 +1,13 @@
+"NAME"
+Das Big Boot
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+Surprisingly good for mining with. Plus it doubles as a hat!
+
+"STATS"
++% Wow
++% Critical Chance
++ Mystery Bonus

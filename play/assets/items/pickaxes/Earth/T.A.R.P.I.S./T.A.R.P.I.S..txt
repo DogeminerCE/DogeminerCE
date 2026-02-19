@@ -1,0 +1,13 @@
+"NAME"
+T.A.R.P.I.S.
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Time And Relative Pickaxe In Space
+
+"STATS"
++% Luck
++% Critical Chance
++ Mystery Bonus

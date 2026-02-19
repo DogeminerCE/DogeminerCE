@@ -1,0 +1,12 @@
+"NAME"
+Broken Record-Axe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+A broken record is right about 1/8th of the time.
+
+"STATS"
++% Luck
++ Dancing Skills

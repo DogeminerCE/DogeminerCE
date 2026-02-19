@@ -1,0 +1,12 @@
+"NAME"
+Red Lollipop
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+Extra large. Do not eat.
+
+"STATS"
++% Luck
++ Mystery Bonus

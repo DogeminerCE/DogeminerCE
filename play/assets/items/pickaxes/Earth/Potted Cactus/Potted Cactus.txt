@@ -1,0 +1,11 @@
+"NAME"
+Potted Cactus
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Caution: pointy parts. Do not eat unless absolutely necessary.
+
+"STATS"
++% Luck

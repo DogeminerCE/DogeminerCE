@@ -1,0 +1,15 @@
+"NAME"
+Nitro-Fueled Rocket-Axe
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+Extra dangerous.
+
+"STATS"
+
++% Critical Chance
++% Loot Find
++% Luck
++ Freedom

@@ -1,0 +1,11 @@
+"NAME"
+Gold-Bronzed Dagger
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Much sharp. Very stabby.
+
+"STATS"
++% Critical Chance

@@ -1,0 +1,8 @@
+"NAME"
+Crude Stick-Axe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+A crude combination of sticks.

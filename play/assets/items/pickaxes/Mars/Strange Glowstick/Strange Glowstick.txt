@@ -1,0 +1,12 @@
+"NAME"
+Strange Glowstick
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+This 'pickaxe' emits a strange glow.
+
+"STATS"
++% Wow
++ Mystery Bonus

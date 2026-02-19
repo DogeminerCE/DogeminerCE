@@ -1,0 +1,13 @@
+"NAME"
+Hammer of Smashing
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+A great golden hammer, made to smash things.
+
+"STATS"
++% Wow
++% Luck
++ Mystery Bonus

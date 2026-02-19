@@ -1,0 +1,13 @@
+"NAME"
+Scepter De La Sol
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+In ancient history, this scepter was used to bring light to darkness. Today, we mine.
+
+"STATS"
++% Loot Find
++% Critical Chance
++ Karma

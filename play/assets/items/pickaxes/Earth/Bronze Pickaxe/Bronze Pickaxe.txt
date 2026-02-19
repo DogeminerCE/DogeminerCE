@@ -1,0 +1,12 @@
+"NAME"
+Bronze Pickaxe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+The handle looks like gold, but it's yellow paint.
+
+"STATS"
++% Luck
++ Discipline

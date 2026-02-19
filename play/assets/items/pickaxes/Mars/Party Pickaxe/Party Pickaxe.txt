@@ -1,0 +1,13 @@
+"NAME"
+Party Pickaxe
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+Real party-popper.
+
+"STATS"
++% Wow
++% Loot Find
++ Mystery Bonus

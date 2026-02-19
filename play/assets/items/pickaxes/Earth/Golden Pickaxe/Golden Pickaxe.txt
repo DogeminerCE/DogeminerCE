@@ -1,0 +1,12 @@
+"NAME"
+Golden Pickaxe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Good for mining.
+
+"STATS"
++% Luck
++ Mystery Bonus

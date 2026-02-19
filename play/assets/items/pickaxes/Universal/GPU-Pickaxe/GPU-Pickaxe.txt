@@ -1,0 +1,13 @@
+"NAME"
+GPU-Pickaxe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A graphics card on a stick.
+
+"STATS"
++% Critical Chance
++% Loot Find
++ Karma

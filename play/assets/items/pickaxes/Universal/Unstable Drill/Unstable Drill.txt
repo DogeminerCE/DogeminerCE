@@ -1,0 +1,11 @@
+"NAME"
+Unstable Drill
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+There is something unsettling about it.
+
+"STATS"
++ Freedom

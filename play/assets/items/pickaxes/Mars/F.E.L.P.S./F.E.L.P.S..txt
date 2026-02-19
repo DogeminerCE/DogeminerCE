@@ -1,0 +1,14 @@
+"NAME"
+F.E.L.P.S.
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Made in Brazil.
+
+"STATS"
++% Critical Chance
++% Wow
++% Luck
++ Mystery Bonus

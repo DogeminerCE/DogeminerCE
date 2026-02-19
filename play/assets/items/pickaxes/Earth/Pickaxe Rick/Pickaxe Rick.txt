@@ -1,0 +1,13 @@
+"NAME"
+Pickaxe Rick
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+This pickaxe seems to be alive?! It speaks, but it only says one thing: "I turned myself into a pickaxe, Morty! ... I'm Pickaxe Riiick!"
+
+"STATS"
++% Luck
++% Loot Find
++ Happiness

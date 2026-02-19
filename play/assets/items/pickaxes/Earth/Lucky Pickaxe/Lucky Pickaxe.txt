@@ -1,0 +1,12 @@
+"NAME"
+Lucky Pickaxe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Such well-balanced.
+
+"STATS"
++% Luck
++ Happiness

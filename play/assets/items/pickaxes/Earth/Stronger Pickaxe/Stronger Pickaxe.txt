@@ -1,0 +1,11 @@
+"NAME"
+Stronger Pickaxe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+An improved version of the normal pickaxe.
+
+"STATS"
++% Loot Find

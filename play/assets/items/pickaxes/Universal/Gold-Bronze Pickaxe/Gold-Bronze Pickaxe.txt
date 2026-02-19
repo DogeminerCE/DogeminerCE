@@ -1,0 +1,12 @@
+"NAME"
+Gold-Bronze Pickaxe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A unique alloy of gold and bronze. Mostly gold.
+
+"STATS"
++% Luck
++ Happiness

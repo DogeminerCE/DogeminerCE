@@ -1,0 +1,12 @@
+"NAME"
+Blue Pickaxe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+A simple blue pickaxe.
+
+"STATS"
++% Critical Chance
++ Discipline

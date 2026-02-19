@@ -1,0 +1,14 @@
+"NAME"
+Nuclear-Tipped Rocket
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+The really, really, really dangerous game.
+
+"STATS"
++% Luck
++% Wow
++% Loot Find
++ Freedom

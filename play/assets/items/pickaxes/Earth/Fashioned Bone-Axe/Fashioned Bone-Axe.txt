@@ -1,0 +1,11 @@
+"NAME"
+Fashioned Bone-Axe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+A crude combination of stick and bone.
+
+"STATS"
++% Critical Chance

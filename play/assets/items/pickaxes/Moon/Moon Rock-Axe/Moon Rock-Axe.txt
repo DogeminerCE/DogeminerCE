@@ -1,0 +1,11 @@
+"NAME"
+Moon Rock-Axe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+A moon rock on a stick.
+
+"STATS"
++% Critical Chance

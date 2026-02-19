@@ -1,0 +1,13 @@
+"NAME"
+Gas Carbine
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+For the angry miner.
+
+"STATS"
++1 Defuse Kit
++% Luck
++ Freedom

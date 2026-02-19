@@ -1,0 +1,12 @@
+"NAME"
+Firefighter's Axe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+A firefighter's axe. Imbued with dogecoin powers.
+
+"STATS"
++% Critical Chance
++ Freedom

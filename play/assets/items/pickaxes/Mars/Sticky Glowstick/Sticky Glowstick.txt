@@ -1,0 +1,13 @@
+"NAME"
+Sticky Glowstick
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+There's a sort of sticky residue on it.
+
+"STATS"
++% Critical Chance
++% Wow
++ Mystery Bonus

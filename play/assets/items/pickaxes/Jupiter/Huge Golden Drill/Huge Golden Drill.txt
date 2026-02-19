@@ -1,0 +1,13 @@
+"NAME"
+Huge Golden Drill
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Such heavy, much whirl, very golden.
+
+"STATS"
++% Wow
++% Loot Find
++ Freedom
