@@ -1,0 +1,14 @@
+"NAME"
+The Diamond Avenger
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A supreme diamond sword, thought to have been lost forever.
+
+"STATS"
++% Critical Chance
++% Wow
++% Luck
++ Mystery Bonus

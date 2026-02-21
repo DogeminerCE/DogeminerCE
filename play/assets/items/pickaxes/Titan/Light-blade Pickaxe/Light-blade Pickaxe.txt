@@ -1,0 +1,13 @@
+"NAME"
+Light-blade Pickaxe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Super-effective against most forms of matter. Less risk of personal injury than older versions.
+
+"STATS"
++ DPS
++% Loot Find
++ Mystery Bonus

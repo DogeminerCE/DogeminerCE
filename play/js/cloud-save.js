@@ -311,7 +311,11 @@ class CloudSaveManager {
             totalMined: window.game.totalMined || 0,
             totalClicks: window.game.totalClicks || 0,
             currentLevel: window.game.currentLevel || 'earth',
-            currentPickaxe: window.game.currentPickaxe || 'standard',
+            pickaxeInventory: window.game.pickaxeInventory || [],
+            equippedPickaxeId: window.game.equippedPickaxeId || 'default_normal_pickaxe',
+            maxPickaxeDPC: window.game.maxPickaxeDPC || 1,
+            fortuneInventory: window.game.fortuneInventory || [],
+            rocksBroken: window.game.rocksBroken || 0,
             playTime: window.game.playTime || 0,
             highestDps: window.game.highestDps || 0,
             achievements: window.game.achievements || {},
@@ -336,7 +340,12 @@ class CloudSaveManager {
             window.game.totalMined = gameData.totalMined || 0;
             window.game.totalClicks = gameData.totalClicks || 0;
             window.game.currentLevel = gameData.currentLevel || 'earth';
-            window.game.currentPickaxe = gameData.currentPickaxe || 'standard';
+            window.game.pickaxeInventory = Array.isArray(gameData.pickaxeInventory) ? gameData.pickaxeInventory : [window.game.defaultPickaxe];
+            window.game.equippedPickaxeId = gameData.equippedPickaxeId || 'default_normal_pickaxe';
+            window.game.maxPickaxeDPC = gameData.maxPickaxeDPC || 1;
+            window.game.fortuneInventory = Array.isArray(gameData.fortuneInventory) ? gameData.fortuneInventory : [];
+            window.game.rocksBroken = gameData.rocksBroken || 0;
+            window.game.recalculatePlayerStats();
             window.game.playTime = gameData.playTime || 0;
             window.game.highestDps = gameData.highestDps || 0;
             window.game.achievements = gameData.achievements || {};

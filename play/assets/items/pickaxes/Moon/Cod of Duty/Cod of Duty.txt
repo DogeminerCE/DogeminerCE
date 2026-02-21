@@ -1,0 +1,13 @@
+"NAME"
+Cod of Duty
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+'Fishin' for coins'*
+
+"STATS"
++% Loot Find
++% Luck
+- Sadness

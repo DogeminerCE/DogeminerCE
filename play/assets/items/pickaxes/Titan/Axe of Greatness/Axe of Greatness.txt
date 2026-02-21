@@ -1,0 +1,13 @@
+"NAME"
+Axe of Greatness
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A large golden axe - in perfect condition.
+
+"STATS"
++% Wow
++% Luck
++ Mystery Bonus

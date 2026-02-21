@@ -79,7 +79,7 @@
             <div id="mining-area">
                 <!-- Character with Shadow Circle -->
                 <div id="character-container">
-                    <img src="assets/items/pickaxes/standard.png" alt="Pickaxe" id="pickaxe">
+                    <img src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.png" alt="Pickaxe" id="pickaxe">
                     <img src="assets/general/character/standard.png" alt="Doge" id="main-character">
                     <div id="character-shadow"></div>
                 </div>
@@ -159,6 +159,38 @@
                     <p class="no-items-message">No fortunes available yet!</p>
                 </div>
                 <button class="modal-close-btn" onclick="closeFortuneModal()">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- Dogebag Modal -->
+        <div id="dogebag-modal" class="switcher-modal">
+            <div class="switcher-modal-content dogebag-modal-content">
+                <!-- State 1: The Prompt -->
+                <div id="dogebag-state-prompt" class="dogebag-state">
+                    <img src="assets/general/icons/dogebag.png" alt="Dogebag" class="dogebag-modal-icon">
+                    <h2 class="modal-title">A DOGEBAG!</h2>
+                    <p class="modal-subtitle">A DOGEBAG is a magical container that may contain special items!</p>
+                    <button class="dogebag-open-btn" onclick="openDogebagContents()">OPEN</button>
+                </div>
+                <!-- State 2: The Reveal -->
+                <div id="dogebag-state-reveal" class="dogebag-state" style="display:none;">
+                    <div class="dogebag-radial-container">
+                        <img src="assets/general/fx/radial.png" alt="" class="dogebag-radial-fx">
+                        <img id="dogebag-item-icon" src="" alt="" class="dogebag-item-icon">
+                    </div>
+                    <h2 class="modal-title">DOGEBAG CONTAINED:</h2>
+                    <div id="dogebag-item-name" class="dogebag-item-name"></div>
+                    <div id="dogebag-item-rarity" class="dogebag-item-rarity"></div>
+                    <div id="dogebag-item-description" class="dogebag-item-description"></div>
+                    <div id="dogebag-item-dpc" class="dogebag-item-dpc" style="display:none;">
+                        <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                        <span id="dogebag-dpc-value"></span>
+                    </div>
+                    <div id="dogebag-item-stats" class="dogebag-item-stats"></div>
+                    <div id="dogebag-actions" class="dogebag-actions">
+                        <!-- Buttons dynamically set by JS -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -692,6 +724,7 @@
 
             const gameScripts = [
                 'js/audio.js',
+                'js/pickaxe-factory.js',
                 'js/game.js?v=37',
                 'js/ui.js',
                 'js/shop.js',

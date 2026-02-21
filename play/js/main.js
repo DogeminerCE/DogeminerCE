@@ -24,6 +24,17 @@ async function initializeGame() {
         // Set initial planet attribute for CSS targeting
         document.body.dataset.planet = game.currentLevel;
 
+        // Initialize pickaxe factory and load templates
+        updateLoadingInfo('Loading pickaxe templates...');
+        try {
+            game.pickaxeFactory = new PickaxeFactory();
+            await game.pickaxeFactory.loadTemplates();
+            // Pass active sprite set to game for click animation
+            game._activeSpritePaths = game.pickaxeFactory.templatesWithActiveSprite;
+        } catch (err) {
+            console.error('Failed to load pickaxe templates:', err);
+        }
+
         updateLoadingInfo('Setting up shop system...');
 
         // Initialize shop manager first (needed by UI manager)
@@ -313,6 +324,25 @@ function closeFortuneModal() {
     }
 }
 
+// Dogebag modal functions
+function openDogebagContents() {
+    if (window.game) {
+        window.game.openDogebagContents();
+    }
+}
+
+function dogebagEquip() {
+    if (window.game) {
+        window.game.dogebagEquip();
+    }
+}
+
+function dogebagLoot() {
+    if (window.game) {
+        window.game.dogebagLoot();
+    }
+}
+
 function resetGame() {
     if (saveManager) {
         saveManager.resetGame();
@@ -529,6 +559,8 @@ function addDebugConsole() {
         <button onclick="game.dps += 100">+100 DPS</button>
         <button onclick="game.rotateBackground()">Rotate Background</button>
         <button onclick="game.forceRickSpawn()">Spawn Rick</button>
+        <button onclick="game.createDogebag()">Spawn Dogebag</button>
+        <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>
         <button onclick="toggleDebugMode()">Close Debug</button>
     `;
@@ -541,6 +573,28 @@ function removeDebugConsole() {
     if (debugConsole) {
         debugConsole.remove();
     }
+}
+
+function debugGrantAllPickaxes() {
+    if (!window.game || !window.game.pickaxeFactory || !window.game.pickaxeFactory.loaded) {
+        console.error('Pickaxe factory not loaded');
+        return;
+    }
+    const factory = window.game.pickaxeFactory;
+    let count = 0;
+    for (const templateId of Object.keys(factory.templates)) {
+        const pickaxe = factory.generatePickaxe(
+            templateId,
+            window.game.maxPickaxeDPC,
+            window.game.playerStats.wow
+        );
+        if (pickaxe) {
+            window.game.addPickaxeToInventory(pickaxe);
+            count++;
+        }
+    }
+    window.game.showNotification(`Granted ${count} pickaxes!`);
+    console.log(`Debug: Granted ${count} pickaxes to inventory`);
 }
 
 // Keyboard shortcuts

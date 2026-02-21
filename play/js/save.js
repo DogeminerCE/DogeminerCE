@@ -244,8 +244,11 @@ class SaveManager {
             marsHelpers: this.game.marsHelpers,
             jupiterHelpers: this.game.jupiterHelpers, // Keep Jupiter helper ownership synced across reloads.
             titanHelpers: this.game.titanHelpers, // Keep Titan helper ownership synced across reloads.
-            pickaxes: this.game.pickaxes,
-            currentPickaxe: this.game.currentPickaxe,
+            pickaxeInventory: this.game.pickaxeInventory,
+            equippedPickaxeId: this.game.equippedPickaxeId,
+            maxPickaxeDPC: this.game.maxPickaxeDPC,
+            fortuneInventory: this.game.fortuneInventory,
+            rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
             placedHelpers: helperData,
@@ -310,8 +313,15 @@ class SaveManager {
         this.game.titanHelpers = Array.isArray(saveData.titanHelpers)
             ? saveData.titanHelpers.map(helper => ({ ...helper }))
             : []; // Preserve Titan helper ownership for reloads.
-        this.game.pickaxes = saveData.pickaxes || ['standard'];
-        this.game.currentPickaxe = saveData.currentPickaxe || 'standard';
+        this.game.pickaxeInventory = Array.isArray(saveData.pickaxeInventory) ? saveData.pickaxeInventory : [this.game.defaultPickaxe];
+        this.game.equippedPickaxeId = saveData.equippedPickaxeId || 'default_normal_pickaxe';
+        this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
+        this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
+        this.game.rocksBroken = saveData.rocksBroken || 0;
+        // Recalculate rock HP based on rocks broken
+        this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
+        this.game.rockCurrentHP = this.game.rockMaxHP;
+        this.game.recalculatePlayerStats();
         this.game.upgrades = saveData.upgrades || {};
         this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
 
@@ -833,8 +843,12 @@ class SaveManager {
                 this.game.isPlacingHelpers = false;
                 this.game.upgrades = [];
                 this.game.helperUpgradeLevels = {};
-                this.game.pickaxes = [];
-                this.game.currentPickaxe = 'standard';
+                this.game.pickaxeInventory = [this.game.defaultPickaxe];
+                this.game.equippedPickaxeId = 'default_normal_pickaxe';
+                this.game.maxPickaxeDPC = 1;
+                this.game.fortuneInventory = [];
+                this.game.rocksBroken = 0;
+                this.game.recalculatePlayerStats();
                 this.game.currentLevel = 'earth';
                 this.game.hasPlayedMoonLaunch = false;
                 this.game.isCutscenePlaying = false;
@@ -870,7 +884,7 @@ class SaveManager {
                 totalMined: saveData.totalMined,
                 totalClicks: saveData.totalClicks,
                 helpers: saveData.helpers?.length || 0,
-                pickaxes: saveData.pickaxes?.length || 0
+                pickaxes: saveData.pickaxeInventory?.length || 0
             };
         } catch (error) {
             console.error('Error reading save info:', error);

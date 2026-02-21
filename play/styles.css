@@ -1007,6 +1007,33 @@ body {
     color: #5a4a2a;
 }
 
+/* Stat Lines List */
+.item-card-stats-list {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-card-stat-line {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    line-height: 1.3;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.item-card-stat-line.stat-core {
+    color: #5a4a2a;
+    font-weight: 600;
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.item-card-stat-line.stat-cosmetic {
+    color: #8a7a6a;
+    font-style: italic;
+}
+
 .modal-close-btn {
     font-family: 'DogeSans', sans-serif;
     font-size: 16px;
@@ -1032,6 +1059,247 @@ body {
     font-style: italic;
     padding: 30px;
 }
+
+/* ========== DOGEBAG SYSTEM ========== */
+
+/* In-world dogebag element */
+.dogebag-drop {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 15;
+    filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.8)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.5));
+    animation: dogebagBob 2s ease-in-out infinite, coinPileDisperse 0.4s ease-out forwards;
+    transition: transform 0.15s ease;
+}
+
+.dogebag-drop:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 6px rgba(76, 175, 80, 1)) drop-shadow(0 0 12px rgba(76, 175, 80, 0.7));
+}
+
+.dogebag-drop img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+@keyframes dogebagBob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* Dogebag Modal Content */
+.dogebag-modal-content {
+    text-align: center;
+    max-width: 380px;
+}
+
+.dogebag-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.dogebag-modal-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(76, 175, 80, 0.6));
+    animation: dogebagBob 2s ease-in-out infinite;
+}
+
+.dogebag-open-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(145deg, #4CAF50, #357a38);
+    border: 3px solid #2e7d32;
+    border-radius: 12px;
+    padding: 12px 48px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    margin-top: 10px;
+}
+
+.dogebag-open-btn:hover {
+    background: linear-gradient(145deg, #66BB6A, #43A047);
+    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Reveal state */
+.dogebag-radial-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+}
+
+.dogebag-radial-fx {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    opacity: 0.6;
+    animation: radialSpin 8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes radialSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.dogebag-item-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    z-index: 1;
+}
+
+.dogebag-item-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3a2a1a;
+}
+
+.dogebag-item-rarity {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dogebag-item-rarity.rarity-common {
+    color: #888888;
+}
+
+.dogebag-item-rarity.rarity-improved {
+    color: #6b8e23;
+}
+
+.dogebag-item-rarity.rarity-rare {
+    color: #4169e1;
+}
+
+.dogebag-item-rarity.rarity-epic {
+    color: #9932cc;
+}
+
+.dogebag-item-rarity.rarity-legendary {
+    color: #ffa500;
+}
+
+.dogebag-item-description {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    color: #6a5a4a;
+    font-style: italic;
+    max-width: 280px;
+}
+
+.dogebag-item-dpc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
+.dogebag-item-dpc img {
+    width: 18px;
+    height: 18px;
+}
+
+.dogebag-item-dpc span {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #5a4a2a;
+}
+
+.dogebag-item-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+}
+
+.dogebag-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.dogebag-action-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid;
+}
+
+.dogebag-action-btn.equip-btn {
+    color: #fff;
+    background: linear-gradient(145deg, #4CAF50, #357a38);
+    border-color: #2e7d32;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dogebag-action-btn.equip-btn:hover {
+    background: linear-gradient(145deg, #66BB6A, #43A047);
+    transform: scale(1.05);
+}
+
+.dogebag-action-btn.loot-btn {
+    color: #5a4a2a;
+    background: linear-gradient(145deg, #f5e6b3, #d4a853);
+    border-color: #b8860b;
+}
+
+.dogebag-action-btn.loot-btn:hover {
+    background: linear-gradient(145deg, #fffacd, #e5c464);
+    transform: scale(1.05);
+}
+
+/* Coin reveal (no item icon, shows coin stack) */
+.dogebag-coin-reveal {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #b89b3c;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+/* ========== END DOGEBAG SYSTEM ========== */
 
 #right-panel {
     width: 510px;

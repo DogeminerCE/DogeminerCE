@@ -1,0 +1,12 @@
+"NAME"
+Improved Saw-Axe
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+An improved axe made from a baseball bat and a round diamond saw.
+
+"STATS"
++% Critical Chance
++ Wow
