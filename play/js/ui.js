@@ -2232,6 +2232,10 @@ class UIManager {
                         <input type="checkbox" id="mobile-auto-save-enabled" ${autoSaveChecked}>
                         <span class="setting-label">Auto Save</span>
                     </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-force-mobile-ui" ${localStorage.getItem('forceMobileUI') === '1' ? 'checked' : ''}>
+                        <span class="setting-label">Force Mobile UI</span>
+                    </label>
                 </div>
                 
                 <h3 class="mobile-section-header">Cloud Save</h3>
@@ -2330,6 +2334,18 @@ class UIManager {
 
                 // Sync desktop checkbox
                 const desktopCheckbox = document.getElementById('auto-save-enabled');
+                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+            });
+        }
+
+        const forceMobileCheckbox = document.getElementById('mobile-force-mobile-ui');
+        if (forceMobileCheckbox) {
+            forceMobileCheckbox.addEventListener('change', (e) => {
+                if (window.toggleForceMobileUI) {
+                    window.toggleForceMobileUI(e.target.checked);
+                }
+                // Sync desktop checkbox
+                const desktopCheckbox = document.getElementById('force-mobile-ui');
                 if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
             });
         }

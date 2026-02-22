@@ -343,6 +343,30 @@ function dogebagLoot() {
     }
 }
 
+function toggleForceMobileUI(enabled) {
+    if (enabled) {
+        document.body.classList.add('force-mobile');
+    } else {
+        document.body.classList.remove('force-mobile');
+    }
+    localStorage.setItem('forceMobileUI', enabled ? '1' : '0');
+
+    // Sync both checkboxes
+    const desktop = document.getElementById('force-mobile-ui');
+    const mobile = document.getElementById('mobile-force-mobile-ui');
+    if (desktop) desktop.checked = enabled;
+    if (mobile) mobile.checked = enabled;
+}
+
+// Restore force mobile UI setting on load
+(function () {
+    if (localStorage.getItem('forceMobileUI') === '1') {
+        document.body.classList.add('force-mobile');
+        const cb = document.getElementById('force-mobile-ui');
+        if (cb) cb.checked = true;
+    }
+})();
+
 function resetGame() {
     if (saveManager) {
         saveManager.resetGame();

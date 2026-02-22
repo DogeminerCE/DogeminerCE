@@ -4321,6 +4321,35 @@ body.planet-mars #main-rock {
     display: none;
 }
 
+/* Force Mobile UI toggle — mirrors the mobile media query */
+.force-mobile .mobile-only {
+    display: block !important;
+}
+
+.force-mobile #right-panel {
+    display: none !important;
+}
+
+.force-mobile #planet-tabs {
+    display: none !important;
+}
+
+.force-mobile #version-indicator {
+    display: none !important;
+}
+
+.force-mobile #game-container {
+    flex-direction: column !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-top: 40px !important;
+}
+
+.force-mobile #left-panel {
+    width: 100% !important;
+    flex: 1 !important;
+}
+
 /* Mobile Media Query - Applies to screens 768px and below */
 @media screen and (max-width: 768px) {
 
