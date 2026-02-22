@@ -96,6 +96,8 @@ class DogeMinerGame {
         // Animation and effects with limits
         this.clickEffects = [];
         this.particles = [];
+        this.activeEffectCount = 0;
+        this.activeParticleCount = 0;
         this.maxEffects = 20; // Limit concurrent effects
         this.maxParticles = 50; // Limit concurrent particles
 
@@ -504,11 +506,11 @@ class DogeMinerGame {
         this.dogecoins += coinsPerHit;
         this.totalMined += coinsPerHit;
 
-        if (this.clickEffects.length < this.maxEffects) {
+        if (this.activeEffectCount < this.maxEffects) {
             this.createFloatingCoin(coinsPerHit, event, isCrit);
             this.createClickEffect(event);
         }
-        if (this.particles.length < this.maxParticles) {
+        if (this.activeParticleCount < this.maxParticles) {
             this.createParticleEffect(event);
         }
 
@@ -1758,12 +1760,14 @@ class DogeMinerGame {
             particle.style.setProperty('--dy', dy + 'px');
 
             container.appendChild(particle);
+            this.activeParticleCount++;
 
             // Remove particle after animation
             setTimeout(() => {
                 if (particle.parentNode) {
                     particle.parentNode.removeChild(particle);
                 }
+                this.activeParticleCount = Math.max(0, this.activeParticleCount - 1);
             }, 600); // Slightly faster animation
         }
     }
@@ -1834,29 +1838,32 @@ class DogeMinerGame {
         container.appendChild(text);
 
         // Animate coin
-        coin.animate([
+        const coinAnim = coin.animate([
             { transform: 'translate(-50%, -50%) scale(1.2)', opacity: 1 },
             { transform: 'translate(-50%, -150px) scale(0.4)', opacity: 0 }
         ], {
             duration: 1500,
-            easing: 'ease-out',
-            fill: 'forwards'
+            easing: 'ease-out'
         });
 
         // Animate text
-        text.animate([
+        const textAnim = text.animate([
             { transform: 'translate(-50%, -50%)', opacity: 1 },
             { transform: 'translate(-50%, -150px)', opacity: 0 }
         ], {
             duration: 1500,
-            easing: 'ease-out',
-            fill: 'forwards'
+            easing: 'ease-out'
         });
 
-        // Remove after animation
+        this.activeEffectCount++;
+
+        // Remove after animation — cancel animation to free memory
         setTimeout(() => {
+            coinAnim.cancel();
+            textAnim.cancel();
             if (coin.parentNode) coin.parentNode.removeChild(coin);
             if (text.parentNode) text.parentNode.removeChild(text);
+            this.activeEffectCount = Math.max(0, this.activeEffectCount - 1);
         }, 1500);
     }
 

@@ -24,16 +24,13 @@ class AudioManager {
         }
 
         try {
-            // Load background music
+            // Load only Earth music and sound effects at startup
+            // Other planet music is loaded on-demand to save memory
             this.loadLevel1Music();
-            this.loadMoonMusic();
-            this.loadMarsMusic();
-            this.loadJupiterMusic();
-            this.loadTitanMusic();
-            
+
             // Load sound effects
             this.loadSoundEffects();
-            
+
             // Listen for settings changes
             this.setupSettingsListeners();
         } catch (error) {
@@ -50,25 +47,25 @@ class AudioManager {
             src: ['../assets/SoundsSrc/main/swipe3.wav'],
             volume: 0.5
         });
-        
+
         // Load ching sound for purchasing
         this.soundEffects.ching = new Howl({
             src: ['../assets/SoundsSrc/main/ching.wav'],
             volume: 0.5
         });
-        
+
         // Load uhoh sound for locked content
         this.soundEffects.uhoh = new Howl({
             src: ['../assets/SoundsSrc/main/uhoh.wav'],
             volume: 0.5
         });
-        
+
         // Load check sound for settings toggles
         this.soundEffects.check = new Howl({
             src: ['../assets/SoundsSrc/main/check.wav'],
             volume: 0.5
         });
-        
+
         // Load pick sounds for rock hitting
         this.soundEffects.pick = [];
         for (let i = 1; i <= 6; i++) {
@@ -190,7 +187,7 @@ class AudioManager {
 
     playBackgroundMusic() {
         if (!this.musicEnabled) return;
-        
+
         const currentLevel = window.game?.currentLevel || 'earth';
 
         if (this.currentMusicPlanet === currentLevel) {
@@ -217,20 +214,22 @@ class AudioManager {
         this.currentMusicPlanet = currentLevel;
 
         if (currentLevel === 'moon') {
+            if (!this.moonLoop) this.loadMoonMusic();
             if (this.moonLoop) {
                 this.moonLoop.play();
             }
         } else if (currentLevel === 'mars') {
+            if (!this.marsLoop) this.loadMarsMusic();
             if (this.marsLoop) {
                 this.marsLoop.play();
             }
         } else if (currentLevel === 'jupiter') {
-            // Jupiter uses its own atmospheric music track
+            if (!this.jupiterLoop) this.loadJupiterMusic();
             if (this.jupiterLoop) {
                 this.jupiterLoop.play();
             }
         } else if (currentLevel === 'titan') {
-            // Titan uses ambient soundscape music
+            if (!this.titanLoop) this.loadTitanMusic();
             if (this.titanLoop) {
                 this.titanLoop.play();
             }
