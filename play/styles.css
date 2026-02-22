@@ -2161,20 +2161,14 @@ body.planet-mars #main-rock {
 #pickaxe {
     position: absolute;
     width: 142px;
-    /* 5% smaller than 150px */
-    height: auto;
+    height: 195px;
+    object-fit: contain;
     top: -50px;
-    /* Moved down 10 more pixels (was -60px, now -50px) */
     right: calc(20% - 50px);
-    /* Moved right 20 more pixels (was -30px, now -50px) */
     transform: rotate(30deg);
-    /* 30 degree resting angle */
     transform-origin: 50% 80%;
-    /* Rotate from 80% down the handle instead of bottom */
     z-index: 25;
-    /* Above Doge */
     order: 1;
-    /* First in flex order */
 }
 
 #pickaxe.swinging {
