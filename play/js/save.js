@@ -333,7 +333,13 @@ class SaveManager {
             if (sp.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
             }
-            if (sp.includes('axe.png') || sp.includes('rocketaxe')) {
+            const largeWeaponPatterns = [
+                'axe', 'hammer', 'sword', 'drill', 'shotgun', 'm4.',
+                'rocket', 'nuke', 'staff', 'scepter', 'gpu', 'sligpu',
+                'fryingpan', 'bigboot', 'eguitar', 'cod.', 'felps',
+                'barbell', 'poolnoodle', 'record'
+            ];
+            if (largeWeaponPatterns.some(p => sp.includes(p))) {
                 pickaxeImg.classList.add('pickaxe-shift-right');
             }
         }
