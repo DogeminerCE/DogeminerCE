@@ -322,6 +322,21 @@ class SaveManager {
         this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
         this.game.rockCurrentHP = this.game.rockMaxHP;
         this.game.recalculatePlayerStats();
+
+        // Apply equipped pickaxe sprite to DOM
+        const equipped = this.game.getEquippedPickaxe();
+        const pickaxeImg = document.getElementById('pickaxe');
+        if (equipped && pickaxeImg) {
+            pickaxeImg.src = equipped.idleSprite;
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            const sp = equipped.idleSprite || '';
+            if (sp.includes('cleaver')) {
+                pickaxeImg.classList.add('pickaxe-scale-half');
+            }
+            if (sp.includes('axe.png') || sp.includes('rocketaxe')) {
+                pickaxeImg.classList.add('pickaxe-shift-right');
+            }
+        }
         this.game.upgrades = saveData.upgrades || {};
         this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
 

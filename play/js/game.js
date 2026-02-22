@@ -1478,6 +1478,16 @@ class DogeMinerGame {
         const pickaxeImg = document.getElementById('pickaxe');
         if (pickaxeImg) {
             pickaxeImg.src = pickaxe.idleSprite;
+
+            // Apply per-sprite scale adjustments
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            const spritePath = pickaxe.idleSprite || '';
+            if (spritePath.includes('cleaver')) {
+                pickaxeImg.classList.add('pickaxe-scale-half');
+            }
+            if (spritePath.includes('axe.png') || spritePath.includes('rocketaxe')) {
+                pickaxeImg.classList.add('pickaxe-shift-right');
+            }
         }
 
         this.showNotification(`Equipped ${pickaxe.name}!`);
