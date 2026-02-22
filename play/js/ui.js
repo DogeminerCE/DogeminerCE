@@ -533,7 +533,7 @@ class UIManager {
         const marsBaseOwned = marsHelpers.some(helper => helper.type === 'marsBase');
         const jupiterBaseOwned = jupiterHelpers.some(helper => helper.type === 'cloudBase');
         const landerShibeOwned = moonHelpers.some(helper => helper.type === 'landerShibe');
-        const jupiterReached = jupiterHelpers.length > 0 || (Array.isArray(this.game.jupiterPlacedHelpers) && this.game.jupiterPlacedHelpers.length > 0);
+        const jupiterReached = this.isJupiterUnlocked();
 
         // Create 6 helper items (2x3 grid)
         for (let i = 0; i < 6; i++) {
@@ -573,11 +573,10 @@ class UIManager {
 
                 let lockReason = null;
                 if (this.game.currentLevel === 'earth') {
-                    // Time Machine Mining Rig is locked with special message
-                    if (type === 'timeMachineRig') {
+                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
+                    if (type === 'timeMachineRig' && !jupiterReached) {
                         lockReason = 'notInvented';
                     }
-                    // Infinite Dogebility Drive requires further progress
                     else if (type === 'infiniteDogebility' && !jupiterReached) {
                         lockReason = 'furtherProgress';
                     }
@@ -1826,11 +1825,11 @@ class UIManager {
                 const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
                 const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
                 const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
-                const jupiterReached = jupiterHelpers.length > 0 || (Array.isArray(this.game.jupiterPlacedHelpers) && this.game.jupiterPlacedHelpers.length > 0);
+                const jupiterReached = this.isJupiterUnlocked();
 
                 if (this.game.currentLevel === 'earth') {
-                    // Time Machine Mining Rig is locked with special message
-                    if (type === 'timeMachineRig') {
+                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
+                    if (type === 'timeMachineRig' && !jupiterReached) {
                         lockReason = 'notInvented';
                     }
                     // Infinite Dogebility Drive requires further progress

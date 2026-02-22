@@ -811,41 +811,59 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #f5e6b3, #d4a853);
-    border: 3px solid #b8860b;
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    padding: 6px;
+    padding: 0;
+    transition: transform 0.2s ease;
+    position: relative;
 }
 
 .switcher-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .switcher-btn:active {
     transform: scale(0.95);
 }
 
-.switcher-btn img {
-    width: 28px;
-    height: 28px;
+.switcher-btn-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid #e8a020;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.switcher-btn-icon {
+    width: 36px;
+    height: 36px;
     object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.fortune-icon-placeholder {
+    visibility: hidden;
 }
 
 .switcher-label {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 7px;
-    font-weight: bold;
-    color: #5a4a2a;
+    font-family: 'DogeSans', saCns-serif;
+    font-size: 9px;
+    font-weight: 900;
+    color: #ffffff;
     text-transform: uppercase;
-    margin-top: 2px;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    -webkit-text-stroke: 2px #a06820;
+    paint-order: stroke fill;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    margin-top: -14px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Switcher Modal (Pickaxe & Fortune) */

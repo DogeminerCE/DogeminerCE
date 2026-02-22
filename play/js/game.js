@@ -1499,6 +1499,12 @@ class DogeMinerGame {
 
         this.showNotification(`Equipped ${pickaxe.name}!`);
         this.playSound('check');
+
+        // Update pickaxe button preview
+        const btnPreview = document.getElementById('pickaxe-btn-preview');
+        if (btnPreview) {
+            btnPreview.src = pickaxe.idleSprite;
+        }
     }
 
     /**

@@ -342,6 +342,11 @@ class SaveManager {
             if (largeWeaponPatterns.some(p => sp.includes(p))) {
                 pickaxeImg.classList.add('pickaxe-shift-right');
             }
+            // Update pickaxe button preview
+            const btnPreview = document.getElementById('pickaxe-btn-preview');
+            if (btnPreview) {
+                btnPreview.src = equipped.idleSprite;
+            }
         }
         this.game.upgrades = saveData.upgrades || {};
         this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
