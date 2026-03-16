@@ -966,23 +966,30 @@ class UIManager {
     }
 
     updateBackground(levelName) {
-        const rockImage = document.getElementById('main-rock');
-        if (!rockImage) return;
+        if (this.game && typeof this.game.updateRockSprite === 'function') {
+            const rockImage = document.getElementById('main-rock');
+            if (rockImage) {
+                rockImage.style.opacity = '1';
+                this.game.updateRockSprite();
+            }
+        } else {
+            const rockImage = document.getElementById('main-rock');
+            if (!rockImage) return;
 
-        const level = this.game.levels[levelName];
-        if (!level) return;
+            const level = this.game.levels[levelName];
+            if (!level) return;
 
-        const targetSrc = level.rock;
-        const currentAttr = rockImage.getAttribute('src') || '';
+            const targetSrc = level.rock;
+            const currentAttr = rockImage.getAttribute('src') || '';
 
-        // If the rock is already displaying this image, skip any fade to avoid flicker
-        if (currentAttr === targetSrc || rockImage.src.endsWith(targetSrc)) {
+            if (currentAttr === targetSrc || rockImage.src.endsWith(targetSrc)) {
+                rockImage.style.opacity = '1';
+                return;
+            }
+
+            rockImage.src = targetSrc;
             rockImage.style.opacity = '1';
-            return;
         }
-
-        rockImage.src = targetSrc;
-        rockImage.style.opacity = '1';
     }
 
     updateCharacter(characterType = 'standard') {

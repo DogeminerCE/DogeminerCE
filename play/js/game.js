@@ -1070,8 +1070,8 @@ class DogeMinerGame {
     }
 
     /**
-     * Creates a dogebag element in the world near the rock.
-     */
+ * Creates a dogebag element in the world near the rock.
+ */
     createDogebag() {
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
@@ -1079,14 +1079,22 @@ class DogeMinerGame {
         // Generate contents now (stored on the element)
         const contents = this.generateDogebagContents();
 
+        // Planet-specific bag info
+        const bagInfo = this.getDogebagInfo();
+
         const bag = document.createElement('div');
         bag.className = 'dogebag-drop';
 
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'dogebag-img-wrapper';
+
         const img = document.createElement('img');
-        img.src = 'assets/general/icons/dogebag.png';
-        img.alt = 'Dogebag';
+        img.src = bagInfo.sprite;
+        img.alt = bagInfo.name;
         img.draggable = false;
-        bag.appendChild(img);
+
+        imgWrapper.appendChild(img);
+        bag.appendChild(imgWrapper);
 
         // Position similar to coin piles
         const finalOffsetX = (Math.random() - 0.5) * 240;
@@ -1096,8 +1104,9 @@ class DogeMinerGame {
         bag.style.left = '50%';
         bag.style.top = '50%';
 
-        // Store contents on element
+        // Store contents and bag info on element
         bag._dogebagContents = contents;
+        bag._dogebagInfo = bagInfo;
 
         // Click handler
         bag.addEventListener('click', (e) => {
@@ -1120,6 +1129,24 @@ class DogeMinerGame {
     }
 
     /**
+     * Returns the sprite path and display name for the current planet's dogebag variant.
+     */
+    getDogebagInfo() {
+        switch (this.currentLevel) {
+            case 'moon':
+                return { sprite: 'assets/general/icons/mooncrate.png', name: 'Moon Crate' };
+            case 'mars':
+                return { sprite: 'assets/general/icons/marschest.png', name: 'Mars Chest' };
+            case 'jupiter':
+                return { sprite: 'assets/general/icons/cloudcache.png', name: 'Cloud Cache' };
+            case 'titan':
+                return { sprite: 'assets/general/icons/titanbox.png', name: 'Titan Depot' };
+            default:
+                return { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+        }
+    }
+
+    /**
      * Opens the dogebag modal (State 1: prompt)
      */
     openDogebagModal(bagElement) {
@@ -1130,6 +1157,19 @@ class DogeMinerGame {
         const reveal = document.getElementById('dogebag-state-reveal');
 
         if (!modal || !prompt || !reveal) return;
+
+        // Update modal to show the correct planet-specific bag
+        const bagInfo = bagElement._dogebagInfo || { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+        const modalIcon = prompt.querySelector('.dogebag-modal-icon');
+        const modalTitle = prompt.querySelector('.modal-title');
+        const modalSubtitle = prompt.querySelector('.modal-subtitle');
+        if (modalIcon) modalIcon.src = bagInfo.sprite;
+        if (modalTitle) modalTitle.textContent = `A ${bagInfo.name.toUpperCase()}!`;
+        if (modalSubtitle) modalSubtitle.textContent = `A ${bagInfo.name} is a magical container that may contain special items!`;
+
+        // Update reveal title too
+        const revealTitle = reveal.querySelector('.modal-title');
+        if (revealTitle) revealTitle.textContent = `${bagInfo.name.toUpperCase()} CONTAINED:`;
 
         prompt.style.display = '';
         reveal.style.display = 'none';
@@ -1289,7 +1329,6 @@ class DogeMinerGame {
 
         this.addPickaxeToInventory(pending.item);
         this.equipPickaxe(pending.item.instanceId);
-        this.showNotification(`Equipped ${pending.item.name}!`);
         this.closeDogebagModal();
     }
 
@@ -1499,7 +1538,6 @@ class DogeMinerGame {
             }
         }
 
-        this.showNotification(`Equipped ${pickaxe.name}!`);
         this.playSound('check');
 
         // Update pickaxe button preview

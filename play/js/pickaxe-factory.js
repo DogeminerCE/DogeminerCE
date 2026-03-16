@@ -489,7 +489,7 @@ class PickaxeFactory {
         const activeSpriteKeys = [
             'Earth/Pickaxe Rick',
             'Jupiter/Gas Carbine',
-            'Mars/F.E.L.P.S.',
+            'Mars/F.E.L.P.S',
             'Mars/Party Pickaxe',
             'Moon/Cod of Duty',
             'Universal/Crude Rocket-Axe',
@@ -525,14 +525,14 @@ const PICKAXE_MANIFEST = {
         'Normal Pickaxe', 'Crude Stick-Axe', 'Fashioned Bone-Axe', 'Fashioned Coin-Axe',
         'Stronger Pickaxe', 'Bronze Pickaxe', 'Improved Bone-Axe', 'Lucky Pickaxe',
         'Golden Pickaxe', 'Potted Cactus', 'Lucky Golden Pickaxe', 'Golden Bone-Axe',
-        'Pickaxe Rick', 'T.A.R.P.I.S.'
+        'Pickaxe Rick', 'T.A.R.P.I.S'
     ],
     'Moon': [
         'Blue Pickaxe', 'Cod of Duty', 'Das Big Boot', 'Moon Rock-Axe',
         'Purple Lollipop', 'Used Rocket'
     ],
     'Mars': [
-        'Broken Record-Axe', 'Cool Glowstick', 'F.E.L.P.S.', 'Golden Record-Axe',
+        'Broken Record-Axe', 'Cool Glowstick', 'F.E.L.P.S', 'Golden Record-Axe',
         'Green Lollipop', 'Martian Pickaxe', 'Party Pickaxe', 'Pool Noodle',
         'Red Lollipop', 'Smelly Glowstick', 'Sticky Glowstick', 'Strange Glowstick',
         'Superheated Magmastick'
@@ -577,7 +577,7 @@ const PICKAXE_SPRITES = {
     'Earth/Lucky Golden Pickaxe': 'golden.png',
     'Earth/Golden Bone-Axe': 'goldenbone.png',
     'Earth/Pickaxe Rick': 'pickaxerick.png',
-    'Earth/T.A.R.P.I.S.': 'tarpis.png',
+    'Earth/T.A.R.P.I.S': 'tarpis.png',
     // Moon
     'Moon/Blue Pickaxe': 'bluepick.png',
     'Moon/Cod of Duty': 'cod.png',
@@ -588,7 +588,7 @@ const PICKAXE_SPRITES = {
     // Mars
     'Mars/Broken Record-Axe': 'record.png',
     'Mars/Cool Glowstick': 'blueglowstick.png',
-    'Mars/F.E.L.P.S.': 'felps.png',
+    'Mars/F.E.L.P.S': 'felps.png',
     'Mars/Golden Record-Axe': 'goldenrecord.png',
     'Mars/Green Lollipop': 'lollipaxe_green.png',
     'Mars/Martian Pickaxe': 'marspick.png',
