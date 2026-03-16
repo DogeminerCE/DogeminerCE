@@ -1083,8 +1083,8 @@ body {
 /* In-world dogebag element */
 .dogebag-drop {
     position: absolute;
-    width: 90px;
-    height: 90px;
+    width: 95px;  /* Increased by ~5% from 90px */
+    height: 95px; /* Increased by ~5% from 90px */
     cursor: pointer;
     z-index: 15;
     filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.8)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.5));
@@ -1093,7 +1093,7 @@ body {
 }
 
 .dogebag-drop:hover {
-    transform: scale(1.15);
+    transform: scale(1.18); /* Slightly increased to map well with new base scale (was 1.15) */
     filter: drop-shadow(0 0 6px rgba(76, 175, 80, 1)) drop-shadow(0 0 12px rgba(76, 175, 80, 0.7));
 }
 

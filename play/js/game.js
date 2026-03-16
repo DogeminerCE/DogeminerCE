@@ -884,9 +884,15 @@ class DogeMinerGame {
 
         // Final position: below the rock, spread horizontally
         // X offset: -120 to 120 (spread out left/right)
-        const finalOffsetX = (Math.random() - 0.5) * 240;
+        let finalOffsetX = (Math.random() - 0.5) * 240;
         // Y offset: always positive (below rock), range 80 to 160
-        const finalOffsetY = 80 + Math.random() * 80;
+        let finalOffsetY = 80 + Math.random() * 80;
+
+        // Prevent spawning in the direct center where the health percentage text is
+        // Push them downwards if they land in the central column where the text is.
+        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
+            finalOffsetY = 150 + Math.random() * 40; // Push them down safely below the text
+        }
 
         // Start at center (0,0), animate to final position
         pile.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
@@ -909,7 +915,7 @@ class DogeMinerGame {
         // Animate from center outward
         pile.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
 
-        // Wait 3 seconds, then start warning animation for 5 seconds, then despawn
+        // Wait 8 seconds, then start warning animation for 5 seconds, then despawn
         setTimeout(() => {
             if (pile.parentNode) {
                 pile.style.animation = 'coinPileWarning 5s linear forwards';
@@ -925,14 +931,18 @@ class DogeMinerGame {
                     }
                 }, 5000);
             }
-        }, 3000);
+        }, 8000);
     }
 
     /**
      * Collects a coin pile and adds coins to the player
      */
     collectCoinPile(pile, amount) {
-        if (!pile.parentNode) return;
+        if (!pile.parentNode || pile.dataset.collected) return; // Prevent double collection
+        
+        // Mark as collected to prevent any further interaction
+        pile.dataset.collected = "true";
+        pile.style.pointerEvents = 'none';
 
         // Add coins
         this.dogecoins += amount;
@@ -1102,9 +1112,17 @@ class DogeMinerGame {
         imgWrapper.appendChild(img);
         bag.appendChild(imgWrapper);
 
-        // Position similar to coin piles
-        const finalOffsetX = (Math.random() - 0.5) * 240;
-        const finalOffsetY = 80 + Math.random() * 80;
+        // Position similar to coin piles but dispersed further (approx 35% further spread)
+        let finalOffsetX = (Math.random() - 0.5) * 320; // Was 240
+        let finalOffsetY = 90 + Math.random() * 110;    // Was 80 + rand(80)
+        
+        // Prevent spawning in the direct center where the health percentage text is
+        // Instead of splitting them left and right (which creates an awkward gap), 
+        // we'll push them downwards if they land in the central column where the text is.
+        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
+            finalOffsetY = 150 + Math.random() * 40; // Push them down safely below the text
+        }
+
         bag.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
         bag.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
         bag.style.left = '50%';
