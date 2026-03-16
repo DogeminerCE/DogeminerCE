@@ -807,7 +807,7 @@ class DogeMinerGame {
 
             // Stagger the pile creation slightly
             setTimeout(() => {
-                this.createCoinPile(amount, sprite, percentage);
+                this.createCoinPile(amount, sprite, percentage, i, pileCount);
             }, i * 100);
         }
     }
@@ -858,8 +858,9 @@ class DogeMinerGame {
 
     /**
      * Creates a clickable coin pile element near the rock
+     * index & total arguments help segment horizontal space so multiple piles don't stack
      */
-    createCoinPile(amount, spritePath, percentage = 50) {
+    createCoinPile(amount, spritePath, percentage = 50, index = 0, total = 1) {
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
 
@@ -883,8 +884,18 @@ class DogeMinerGame {
         pile.appendChild(img);
 
         // Final position: below the rock, spread horizontally
-        // X offset: -120 to 120 (spread out left/right)
-        let finalOffsetX = (Math.random() - 0.5) * 240;
+        let finalOffsetX;
+        
+        if (total > 1) {
+            // Segment the horizontal space based on the index so multiple piles don't spawn on top of each other
+            const sectionWidth = 240 / total;
+            const startX = -120 + (index * sectionWidth);
+            finalOffsetX = startX + (Math.random() * sectionWidth);
+        } else {
+            // X offset: -120 to 120 (spread out left/right)
+            finalOffsetX = (Math.random() - 0.5) * 240;
+        }
+
         // Y offset: always positive (below rock), range 80 to 160
         let finalOffsetY = 80 + Math.random() * 80;
 
