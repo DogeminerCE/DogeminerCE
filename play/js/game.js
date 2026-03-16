@@ -909,17 +909,23 @@ class DogeMinerGame {
         // Animate from center outward
         pile.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
 
-        // Auto-despawn after 5 seconds if not clicked
+        // Wait 3 seconds, then start warning animation for 5 seconds, then despawn
         setTimeout(() => {
             if (pile.parentNode) {
-                pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                pile.style.animation = 'coinPileWarning 5s linear forwards';
+                
                 setTimeout(() => {
                     if (pile.parentNode) {
-                        pile.parentNode.removeChild(pile);
+                        pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                        setTimeout(() => {
+                            if (pile.parentNode) {
+                                pile.parentNode.removeChild(pile);
+                            }
+                        }, 500);
                     }
-                }, 500);
+                }, 5000);
             }
-        }, 5000);
+        }, 3000);
     }
 
     /**

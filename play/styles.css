@@ -1895,6 +1895,25 @@ body.planet-mars #main-rock {
     }
 }
 
+@keyframes coinPileWarning {
+    0% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    10% { opacity: 0.5; filter: brightness(1.5); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    20% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    30% { opacity: 0.5; filter: brightness(1.5); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    40% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    48% { opacity: 0.5; filter: brightness(1.7); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    56% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    64% { opacity: 0.5; filter: brightness(1.7); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    72% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    78% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    84% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    88% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    92% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    95% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    98% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    100% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(0.95); }
+}
+
 @keyframes coinPileCollect {
     0% {
         opacity: 1;
