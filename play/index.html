@@ -557,16 +557,8 @@
         import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA6fW_scDVgPVkQCosrV13ye1egRDOlfd4",
-            authDomain: "dogeminer-community-edition.firebaseapp.com",
-            projectId: "dogeminer-community-edition",
-            storageBucket: "dogeminer-community-edition.firebasestorage.app",
-            messagingSenderId: "551478867465",
-            appId: "1:551478867465:web:11a3351d7b913bac136ad8",
-            measurementId: "G-VWD4HSGLNK"
-        };
+        // Import your web app's Firebase configuration
+        import { firebaseConfig } from "./js/firebase-config.js";
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
