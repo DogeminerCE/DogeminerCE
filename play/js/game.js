@@ -166,10 +166,20 @@ class DogeMinerGame {
         // Uncleared save flag for future rewards
         this.HasPlayed_v0_04 = true;
 
-        // Rock health system (HP-based)
-        this.rockBaseHP = 100;
-        this.rockMaxHP = 100;
-        this.rockCurrentHP = 100;
+        // Planet-specific rock health tracking map
+        this.planetRockData = {
+            earth: { rocksBroken: 0, currentHP: null, maxHP: null },
+            moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+            mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+            jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+            titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+        };
+
+        // Active rock health system (HP-based) for the current planet
+        this.rocksBroken = 0; // Initialize global before setting base HP
+        this.rockBaseHP = this.getPlanetRockBaseHP('earth');
+        this.rockMaxHP = this.rockBaseHP;
+        this.rockCurrentHP = this.rockBaseHP;
         this.lastDamageThresholdPercent = 100; // Tracks 75%, 50%, 25% for coin pile expulsion
         this.isRockRegenerating = false;
         this.lastCritHit = false; // For UI feedback
@@ -581,8 +591,30 @@ class DogeMinerGame {
      * Calculates rock HP based on rocks broken (scaling difficulty)
      */
     getRockHP(baseHP, rocksBroken) {
-        const growthFactor = 1.15; // 15% growth per rock broken
-        return Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
+        let growthFactor = 1.15; // Earth default: 15% growth per rock broken
+        switch (this.currentLevel) {
+            case 'moon': growthFactor = 1.25; break;
+            case 'mars': growthFactor = 1.40; break;
+            case 'jupiter': growthFactor = 1.60; break;
+            case 'titan': growthFactor = 1.85; break;
+        }
+        const finalHp = Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
+        console.log(`[DEBUG getRockHP] planet: ${this.currentLevel}, baseHP: ${baseHP}, rocksBroken: ${rocksBroken}, growthFactor: ${growthFactor}, finalHp: ${finalHp}`);
+        return finalHp;
+    }
+
+    /**
+     * Returns the base starting HP for the rock relative to the planet's difficulty.
+     */
+    getPlanetRockBaseHP(planet) {
+        switch (planet) {
+            case 'earth': return 100;
+            case 'moon': return 500;
+            case 'mars': return 1500;
+            case 'jupiter': return 5000;
+            case 'titan': return 25000;
+            default: return 100;
+        }
     }
 
     /**
@@ -4409,16 +4441,6 @@ class DogeMinerGame {
             }
         }
         return false;
-    }
-
-    async resetGame() {
-        const ok = await gameConfirm('Are you sure you want to reset your game? This cannot be undone!', {
-            title: 'Reset Game'
-        });
-        if (ok) {
-            localStorage.removeItem('dogeminer_save');
-            location.reload();
-        }
     }
 
     getHelperData(helperType) {

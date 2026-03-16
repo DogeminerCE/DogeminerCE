@@ -228,11 +228,41 @@ class UIManager {
                     this.game.titanPlacedHelpers = [...this.game.placedHelpers];
                 }
 
+                // Save current planet's rock health state
+                if (this.game.planetRockData && this.game.planetRockData[this.game.currentLevel]) {
+                    this.game.planetRockData[this.game.currentLevel] = {
+                        rocksBroken: this.game.rocksBroken,
+                        currentHP: this.game.rockCurrentHP,
+                        maxHP: this.game.rockMaxHP
+                    };
+                }
+
                 // Clear the current helpers from the screen
                 this.game.clearAllHelperSprites();
 
                 // Update game state to reflect planet change
                 this.game.currentLevel = planetName;
+
+                // Load the new planet's rock health state
+                if (this.game.planetRockData && this.game.planetRockData[planetName]) {
+                    const rockData = this.game.planetRockData[planetName];
+                    this.game.rocksBroken = rockData.rocksBroken || 0;
+                    this.game.rockBaseHP = this.game.getPlanetRockBaseHP(planetName);
+                    
+                    if (rockData.maxHP !== null && rockData.currentHP !== null) {
+                        this.game.rockMaxHP = rockData.maxHP;
+                        this.game.rockCurrentHP = rockData.currentHP;
+                    } else {
+                        // First time visiting this planet
+                        this.game.rockMaxHP = this.game.rockBaseHP;
+                        this.game.rockCurrentHP = this.game.rockBaseHP;
+                    }
+                }
+                
+                // Update rock UI
+                if (this.game.updateRockHealthDisplay) {
+                    this.game.updateRockHealthDisplay();
+                }
 
                 // Clear upgrade caches so they refresh for the new planet
                 this._cachedUpgrades = null;

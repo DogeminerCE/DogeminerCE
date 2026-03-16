@@ -303,6 +303,15 @@ class CloudSaveManager {
             return null;
         }
 
+        // Ensure the current active rock health is saved before serializing
+        if (window.game.planetRockData && window.game.currentLevel) {
+            window.game.planetRockData[window.game.currentLevel] = {
+                rocksBroken: window.game.rocksBroken,
+                currentHP: window.game.rockCurrentHP,
+                maxHP: window.game.rockMaxHP
+            };
+        }
+
         const gameData = {
             dogecoins: window.game.dogecoins || 0,
             dps: window.game.dps || 0,
@@ -316,6 +325,7 @@ class CloudSaveManager {
             maxPickaxeDPC: window.game.maxPickaxeDPC || 1,
             fortuneInventory: window.game.fortuneInventory || [],
             rocksBroken: window.game.rocksBroken || 0,
+            planetRockData: window.game.planetRockData,
             playTime: window.game.playTime || 0,
             highestDps: window.game.highestDps || 0,
             achievements: window.game.achievements || {},
@@ -344,7 +354,34 @@ class CloudSaveManager {
             window.game.equippedPickaxeId = gameData.equippedPickaxeId || 'default_normal_pickaxe';
             window.game.maxPickaxeDPC = gameData.maxPickaxeDPC || 1;
             window.game.fortuneInventory = Array.isArray(gameData.fortuneInventory) ? gameData.fortuneInventory : [];
-            window.game.rocksBroken = gameData.rocksBroken || 0;
+
+            if (gameData.planetRockData) {
+                window.game.planetRockData = gameData.planetRockData;
+            } else {
+                // Legacy migration
+                window.game.planetRockData = {
+                    earth: { rocksBroken: gameData.rocksBroken || 0, currentHP: null, maxHP: null },
+                    moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+                    titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+                };
+            }
+
+            // Load active level rock properties
+            const level = window.game.currentLevel;
+            const activeRockData = window.game.planetRockData[level] || { rocksBroken: 0, currentHP: null, maxHP: null };
+            window.game.rocksBroken = activeRockData.rocksBroken || 0;
+            window.game.rockBaseHP = window.game.getPlanetRockBaseHP(level);
+            
+            if (activeRockData.maxHP !== null && activeRockData.currentHP !== null) {
+                window.game.rockMaxHP = activeRockData.maxHP;
+                window.game.rockCurrentHP = activeRockData.currentHP;
+            } else {
+                window.game.rockMaxHP = window.game.getRockHP(window.game.rockBaseHP, window.game.rocksBroken);
+                window.game.rockCurrentHP = window.game.rockMaxHP;
+            }
+            
             window.game.recalculatePlayerStats();
             window.game.playTime = gameData.playTime || 0;
             window.game.highestDps = gameData.highestDps || 0;
@@ -391,6 +428,9 @@ class CloudSaveManager {
             // Update UI
             window.game.updateUI();
             window.game.updateDPS();
+            if (window.game.updateRockHealthDisplay) {
+                window.game.updateRockHealthDisplay();
+            }
 
             // Update settings checkboxes
             document.getElementById('sound-enabled').checked = window.game.soundEnabled;

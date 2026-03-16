@@ -230,10 +230,20 @@ class SaveManager {
 
         const helperData = currentPlaced.map(serializePlacedHelper).filter(Boolean);
 
+        // Ensure the current active rock health is saved before serializing
+        if (this.game.planetRockData && this.game.currentLevel) {
+            this.game.planetRockData[this.game.currentLevel] = {
+                rocksBroken: this.game.rocksBroken,
+                currentHP: this.game.rockCurrentHP,
+                maxHP: this.game.rockMaxHP
+            };
+        }
+
         return {
             version: '1.0.0',
             timestamp: Date.now(),
             dogecoins: this.game.dogecoins,
+            planetRockData: this.game.planetRockData,
             totalMined: this.game.totalMined,
             totalClicks: this.game.totalClicks,
             dps: this.game.dps,
@@ -317,10 +327,33 @@ class SaveManager {
         this.game.equippedPickaxeId = saveData.equippedPickaxeId || 'default_normal_pickaxe';
         this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
         this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
-        this.game.rocksBroken = saveData.rocksBroken || 0;
-        // Recalculate rock HP based on rocks broken
-        this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
-        this.game.rockCurrentHP = this.game.rockMaxHP;
+        if (saveData.planetRockData) {
+            this.game.planetRockData = saveData.planetRockData;
+        } else {
+            // Legacy migration: funnel old global rocks broken into earth, initialize others
+            this.game.planetRockData = {
+                earth: { rocksBroken: saveData.rocksBroken || 0, currentHP: null, maxHP: null },
+                moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+                titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+            };
+        }
+
+        // Load active level rock properties
+        const level = this.game.currentLevel;
+        const activeRockData = this.game.planetRockData[level] || { rocksBroken: 0, currentHP: null, maxHP: null };
+        this.game.rocksBroken = activeRockData.rocksBroken || 0;
+        this.game.rockBaseHP = this.game.getPlanetRockBaseHP(level);
+        
+        if (activeRockData.maxHP !== null && activeRockData.currentHP !== null) {
+            this.game.rockMaxHP = activeRockData.maxHP;
+            this.game.rockCurrentHP = activeRockData.currentHP;
+        } else {
+            // Recalculate rock HP based on rocks broken
+            this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
+            this.game.rockCurrentHP = this.game.rockMaxHP;
+        }
         this.game.recalculatePlayerStats();
 
         // Apply equipped pickaxe sprite to DOM
@@ -620,6 +653,9 @@ class SaveManager {
 
         this.game.updateDPS();
         this.game.updateUI();
+        if (this.game.updateRockHealthDisplay) {
+            this.game.updateRockHealthDisplay();
+        }
 
         if (window.uiManager) {
             if (this.game.currentLevel === 'moon') {
@@ -874,10 +910,22 @@ class SaveManager {
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
                 this.game.rocksBroken = 0;
+                this.game.planetRockData = {
+                    earth: { rocksBroken: 0, currentHP: null, maxHP: null },
+                    moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+                    titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+                };
+                this.game.rockBaseHP = this.game.getPlanetRockBaseHP('earth');
+                this.game.rockMaxHP = this.game.rockBaseHP;
+                this.game.rockCurrentHP = this.game.rockBaseHP;
+                this.game.lastDamageThresholdPercent = 100;
                 this.game.recalculatePlayerStats();
                 this.game.currentLevel = 'earth';
                 this.game.hasPlayedMoonLaunch = false;
                 this.game.isCutscenePlaying = false;
+                this.game.autoSaveEnabled = false; // Prevent auto-save from caching corrupted states before reload
 
                 // Clear all helper sprites from the DOM
                 this.game.clearAllHelperSprites();
