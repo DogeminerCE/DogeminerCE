@@ -367,6 +367,15 @@
                                         Force Mobile UI
                                     </label>
                                 </div>
+                                <div class="setting-item" style="margin-top: 15px; display: flex; flex-direction: column; align-items: flex-start;">
+                                    <label for="value-update-rate" style="margin-bottom: 5px; font-family: 'DogeSans', sans-serif;">Value Update Rate</label>
+                                    <select id="value-update-rate" onchange="if(window.game) window.game.setValueUpdateRate(parseInt(this.value))" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; background: #fff; width: 100%; font-family: 'DogeSans', sans-serif;">
+                                        <option value="0">Instant (Per Frame)</option>
+                                        <option value="100">100ms</option>
+                                        <option value="1000">1 Second (Default)</option>
+                                        <option value="5000">5 Seconds</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 

@@ -365,6 +365,13 @@ function toggleForceMobileUI(enabled) {
         const cb = document.getElementById('force-mobile-ui');
         if (cb) cb.checked = true;
     }
+    
+    // Restore value update rate dropdown
+    const updateRate = localStorage.getItem('valueUpdateRate');
+    if (updateRate !== null) {
+        const select = document.getElementById('value-update-rate');
+        if (select) select.value = updateRate;
+    }
 })();
 
 function resetGame() {

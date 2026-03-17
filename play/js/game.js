@@ -599,7 +599,6 @@ class DogeMinerGame {
             case 'titan': growthFactor = 1.85; break;
         }
         const finalHp = Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
-        console.log(`[DEBUG getRockHP] planet: ${this.currentLevel}, baseHP: ${baseHP}, rocksBroken: ${rocksBroken}, growthFactor: ${growthFactor}, finalHp: ${finalHp}`);
         return finalHp;
     }
 
@@ -3930,25 +3929,59 @@ class DogeMinerGame {
 
     startGameLoop() {
         this.isPlaying = true;
+        this.lastGameLoopTime = performance.now();
 
-        // DPS updates every second for better performance
-        this.dpsInterval = setInterval(() => {
-            if (this.isPlaying && this.dps > 0) {
-                this.dogecoins += this.dps;
-                this.totalMined += this.dps;
-                this.updateUI();
-            }
-        }, 1000);
+        // Read value update rate: 0 (instant), 100, 1000, 5000
+        const savedRate = localStorage.getItem('valueUpdateRate');
+        this.dpsUpdateRate = savedRate ? parseInt(savedRate, 10) : 1000;
 
-        const gameLoop = () => {
+        this.setupDpsInterval();
+
+        const gameLoop = (timestamp) => {
+            if (!this.lastGameLoopTime) this.lastGameLoopTime = timestamp;
+            const dt = timestamp - this.lastGameLoopTime;
+            this.lastGameLoopTime = timestamp;
+
             if (this.isPlaying) {
+                // If set to instant (0), add continuous DPS per frame
+                if (this.dpsUpdateRate === 0 && this.dps > 0) {
+                    const dpsTick = this.dps * (dt / 1000);
+                    this.dogecoins += dpsTick;
+                    this.totalMined += dpsTick;
+                    this.updateUI(true); // skip shop prices update per frame for performance, unless full UI is refreshed
+                }
+
                 this.updateHelpers();
             }
 
             requestAnimationFrame(gameLoop);
         };
 
-        gameLoop();
+        requestAnimationFrame(gameLoop);
+    }
+
+    setupDpsInterval() {
+        if (this.dpsInterval) {
+            clearInterval(this.dpsInterval);
+            this.dpsInterval = null;
+        }
+
+        if (this.dpsUpdateRate > 0) {
+            this.dpsInterval = setInterval(() => {
+                if (this.isPlaying && this.dps > 0) {
+                    const multiplier = this.dpsUpdateRate / 1000;
+                    this.dogecoins += this.dps * multiplier;
+                    this.totalMined += this.dps * multiplier;
+                    this.updateUI();
+                }
+            }, this.dpsUpdateRate);
+        }
+    }
+
+    setValueUpdateRate(ms) {
+        this.dpsUpdateRate = ms;
+        localStorage.setItem('valueUpdateRate', ms);
+        this.setupDpsInterval();
     }
 
     startBackgroundRotation() {

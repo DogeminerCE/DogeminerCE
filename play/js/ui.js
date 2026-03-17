@@ -2273,6 +2273,15 @@ class UIManager {
                         <input type="checkbox" id="mobile-force-mobile-ui" ${localStorage.getItem('forceMobileUI') === '1' ? 'checked' : ''}>
                         <span class="setting-label">Force Mobile UI</span>
                     </label>
+                    <label class="setting-item" style="margin-top: 10px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; cursor: default;">
+                        <span class="setting-label">Value Update Rate</span>
+                        <select id="mobile-value-update-rate" style="padding: 5px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.3); background: #eee; width: 100%; font-family: 'DogeSans', sans-serif;">
+                            <option value="0" ${localStorage.getItem('valueUpdateRate') === '0' ? 'selected' : ''}>Instant (Per Frame)</option>
+                            <option value="100" ${localStorage.getItem('valueUpdateRate') === '100' ? 'selected' : ''}>100ms</option>
+                            <option value="1000" ${(localStorage.getItem('valueUpdateRate') === '1000' || !localStorage.getItem('valueUpdateRate')) ? 'selected' : ''}>1 Second (Default)</option>
+                            <option value="5000" ${localStorage.getItem('valueUpdateRate') === '5000' ? 'selected' : ''}>5 Seconds</option>
+                        </select>
+                    </label>
                 </div>
                 
                 <h3 class="mobile-section-header">Cloud Save</h3>
@@ -2384,6 +2393,18 @@ class UIManager {
                 // Sync desktop checkbox
                 const desktopCheckbox = document.getElementById('force-mobile-ui');
                 if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+            });
+        }
+
+        const valueUpdateRateSelect = document.getElementById('mobile-value-update-rate');
+        if (valueUpdateRateSelect) {
+            valueUpdateRateSelect.addEventListener('change', (e) => {
+                if (typeof window.game !== 'undefined' && window.game && window.game.setValueUpdateRate) {
+                    window.game.setValueUpdateRate(parseInt(e.target.value));
+                }
+                // Sync desktop select
+                const desktopSelect = document.getElementById('value-update-rate');
+                if (desktopSelect) desktopSelect.value = e.target.value;
             });
         }
 
