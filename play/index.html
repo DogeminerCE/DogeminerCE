@@ -146,8 +146,30 @@
         <!-- Pickaxe Modal -->
         <div id="pickaxe-modal" class="switcher-modal">
             <div class="switcher-modal-content">
-                <h2 class="modal-title">PICKAXES</h2>
-                <p class="modal-subtitle">CLICK TO EQUIP</p>
+                <div class="inventory-modal-header">
+                    <div class="inventory-header-left">
+                        <h2 class="modal-title">PICKAXES</h2>
+                        <p class="modal-subtitle">CLICK TO EQUIP</p>
+                        <div class="inventory-count" id="pickaxe-count"></div>
+                    </div>
+                    <div class="inventory-toolbar inventory-toolbar-right" data-inventory="pickaxe">
+                        <input id="pickaxe-search" class="inventory-search" type="search" placeholder="Search pickaxes…">
+                        <select id="pickaxe-rarity" class="inventory-select">
+                            <option value="">All rarities</option>
+                            <option value="common">Common</option>
+                            <option value="improved">Improved</option>
+                            <option value="rare">Rare</option>
+                            <option value="epic">Epic</option>
+                            <option value="legendary">Legendary</option>
+                        </select>
+                        <select id="pickaxe-sort" class="inventory-select">
+                            <option value="newest">Newest</option>
+                            <option value="rarityDesc">Rarity</option>
+                            <option value="nameAsc">Name A→Z</option>
+                            <option value="dpcDesc">DPC</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="switcher-grid" id="pickaxe-grid">
                     <!-- Pickaxe cards will be dynamically generated -->
                 </div>
@@ -158,8 +180,29 @@
         <!-- Fortune Modal -->
         <div id="fortune-modal" class="switcher-modal">
             <div class="switcher-modal-content">
-                <h2 class="modal-title">FORTUNES</h2>
-                <p class="modal-subtitle">PASSIVE</p>
+                <div class="inventory-modal-header">
+                    <div class="inventory-header-left">
+                        <h2 class="modal-title">FORTUNES</h2>
+                        <p class="modal-subtitle">PASSIVE</p>
+                        <div class="inventory-count" id="fortune-count"></div>
+                    </div>
+                    <div class="inventory-toolbar inventory-toolbar-right" data-inventory="fortune">
+                        <input id="fortune-search" class="inventory-search" type="search" placeholder="Search fortunes…">
+                        <select id="fortune-rarity" class="inventory-select">
+                            <option value="">All rarities</option>
+                            <option value="common">Common</option>
+                            <option value="improved">Improved</option>
+                            <option value="rare">Rare</option>
+                            <option value="epic">Epic</option>
+                            <option value="legendary">Legendary</option>
+                        </select>
+                        <select id="fortune-sort" class="inventory-select">
+                            <option value="newest">Newest</option>
+                            <option value="rarityDesc">Rarity</option>
+                            <option value="nameAsc">Name A→Z</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="switcher-grid" id="fortune-grid">
                     <p class="no-items-message">No fortunes available yet!</p>
                 </div>

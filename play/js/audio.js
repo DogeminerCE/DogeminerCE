@@ -66,7 +66,7 @@ class AudioManager {
             volume: 0.5
         });
 
-        // Load pick sounds for rock hitting
+        // Load pick sounds for rock hitting (normal pickaxes)
         this.soundEffects.pick = [];
         for (let i = 1; i <= 6; i++) {
             this.soundEffects.pick.push(new Howl({
@@ -74,6 +74,129 @@ class AudioManager {
                 volume: 0.375  // 75% of 0.5
             }));
         }
+
+        // Inventory open (pop)
+        this.soundEffects.inventoryOpen = new Howl({
+            src: ['../assets/SoundsSrc/main/pop1.wav'],
+            volume: 0.5
+        });
+
+        // Inventory close (swipe)
+        this.soundEffects.inventoryClose = new Howl({
+            src: ['../assets/SoundsSrc/main/swipe_fast_low.wav'],
+            volume: 0.5
+        });
+
+        // Dogebag appears from rock
+        this.soundEffects.woof = new Howl({
+            src: ['../assets/SoundsSrc/main/woof.mp3'],
+            volume: 0.6
+        });
+
+        // Rock damage stage sounds (escalating intensity)
+        this.soundEffects.rockhitSmallest = new Howl({
+            src: ['../assets/SoundsSrc/main/rockhit_smallest.wav'],
+            volume: 0.25
+        });
+
+        this.soundEffects.rockhitSmall = new Howl({
+            src: ['../assets/SoundsSrc/main/rockhit_small.wav'],
+            volume: 0.25
+        });
+
+        this.soundEffects.rockhitMedium = new Howl({
+            src: ['../assets/SoundsSrc/main/rockhit_medium.wav'],
+            volume: 0.25
+        });
+
+        this.soundEffects.rockhitLarge = new Howl({
+            src: ['../assets/SoundsSrc/main/rockhit_large.wav'],
+            volume: 0.25
+        });
+
+        // Critical hit
+        this.soundEffects.hitHard = new Howl({
+            src: ['../assets/SoundsSrc/main/hit_hard.wav'],
+            volume: 0.5
+        });
+
+        // Grab helper to move it
+        this.soundEffects.grabHelper = new Howl({
+            src: ['../assets/SoundsSrc/main/grab_helper.wav'],
+            volume: 0.5
+        });
+
+        // Collect small coin pile
+        this.soundEffects.coinsSmall = new Howl({
+            src: ['../assets/SoundsSrc/main/coins_small.wav'],
+            volume: 0.5
+        });
+
+        // Collect medium/large coin pile
+        this.soundEffects.getCoins = new Howl({
+            src: ['../assets/SoundsSrc/main/get_coins.mp3'],
+            volume: 0.5
+        });
+
+        // Dogebag loot (coins only, not pickaxe/fortune)
+        this.soundEffects.receiveStash = new Howl({
+            src: ['../assets/SoundsSrc/main/receive_stash.mp3'],
+            volume: 0.5
+        });
+
+        // Gas Carbine hit sounds (pew)
+        this.soundEffects.pew = [];
+        for (let i = 1; i <= 4; i++) {
+            this.soundEffects.pew.push(new Howl({
+                src: [`../assets/SoundsSrc/main/pew${i}.wav`],
+                volume: 0.375
+            }));
+        }
+
+        // Light-blade Pickaxe hit sounds (lasersword)
+        this.soundEffects.lasersword = [];
+        for (let i = 1; i <= 2; i++) {
+            this.soundEffects.lasersword.push(new Howl({
+                src: [`../assets/SoundsSrc/main/lasersword${i}.wav`],
+                volume: 0.375
+            }));
+        }
+
+        // Hit ground (hit rock at 0%)
+        this.soundEffects.hitGround = new Howl({
+            src: ['../assets/SoundsSrc/main/hit_ground.wav'],
+            volume: 0.5
+        });
+
+        // Equip pickaxe from inventory
+        this.soundEffects.pickup = new Howl({
+            src: ['../assets/SoundsSrc/main/pickup_1.wav'],
+            volume: 0.5
+        });
+
+        // Click on dogebag in world
+        this.soundEffects.grabBag = new Howl({
+            src: ['../assets/SoundsSrc/main/grab_bag2.wav'],
+            volume: 0.5
+        });
+
+        // Dogebag modal opens — item collect fanfare
+        this.soundEffects.collectItem = new Howl({
+            src: ['../assets/SoundsSrc/main/collect_item_1.wav'],
+            volume: 0.6
+        });
+
+        // Receive a pickaxe or fortune from a dogebag
+        this.soundEffects.receivePickaxe = new Howl({
+            src: ['../assets/SoundsSrc/main/receive_pickaxe.mp3'],
+            volume: 0.6
+        });
+
+        // Fortune-specific loot sound
+        this.soundEffects.longSparkle = new Howl({
+            src: ['../assets/SoundsSrc/main/long_sparkle.wav'],
+            volume: 0.6
+        });
     }
 
     setupSettingsListeners() {

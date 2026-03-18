@@ -287,7 +287,8 @@ class SaveManager {
                 moonLaunch: !!this.game.hasPlayedMoonLaunch
             },
             unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth'],
-            HasPlayed_v0_04: this.game.HasPlayed_v0_04
+            HasPlayed_v0_04: this.game.HasPlayed_v0_04,
+            hasSeenDogebagIntro: this.game.hasSeenDogebagIntro || false
         };
     }
 
@@ -308,6 +309,7 @@ class SaveManager {
         document.body.dataset.planet = this.game.currentLevel;
 
         this.game.HasPlayed_v0_04 = saveData.HasPlayed_v0_04 || false;
+        this.game.hasSeenDogebagIntro = saveData.hasSeenDogebagIntro || false;
 
         this.game.helpers = Array.isArray(saveData.helpers)
             ? saveData.helpers.map(helper => ({ ...helper }))
