@@ -1,0 +1,11 @@
+"NAME"
+Loaded Barbell
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+Great for working out. Somewhat unbalanced.
+
+"STATS"
++ Gainz

@@ -1,0 +1,12 @@
+"NAME"
+Battle-Axe
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+Such heavy. Much sharp. Many dogepitate.
+
+"STATS"
++% Critical Chance
++% Wow

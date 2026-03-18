@@ -1,0 +1,12 @@
+NAME:
+Fortune of Woof
+
+RARITY:
+Common
+
+DESCRIPTION:
+Woof woof.
+
+STATS:
++% Loot Find
++ Mystery Bonus

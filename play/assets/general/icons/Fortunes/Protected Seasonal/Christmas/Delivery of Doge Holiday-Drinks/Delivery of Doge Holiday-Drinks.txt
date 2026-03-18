@@ -1,0 +1,14 @@
+NAME:
+Delivery of Doge Holiday-Drinks
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A truckload of carbonated drinks. Said to quench any thirst.
+
+STATS:
++% Helper DPS
++% Helper Morale
++ Mystery Bonus
++% Wow

@@ -1,0 +1,12 @@
+NAME:
+Basket of Colored Eggs
+
+RARITY:
+Improved
+
+DESCRIPTION:
+The colored eggs seem... special! Did the Easter Bunny paint them?
+
+STATS:
++% Wow
++ Holiday Spirit

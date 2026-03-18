@@ -1,0 +1,13 @@
+"NAME"
+Very Improved Saw-Axe
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+A very improved axe made from a baseball bat and an unbreakable saw.
+
+"STATS"
++% Critical Chance
++% Loot Find
++% Luck

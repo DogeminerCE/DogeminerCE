@@ -1,0 +1,13 @@
+NAME:
+Harder Scales
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+These dragon-looking scales have seemingly strange properties.
+
+STATS:
++ DPS
++% Loot Find
++% Wow

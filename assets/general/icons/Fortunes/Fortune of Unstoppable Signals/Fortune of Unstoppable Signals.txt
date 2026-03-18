@@ -1,0 +1,12 @@
+NAME:
+Fortune of Unstoppable Signals
+
+RARITY:
+Improved
+
+DESCRIPTION:
+You can't stop the signal.
+
+STATS:
++% Luck
++ Mystery Bonus

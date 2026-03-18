@@ -1,0 +1,13 @@
+"NAME"
+Staff of the SunDoge
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+The Staff of Ancient SunDoges is one of the rarest artifacts known to dog. It is said that whoever wields it is granted almost god-like powers.
+
+"STATS"
++10% DPS (Fixed, not affected by Wow)
+
+*THIS PICKAXE HAS 0 DOGE PER CLICK. IT GRANTS NO DOGECOIN TO THE PLAYER WHEN THEY CLICK ON THE ROCK. IT IS MEANT TO BE A PASSIVE PICKAXE FOR PLAYERS WHO DO NOT USE AN AUTOCLICKER.*

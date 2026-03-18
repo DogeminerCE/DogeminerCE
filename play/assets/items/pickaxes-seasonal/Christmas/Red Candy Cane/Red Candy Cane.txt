@@ -1,0 +1,12 @@
+"NAME"
+Red Candy Cane
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Wow, such cane. Looks tasty. Licking it should be safe.
+
+"STATS"
++% Wow
++ Holiday Spirit

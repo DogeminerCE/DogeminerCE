@@ -1,0 +1,14 @@
+"NAME"
+The Superior Avenger
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+The doge database has no record of this artifact. Possibly the sharpest sword you have ever seen.
+
+"STATS"
++% Critical Chance
++% Loot Find
++% Luck
++ Mystery Bonus (5*Calculated value)

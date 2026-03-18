@@ -1,0 +1,12 @@
+NAME:
+Fortune of Insulation
+
+RARITY:
+Common
+
+DESCRIPTION:
+It doesn't seem very magical.
+
+STATS:
++% Luck
++ Mystery Bonus

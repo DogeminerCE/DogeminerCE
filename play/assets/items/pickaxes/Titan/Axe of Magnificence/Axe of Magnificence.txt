@@ -1,0 +1,13 @@
+"NAME"
+Axe of Magnificence
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+A large lightweight and super strong axe. There's not a scratch on it.
+
+"STATS"
++% Wow
++% Luck
++ Mystery Bonus

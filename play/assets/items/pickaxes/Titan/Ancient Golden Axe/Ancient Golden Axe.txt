@@ -1,0 +1,12 @@
+"NAME"
+Ancient Golden Axe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+An ancient axe from times unknown. Heavier than it looks.
+
+"STATS"
++% Loot Find
++ Mystery Bonus

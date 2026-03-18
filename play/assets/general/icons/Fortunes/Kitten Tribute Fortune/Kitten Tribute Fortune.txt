@@ -1,0 +1,12 @@
+NAME:
+Kitten Tribute Fortune
+
+STATS:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Wow
++ Dancing Skills

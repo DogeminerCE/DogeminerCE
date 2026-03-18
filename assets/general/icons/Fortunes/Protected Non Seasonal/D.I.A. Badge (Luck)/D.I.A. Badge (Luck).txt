@@ -1,0 +1,11 @@
+NAME:
+D.I.A. Badge (Luck)
+
+RARITY:
+Rare
+
+DESCRIPTION:
+This badge has a 'lucky' feel to it. For distinguished D.I.A agents only.
+
+STATS:
++% Luck

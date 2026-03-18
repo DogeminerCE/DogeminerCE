@@ -1,0 +1,12 @@
+NAME:
+Needle Fortune of Healing
+
+RARITY:
+Improved
+
+DESCRIPTION:
+It seems filled with special diamond-crystals.
+
+STATS:
++% Wow
++ Discipline

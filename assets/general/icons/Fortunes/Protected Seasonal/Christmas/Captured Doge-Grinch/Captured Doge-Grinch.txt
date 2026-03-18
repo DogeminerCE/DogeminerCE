@@ -1,0 +1,12 @@
+NAME:
+Captured Doge-Grinch
+
+RARITY:
+Improved
+
+DESCRIPTION:
+You caught the Doge-Grinch! In a fortune! You recieve 53 XP.
+
+STATS:
++% Helper DPS
++ Happiness

@@ -1,0 +1,14 @@
+"NAME"
+Smelly Glowstick
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Pungent but pleasant.
+
+"STATS"
++% Critical Chance
++% Luck
++% Wow
++ Mystery Bonus

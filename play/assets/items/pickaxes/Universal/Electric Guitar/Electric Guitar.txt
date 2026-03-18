@@ -1,0 +1,13 @@
+"NAME"
+Electric Guitar
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Totally rad electric guitar to jam out sick tunes with! And mine!
+
+"STATS"
++% Luck
++% Wow
++% Loot Find

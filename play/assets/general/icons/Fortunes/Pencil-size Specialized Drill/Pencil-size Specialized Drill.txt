@@ -1,0 +1,13 @@
+NAME:
+Pencil-size Specialized Drill
+
+RARITY:
+Rare
+
+DESCRIPTION:
+These were used by the doge-druids of old, back when dogecoin was just a theory. Still glows.
+
+STATS:
++% Loot Find
++% Wow
++% Angriness

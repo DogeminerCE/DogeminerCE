@@ -1,0 +1,12 @@
+"NAME"
+Meat Cleaver
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+An old meat cleaver, good for cleaving things. Chopping time!
+
+"STATS"
++% Luck
++ Discipline

@@ -1,0 +1,13 @@
+NAME:
+Mummified Rapper Figurine
+
+RARITY:
+Rare
+
+DESCRIPTION:
+This is either a real mummy or a toy, it's hard to tell. It's sort-of squishy.
+
+STATS:
++% Wow
++% Luck
++ Holiday Spirit

@@ -1,0 +1,13 @@
+NAME:
+Molten Ball of Lava
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Seems to be perfectly round, but it would be unwise to check.
+
+STATS:
++% Helper DPS
++% Luck
++% Loot Find

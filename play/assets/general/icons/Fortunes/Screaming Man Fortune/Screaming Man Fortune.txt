@@ -1,0 +1,13 @@
+NAME:
+Screaming Man Fortune
+
+RARITY:
+Rare
+
+DESCRIPTION:
+The yelling never stops. Better keep this in the bottom of the bag.
+
+STATS:
++% Wow
++% Helper Morale
++ Mystery Bonus

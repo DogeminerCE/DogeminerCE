@@ -24,6 +24,26 @@ async function initializeGame() {
         // Set initial planet attribute for CSS targeting
         document.body.dataset.planet = game.currentLevel;
 
+        // Initialize pickaxe factory and load templates
+        updateLoadingInfo('Loading pickaxe templates...');
+        try {
+            game.pickaxeFactory = new PickaxeFactory();
+            await game.pickaxeFactory.loadTemplates();
+            // Pass active sprite set to game for click animation
+            game._activeSpritePaths = game.pickaxeFactory.templatesWithActiveSprite;
+        } catch (err) {
+            console.error('Failed to load pickaxe templates:', err);
+        }
+
+        // Initialize fortune factory and load templates
+        updateLoadingInfo('Loading fortune templates...');
+        try {
+            game.fortuneFactory = new FortuneFactory();
+            await game.fortuneFactory.loadTemplates();
+        } catch (err) {
+            console.error('Failed to load fortune templates:', err);
+        }
+
         updateLoadingInfo('Setting up shop system...');
 
         // Initialize shop manager first (needed by UI manager)
@@ -67,6 +87,16 @@ async function initializeGame() {
         updateLoadingInfo('Preparing notifications...');
 
         notificationManager = new NotificationManager(game);
+
+        // Initialize controller support (Xbox gamepad / any standard gamepad)
+        updateLoadingInfo('Setting up controller support...');
+        try {
+            controllerManager = new ControllerManager(game, uiManager, shopManager);
+            window.controllerManager = controllerManager;
+        } catch (error) {
+            console.warn('Controller support unavailable:', error);
+        }
+
         updateLoadingInfo('Loading game data...');
 
         // Try to load existing save
@@ -278,6 +308,81 @@ function importSave() {
     }
 }
 
+// Pickaxe & Fortune modal functions
+function openPickaxeModal() {
+    if (window.game) {
+        window.game.openPickaxeModal();
+    }
+}
+
+function closePickaxeModal() {
+    if (window.game) {
+        window.game.closePickaxeModal();
+    }
+}
+
+function openFortuneModal() {
+    if (window.game) {
+        window.game.openFortuneModal();
+    }
+}
+
+function closeFortuneModal() {
+    if (window.game) {
+        window.game.closeFortuneModal();
+    }
+}
+
+// Dogebag modal functions
+function openDogebagContents() {
+    if (window.game) {
+        window.game.openDogebagContents();
+    }
+}
+
+function dogebagEquip() {
+    if (window.game) {
+        window.game.dogebagEquip();
+    }
+}
+
+function dogebagLoot() {
+    if (window.game) {
+        window.game.dogebagLoot();
+    }
+}
+
+function toggleForceMobileUI(enabled) {
+    if (enabled) {
+        document.body.classList.add('force-mobile');
+    } else {
+        document.body.classList.remove('force-mobile');
+    }
+    localStorage.setItem('forceMobileUI', enabled ? '1' : '0');
+
+    // Sync both checkboxes
+    const desktop = document.getElementById('force-mobile-ui');
+    const mobile = document.getElementById('mobile-force-mobile-ui');
+    if (desktop) desktop.checked = enabled;
+    if (mobile) mobile.checked = enabled;
+}
+
+// Restore force mobile UI setting on load
+(function () {
+    if (localStorage.getItem('forceMobileUI') === '1') {
+        document.body.classList.add('force-mobile');
+        const cb = document.getElementById('force-mobile-ui');
+        if (cb) cb.checked = true;
+    }
+    
+    // Restore value update rate dropdown
+    const updateRate = localStorage.getItem('valueUpdateRate');
+    if (updateRate !== null) {
+        const select = document.getElementById('value-update-rate');
+        if (select) select.value = updateRate;
+    }
+})();
+
 function resetGame() {
     if (saveManager) {
         saveManager.resetGame();
@@ -362,17 +467,18 @@ async function preloadAssets() {
         'assets/general/logo.png',
 
         // Helper icons
-        'assets/helpers/helpers/shibes/shibes-idle-0.png',
-        'assets/helpers/helpers/kittens/kittens-idle-0.png',
-        'assets/helpers/helpers/kennels/kennels-idle-0.png',
-        'assets/helpers/helpers/rockets/rockets-idle-0.png',
-        'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
+        'assets/helpers/shibes/shibes-idle-0.png',
+        'assets/helpers/kittens/kittens-idle-0.png',
+        'assets/helpers/kennels/kennels-idle-0.png',
+        'assets/helpers/rockets/rockets-idle-0.png',
+        'assets/helpers/marsbase/marsbase-idle-0.png',
+
 
         // Pickaxe icons
-        'assets/items/items/pickaxes/standard.png',
-        'assets/items/items/pickaxes/stronger.png',
-        'assets/items/items/pickaxes/golden.png',
-        'assets/items/items/pickaxes/rocketaxe.png'
+        'assets/items/pickaxes/standard.png',
+        'assets/items/pickaxes/stronger.png',
+        'assets/items/pickaxes/golden.png',
+        'assets/items/pickaxes/rocketaxe.png'
     ];
 
     const loadPromises = assets.map(asset => {
@@ -493,6 +599,9 @@ function addDebugConsole() {
         <button onclick="game.dps += 100">+100 DPS</button>
         <button onclick="game.rotateBackground()">Rotate Background</button>
         <button onclick="game.forceRickSpawn()">Spawn Rick</button>
+        <button onclick="game.createDogebag()">Spawn Dogebag</button>
+        <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
+        <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>
         <button onclick="toggleDebugMode()">Close Debug</button>
     `;
@@ -505,6 +614,65 @@ function removeDebugConsole() {
     if (debugConsole) {
         debugConsole.remove();
     }
+}
+
+function debugGrantAllPickaxes() {
+    if (!window.game || !window.game.pickaxeFactory || !window.game.pickaxeFactory.loaded) {
+        console.error('Pickaxe factory not loaded');
+        return;
+    }
+    const factory = window.game.pickaxeFactory;
+    let count = 0;
+    for (const templateId of Object.keys(factory.templates)) {
+        const pickaxe = factory.generatePickaxe(
+            templateId,
+            window.game.maxPickaxeDPC,
+            window.game.playerStats.wow
+        );
+        if (pickaxe) {
+            window.game.addPickaxeToInventory(pickaxe);
+            count++;
+        }
+    }
+    window.game.showNotification(`Granted ${count} pickaxes!`);
+    console.log(`Debug: Granted ${count} pickaxes to inventory`);
+}
+
+function debugGrantAllFortunes() {
+    if (!window.game || !window.game.fortuneFactory || !window.game.fortuneFactory.loaded) {
+        console.error('Fortune factory not loaded');
+        return;
+    }
+    const factory = window.game.fortuneFactory;
+    let count = 0;
+    let lastFortune = null;
+    for (const templateId of Object.keys(factory.templates)) {
+        const template = factory.templates[templateId];
+        if (!template) continue;
+
+        const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        const stats = factory._rollStats(template.statTemplates, window.game.playerStats.luck, window.game.playerStats.lootFind);
+
+        const fortune = {
+            instanceId,
+            templateId,
+            name: template.name,
+            rarity: template.rarity,
+            description: template.description,
+            stats,
+            sprite: template.sprite
+        };
+
+        window.game.fortuneInventory.push(fortune);
+        lastFortune = fortune;
+        count++;
+    }
+    window.game.recalculatePlayerStats();
+    if (lastFortune && typeof window.game.setLatestObtainedFortune === 'function') {
+        window.game.setLatestObtainedFortune(lastFortune);
+    }
+    window.game.showNotification(`Granted ${count} fortunes!`);
+    console.log(`Debug: Granted ${count} fortunes to inventory`);
 }
 
 // Keyboard shortcuts

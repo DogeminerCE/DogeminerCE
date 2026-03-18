@@ -1,0 +1,13 @@
+"NAME"
+Very Loaded Barbell
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Extremely dangerous. Quite unbalanced. 260kg/573lbs.
+
+"STATS"
++% Loot Find
++% Luck
++ Gainz

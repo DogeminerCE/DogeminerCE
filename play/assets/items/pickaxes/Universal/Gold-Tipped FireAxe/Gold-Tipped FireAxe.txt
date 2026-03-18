@@ -1,0 +1,13 @@
+"NAME"
+Gold-Tipped FireAxe
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+A firefighter's axe, imbured with dogecoin powers and a gold tip.
+
+"STATS"
++% Loot Find
++% Luck
++% Higher Ground

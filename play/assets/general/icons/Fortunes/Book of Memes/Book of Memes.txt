@@ -1,0 +1,12 @@
+NAME:
+Book of Memes
+
+RARITY:
+Improved
+
+DESCRIPTION:
+This book would've come in handy if it wasnt from 2006.
+
+STATS:
++% Wow
++ Happiness

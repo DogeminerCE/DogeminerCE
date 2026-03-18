@@ -1,0 +1,12 @@
+NAME:
+Broken Record Fortune
+
+RARITY:
+Common
+
+DESCRIPTION:
+It says 'Unkown Artist'.
+
+STATS:
++% Luck
++ Mystery Bonus

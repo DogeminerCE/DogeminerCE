@@ -1,0 +1,12 @@
+NAME:
+Emerald Doge Fortune
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+One of the finest jewels you've ever seen.
+
+STATS:
++ DPS
++% Critical Chance

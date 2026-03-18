@@ -1,0 +1,13 @@
+"NAME"
+The Golden Avenger
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+A might golden sword from long lost times.
+
+"STATS"
++% Critical Chance
++% Wow
++ lives

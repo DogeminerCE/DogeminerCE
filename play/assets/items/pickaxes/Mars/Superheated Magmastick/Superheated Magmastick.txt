@@ -1,0 +1,12 @@
+"NAME"
+Superheated Magmastick
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+It's very warm to the touch.
+
+"STATS"
++% Wow
++ Mystery Bonus

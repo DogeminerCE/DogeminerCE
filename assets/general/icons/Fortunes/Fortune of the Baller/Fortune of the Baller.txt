@@ -1,0 +1,12 @@
+NAME:
+Fortune of the Baller
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Loot Find
++% Higher Ground

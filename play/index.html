@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
     <link rel="manifest" href="../favicon_io/site.webmanifest">
 
-    <link rel="stylesheet" href="styles.css?v=35">
+    <link rel="stylesheet" href="styles.css?v=36">
     <style>
         @font-face {
             font-family: 'DogeSans';
@@ -58,6 +58,23 @@
     <div id="game-container">
         <!-- Left Panel - Mining Area -->
         <div id="left-panel" class="game-panel">
+            <!-- Switcher Buttons (Pickaxes & Fortunes) -->
+            <div id="switcher-buttons">
+                <button class="switcher-btn" id="pickaxe-btn" onclick="openPickaxeModal()">
+                    <div class="switcher-btn-circle">
+                        <img id="pickaxe-btn-preview" src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.png"
+                            alt="Pickaxes" class="switcher-btn-icon">
+                    </div>
+                    <span class="switcher-label">PICKAXES</span>
+                </button>
+                <button class="switcher-btn" id="fortune-btn" onclick="openFortuneModal()">
+                    <div class="switcher-btn-circle">
+                        <img id="fortune-btn-preview" src="" alt="Fortunes" class="switcher-btn-icon fortune-icon-placeholder">
+                    </div>
+                    <span class="switcher-label">FORTUNES</span>
+                </button>
+            </div>
+
             <!-- Platform (behind everything) -->
             <div id="platform-container">
                 <img src="../assets/quickUI/dogeplatform.png" alt="Platform" id="platform">
@@ -67,9 +84,8 @@
             <div id="mining-area">
                 <!-- Character with Shadow Circle -->
                 <div id="character-container">
-                    <img src="assets/items/pickaxes/redcane.png" alt="Pickaxe" id="pickaxe">
+                    <img src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.png" alt="Pickaxe" id="pickaxe">
                     <img src="assets/general/character/standard.png" alt="Doge" id="main-character">
-                    <img src="assets/general/christmas-hat.png" alt="Santa Hat" id="santa-hat">
                     <div id="character-shadow"></div>
                 </div>
 
@@ -77,6 +93,9 @@
                 <div id="rock-container">
                     <img src="assets/general/rocks/earth.png" alt="Rock" id="main-rock">
                     <div id="click-overlay"></div>
+                    <div id="rock-health-container">
+                        <div id="rock-health-text">100%</div>
+                    </div>
                 </div>
 
                 <!-- Particle Effects -->
@@ -103,7 +122,7 @@
         </div>
 
         <!-- Version Indicator -->
-        <div id="version-indicator">v0.045 (ALPHA)</div>
+        <div id="version-indicator">v0.05 (ALPHA)</div>
 
         <!-- Planet Tabs -->
         <div id="planet-tabs">
@@ -124,7 +143,120 @@
             </button>
         </div>
 
-        <!-- Right Panel - UI -->
+        <!-- Pickaxe Modal -->
+        <div id="pickaxe-modal" class="switcher-modal">
+            <div class="switcher-modal-content">
+                <div class="inventory-modal-header">
+                    <div class="inventory-header-left">
+                        <h2 class="modal-title">PICKAXES</h2>
+                        <p class="modal-subtitle">CLICK TO EQUIP</p>
+                        <div class="inventory-count" id="pickaxe-count"></div>
+                    </div>
+                    <div class="inventory-toolbar inventory-toolbar-right" data-inventory="pickaxe">
+                        <input id="pickaxe-search" class="inventory-search" type="search" placeholder="Search pickaxes…">
+                        <select id="pickaxe-rarity" class="inventory-select">
+                            <option value="">All rarities</option>
+                            <option value="common">Common</option>
+                            <option value="improved">Improved</option>
+                            <option value="rare">Rare</option>
+                            <option value="epic">Epic</option>
+                            <option value="legendary">Legendary</option>
+                        </select>
+                        <select id="pickaxe-sort" class="inventory-select">
+                            <option value="newest">Newest</option>
+                            <option value="rarityDesc">Rarity</option>
+                            <option value="nameAsc">Name A→Z</option>
+                            <option value="dpcDesc">DPC</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="switcher-grid" id="pickaxe-grid">
+                    <!-- Pickaxe cards will be dynamically generated -->
+                </div>
+                <button class="modal-close-btn" onclick="closePickaxeModal()">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- Fortune Modal -->
+        <div id="fortune-modal" class="switcher-modal">
+            <div class="switcher-modal-content">
+                <div class="inventory-modal-header">
+                    <div class="inventory-header-left">
+                        <h2 class="modal-title">FORTUNES</h2>
+                        <p class="modal-subtitle">PASSIVE</p>
+                        <div class="inventory-count" id="fortune-count"></div>
+                    </div>
+                    <div class="inventory-toolbar inventory-toolbar-right" data-inventory="fortune">
+                        <input id="fortune-search" class="inventory-search" type="search" placeholder="Search fortunes…">
+                        <select id="fortune-rarity" class="inventory-select">
+                            <option value="">All rarities</option>
+                            <option value="common">Common</option>
+                            <option value="improved">Improved</option>
+                            <option value="rare">Rare</option>
+                            <option value="epic">Epic</option>
+                            <option value="legendary">Legendary</option>
+                        </select>
+                        <select id="fortune-sort" class="inventory-select">
+                            <option value="newest">Newest</option>
+                            <option value="rarityDesc">Rarity</option>
+                            <option value="nameAsc">Name A→Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="switcher-grid" id="fortune-grid">
+                    <p class="no-items-message">No fortunes available yet!</p>
+                </div>
+                <button class="modal-close-btn" onclick="closeFortuneModal()">CLOSE</button>
+            </div>
+        </div>
+
+        <!-- Dogebag Modal -->
+        <div id="dogebag-modal" class="switcher-modal">
+            <div class="switcher-modal-content dogebag-modal-content">
+                <!-- State 1: The Prompt -->
+                <div id="dogebag-state-prompt" class="dogebag-state">
+                    <img src="assets/general/icons/dogebag.png" alt="Dogebag" class="dogebag-modal-icon">
+                    <h2 class="modal-title">A DOGEBAG!</h2>
+                    <p class="modal-subtitle">A DOGEBAG is a magical container that may contain special items!</p>
+                    <button class="dogebag-open-btn" onclick="openDogebagContents()">OPEN</button>
+                </div>
+                <!-- State 2: The Reveal -->
+                <div id="dogebag-state-reveal" class="dogebag-state" style="display:none;">
+                    <div class="dogebag-radial-container">
+                        <img src="assets/general/fx/radial.png" alt="" class="dogebag-radial-fx">
+                        <img id="dogebag-item-icon" src="" alt="" class="dogebag-item-icon">
+                    </div>
+                    <h2 class="modal-title">DOGEBAG CONTAINED:</h2>
+                    <div id="dogebag-item-name" class="dogebag-item-name"></div>
+                    <div id="dogebag-item-rarity" class="dogebag-item-rarity"></div>
+                    <div id="dogebag-item-description" class="dogebag-item-description"></div>
+                    <div id="dogebag-item-dpc" class="dogebag-item-dpc" style="display:none;">
+                        <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                        <span id="dogebag-dpc-value"></span>
+                    </div>
+                    <div id="dogebag-item-stats" class="dogebag-item-stats"></div>
+                    <div id="dogebag-actions" class="dogebag-actions">
+                        <!-- Buttons dynamically set by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controller-friendly dialog (replaces browser confirm/alert when controller is active) -->
+        <div id="controller-dialog" class="controller-dialog-overlay">
+            <div class="controller-dialog-box">
+                <h3 id="controller-dialog-title" class="controller-dialog-title">Confirm</h3>
+                <p id="controller-dialog-message" class="controller-dialog-message"></p>
+                <div class="controller-dialog-buttons">
+                    <button id="controller-dialog-confirm" class="controller-dialog-btn confirm">Confirm</button>
+                    <button id="controller-dialog-cancel" class="controller-dialog-btn cancel">Cancel</button>
+                </div>
+                <div class="controller-dialog-hints">
+                    <span class="dialog-hint"><kbd>A</kbd> Confirm</span>
+                    <span class="dialog-hint"><kbd>B</kbd> Cancel</span>
+                </div>
+            </div>
+        </div>
         <div id="right-panel" class="game-panel">
             <!-- Panel Tabs -->
             <div id="panel-tabs">
@@ -264,6 +396,28 @@
                                         <input type="checkbox" id="auto-save-enabled" checked>
                                         Auto Save
                                     </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="controller-indicators-enabled" checked>
+                                        Controller Button Indicators
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="force-mobile-ui"
+                                            onchange="toggleForceMobileUI(this.checked)">
+                                        Force Mobile UI
+                                    </label>
+                                </div>
+                                <div class="setting-item" style="margin-top: 15px; display: flex; flex-direction: column; align-items: flex-start;">
+                                    <label for="value-update-rate" style="margin-bottom: 5px; font-family: 'DogeSans', sans-serif;">Value Update Rate</label>
+                                    <select id="value-update-rate" onchange="if(window.game) window.game.setValueUpdateRate(parseInt(this.value))" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; background: #fff; width: 100%; font-family: 'DogeSans', sans-serif;">
+                                        <option value="0">Instant (Per Frame)</option>
+                                        <option value="100">100ms</option>
+                                        <option value="1000">1 Second (Default)</option>
+                                        <option value="5000">5 Seconds</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -455,16 +609,8 @@
         import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA6fW_scDVgPVkQCosrV13ye1egRDOlfd4",
-            authDomain: "dogeminer-community-edition.firebaseapp.com",
-            projectId: "dogeminer-community-edition",
-            storageBucket: "dogeminer-community-edition.firebasestorage.app",
-            messagingSenderId: "551478867465",
-            appId: "1:551478867465:web:11a3351d7b913bac136ad8",
-            measurementId: "G-VWD4HSGLNK"
-        };
+        // Import your web app's Firebase configuration
+        import { firebaseConfig } from "./js/firebase-config.js";
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -634,11 +780,14 @@
 
             const gameScripts = [
                 'js/audio.js',
+                'js/pickaxe-factory.js',
+                'js/fortune-factory.js',
                 'js/game.js?v=37',
                 'js/ui.js',
                 'js/shop.js',
                 'js/save.js',
                 'js/notifications.js',
+                'js/controller.js',
                 'js/cloud-save.js',
                 'js/main.js'
             ];

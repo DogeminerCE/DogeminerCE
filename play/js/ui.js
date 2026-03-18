@@ -51,8 +51,11 @@ class UIManager {
             // Update tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
+                // Match button by onclick attribute (works for both DOM clicks and controller calls)
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
 
             // Add slide-out animation to current tab
             if (isMovingRight) {
@@ -225,11 +228,41 @@ class UIManager {
                     this.game.titanPlacedHelpers = [...this.game.placedHelpers];
                 }
 
+                // Save current planet's rock health state
+                if (this.game.planetRockData && this.game.planetRockData[this.game.currentLevel]) {
+                    this.game.planetRockData[this.game.currentLevel] = {
+                        rocksBroken: this.game.rocksBroken,
+                        currentHP: this.game.rockCurrentHP,
+                        maxHP: this.game.rockMaxHP
+                    };
+                }
+
                 // Clear the current helpers from the screen
                 this.game.clearAllHelperSprites();
 
                 // Update game state to reflect planet change
                 this.game.currentLevel = planetName;
+
+                // Load the new planet's rock health state
+                if (this.game.planetRockData && this.game.planetRockData[planetName]) {
+                    const rockData = this.game.planetRockData[planetName];
+                    this.game.rocksBroken = rockData.rocksBroken || 0;
+                    this.game.rockBaseHP = this.game.getPlanetRockBaseHP(planetName);
+                    
+                    if (rockData.maxHP !== null && rockData.currentHP !== null) {
+                        this.game.rockMaxHP = rockData.maxHP;
+                        this.game.rockCurrentHP = rockData.currentHP;
+                    } else {
+                        // First time visiting this planet
+                        this.game.rockMaxHP = this.game.rockBaseHP;
+                        this.game.rockCurrentHP = this.game.rockBaseHP;
+                    }
+                }
+                
+                // Update rock UI
+                if (this.game.updateRockHealthDisplay) {
+                    this.game.updateRockHealthDisplay();
+                }
 
                 // Clear upgrade caches so they refresh for the new planet
                 this._cachedUpgrades = null;
@@ -530,6 +563,7 @@ class UIManager {
         const marsBaseOwned = marsHelpers.some(helper => helper.type === 'marsBase');
         const jupiterBaseOwned = jupiterHelpers.some(helper => helper.type === 'cloudBase');
         const landerShibeOwned = moonHelpers.some(helper => helper.type === 'landerShibe');
+        const jupiterReached = this.isJupiterUnlocked();
 
         // Create 6 helper items (2x3 grid)
         for (let i = 0; i < 6; i++) {
@@ -568,11 +602,21 @@ class UIManager {
                 }
 
                 let lockReason = null;
-                if (this.game.currentLevel === 'moon') {
+                if (this.game.currentLevel === 'earth') {
+                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
+                    if (type === 'timeMachineRig' && !jupiterReached) {
+                        lockReason = 'notInvented';
+                    }
+                    else if (type === 'infiniteDogebility' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
+                    }
+                } else if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
                         lockReason = 'landerShibe';
+                    } else if (type === 'dogeGate' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
                     }
                 } else if (this.game.currentLevel === 'mars') {
                     if (type !== 'marsBase' && !marsBaseOwned) {
@@ -623,6 +667,8 @@ class UIManager {
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
                 else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
+                else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
+                else if (lockReason === 'notInvented') lockText = 'HAS NOT BEEN INVENTED YET.';
 
                 const lockOverlayHtml = isLocked ? `
                     <div class="helper-lock-overlay">
@@ -775,7 +821,7 @@ class UIManager {
             return;
         }
 
-        if (button.disabled) {
+        if (button.disabled || button.classList.contains('locked')) {
             return;
         }
 
@@ -950,23 +996,30 @@ class UIManager {
     }
 
     updateBackground(levelName) {
-        const rockImage = document.getElementById('main-rock');
-        if (!rockImage) return;
+        if (this.game && typeof this.game.updateRockSprite === 'function') {
+            const rockImage = document.getElementById('main-rock');
+            if (rockImage) {
+                rockImage.style.opacity = '1';
+                this.game.updateRockSprite();
+            }
+        } else {
+            const rockImage = document.getElementById('main-rock');
+            if (!rockImage) return;
 
-        const level = this.game.levels[levelName];
-        if (!level) return;
+            const level = this.game.levels[levelName];
+            if (!level) return;
 
-        const targetSrc = level.rock;
-        const currentAttr = rockImage.getAttribute('src') || '';
+            const targetSrc = level.rock;
+            const currentAttr = rockImage.getAttribute('src') || '';
 
-        // If the rock is already displaying this image, skip any fade to avoid flicker
-        if (currentAttr === targetSrc || rockImage.src.endsWith(targetSrc)) {
+            if (currentAttr === targetSrc || rockImage.src.endsWith(targetSrc)) {
+                rockImage.style.opacity = '1';
+                return;
+            }
+
+            rockImage.src = targetSrc;
             rockImage.style.opacity = '1';
-            return;
         }
-
-        rockImage.src = targetSrc;
-        rockImage.style.opacity = '1';
     }
 
     updateCharacter(characterType = 'standard') {
@@ -1809,12 +1862,24 @@ class UIManager {
                 const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
                 const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
                 const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
+                const jupiterReached = this.isJupiterUnlocked();
 
-                if (this.game.currentLevel === 'moon') {
+                if (this.game.currentLevel === 'earth') {
+                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
+                    if (type === 'timeMachineRig' && !jupiterReached) {
+                        lockReason = 'notInvented';
+                    }
+                    // Infinite Dogebility Drive requires further progress
+                    else if (type === 'infiniteDogebility' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
+                    }
+                } else if (this.game.currentLevel === 'moon') {
                     if (type !== 'moonBase' && !moonBaseOwned) {
                         lockReason = 'moonBase';
                     } else if (type === 'marsRocket' && !landerShibeOwned) {
                         lockReason = 'landerShibe';
+                    } else if (type === 'dogeGate' && !jupiterReached) {
+                        lockReason = 'furtherProgress';
                     }
                 } else if (this.game.currentLevel === 'mars') {
                     if (type !== 'marsBase' && !marsBaseOwned) {
@@ -1863,6 +1928,24 @@ class UIManager {
                     }
                 }
 
+                // Build lock text based on lock reason
+                let lockText = 'REQUIRES MOON BASE';
+                if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
+                else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
+                else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
+                else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
+                else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
+                else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
+                else if (lockReason === 'notInvented') lockText = 'HAS NOT BEEN INVENTED YET.';
+
+                const lockOverlayHtml = isLocked ? `
+                    <div class="helper-lock-overlay">
+                        <div class="helper-lock-icon" aria-hidden="true"></div>
+                        <div class="helper-lock-text">LOCKED</div>
+                        <div class="helper-lock-subtext">${lockText}</div>
+                    </div>
+                ` : '';
+
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
                     <div class="shop-item-title">${displayName}</div>
@@ -1873,13 +1956,18 @@ class UIManager {
                         </div>
                         <div class="shop-item-info">
                             <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
-                            <button class="shop-buy-btn" data-helper-type="${type}" ${buttonDisabled}>
+                            <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" ${buttonDisabled}>
                                 <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
                                 <span class="buy-btn-price">${priceText}</span>
                             </button>
                         </div>
                     </div>
+                    ${lockOverlayHtml}
                 `;
+
+                if (isLocked) {
+                    item.classList.add('helper-locked');
+                }
 
                 // Add click listener to buy button using shared handler to avoid duplicate stacking
                 const buyBtn = item.querySelector('.shop-buy-btn');
@@ -2181,6 +2269,19 @@ class UIManager {
                         <input type="checkbox" id="mobile-auto-save-enabled" ${autoSaveChecked}>
                         <span class="setting-label">Auto Save</span>
                     </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-force-mobile-ui" ${localStorage.getItem('forceMobileUI') === '1' ? 'checked' : ''}>
+                        <span class="setting-label">Force Mobile UI</span>
+                    </label>
+                    <label class="setting-item" style="margin-top: 10px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; cursor: default;">
+                        <span class="setting-label">Value Update Rate</span>
+                        <select id="mobile-value-update-rate" style="padding: 5px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.3); background: #eee; width: 100%; font-family: 'DogeSans', sans-serif;">
+                            <option value="0" ${localStorage.getItem('valueUpdateRate') === '0' ? 'selected' : ''}>Instant (Per Frame)</option>
+                            <option value="100" ${localStorage.getItem('valueUpdateRate') === '100' ? 'selected' : ''}>100ms</option>
+                            <option value="1000" ${(localStorage.getItem('valueUpdateRate') === '1000' || !localStorage.getItem('valueUpdateRate')) ? 'selected' : ''}>1 Second (Default)</option>
+                            <option value="5000" ${localStorage.getItem('valueUpdateRate') === '5000' ? 'selected' : ''}>5 Seconds</option>
+                        </select>
+                    </label>
                 </div>
                 
                 <h3 class="mobile-section-header">Cloud Save</h3>
@@ -2280,6 +2381,30 @@ class UIManager {
                 // Sync desktop checkbox
                 const desktopCheckbox = document.getElementById('auto-save-enabled');
                 if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+            });
+        }
+
+        const forceMobileCheckbox = document.getElementById('mobile-force-mobile-ui');
+        if (forceMobileCheckbox) {
+            forceMobileCheckbox.addEventListener('change', (e) => {
+                if (window.toggleForceMobileUI) {
+                    window.toggleForceMobileUI(e.target.checked);
+                }
+                // Sync desktop checkbox
+                const desktopCheckbox = document.getElementById('force-mobile-ui');
+                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+            });
+        }
+
+        const valueUpdateRateSelect = document.getElementById('mobile-value-update-rate');
+        if (valueUpdateRateSelect) {
+            valueUpdateRateSelect.addEventListener('change', (e) => {
+                if (typeof window.game !== 'undefined' && window.game && window.game.setValueUpdateRate) {
+                    window.game.setValueUpdateRate(parseInt(e.target.value));
+                }
+                // Sync desktop select
+                const desktopSelect = document.getElementById('value-update-rate');
+                if (desktopSelect) desktopSelect.value = e.target.value;
             });
         }
 

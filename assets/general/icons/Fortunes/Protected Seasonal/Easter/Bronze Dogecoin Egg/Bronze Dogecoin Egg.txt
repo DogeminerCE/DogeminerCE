@@ -1,0 +1,13 @@
+NAME:
+Bronze Dogecoin Egg
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A solid bronze dogecoin egg filled with.. bronze!
+
+STATS:
++% Wow
++% Luck
++ Mystery Bonus

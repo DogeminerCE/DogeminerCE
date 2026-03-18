@@ -1,0 +1,11 @@
+NAME:
+Holiday Coin
+
+RARITY:
+Common
+
+DESCRIPTION:
+This coin represents the joy and charity of the holidays..
+
+STATS:
++ Happiness

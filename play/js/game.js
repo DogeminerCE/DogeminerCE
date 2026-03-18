@@ -96,6 +96,8 @@ class DogeMinerGame {
         // Animation and effects with limits
         this.clickEffects = [];
         this.particles = [];
+        this.activeEffectCount = 0;
+        this.activeParticleCount = 0;
         this.maxEffects = 20; // Limit concurrent effects
         this.maxParticles = 50; // Limit concurrent particles
 
@@ -163,6 +165,73 @@ class DogeMinerGame {
 
         // Uncleared save flag for future rewards
         this.HasPlayed_v0_04 = true;
+
+        // Planet-specific rock health tracking map
+        this.planetRockData = {
+            earth: { rocksBroken: 0, currentHP: null, maxHP: null },
+            moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+            mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+            jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+            titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+        };
+
+        // Active rock health system (HP-based) for the current planet
+        this.rocksBroken = 0; // Initialize global before setting base HP
+        this.rockBaseHP = this.getPlanetRockBaseHP('earth');
+        this.rockMaxHP = this.rockBaseHP;
+        this.rockCurrentHP = this.rockBaseHP;
+        this.lastDamageThresholdPercent = 100; // Tracks 75%, 50%, 25% for coin pile expulsion
+        this.isRockRegenerating = false;
+        this.lastCritHit = false; // For UI feedback
+
+        // Pickaxe & Fortune System
+        this.pickaxeFactory = null; // Initialized async in main.js
+        this.fortuneFactory = null; // Initialized async in main.js
+        this.pickaxeInventory = []; // Array of generated pickaxe instances
+        this.equippedPickaxeId = null; // instanceId of equipped pickaxe
+        this.maxPickaxeDPC = 1; // Tracks highest DPC for linear progression
+
+        // Default starting pickaxe (generated in-place, not from factory)
+        this.defaultPickaxe = {
+            instanceId: 'default_normal_pickaxe',
+            templateId: 'earth_normal_pickaxe',
+            name: 'Normal Pickaxe',
+            rarity: 'common',
+            description: 'Normal yet faithful.',
+            planetOfOrigin: 'earth',
+            baseDPC: 1,
+            stats: [],
+            idleSprite: 'assets/items/pickaxes/Earth/Normal Pickaxe/standard.png',
+            isStaffOfSundoge: false,
+            specialInstructions: ''
+        };
+        this.pickaxeInventory.push(this.defaultPickaxe);
+        this.equippedPickaxeId = this.defaultPickaxe.instanceId;
+
+        // Fortune system
+        this.fortuneInventory = []; // Array of fortune instances
+        this.ownedFortunes = []; // Legacy compat
+        this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
+        // Inventory UI state (shared desktop + mobile)
+        this._inventoryUi = {
+            pickaxe: { search: '', rarity: '', sort: 'newest' },
+            fortune: { search: '', rarity: '', sort: 'newest' }
+        };
+        this._inventoryUiBound = { pickaxe: false, fortune: false };
+
+        // Player stats (recalculated from equipped pickaxe + fortunes)
+        this.playerStats = {
+            luck: 0,
+            lootFind: 0,
+            wow: 0,
+            critChance: 0.05, // 5% base
+            dpcMultiplier: 1,
+            helperDpsMultiplier: 1,
+            rocketCostReduction: 0
+        };
+
+        // Rock progression
+        this.rocksBroken = 0;
 
         // UI state flags
 
@@ -439,26 +508,64 @@ class DogeMinerGame {
 
     handleRockClick(event = null) {
         if (!this.isPlaying || this.isIntroPlaying || this.isCutscenePlaying || this.isTransitioning) return;
+        if (this.isRockRegenerating) return;
 
         this.totalClicks++;
 
         this.swingPickaxe();
         this.bounceDoge();
 
-        const coinsPerHit = this.getClickPower();
+        // Calculate damage with crit chance
+        const { damage, isCrit } = this.calculateClickDamage();
+        this.lastCritHit = isCrit;
+
+        // Coins earned = damage dealt (DPC acts as both damage AND income)
+        const coinsPerHit = damage;
         this.dogecoins += coinsPerHit;
         this.totalMined += coinsPerHit;
 
-        if (this.clickEffects.length < this.maxEffects) {
-            this.createFloatingCoin(coinsPerHit, event);
+        if (this.activeEffectCount < this.maxEffects) {
+            this.createFloatingCoin(coinsPerHit, event, isCrit);
             this.createClickEffect(event);
         }
-        if (this.particles.length < this.maxParticles) {
+        if (this.activeParticleCount < this.maxParticles) {
             this.createParticleEffect(event);
         }
 
+        // Rock health system — deal damage to rock
+        this.rockCurrentHP = Math.max(0, this.rockCurrentHP - damage);
+        this.updateRockSprite();
+        this.checkCoinPileExpulsion();
+        this.updateRockHealthDisplay();
+
+        // Swap to active sprite on click
+        this.showActivePickaxeSprite();
+
+        if (this.rockCurrentHP <= 0) {
+            this.regenerateRock();
+        }
+
         this.updateUI();
-        this.playSound('pick');
+
+        // Context-sensitive hit sound
+        if (this.rockCurrentHP <= 0 && !this.isRockRegenerating) {
+            // Rock already dead — bonk sound
+            this.playSound('hitGround');
+        } else if (isCrit) {
+            // Critical hit
+            this.playSound('hitHard');
+        } else {
+            // Check equipped pickaxe for custom hit sounds
+            const equipped = this.getEquippedPickaxe();
+            const pickaxeName = equipped ? equipped.name : '';
+            if (pickaxeName === 'Gas Carbine') {
+                this.playSound('pew');
+            } else if (pickaxeName === 'Light-blade Pickaxe') {
+                this.playSound('lasersword');
+            } else {
+                this.playSound('pick');
+            }
+        }
     }
 
     processClick(event = null) {
@@ -485,8 +592,89 @@ class DogeMinerGame {
     }
 
     getClickPower() {
-        const basePower = 1; // 1% per hit like DogeMiner 2
-        return basePower;
+        return this.getPickaxeDPC();
+    }
+
+    /**
+     * Calculates click damage with crit chance and multipliers
+     * Returns { damage, isCrit }
+     */
+    calculateClickDamage() {
+        const equipped = this.getEquippedPickaxe();
+        let baseDPC = equipped ? equipped.baseDPC : 1;
+        let damage = baseDPC * this.playerStats.dpcMultiplier;
+
+        // Apply critical hit
+        const isCrit = Math.random() < this.playerStats.critChance;
+        if (isCrit) {
+            damage *= 2.5;
+        }
+
+        damage = Math.max(1, Math.floor(damage));
+        return { damage, isCrit };
+    }
+
+    /**
+     * Calculates rock HP based on rocks broken (scaling difficulty)
+     */
+    getRockHP(baseHP, rocksBroken) {
+        let growthFactor = 1.15; // Earth default: 15% growth per rock broken
+        switch (this.currentLevel) {
+            case 'moon': growthFactor = 1.25; break;
+            case 'mars': growthFactor = 1.40; break;
+            case 'jupiter': growthFactor = 1.60; break;
+            case 'titan': growthFactor = 1.85; break;
+        }
+        const finalHp = Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
+        return finalHp;
+    }
+
+    /**
+     * Returns the base starting HP for the rock relative to the planet's difficulty.
+     */
+    getPlanetRockBaseHP(planet) {
+        switch (planet) {
+            case 'earth': return 100;
+            case 'moon': return 500;
+            case 'mars': return 1500;
+            case 'jupiter': return 5000;
+            case 'titan': return 25000;
+            default: return 100;
+        }
+    }
+
+    /**
+     * Gets the current rock health as a percentage (0-100)
+     */
+    getRockHealthPercent() {
+        if (this.rockMaxHP <= 0) return 0;
+        return Math.round((this.rockCurrentHP / this.rockMaxHP) * 100);
+    }
+
+    /**
+     * Shows the active pickaxe sprite briefly during click animation
+     */
+    showActivePickaxeSprite() {
+        const equipped = this.getEquippedPickaxe();
+        if (!equipped) return;
+
+        const pickaxeImg = document.getElementById('pickaxe');
+        if (!pickaxeImg) return;
+
+        // Check if this pickaxe has an active sprite (idle sprite with -use suffix)
+        const idlePath = equipped.idleSprite;
+        const activePath = idlePath.replace(/\.png$/, '-use.png');
+
+        // Only swap if active sprite seems likely to exist
+        // (we know the pattern: filename-use.png)
+        if (this._activeSpritePaths && this._activeSpritePaths.has(equipped.templateId)) {
+            pickaxeImg.src = activePath;
+            // Swap back to idle after swing
+            clearTimeout(this._activeSpriteTimeout);
+            this._activeSpriteTimeout = setTimeout(() => {
+                pickaxeImg.src = idlePath;
+            }, 150);
+        }
     }
 
     swingPickaxe() {
@@ -513,6 +701,1372 @@ class DogeMinerGame {
             }
         }, 200);
     }
+
+    /**
+     * Temporarily swaps Doge to the happy sprite for 1 second.
+     * Used when a dogebag/crate spawns from the rock.
+     */
+    _showHappyDoge() {
+        const doge = document.getElementById('main-character');
+        if (!doge) return;
+
+        // Determine the correct happy sprite for the current planet
+        let happySprite;
+        switch (this.currentLevel) {
+            case 'earth':
+                happySprite = 'assets/general/character/happydoge.png';
+                break;
+            case 'mars':
+                happySprite = 'assets/general/character/happy_party.png';
+                break;
+            case 'moon':
+            case 'jupiter':
+            case 'titan':
+            default:
+                happySprite = 'assets/general/character/happy_space.png';
+                break;
+        }
+
+        // Set to happy sprite
+        doge.src = happySprite;
+
+        // Clear any existing happy-doge timeout so rapid spawns don't conflict
+        if (this._happyDogeTimeout) {
+            clearTimeout(this._happyDogeTimeout);
+        }
+
+        // Swap back after 1 second to the correct idle sprite for this planet
+        this._happyDogeTimeout = setTimeout(() => {
+            doge.src = this._getCharacterSprite();
+            this._happyDogeTimeout = null;
+        }, 1000);
+    }
+
+    /**
+     * Returns the correct idle character sprite for the current planet.
+     */
+    _getCharacterSprite() {
+        switch (this.currentLevel) {
+            case 'earth': return 'assets/general/character/standard.png';
+            case 'moon':
+            case 'jupiter':
+            case 'titan': return 'assets/general/character/spacehelmet.png';
+            case 'mars': return 'assets/general/character/party.png';
+            default: return 'assets/general/character/standard.png';
+        }
+    }
+
+    // ========== ROCK HEALTH SYSTEM ==========
+
+    /**
+     * Updates the rock sprite based on current health percentage
+     */
+    updateRockSprite() {
+        const rock = document.getElementById('main-rock');
+        if (!rock) return;
+
+        const planet = this.currentLevel;
+        const healthPercent = this.getRockHealthPercent();
+        let spriteSuffix = '';
+
+        // Determine which damage sprite to use based on health percentage
+        if (healthPercent > 90) {
+            spriteSuffix = ''; // Original sprite
+        } else if (healthPercent > 75) {
+            spriteSuffix = '_dmg_small1';
+        } else if (healthPercent > 50) {
+            spriteSuffix = '_dmg_small2';
+        } else if (healthPercent > 25) {
+            spriteSuffix = '_dmg_medium1';
+        } else if (healthPercent > 0) {
+            spriteSuffix = '_dmg_medium2';
+        } else {
+            spriteSuffix = '_dmg_large1';
+        }
+
+        // Build the sprite path
+        const spritePath = spriteSuffix === ''
+            ? `assets/general/rocks/${planet}.png`
+            : `assets/general/rocks/${planet}${spriteSuffix}.png`;
+
+        // Only update and trigger smoke if sprite actually changed
+        if (rock.src !== spritePath && !rock.src.endsWith(spritePath)) {
+            rock.src = spritePath;
+            // Don't trigger smoke on initial load or regeneration to 100%
+            if (healthPercent < 100 || spriteSuffix !== '') {
+                this.createRockSmokeEffect();
+
+                // Play escalating rock damage sounds at each threshold
+                if (healthPercent <= 0) {
+                    this.playSound('rockhitLarge');      // 0% — rock breaks
+                } else if (healthPercent <= 25) {
+                    this.playSound('rockhitMedium');     // 25% threshold
+                } else if (healthPercent <= 50) {
+                    this.playSound('rockhitMedium');     // 50% threshold
+                } else if (healthPercent <= 75) {
+                    this.playSound('rockhitSmall');      // 75% threshold
+                } else if (healthPercent <= 90) {
+                    this.playSound('rockhitSmallest');   // 90% threshold
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a smoke effect over the rock when it changes damage state
+     */
+    createRockSmokeEffect() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        // Create 3 smoke sprites with different rotations
+        for (let i = 0; i < 3; i++) {
+            const smoke = document.createElement('img');
+            smoke.src = 'assets/general/cartoonsmoke.png';
+            smoke.className = 'rock-smoke';
+            smoke.alt = '';
+            smoke.draggable = false;
+
+            // Set initial rotation offset for each smoke
+            const rotationOffset = i * 120; // 0, 120, 240 degrees
+            smoke.style.setProperty('--smoke-rotation-start', `${rotationOffset}deg`);
+
+            // Slight position variation for each
+            const offsetX = (i - 1) * 15; // -15, 0, 15
+            smoke.style.setProperty('--smoke-offset-x', `${offsetX}px`);
+
+            rockContainer.appendChild(smoke);
+
+            // Remove after animation completes (0.8s animation)
+            setTimeout(() => {
+                if (smoke.parentNode) {
+                    smoke.parentNode.removeChild(smoke);
+                }
+            }, 900);
+        }
+    }
+
+    /**
+     * Regenerates the rock after it's been destroyed
+     */
+    regenerateRock() {
+        this.isRockRegenerating = true;
+        this.rocksBroken++;
+
+        // 0% threshold: dogebag chance + coin piles
+        if (this.rollDogebagDrop()) {
+            this.createDogebag();
+        }
+        // 90% chance to expel coin piles when rock breaks
+        if (Math.random() < 0.9) {
+            this.expelCoinPiles();
+        }
+
+        setTimeout(() => {
+            // Scale next rock's HP based on rocks broken
+            this.rockMaxHP = this.getRockHP(this.rockBaseHP, this.rocksBroken);
+            this.rockCurrentHP = this.rockMaxHP;
+            this.lastDamageThresholdPercent = 100;
+            this.isRockRegenerating = false;
+            this.updateRockSprite();
+            this.updateRockHealthDisplay();
+        }, 500);
+    }
+
+    /**
+     * Checks if coin piles should be expelled at damage thresholds (percentage-based).
+     * Per the plan: 90%/75% = coins only; 50%/25%/0% = dogebag chance + coins.
+     */
+    checkCoinPileExpulsion() {
+        const healthPercent = this.getRockHealthPercent();
+        const thresholds = [90, 75, 50, 25];
+
+        for (const threshold of thresholds) {
+            // Check if we just crossed this threshold
+            if (this.lastDamageThresholdPercent > threshold && healthPercent <= threshold) {
+                this.lastDamageThresholdPercent = threshold;
+
+                if (threshold >= 75) {
+                    // 90% and 75% thresholds: coins only
+                    if (Math.random() < 0.5) {
+                        this.expelCoinPiles();
+                    }
+                } else {
+                    // 50% and 25% thresholds: chance for dogebag + coins
+                    if (this.rollDogebagDrop()) {
+                        this.createDogebag();
+                    }
+                    if (Math.random() < 0.5) {
+                        this.expelCoinPiles();
+                    }
+                }
+                break; // Only trigger once per threshold crossing
+            }
+        }
+    }
+
+    /**
+     * Expels 1-3 coin piles near the rock using power-based formula
+     */
+    expelCoinPiles() {
+        // Determine pile count: 40% = 1, 50% = 2, 10% = 3
+        const rand = Math.random();
+        let pileCount;
+        if (rand < 0.4) {
+            pileCount = 1;
+        } else if (rand < 0.9) {
+            pileCount = 2;
+        } else {
+            pileCount = 3;
+        }
+
+        for (let i = 0; i < pileCount; i++) {
+            // Use power-based coin drop with some variance
+            const variance = 0.3 + Math.random() * 1.4; // 0.3x to 1.7x
+            const amount = Math.max(1, Math.floor(this.calculateCoinDrop() * variance));
+
+            // Pick sprite based on relative amount
+            const maxDrop = this.calculateCoinDrop() * 1.7;
+            const percentage = Math.min(75, Math.floor((amount / maxDrop) * 75));
+            const sprite = this.getCoinPileSprite(percentage);
+
+            // Stagger the pile creation slightly
+            setTimeout(() => {
+                this.createCoinPile(amount, sprite, percentage, i, pileCount);
+            }, i * 100);
+        }
+    }
+
+    /**
+     * Returns a weighted random percentage (1-75%), with higher values being less likely
+     */
+    getWeightedCoinPercentage() {
+        // Use exponential distribution to favor lower percentages
+        // Roll a random value and square it to skew towards lower values
+        const roll = Math.random();
+        const skewed = roll * roll; // Squares favor lower values
+        const percentage = Math.floor(skewed * 74) + 1; // Range: 1-75
+        return percentage;
+    }
+
+    /**
+     * Returns appropriate sprite path based on coin percentage
+     */
+    getCoinPileSprite(percentage) {
+        let sprites;
+
+        if (percentage <= 10) {
+            sprites = [
+                'assets/general/icons/small_stack_1.png',
+                'assets/general/icons/small_stack_2.png',
+                'assets/general/icons/small_stack_3.png'
+            ];
+        } else if (percentage <= 24) {
+            sprites = [
+                'assets/general/icons/medium_stack_1.png',
+                'assets/general/icons/medium_stack_2.png'
+            ];
+        } else if (percentage <= 45) {
+            sprites = [
+                'assets/general/icons/medium_stack_3.png',
+                'assets/general/icons/medium_stack_4.png'
+            ];
+        } else {
+            sprites = [
+                'assets/general/icons/large_stack_1.png',
+                'assets/general/icons/large_stack_2.png'
+            ];
+        }
+
+        return sprites[Math.floor(Math.random() * sprites.length)];
+    }
+
+    /**
+     * Creates a clickable coin pile element near the rock
+     * index & total arguments help segment horizontal space so multiple piles don't stack
+     */
+    createCoinPile(amount, spritePath, percentage = 50, index = 0, total = 1) {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        const pile = document.createElement('div');
+        pile.className = 'coin-pile';
+
+        // Add size class based on percentage
+        // Small: 1-24% (small_stack and medium_stack_1/2)
+        // Medium: 25-45% (medium_stack_3/4)
+        // Large: 46-75% (large_stack) - default size
+        if (percentage <= 24) {
+            pile.classList.add('pile-small');
+        } else if (percentage <= 45) {
+            pile.classList.add('pile-medium');
+        }
+
+        const img = document.createElement('img');
+        img.src = spritePath;
+        img.alt = 'Coin Pile';
+        img.draggable = false;
+        pile.appendChild(img);
+
+        // Final position: below the rock, spread horizontally
+        let finalOffsetX;
+        
+        if (total > 1) {
+            // Segment the horizontal space based on the index so multiple piles don't spawn on top of each other
+            const sectionWidth = 240 / total;
+            const startX = -120 + (index * sectionWidth);
+            finalOffsetX = startX + (Math.random() * sectionWidth);
+        } else {
+            // X offset: -120 to 120 (spread out left/right)
+            finalOffsetX = (Math.random() - 0.5) * 240;
+        }
+
+        // Y offset: always positive (below rock), range 80 to 160
+        let finalOffsetY = 80 + Math.random() * 80;
+
+        // Prevent spawning in the direct center where the health percentage text is
+        // Push them downwards if they land in the central column where the text is.
+        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
+            finalOffsetY = 150 + Math.random() * 40; // Push them down safely below the text
+        }
+
+        // Start at center (0,0), animate to final position
+        pile.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
+        pile.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
+        pile.style.left = '50%';
+        pile.style.top = '50%';
+
+        // Store the amount on the element
+        pile.dataset.amount = amount;
+
+        // Add click handler to collect
+        pile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.collectCoinPile(pile, amount);
+        });
+
+        // Add to DOM
+        rockContainer.appendChild(pile);
+
+        // Animate from center outward
+        pile.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
+
+        // Wait 8 seconds, then start warning animation for 5 seconds, then despawn
+        setTimeout(() => {
+            if (pile.parentNode) {
+                pile.style.animation = 'coinPileWarning 5s linear forwards';
+                
+                setTimeout(() => {
+                    if (pile.parentNode) {
+                        pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                        setTimeout(() => {
+                            if (pile.parentNode) {
+                                pile.parentNode.removeChild(pile);
+                            }
+                        }, 500);
+                    }
+                }, 5000);
+            }
+        }, 8000);
+    }
+
+    /**
+     * Collects a coin pile and adds coins to the player
+     */
+    collectCoinPile(pile, amount) {
+        if (!pile.parentNode || pile.dataset.collected) return; // Prevent double collection
+        
+        // Mark as collected to prevent any further interaction
+        pile.dataset.collected = "true";
+        pile.style.pointerEvents = 'none';
+
+        // Add coins
+        this.dogecoins += amount;
+        this.totalMined += amount;
+
+        // Play sound based on pile size
+        if (pile.classList.contains('pile-small')) {
+            this.playSound('coinsSmall');
+        } else {
+            this.playSound('getCoins');
+        }
+
+        // Show floating text
+        const rect = pile.getBoundingClientRect();
+        const floatingCoins = document.getElementById('floating-coins');
+        if (floatingCoins) {
+            const text = document.createElement('div');
+            text.className = 'coin-pile-collected';
+            text.textContent = '+' + this.formatNumber(amount);
+            text.style.left = (rect.left + rect.width / 2 - floatingCoins.getBoundingClientRect().left) + 'px';
+            text.style.top = (rect.top - floatingCoins.getBoundingClientRect().top) + 'px';
+            floatingCoins.appendChild(text);
+
+            setTimeout(() => {
+                if (text.parentNode) text.parentNode.removeChild(text);
+            }, 1000);
+        }
+
+        // Remove pile with animation
+        pile.style.animation = 'coinPileCollect 0.3s ease-out forwards';
+        setTimeout(() => {
+            if (pile.parentNode) pile.parentNode.removeChild(pile);
+        }, 300);
+
+        // Update UI
+        this.updateUI();
+    }
+
+    /**
+     * Collects the nearest coin pile (used by controller X button)
+     */
+    collectNearestCoinPile() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        const piles = rockContainer.querySelectorAll('.coin-pile');
+        if (piles.length === 0) return;
+
+        // Find the pile closest to the centre of the rock
+        const rock = document.getElementById('main-rock');
+        if (!rock) return;
+        const rockRect = rock.getBoundingClientRect();
+        const cx = rockRect.left + rockRect.width / 2;
+        const cy = rockRect.top + rockRect.height / 2;
+
+        let closest = null;
+        let closestDist = Infinity;
+
+        piles.forEach(pile => {
+            const r = pile.getBoundingClientRect();
+            const px = r.left + r.width / 2;
+            const py = r.top + r.height / 2;
+            const dist = Math.hypot(px - cx, py - cy);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closest = pile;
+            }
+        });
+
+        if (closest) {
+            const amount = parseInt(closest.dataset.amount, 10) || 0;
+            this.collectCoinPile(closest, amount);
+        }
+    }
+
+    /**
+     * Updates the rock health percentage display
+     */
+    updateRockHealthDisplay() {
+        const healthText = document.getElementById('rock-health-text');
+        if (healthText) {
+            healthText.textContent = Math.max(0, this.getRockHealthPercent()) + '%';
+        }
+    }
+
+    // ========== END ROCK HEALTH SYSTEM ==========
+
+    // ========== LOOT & DOGEBAG SYSTEM ==========
+
+    /**
+     * Calculates coin drop amount using power-based formula.
+     * baseDPC * 50, modified by lootFind and luck.
+     */
+    calculateCoinDrop() {
+        const equipped = this.getEquippedPickaxe();
+        const baseDPC = equipped ? equipped.baseDPC : 1;
+        const baseDrop = baseDPC * 50;
+        const multiplier = 1 + (this.playerStats.lootFind / 100) + (this.playerStats.luck / 10);
+        return Math.max(1, Math.floor(baseDrop * multiplier));
+    }
+
+    /**
+     * Rolls whether a dogebag should drop at the current threshold.
+     * Base 10% chance, scaled by luck.
+     */
+    rollDogebagDrop() {
+        const baseChance = 0.10;
+        const chance = baseChance * (1 + this.playerStats.luck);
+        return Math.random() < chance;
+    }
+
+    /**
+     * Determines what's inside a dogebag: pickaxe, fortune, or coins.
+     * Then creates the dogebag element on the ground.
+     */
+    generateDogebagContents() {
+        // 60% pickaxe, 20% fortune, 20% coins
+        const roll = Math.random();
+
+        if (roll < 0.60 && this.pickaxeFactory && this.pickaxeFactory.loaded) {
+            // Roll a pickaxe
+            const templateId = this.pickaxeFactory.rollTemplate(
+                this.currentLevel,
+                this.playerStats.lootFind
+            );
+            if (templateId) {
+                const pickaxe = this.pickaxeFactory.generatePickaxe(
+                    templateId,
+                    this.maxPickaxeDPC,
+                    this.playerStats.wow
+                );
+                return { type: 'pickaxe', item: pickaxe };
+            }
+        }
+
+        if (roll < 0.80 && this.fortuneFactory && this.fortuneFactory.loaded) {
+            // Roll a fortune
+            const fortune = this.fortuneFactory.generateFortune(
+                this.playerStats.lootFind,
+                this.playerStats.luck,
+                this.currentLevel
+            );
+            if (fortune) {
+                return { type: 'fortune', item: fortune };
+            }
+        }
+
+        // Coins: 1.5x to 2.0x standard drop
+        const coinMultiplier = 1.5 + Math.random() * 0.5;
+        const coinAmount = Math.floor(this.calculateCoinDrop() * coinMultiplier);
+        return { type: 'coins', amount: coinAmount };
+    }
+
+    /**
+ * Creates a dogebag element in the world near the rock.
+ */
+    createDogebag() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        // Generate contents now (stored on the element)
+        const contents = this.generateDogebagContents();
+
+        // Planet-specific bag info
+        const bagInfo = this.getDogebagInfo();
+
+        const bag = document.createElement('div');
+        bag.className = 'dogebag-drop';
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'dogebag-img-wrapper';
+
+        const img = document.createElement('img');
+        img.src = bagInfo.sprite;
+        img.alt = bagInfo.name;
+        img.draggable = false;
+
+        imgWrapper.appendChild(img);
+        bag.appendChild(imgWrapper);
+
+        // Position similar to coin piles but dispersed further (approx 35% further spread)
+        let finalOffsetX = (Math.random() - 0.5) * 320; // Was 240
+        let finalOffsetY = 90 + Math.random() * 110;    // Was 80 + rand(80)
+        
+        // Prevent spawning in the direct center where the health percentage text is
+        // Instead of splitting them left and right (which creates an awkward gap), 
+        // we'll push them downwards if they land in the central column where the text is.
+        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
+            finalOffsetY = 150 + Math.random() * 40; // Push them down safely below the text
+        }
+
+        bag.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
+        bag.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
+        bag.style.left = '50%';
+        bag.style.top = '50%';
+
+        // Store contents and bag info on element
+        bag._dogebagContents = contents;
+        bag._dogebagInfo = bagInfo;
+
+        // Click handler
+        bag.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openDogebagModal(bag);
+        });
+
+        rockContainer.appendChild(bag);
+        this.playSound('woof');
+
+        // Show happy Doge sprite for 1 second
+        this._showHappyDoge();
+
+        // Auto-despawn after 15 seconds if not clicked
+        setTimeout(() => {
+            if (bag.parentNode) {
+                bag.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                setTimeout(() => {
+                    if (bag.parentNode) bag.parentNode.removeChild(bag);
+                }, 500);
+            }
+        }, 15000);
+    }
+
+    /**
+     * Returns the sprite path and display name for the current planet's dogebag variant.
+     */
+    getDogebagInfo() {
+        switch (this.currentLevel) {
+            case 'moon':
+                return { sprite: 'assets/general/icons/mooncrate.png', name: 'Moon Crate' };
+            case 'mars':
+                return { sprite: 'assets/general/icons/marschest.png', name: 'Mars Chest' };
+            case 'jupiter':
+                return { sprite: 'assets/general/icons/cloudcache.png', name: 'Cloud Cache' };
+            case 'titan':
+                return { sprite: 'assets/general/icons/titanbox.png', name: 'Titan Depot' };
+            default:
+                return { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+        }
+    }
+
+    /**
+     * Opens the dogebag modal (State 1: prompt)
+     */
+    openDogebagModal(bagElement) {
+        this._currentDogebag = bagElement;
+        this.playSound('grabBag');
+
+        const modal = document.getElementById('dogebag-modal');
+        const prompt = document.getElementById('dogebag-state-prompt');
+        const reveal = document.getElementById('dogebag-state-reveal');
+
+        if (!modal || !prompt || !reveal) return;
+
+        // Update modal to show the correct planet-specific bag
+        const bagInfo = bagElement._dogebagInfo || { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+        const modalIcon = prompt.querySelector('.dogebag-modal-icon');
+        const modalTitle = prompt.querySelector('.modal-title');
+        const modalSubtitle = prompt.querySelector('.modal-subtitle');
+        if (modalIcon) modalIcon.src = bagInfo.sprite;
+        if (modalTitle) modalTitle.textContent = `A ${bagInfo.name.toUpperCase()}!`;
+        if (modalSubtitle) modalSubtitle.textContent = `A ${bagInfo.name} is a magical container that may contain special items!`;
+
+        // Update reveal title too
+        const revealTitle = reveal.querySelector('.modal-title');
+        if (revealTitle) revealTitle.textContent = `${bagInfo.name.toUpperCase()} CONTAINED:`;
+
+        // Remove the bag from world
+        if (bagElement && bagElement.parentNode) {
+            bagElement.parentNode.removeChild(bagElement);
+        }
+
+        // Show the modal
+        modal.classList.add('active');
+
+        // Trigger drop-in animation — reset the class and styles so it replays every open
+        const modalContent = modal.querySelector('.dogebag-modal-content');
+        if (modalContent) {
+            modalContent.classList.remove('dogebag-dropping');
+            modalContent.style.transition = '';
+            modalContent.style.opacity = '';
+            modalContent.style.transform = '';
+            void modalContent.offsetWidth; // Force reflow so CSS sees the resets
+            modalContent.classList.add('dogebag-dropping');
+        }
+
+        // Play the collect sound alongside the drop-in
+        this.playSound('collectItem');
+
+        if (this.hasSeenDogebagIntro) {
+            // Veteran player: skip the "A Dogebag!" prompt and go straight to the reveal
+            prompt.style.display = 'none';
+            reveal.style.display = 'none'; // openDogebagContents will unhide it
+            this.openDogebagContents();
+        } else {
+            // First time ever — show the intro prompt, then mark as seen
+            prompt.style.display = '';
+            reveal.style.display = 'none';
+            this.hasSeenDogebagIntro = true;
+            // Persist the flag immediately
+            if (window.saveManager) {
+                window.saveManager.saveGame(false);
+            }
+        }
+    }
+
+    /**
+     * Opens the dogebag contents (State 2: reveal)
+     * Called when user clicks OPEN button
+     */
+    openDogebagContents() {
+        const prompt = document.getElementById('dogebag-state-prompt');
+        const reveal = document.getElementById('dogebag-state-reveal');
+        if (!prompt || !reveal) return;
+
+        prompt.style.display = 'none';
+        reveal.style.display = '';
+
+        const contents = this._currentDogebag?._dogebagContents;
+        if (!contents) {
+            this.closeDogebagModal();
+            return;
+        }
+
+
+        if (contents.type === 'pickaxe') {
+            this._renderDogebagPickaxe(contents.item);
+        } else if (contents.type === 'fortune') {
+            this._renderDogebagFortune(contents.item);
+        } else {
+            this._renderDogebagCoins(contents.amount);
+        }
+    }
+
+    /**
+     * Renders pickaxe reveal in dogebag modal
+     */
+    _renderDogebagPickaxe(pickaxe) {
+        const icon = document.getElementById('dogebag-item-icon');
+        const name = document.getElementById('dogebag-item-name');
+        const rarity = document.getElementById('dogebag-item-rarity');
+        const desc = document.getElementById('dogebag-item-description');
+        const dpcContainer = document.getElementById('dogebag-item-dpc');
+        const dpcValue = document.getElementById('dogebag-dpc-value');
+        const statsContainer = document.getElementById('dogebag-item-stats');
+        const actions = document.getElementById('dogebag-actions');
+
+        if (icon) icon.src = pickaxe.idleSprite;
+        if (name) name.textContent = pickaxe.name;
+        if (rarity) {
+            rarity.textContent = pickaxe.rarity.toUpperCase();
+            rarity.className = `dogebag-item-rarity rarity-${pickaxe.rarity}`;
+        }
+        if (desc) desc.textContent = pickaxe.description;
+        if (dpcContainer) dpcContainer.style.display = '';
+        if (dpcValue) dpcValue.textContent = pickaxe.baseDPC;
+
+        // Stats
+        if (statsContainer && this.pickaxeFactory) {
+            statsContainer.innerHTML = '';
+            pickaxe.stats.forEach(stat => {
+                const line = document.createElement('div');
+                line.className = `item-card-stat-line ${stat.isCore ? 'stat-core' : 'stat-cosmetic'}`;
+                line.textContent = this.pickaxeFactory.formatStatForDisplay(stat);
+                statsContainer.appendChild(line);
+            });
+        }
+
+        // Actions: EQUIP + LOOT
+        if (actions) {
+            actions.innerHTML = `
+                <button class="dogebag-action-btn equip-btn" onclick="dogebagEquip()">EQUIP</button>
+                <button class="dogebag-action-btn loot-btn" onclick="dogebagLoot()">LOOT</button>
+            `;
+        }
+
+        // Store for action handlers
+        this._dogebagPendingItem = { type: 'pickaxe', item: pickaxe };
+    }
+
+    /**
+     * Renders fortune reveal in dogebag modal
+     */
+    _renderDogebagFortune(fortune) {
+        // Similar to pickaxe but without DPC and only LOOT button
+        const icon = document.getElementById('dogebag-item-icon');
+        const name = document.getElementById('dogebag-item-name');
+        const rarity = document.getElementById('dogebag-item-rarity');
+        const desc = document.getElementById('dogebag-item-description');
+        const dpcContainer = document.getElementById('dogebag-item-dpc');
+        const statsContainer = document.getElementById('dogebag-item-stats');
+        const actions = document.getElementById('dogebag-actions');
+
+        if (icon) icon.src = fortune.sprite || 'assets/general/dogecoin_70x70.png';
+        if (name) name.textContent = fortune.name;
+        if (rarity) {
+            rarity.textContent = fortune.rarity.toUpperCase();
+            rarity.className = `dogebag-item-rarity rarity-${fortune.rarity}`;
+        }
+        if (desc) desc.textContent = fortune.description;
+        if (dpcContainer) dpcContainer.style.display = 'none';
+
+        // Render fortune stats with proper formatting
+        if (statsContainer && fortune.stats && this.fortuneFactory) {
+            statsContainer.innerHTML = '';
+            fortune.stats.forEach(stat => {
+                const line = document.createElement('div');
+                line.className = `dogebag-stat-line ${stat.isCore ? 'stat-core' : 'stat-cosmetic'}`;
+                line.textContent = this.fortuneFactory.formatStatForDisplay(stat);
+                statsContainer.appendChild(line);
+            });
+        }
+
+        if (actions) {
+            actions.innerHTML = `
+                <button class="dogebag-action-btn loot-btn" onclick="dogebagLoot()">LOOT</button>
+            `;
+        }
+
+        this._dogebagPendingItem = { type: 'fortune', item: fortune };
+    }
+
+    /**
+     * Renders coin reveal in dogebag modal
+     */
+    _renderDogebagCoins(amount) {
+        const icon = document.getElementById('dogebag-item-icon');
+        const name = document.getElementById('dogebag-item-name');
+        const rarity = document.getElementById('dogebag-item-rarity');
+        const desc = document.getElementById('dogebag-item-description');
+        const dpcContainer = document.getElementById('dogebag-item-dpc');
+        const statsContainer = document.getElementById('dogebag-item-stats');
+        const actions = document.getElementById('dogebag-actions');
+
+        if (icon) icon.src = 'assets/general/dogecoin_70x70.png';
+        if (name) {
+            name.textContent = this.formatNumber(amount) + ' Dogecoins';
+            name.className = 'dogebag-item-name dogebag-coin-reveal';
+        }
+        if (rarity) {
+            rarity.textContent = '';
+            rarity.className = 'dogebag-item-rarity';
+        }
+        if (desc) desc.textContent = 'A generous stash of dogecoins!';
+        if (dpcContainer) dpcContainer.style.display = 'none';
+        if (statsContainer) statsContainer.innerHTML = '';
+
+        if (actions) {
+            actions.innerHTML = `
+                <button class="dogebag-action-btn loot-btn" onclick="dogebagLoot()">LOOT</button>
+            `;
+        }
+
+        this._dogebagPendingItem = { type: 'coins', amount };
+    }
+
+    /**
+     * Handles EQUIP action from dogebag modal (pickaxes only)
+     */
+    dogebagEquip() {
+        const pending = this._dogebagPendingItem;
+        if (!pending || pending.type !== 'pickaxe') return;
+
+        this.addPickaxeToInventory(pending.item);
+        this.equipPickaxe(pending.item.instanceId);
+        this.playSound('receivePickaxe');
+        this.closeDogebagModal();
+    }
+
+    /**
+     * Handles LOOT action from dogebag modal
+     */
+    dogebagLoot() {
+        const pending = this._dogebagPendingItem;
+        if (!pending) return;
+
+        if (pending.type === 'pickaxe') {
+            this.addPickaxeToInventory(pending.item);
+            this.showNotification(`${pending.item.name} added to inventory!`);
+            this.playSound('receivePickaxe');
+        } else if (pending.type === 'fortune') {
+            this.fortuneInventory.push(pending.item);
+            this.setLatestObtainedFortune(pending.item);
+            this.recalculatePlayerStats();
+            this.showNotification(`${pending.item.name} fortune acquired!`);
+            this.playSound('longSparkle');
+        } else if (pending.type === 'coins') {
+            this.dogecoins += pending.amount;
+            this.totalMined += pending.amount;
+            this.showNotification(`+${this.formatNumber(pending.amount)} Dogecoins!`);
+            this.updateUI();
+            this.playSound('receiveStash');
+        }
+
+        this.closeDogebagModal();
+    }
+
+    /**
+     * Closes the dogebag modal with a fade-out on the content
+     */
+    closeDogebagModal() {
+        const modal = document.getElementById('dogebag-modal');
+        if (!modal) {
+            this._currentDogebag = null;
+            this._dogebagPendingItem = null;
+            return;
+        }
+
+        const modalContent = modal.querySelector('.dogebag-modal-content');
+        if (modalContent) {
+            // Strip the drop-in animation (its fill-mode:both pins opacity:1)
+            modalContent.classList.remove('dogebag-dropping');
+            // Force the browser to flush the animation removal
+            void modalContent.offsetWidth;
+            // Fade the content out and slide up via inline transition
+            modalContent.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'translateY(-60px)';
+        }
+
+        // After the content fades, dismiss the backdrop
+        // (We leave the inline opacity at 0 so it doesn't pop back in before the backdrop finishes fading.
+        // It gets cleaned up on the next open.)
+        setTimeout(() => {
+            modal.classList.remove('active');
+        }, 250);
+
+        this._currentDogebag = null;
+        this._dogebagPendingItem = null;
+    }
+
+    // ========== END LOOT & DOGEBAG SYSTEM ==========
+
+    // ========== PICKAXE & FORTUNE SYSTEM ==========
+
+    /**
+     * Gets the currently equipped pickaxe instance
+     */
+    getEquippedPickaxe() {
+        return this.pickaxeInventory.find(p => p.instanceId === this.equippedPickaxeId) || this.defaultPickaxe;
+    }
+
+    /**
+     * Opens the pickaxe selection modal
+     */
+    openPickaxeModal() {
+        const modal = document.getElementById('pickaxe-modal');
+        if (modal) {
+            modal.classList.add('active');
+            this._bindInventoryToolbar('pickaxe');
+            this.renderPickaxeGrid();
+            this.playSound('inventoryOpen');
+        }
+    }
+
+    /**
+     * Closes the pickaxe selection modal
+     */
+    closePickaxeModal() {
+        const modal = document.getElementById('pickaxe-modal');
+        if (modal) {
+            modal.classList.remove('active');
+            this.playSound('inventoryClose');
+        }
+    }
+
+    /**
+     * Opens the fortune selection modal
+     */
+    openFortuneModal() {
+        const modal = document.getElementById('fortune-modal');
+        if (modal) {
+            modal.classList.add('active');
+            this._bindInventoryToolbar('fortune');
+            this.renderFortuneGrid();
+            this.playSound('inventoryOpen');
+        }
+    }
+
+    /**
+     * Closes the fortune selection modal
+     */
+    closeFortuneModal() {
+        const modal = document.getElementById('fortune-modal');
+        if (modal) {
+            modal.classList.remove('active');
+            this.playSound('inventoryClose');
+        }
+    }
+
+    /**
+     * Renders the pickaxe cards in the modal grid
+     */
+    renderPickaxeGrid() {
+        const grid = document.getElementById('pickaxe-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        const filtered = this._getFilteredInventory('pickaxe', this.pickaxeInventory);
+        this._updateInventoryCount('pickaxe', filtered.length, this.pickaxeInventory.length);
+
+        filtered.forEach(pickaxe => {
+            const card = document.createElement('div');
+            card.className = `item-card rarity-${pickaxe.rarity}`;
+            if (this.equippedPickaxeId === pickaxe.instanceId) {
+                card.classList.add('equipped');
+            }
+
+            const quickStatsHtml = this._buildQuickStatsHtml('pickaxe', pickaxe);
+
+            // Build stat lines HTML
+            let statsHtml = '';
+            if (pickaxe.stats && pickaxe.stats.length > 0 && this.pickaxeFactory) {
+                statsHtml = '<div class="item-card-stats-list">';
+                pickaxe.stats.forEach(stat => {
+                    const formatted = this.pickaxeFactory.formatStatForDisplay(stat);
+                    const colorClass = stat.isCore ? 'stat-core' : 'stat-cosmetic';
+                    statsHtml += `<div class="item-card-stat-line ${colorClass}">${formatted}</div>`;
+                });
+                statsHtml += '</div>';
+            }
+
+            card.innerHTML = `
+                <img src="${pickaxe.idleSprite}" alt="${pickaxe.name}" class="item-card-icon">
+                <div class="item-card-name">${pickaxe.name}</div>
+                <div class="item-card-rarity">${pickaxe.rarity}</div>
+                ${quickStatsHtml}
+                <div class="item-card-description">${pickaxe.description}</div>
+                <div class="item-card-stat">
+                    <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                    <span>${pickaxe.baseDPC}</span>
+                </div>
+                ${statsHtml}
+            `;
+
+            card.addEventListener('click', () => this.equipPickaxe(pickaxe.instanceId));
+            grid.appendChild(card);
+        });
+    }
+
+    /**
+     * Renders the fortune cards in the modal grid
+     */
+    renderFortuneGrid() {
+        const grid = document.getElementById('fortune-grid');
+        if (!grid) return;
+
+        if (this.fortuneInventory.length === 0) {
+            grid.innerHTML = '<p class="no-items-message">No fortunes available yet!</p>';
+            this._updateInventoryCount('fortune', 0, 0);
+            return;
+        }
+
+        const filtered = this._getFilteredInventory('fortune', this.fortuneInventory);
+        this._updateInventoryCount('fortune', filtered.length, this.fortuneInventory.length);
+
+        grid.innerHTML = '';
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p class="no-items-message">No matching fortunes.</p>';
+            return;
+        }
+
+        filtered.forEach(fortune => {
+            const card = document.createElement('div');
+            card.className = `item-card rarity-${fortune.rarity}`;
+
+            const quickStatsHtml = this._buildQuickStatsHtml('fortune', fortune);
+
+            let statsHtml = '';
+            if (fortune.stats && Array.isArray(fortune.stats)) {
+                statsHtml = '<div class="item-card-stats-list">';
+                fortune.stats.forEach(stat => {
+                    const cssClass = stat.isCore ? 'stat-core' : 'stat-cosmetic';
+                    const formatted = this.fortuneFactory
+                        ? this.fortuneFactory.formatStatForDisplay(stat)
+                        : `${stat.value} ${stat.displayName}`;
+                    statsHtml += `<div class="item-card-stat-line ${cssClass}">${formatted}</div>`;
+                });
+                statsHtml += '</div>';
+            }
+
+            card.innerHTML = `
+                <img src="${fortune.sprite || 'assets/general/dogecoin_70x70.png'}" alt="${fortune.name}" class="item-card-icon">
+                <div class="item-card-name">${fortune.name}</div>
+                <div class="item-card-rarity">${fortune.rarity}</div>
+                ${quickStatsHtml}
+                <div class="item-card-description">${fortune.description}</div>
+                ${statsHtml}
+            `;
+
+            grid.appendChild(card);
+        });
+    }
+
+    _buildQuickStatsHtml(kind, item) {
+        if (!item) return '';
+
+        const lines = [];
+
+        if (kind === 'pickaxe') {
+            const dpc = typeof item.baseDPC === 'number' ? item.baseDPC : null;
+            if (dpc !== null) {
+                lines.push(
+                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.png" alt="DPC" class="quickstat-dogecoin-icon"><strong>${dpc}</strong></span>`
+                );
+            }
+        }
+
+        const rawStats = Array.isArray(item.stats) ? item.stats : [];
+        const core = rawStats.filter(s => s && s.isCore);
+        const maxLines = kind === 'pickaxe' ? 2 : 3;
+
+        for (const stat of core) {
+            if (lines.length >= (kind === 'pickaxe' ? 1 + maxLines : maxLines)) break;
+            let formatted = '';
+            if (kind === 'pickaxe' && this.pickaxeFactory) {
+                formatted = this.pickaxeFactory.formatStatForDisplay(stat);
+            } else if (kind === 'fortune' && this.fortuneFactory) {
+                formatted = this.fortuneFactory.formatStatForDisplay(stat);
+            } else {
+                formatted = `${stat.value} ${stat.displayName || stat.name || ''}`.trim();
+            }
+            if (!formatted) continue;
+            // Compact: strip excessive whitespace
+            lines.push(formatted.replace(/\s+/g, ' '));
+        }
+
+        if (lines.length === 0) return '';
+
+        const html = lines.map(l => `<div class="item-card-quickstat">${l}</div>`).join('');
+        return `<div class="item-card-quickstats">${html}</div>`;
+    }
+
+    _bindInventoryToolbar(kind) {
+        if (!kind || this._inventoryUiBound[kind]) return;
+
+        const search = document.getElementById(`${kind}-search`);
+        const rarity = document.getElementById(`${kind}-rarity`);
+        const sort = document.getElementById(`${kind}-sort`);
+        if (!search || !rarity || !sort) return;
+
+        // Initialize UI controls from state
+        const st = this._inventoryUi[kind];
+        search.value = st.search || '';
+        rarity.value = st.rarity || '';
+        sort.value = st.sort || 'newest';
+
+        const apply = () => {
+            const next = this._inventoryUi[kind];
+            next.search = (search.value || '').trim();
+            next.rarity = rarity.value || '';
+            next.sort = sort.value || 'newest';
+            if (kind === 'pickaxe') this.renderPickaxeGrid();
+            if (kind === 'fortune') this.renderFortuneGrid();
+        };
+
+        search.addEventListener('input', apply);
+        rarity.addEventListener('change', apply);
+        sort.addEventListener('change', apply);
+
+        this._inventoryUiBound[kind] = true;
+    }
+
+    _updateInventoryCount(kind, shown, total) {
+        const el = document.getElementById(`${kind}-count`);
+        if (!el) return;
+        if (!total) {
+            el.textContent = '';
+            return;
+        }
+        const label = kind === 'pickaxe' ? 'Pickaxes' : 'Fortunes';
+        const found = shown === total ? `${total}` : `${shown}/${total}`;
+        el.textContent = `Found ${found}/??? ${label}`;
+    }
+
+    _getFilteredInventory(kind, list) {
+        const st = this._inventoryUi[kind] || { search: '', rarity: '', sort: 'newest' };
+        const q = (st.search || '').toLowerCase();
+        const rarity = st.rarity || '';
+
+        let out = Array.isArray(list) ? list.slice() : [];
+
+        if (q) {
+            out = out.filter(it => (it?.name || '').toLowerCase().includes(q));
+        }
+        if (rarity) {
+            out = out.filter(it => (it?.rarity || '').toLowerCase() === rarity);
+        }
+
+        const rarityRank = { common: 1, improved: 2, rare: 3, epic: 4, legendary: 5 };
+        const byName = (a, b) => (a?.name || '').localeCompare((b?.name || ''), undefined, { sensitivity: 'base' });
+        const byRarityDesc = (a, b) => (rarityRank[(b?.rarity || '').toLowerCase()] || 0) - (rarityRank[(a?.rarity || '').toLowerCase()] || 0) || byName(a, b);
+
+        switch (st.sort) {
+            case 'nameAsc':
+                out.sort(byName);
+                break;
+            case 'rarityDesc':
+                out.sort(byRarityDesc);
+                break;
+            case 'dpcDesc':
+                if (kind === 'pickaxe') {
+                    out.sort((a, b) => (b?.baseDPC || 0) - (a?.baseDPC || 0) || byRarityDesc(a, b));
+                }
+                break;
+            case 'newest':
+            default:
+                // Inventory arrays append newest; render newest first
+                out.reverse();
+                break;
+        }
+
+        return out;
+    }
+
+    /**
+     * Equips a pickaxe by instanceId
+     */
+    equipPickaxe(instanceId) {
+        const pickaxe = this.pickaxeInventory.find(p => p.instanceId === instanceId);
+        if (!pickaxe) return;
+
+        this.equippedPickaxeId = instanceId;
+        this.renderPickaxeGrid();
+        this.recalculatePlayerStats();
+
+        // Update pickaxe sprite in game
+        const pickaxeImg = document.getElementById('pickaxe');
+        if (pickaxeImg) {
+            pickaxeImg.src = pickaxe.idleSprite;
+
+            // Apply per-sprite scale/position adjustments
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            const spritePath = pickaxe.idleSprite || '';
+            if (spritePath.includes('cleaver')) {
+                pickaxeImg.classList.add('pickaxe-scale-half');
+            }
+            // Large weapons that need upscaling + repositioning
+            const largeWeaponPatterns = [
+                'axe', 'hammer', 'sword', 'drill', 'shotgun', 'm4.',
+                'rocket', 'nuke', 'staff', 'scepter', 'gpu', 'sligpu',
+                'fryingpan', 'bigboot', 'eguitar', 'cod.', 'felps',
+                'barbell', 'poolnoodle', 'record'
+            ];
+            if (largeWeaponPatterns.some(p => spritePath.includes(p))) {
+                pickaxeImg.classList.add('pickaxe-shift-right');
+            }
+        }
+
+        this.playSound('pickup');
+
+        // Update pickaxe button preview
+        const btnPreview = document.getElementById('pickaxe-btn-preview');
+        if (btnPreview) {
+            btnPreview.src = pickaxe.idleSprite;
+        }
+    }
+
+    /**
+     * Updates "latest obtained fortune" state + button preview.
+     * This is intentionally separate from fortuneInventory ordering.
+     */
+    setLatestObtainedFortune(fortune) {
+        if (!fortune) return;
+        const sprite = fortune.sprite || '';
+        const name = fortune.name || '';
+        if (!sprite && !name) return;
+
+        this.latestObtainedFortune = { name, sprite };
+
+        const img = document.getElementById('fortune-btn-preview');
+        if (img) {
+            img.src = sprite || '';
+            img.alt = name ? `${name} (Fortune)` : 'Fortunes';
+            if (sprite) {
+                img.classList.remove('fortune-icon-placeholder');
+                img.style.visibility = '';
+            } else {
+                img.classList.add('fortune-icon-placeholder');
+                img.style.visibility = 'hidden';
+            }
+        }
+    }
+
+    /**
+     * Adds a new pickaxe to the inventory
+     */
+    addPickaxeToInventory(pickaxe) {
+        this.pickaxeInventory.push(pickaxe);
+        // Update maxDPC tracker
+        if (pickaxe.baseDPC > this.maxPickaxeDPC) {
+            this.maxPickaxeDPC = pickaxe.baseDPC;
+        }
+    }
+
+    /**
+     * Gets the current DPC based on equipped pickaxe and player stats
+     */
+    getPickaxeDPC() {
+        const pickaxe = this.getEquippedPickaxe();
+        return pickaxe ? pickaxe.baseDPC * this.playerStats.dpcMultiplier : 1;
+    }
+
+    /**
+     * Recalculates all player stats from equipped pickaxe + all fortunes
+     */
+    recalculatePlayerStats() {
+        // Reset to base values
+        this.playerStats = {
+            luck: 0,
+            lootFind: 0,
+            wow: 0,
+            critChance: 0.05, // 5% base
+            dpcMultiplier: 1,
+            helperDpsMultiplier: 1,
+            rocketCostReduction: 0
+        };
+
+        // Add equipped pickaxe core stats
+        const equipped = this.getEquippedPickaxe();
+        if (equipped && equipped.stats) {
+            equipped.stats.forEach(stat => {
+                if (!stat.isCore) return;
+                this._applyStatToPlayer(stat);
+            });
+        }
+
+        // Add all fortune stats (array-based format matching pickaxes)
+        this.fortuneInventory.forEach(fortune => {
+            if (fortune.stats && Array.isArray(fortune.stats)) {
+                fortune.stats.forEach(stat => {
+                    if (!stat.isCore) return;
+                    this._applyStatToPlayer(stat);
+                });
+            }
+        });
+
+        // Staff of Sundoge: apply helper DPS boost
+        if (equipped && equipped.isStaffOfSundoge) {
+            // Find the +10% DPS stat
+            const dpsStat = equipped.stats?.find(s => s.name === 'dps');
+            if (dpsStat) {
+                this.playerStats.helperDpsMultiplier += dpsStat.value;
+            }
+        }
+    }
+
+    /**
+     * Applies a single core stat from a pickaxe to player stats
+     */
+    _applyStatToPlayer(stat) {
+        const statMap = {
+            'luck': 'luck',
+            'lootfind': 'lootFind',
+            'wow': 'wow',
+            'critchance': 'critChance',
+            'criticalchance': 'critChance',
+            'dpcmultiplier': 'dpcMultiplier',
+            'helperdpsmultiplier': 'helperDpsMultiplier',
+            'helperdps': 'helperDpsMultiplier',
+            'rocketcostreduction': 'rocketCostReduction',
+            'dps': 'helperDpsMultiplier',
+            'higherground': 'luck' // Higher Ground maps to luck
+        };
+
+        const playerKey = statMap[stat.name];
+        if (!playerKey) return;
+
+        if (stat.indicator === '+%') {
+            // Percentage stats: value is already in percent (e.g., 15.5 = 15.5%)
+            // Convert to multiplier fraction for stats that use it
+            if (playerKey === 'critChance') {
+                this.playerStats[playerKey] += stat.value / 100;
+            } else if (playerKey === 'dpcMultiplier' || playerKey === 'helperDpsMultiplier') {
+                this.playerStats[playerKey] += stat.value / 100;
+            } else {
+                this.playerStats[playerKey] += stat.value;
+            }
+        } else if (stat.indicator === '+') {
+            this.playerStats[playerKey] += stat.value;
+        } else if (stat.indicator === '-') {
+            // Reduction stats are beneficial, so still add
+            this.playerStats[playerKey] += stat.value;
+        }
+    }
+
+    // ========== END PICKAXE & FORTUNE SYSTEM ==========
 
     playDogeIntro(force = false) {
         if ((this.isTransitioning || this.isCutscenePlaying) && !force) return;
@@ -660,12 +2214,14 @@ class DogeMinerGame {
             particle.style.setProperty('--dy', dy + 'px');
 
             container.appendChild(particle);
+            this.activeParticleCount++;
 
             // Remove particle after animation
             setTimeout(() => {
                 if (particle.parentNode) {
                     particle.parentNode.removeChild(particle);
                 }
+                this.activeParticleCount = Math.max(0, this.activeParticleCount - 1);
             }, 600); // Slightly faster animation
         }
     }
@@ -682,7 +2238,7 @@ class DogeMinerGame {
     }
 
 
-    createFloatingCoin(amount, event = null) {
+    createFloatingCoin(amount, event = null, isCrit = false) {
         // Get the floating coins container
         const container = document.getElementById('floating-coins');
         if (!container) return;
@@ -711,21 +2267,21 @@ class DogeMinerGame {
         coin.style.position = 'absolute';
         coin.style.left = startX + 'px';
         coin.style.top = startY + 'px';
-        coin.style.width = '35px';
-        coin.style.height = '35px';
+        coin.style.width = isCrit ? '45px' : '35px';
+        coin.style.height = isCrit ? '45px' : '35px';
         coin.style.transform = 'translate(-50%, -50%)';
         coin.style.zIndex = '20';
 
         // Create +amount text
         const text = document.createElement('div');
         text.className = 'dogecoin-text';
-        text.textContent = '+' + amount;
+        text.textContent = isCrit ? 'CRIT! +' + amount : '+' + amount;
         text.style.position = 'absolute';
         text.style.left = (startX + 40) + 'px';
         text.style.top = startY + 'px';
-        text.style.color = 'rgb(180, 155, 60)';
+        text.style.color = isCrit ? 'rgb(255, 140, 0)' : 'rgb(180, 155, 60)';
         text.style.fontWeight = '900';
-        text.style.fontSize = '20px';
+        text.style.fontSize = isCrit ? '26px' : '20px';
         text.style.fontFamily = 'DogeSans, sans-serif';
         text.style.textShadow = '2px 2px 0px #ffffff, -2px -2px 0px #ffffff, 2px -2px 0px #ffffff, -2px 2px 0px #ffffff';
         text.style.transform = 'translate(-50%, -50%)';
@@ -736,29 +2292,32 @@ class DogeMinerGame {
         container.appendChild(text);
 
         // Animate coin
-        coin.animate([
+        const coinAnim = coin.animate([
             { transform: 'translate(-50%, -50%) scale(1.2)', opacity: 1 },
             { transform: 'translate(-50%, -150px) scale(0.4)', opacity: 0 }
         ], {
             duration: 1500,
-            easing: 'ease-out',
-            fill: 'forwards'
+            easing: 'ease-out'
         });
 
         // Animate text
-        text.animate([
+        const textAnim = text.animate([
             { transform: 'translate(-50%, -50%)', opacity: 1 },
             { transform: 'translate(-50%, -150px)', opacity: 0 }
         ], {
             duration: 1500,
-            easing: 'ease-out',
-            fill: 'forwards'
+            easing: 'ease-out'
         });
 
-        // Remove after animation
+        this.activeEffectCount++;
+
+        // Remove after animation — cancel animation to free memory
         setTimeout(() => {
+            coinAnim.cancel();
+            textAnim.cancel();
             if (coin.parentNode) coin.parentNode.removeChild(coin);
             if (text.parentNode) text.parentNode.removeChild(text);
+            this.activeEffectCount = Math.max(0, this.activeEffectCount - 1);
         }, 1500);
     }
 
@@ -2143,6 +3702,7 @@ class DogeMinerGame {
             hasMoved = false;
             pickedUpHelper = null;
             helperSprite.style.cursor = 'grabbing';
+            this.playSound('grabHelper');
 
             // Stop mining animation
             this.stopHelperMining(placedHelper);
@@ -2720,25 +4280,59 @@ class DogeMinerGame {
 
     startGameLoop() {
         this.isPlaying = true;
+        this.lastGameLoopTime = performance.now();
 
-        // DPS updates every second for better performance
-        this.dpsInterval = setInterval(() => {
-            if (this.isPlaying && this.dps > 0) {
-                this.dogecoins += this.dps;
-                this.totalMined += this.dps;
-                this.updateUI();
-            }
-        }, 1000);
+        // Read value update rate: 0 (instant), 100, 1000, 5000
+        const savedRate = localStorage.getItem('valueUpdateRate');
+        this.dpsUpdateRate = savedRate ? parseInt(savedRate, 10) : 1000;
 
-        const gameLoop = () => {
+        this.setupDpsInterval();
+
+        const gameLoop = (timestamp) => {
+            if (!this.lastGameLoopTime) this.lastGameLoopTime = timestamp;
+            const dt = timestamp - this.lastGameLoopTime;
+            this.lastGameLoopTime = timestamp;
+
             if (this.isPlaying) {
+                // If set to instant (0), add continuous DPS per frame
+                if (this.dpsUpdateRate === 0 && this.dps > 0) {
+                    const dpsTick = this.dps * (dt / 1000);
+                    this.dogecoins += dpsTick;
+                    this.totalMined += dpsTick;
+                    this.updateUI(true); // skip shop prices update per frame for performance, unless full UI is refreshed
+                }
+
                 this.updateHelpers();
             }
 
             requestAnimationFrame(gameLoop);
         };
 
-        gameLoop();
+        requestAnimationFrame(gameLoop);
+    }
+
+    setupDpsInterval() {
+        if (this.dpsInterval) {
+            clearInterval(this.dpsInterval);
+            this.dpsInterval = null;
+        }
+
+        if (this.dpsUpdateRate > 0) {
+            this.dpsInterval = setInterval(() => {
+                if (this.isPlaying && this.dps > 0) {
+                    const multiplier = this.dpsUpdateRate / 1000;
+                    this.dogecoins += this.dps * multiplier;
+                    this.totalMined += this.dps * multiplier;
+                    this.updateUI();
+                }
+            }, this.dpsUpdateRate);
+        }
+    }
+
+    setValueUpdateRate(ms) {
+        this.dpsUpdateRate = ms;
+        localStorage.setItem('valueUpdateRate', ms);
+        this.setupDpsInterval();
     }
 
     startBackgroundRotation() {
@@ -3231,13 +4825,6 @@ class DogeMinerGame {
             }
         }
         return false;
-    }
-
-    resetGame() {
-        if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
-            localStorage.removeItem('dogeminer_save');
-            location.reload();
-        }
     }
 
     getHelperData(helperType) {

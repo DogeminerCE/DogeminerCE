@@ -1,0 +1,12 @@
+"NAME"
+Golden Meat Cleaver
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+A meat cleaver made out of gold. Quite unusual, possibly a collectors item.
+
+"STATS"
++% Wow
++ Discipline

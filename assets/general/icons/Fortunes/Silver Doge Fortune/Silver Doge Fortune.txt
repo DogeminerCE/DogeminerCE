@@ -1,0 +1,12 @@
+NAME:
+Silver Doge Fortune
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++ Mystery Bonus

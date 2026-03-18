@@ -1,0 +1,13 @@
+NAME:
+Ring of D-struction
+
+RARITY:
+Rare
+
+DESCRIPTION:
+More than meets the eye.
+
+STATS:
++ DPS
++% Wow
++ Mystery Bonus

@@ -1,0 +1,13 @@
+"NAME"
+Pinkest Candy Cane
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+The candy cane is too special to lick. Use gently, can hug.
+
+"STATS"
++% Luck
++% Wow
++ Holiday Spirit

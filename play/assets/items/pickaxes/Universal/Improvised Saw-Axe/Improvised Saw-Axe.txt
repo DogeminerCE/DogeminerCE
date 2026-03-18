@@ -1,0 +1,11 @@
+"NAME"
+Improvised Saw Axe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+An improvised axe made from a baseball bat and a round saw.
+
+"STATS"
++% Critical Chance

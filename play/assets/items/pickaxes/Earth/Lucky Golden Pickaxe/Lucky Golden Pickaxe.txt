@@ -1,0 +1,12 @@
+"NAME"
+Lucky Golden Pickaxe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Extra shiny. Much wow.
+
+"STATS"
++% Wow
++ Karma

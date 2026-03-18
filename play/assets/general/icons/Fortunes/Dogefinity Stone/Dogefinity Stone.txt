@@ -1,0 +1,13 @@
+NAME:
+Dogefinity Stone
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+You feel so well just holding it.
+
+STATS:
++% Luck
++% Loot Find
++% Wow

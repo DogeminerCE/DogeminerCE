@@ -1,0 +1,14 @@
+"NAME"
+Hammer of Boom
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+Forged in the smoldering depths of Doge Mountain.
+
+"STATS"
++ DPS
++% Loot Find
++% Luck
++ Happiness

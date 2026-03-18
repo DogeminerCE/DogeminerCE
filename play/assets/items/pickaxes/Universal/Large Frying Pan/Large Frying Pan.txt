@@ -1,0 +1,13 @@
+"NAME"
+Large Frying Pan
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+This frying pan looks sturdy enough to smack just about anything. Do not smack self.
+
+"STATS"
++% Wow
++ DPS
++ Cooking Skill

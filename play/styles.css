@@ -793,7 +793,730 @@ body {
     background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
     /* Gradient with bottom color taking up more space */
     border: 1px solid #d4af37;
+    position: relative;
 }
+
+/* Switcher Buttons (Pickaxes & Fortunes) */
+#switcher-buttons {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    z-index: 25;
+}
+
+.switcher-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease;
+    position: relative;
+}
+
+.switcher-btn:hover {
+    transform: scale(1.1);
+}
+
+.switcher-btn:active {
+    transform: scale(0.95);
+}
+
+.switcher-btn-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid #e8a020;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.switcher-btn-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.fortune-icon-placeholder {
+    visibility: hidden;
+}
+
+.switcher-label {
+    font-family: 'DogeSans', saCns-serif;
+    font-size: 9px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    -webkit-text-stroke: 2px #a06820;
+    paint-order: stroke fill;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    margin-top: -14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Switcher Modal (Pickaxe & Fortune) */
+.switcher-modal {
+    display: flex;           /* Always flex — show/hide via visibility + transitions */
+    position: absolute;
+    top: 0;
+    /* Center: (1200px container - 1144px panels) / 2 = 28px offset */
+    left: 28px;
+    /* 630px left + 4px gap + 510px right = 1144px total */
+    width: 1144px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0);  /* Starts transparent */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    visibility: hidden;
+    pointer-events: none;
+    /* Closing transitions: backdrop fades out, then visibility flips at the end */
+    transition: background 0.3s ease,
+               visibility 0s linear 0.3s;
+}
+
+.switcher-modal.active {
+    background: rgba(255, 255, 255, 0.75);  /* Faded-in white backdrop */
+    visibility: visible;
+    pointer-events: auto;
+    /* Opening transitions: visibility flips immediately, backdrop fades in */
+    transition: background 0.3s ease,
+               visibility 0s linear 0s;
+}
+
+/* ---- Inventory open/close animation (Pickaxe & Fortune modals) ---- */
+/* Expands from top-left (where the switcher buttons sit), like un-minimising a window */
+#pickaxe-modal > .switcher-modal-content,
+#fortune-modal > .switcher-modal-content {
+    transform: scale(0.05);
+    opacity: 0;
+    transform-origin: 5% 5%;   /* Near the top-left corner */
+    /* Closing curves — slightly faster with an ease-in feel */
+    transition: transform 0.25s cubic-bezier(0.5, 0, 0.75, 0),
+               opacity 0.15s ease;
+}
+
+#pickaxe-modal.active > .switcher-modal-content,
+#fortune-modal.active > .switcher-modal-content {
+    transform: scale(1);
+    opacity: 1;
+    /* Opening curves — bouncy overshoot for a satisfying pop-in */
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+               opacity 0.25s ease;
+}
+
+.switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
+    border: 3px solid #b8860b;
+    border-radius: 15px;
+    padding: 0 25px 20px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+/* Inventory toolbar (Pickaxes/Fortunes) */
+.inventory-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 14px 25px 12px;
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
+    border-bottom: 1px solid rgba(184, 134, 11, 0.35);
+    margin: 0 -25px 12px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: left;
+}
+
+.inventory-header-left .modal-title {
+    margin: 0 0 2px 0;
+}
+
+.inventory-count {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    color: rgba(90, 74, 42, 0.75);
+    margin-top: 4px;
+}
+
+.inventory-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0;
+}
+
+.inventory-toolbar-right {
+    min-width: 320px;
+}
+
+.inventory-search {
+    flex: 1 1 220px;
+    max-width: 340px;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 2px solid rgba(184, 134, 11, 0.55);
+    background: rgba(255, 255, 255, 0.7);
+    color: #5a4a2a;
+    outline: none;
+}
+
+.inventory-search:focus {
+    border-color: #b8860b;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.inventory-select {
+    flex: 0 0 auto;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 2px solid rgba(184, 134, 11, 0.55);
+    background: rgba(255, 255, 255, 0.7);
+    color: #5a4a2a;
+    outline: none;
+}
+
+.inventory-select:focus {
+    border-color: #b8860b;
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.modal-title {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 32px;
+    color: #5a4a2a;
+    text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.5);
+    margin-bottom: 5px;
+}
+
+.modal-subtitle {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    color: #7a6a4a;
+    margin-bottom: 20px;
+}
+
+.switcher-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Pickaxe/Fortune Card */
+.item-card {
+    width: 140px;
+    padding: 15px 10px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(240, 235, 220, 0.9));
+    border: 3px solid #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.item-card.equipped {
+    border-color: #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Rarity Colors */
+.item-card.rarity-common {
+    border-color: #888888;
+    background: linear-gradient(to bottom, rgba(220, 220, 220, 0.9), rgba(200, 200, 200, 0.9));
+}
+
+.item-card.rarity-improved {
+    border-color: #6b8e23;
+    background: linear-gradient(to bottom, rgba(200, 230, 200, 0.9), rgba(180, 210, 180, 0.9));
+}
+
+.item-card.rarity-rare {
+    border-color: #4169e1;
+    background: linear-gradient(to bottom, rgba(200, 210, 240, 0.9), rgba(180, 190, 220, 0.9));
+}
+
+.item-card.rarity-epic {
+    border-color: #9932cc;
+    background: linear-gradient(to bottom, rgba(230, 200, 240, 0.9), rgba(210, 180, 220, 0.9));
+}
+
+.item-card.rarity-legendary {
+    border-color: #ffa500;
+    background: linear-gradient(to bottom, rgba(255, 240, 200, 0.9), rgba(255, 220, 150, 0.9));
+}
+
+.item-card-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 10px;
+    display: block;
+    object-fit: contain;
+}
+
+.item-card-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #4a3a2a;
+    margin-bottom: 3px;
+}
+
+.item-card-rarity {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    color: #6a5a4a;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.item-card-quickstats {
+    display: none; /* Mobile-only: shown via media query, hidden on desktop */
+    flex-direction: column;
+    gap: 2px;
+    margin: -2px 0 8px;
+    padding: 6px 6px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(184, 134, 11, 0.25);
+}
+
+.item-card-quickstat {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    line-height: 1.2;
+    color: rgba(90, 74, 42, 0.95);
+}
+
+.item-card-quickstat strong {
+    font-weight: 900;
+}
+
+.quickstat-dpc {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.quickstat-dogecoin-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
+
+/* Workaround: DogeSans can lack true bold weights in some builds.
+   Simulate bold via subtle stroke + multi-directional shadow. */
+.quickstat-dpc strong {
+    font-size: 12px; /* +2pts vs .item-card-quickstat (10px) */
+    font-weight: 900;
+    color: rgba(90, 74, 42, 0.98);
+    -webkit-text-stroke: 0.35px rgba(90, 74, 42, 0.85);
+    text-shadow:
+        0.6px 0 rgba(90, 74, 42, 0.85),
+        -0.6px 0 rgba(90, 74, 42, 0.85),
+        0 0.6px rgba(90, 74, 42, 0.85),
+        0 -0.6px rgba(90, 74, 42, 0.85);
+}
+
+.item-card-description {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    font-style: italic;
+    color: #7a6a5a;
+    margin-bottom: 10px;
+}
+
+/* DPC Stat (Pickaxes only) */
+.item-card-stat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.item-card-stat img {
+    width: 18px;
+    height: 18px;
+}
+
+.item-card-stat span {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #5a4a2a;
+}
+
+/* Stat Lines List */
+.item-card-stats-list {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-card-stat-line {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    line-height: 1.3;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.item-card-stat-line.stat-core {
+    color: #5a4a2a;
+    font-weight: 600;
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.item-card-stat-line.stat-cosmetic {
+    color: #8a7a6a;
+    font-style: italic;
+}
+
+.modal-close-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #5a4a2a;
+    /* Match in-game two-tone buttons (hard split, no soft gradient) */
+    background: linear-gradient(to bottom, #ffe7a4 0 50%, #f1c35a 50% 100%);
+    border: 2px solid #c78b2b;
+    border-radius: 8px;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 0 rgba(80, 50, 0, 0.18);
+}
+
+.modal-close-btn:hover {
+    background: linear-gradient(to bottom, #fff0bf 0 50%, #f6d07c 50% 100%);
+    transform: scale(1.05);
+}
+
+.no-items-message {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    color: #7a6a5a;
+    font-style: italic;
+    padding: 30px;
+}
+
+/* ========== DOGEBAG SYSTEM ========== */
+
+/* In-world dogebag element */
+.dogebag-drop {
+    position: absolute;
+    width: 95px;  /* Increased by ~5% from 90px */
+    height: 95px; /* Increased by ~5% from 90px */
+    cursor: pointer;
+    z-index: 15;
+    filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.8)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.5));
+    animation: coinPileDisperse 0.4s ease-out forwards;
+    transition: transform 0.15s ease;
+}
+
+.dogebag-drop:hover {
+    transform: scale(1.18); /* Slightly increased to map well with new base scale (was 1.15) */
+    filter: drop-shadow(0 0 6px rgba(76, 175, 80, 1)) drop-shadow(0 0 12px rgba(76, 175, 80, 0.7));
+}
+
+.dogebag-img-wrapper {
+    width: 100%;
+    height: 100%;
+    animation: rocketFloat 2.4s ease-in-out infinite;
+}
+
+.dogebag-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+@keyframes dogebagBob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* Drop-in from above: swoops down and bounces into place */
+@keyframes dogebagDropIn {
+    0%   { transform: translateY(-160px); opacity: 0; }
+    60%  { transform: translateY(12px);   opacity: 1; }
+    80%  { transform: translateY(-5px);   opacity: 1; }
+    100% { transform: translateY(0);      opacity: 1; }
+}
+
+/* Dogebag Modal Content – no container box, floats over the white backdrop */
+.dogebag-modal-content {
+    text-align: center;
+    max-width: 380px;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    padding-top: 20px !important;
+}
+
+/* Drop-in animation class — added by JS each time the modal opens */
+.dogebag-modal-content.dogebag-dropping {
+    animation: dogebagDropIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Make subtitle readable over the translucent backdrop */
+.dogebag-modal-content .modal-subtitle {
+    color: #4a3a1a;
+    text-shadow:
+        -1px -1px 0 rgba(255, 255, 255, 0.8),
+         1px -1px 0 rgba(255, 255, 255, 0.8),
+        -1px  1px 0 rgba(255, 255, 255, 0.8),
+         1px  1px 0 rgba(255, 255, 255, 0.8),
+         0    0   4px rgba(255, 255, 255, 0.6);
+}
+
+.dogebag-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.dogebag-modal-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(76, 175, 80, 0.6));
+    /* Bob starts after drop-in animation (0.5s) has settled */
+    animation: dogebagBob 2s ease-in-out 0.55s infinite;
+}
+
+.dogebag-open-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    /* Two-tone hard split (light green top, dark green bottom) */
+    background: linear-gradient(to bottom, #5cbf60 0 50%, #3a8c3e 50% 100%);
+    border: 3px solid #2e7d32;
+    border-radius: 12px;
+    padding: 12px 48px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    margin-top: 10px;
+}
+
+.dogebag-open-btn:hover {
+    background: linear-gradient(to bottom, #72d176 0 50%, #49a34d 50% 100%);
+    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Reveal state */
+.dogebag-radial-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+}
+
+.dogebag-radial-fx {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    opacity: 0.6;
+    animation: radialSpin 8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes radialSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.dogebag-item-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    z-index: 1;
+}
+
+.dogebag-item-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3a2a1a;
+}
+
+.dogebag-item-rarity {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dogebag-item-rarity.rarity-common {
+    color: #888888;
+}
+
+.dogebag-item-rarity.rarity-improved {
+    color: #6b8e23;
+}
+
+.dogebag-item-rarity.rarity-rare {
+    color: #4169e1;
+}
+
+.dogebag-item-rarity.rarity-epic {
+    color: #9932cc;
+}
+
+.dogebag-item-rarity.rarity-legendary {
+    color: #ffa500;
+}
+
+.dogebag-item-description {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    color: #6a5a4a;
+    font-style: italic;
+    max-width: 280px;
+}
+
+.dogebag-item-dpc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
+.dogebag-item-dpc img {
+    width: 18px;
+    height: 18px;
+}
+
+.dogebag-item-dpc span {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #5a4a2a;
+}
+
+.dogebag-item-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+}
+
+.dogebag-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.dogebag-action-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 10px 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid;
+}
+
+.dogebag-action-btn.equip-btn {
+    color: #fff;
+    /* Two-tone hard split (matching OPEN button style) */
+    background: linear-gradient(to bottom, #5cbf60 0 50%, #3a8c3e 50% 100%);
+    border-color: #2e7d32;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dogebag-action-btn.equip-btn:hover {
+    background: linear-gradient(to bottom, #72d176 0 50%, #49a34d 50% 100%);
+    transform: scale(1.05);
+}
+
+.dogebag-action-btn.loot-btn {
+    color: #5a4a2a;
+    /* Same two-tone style as close buttons */
+    background: linear-gradient(to bottom, #ffe7a4 0 50%, #f1c35a 50% 100%);
+    border-color: #c78b2b;
+}
+
+.dogebag-action-btn.loot-btn:hover {
+    background: linear-gradient(to bottom, #fff0bf 0 50%, #f6d07c 50% 100%);
+    transform: scale(1.05);
+}
+
+/* Coin reveal (no item icon, shows coin stack) */
+.dogebag-coin-reveal {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #b89b3c;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+/* ========== END DOGEBAG SYSTEM ========== */
 
 #right-panel {
     width: 510px;
@@ -1224,7 +1947,212 @@ body.planet-mars #main-rock {
     width: 151px;
 }
 
+/* Rock Smoke Effect */
+.rock-smoke {
+    position: absolute;
+    width: 80px;
+    height: auto;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(var(--smoke-rotation-start, 0deg));
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+    filter: blur(1px);
+    animation: rockSmokeRotateFade 0.8s ease-out forwards;
+}
+
+@keyframes rockSmokeRotateFade {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(var(--smoke-rotation-start, 0deg)) scale(0.6);
+    }
+
+    12% {
+        opacity: 0.4;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 5deg)) scale(0.9);
+    }
+
+    40% {
+        opacity: 0.35;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 18deg)) scale(1.05) translateY(-8px);
+    }
+
+    65% {
+        opacity: 0.28;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 30deg)) scale(1.1) translateY(-14px);
+    }
+
+    85% {
+        opacity: 0.15;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 40deg)) scale(1.15) translateY(-20px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateX(var(--smoke-offset-x, 0px)) rotate(calc(var(--smoke-rotation-start, 0deg) + 45deg)) scale(1.2) translateY(-25px);
+    }
+}
+
 /* Rock health text removed - simplified mining */
+
+/* Rock Health Display */
+#rock-health-container {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    pointer-events: none;
+}
+
+#rock-health-text {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(80, 75, 65, 0.85);
+    text-shadow:
+        1px 1px 0 rgba(255, 255, 255, 0.6),
+        -1px -1px 0 rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+}
+
+/* Coin Pile Styling */
+.coin-pile {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 5;
+    /* Below the rock (rock is at default z-index) */
+    transition: filter 0.15s ease-out;
+    pointer-events: auto;
+}
+
+.coin-pile img {
+    width: 50px;
+    height: auto;
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.4));
+    pointer-events: auto;
+}
+
+/* Small coin pile size (1-10% rewards) */
+.coin-pile.pile-small img {
+    width: 25px;
+}
+
+/* Medium coin pile size (11-45% rewards) */
+.coin-pile.pile-medium img {
+    width: 40px;
+}
+
+.coin-pile:hover {
+    filter: brightness(1.15);
+}
+
+.coin-pile:hover img {
+    transform: scale(1.1);
+    transition: transform 0.15s ease-out;
+}
+
+.coin-pile:active img {
+    transform: scale(0.95);
+}
+
+/* Coin Pile Disperse Animation - from center outward */
+@keyframes coinPileDisperse {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1);
+    }
+}
+
+@keyframes coinPileFade {
+    0% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(0.8);
+    }
+}
+
+@keyframes coinPileWarning {
+    0% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    10% { opacity: 0.5; filter: brightness(1.5); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    20% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    30% { opacity: 0.5; filter: brightness(1.5); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    40% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    48% { opacity: 0.5; filter: brightness(1.7); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    56% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    64% { opacity: 0.5; filter: brightness(1.7); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    72% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    78% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    84% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    88% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    92% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    95% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    98% { opacity: 1; filter: brightness(1); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1); }
+    100% { opacity: 0.3; filter: brightness(2); transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(0.95); }
+}
+
+@keyframes coinPileCollect {
+    0% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1);
+    }
+
+    40% {
+        opacity: 0.9;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1.4);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--pile-end-x, 0px)), calc(-50% + var(--pile-end-y, 100px))) scale(1.8);
+    }
+}
+
+/* Coin Pile Collected Text */
+.coin-pile-collected {
+    position: absolute;
+    color: rgb(220, 180, 50);
+    font-family: 'DogeSans', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    text-shadow:
+        2px 2px 0 #fff,
+        -2px -2px 0 #fff,
+        2px -2px 0 #fff,
+        -2px 2px 0 #fff;
+    pointer-events: none;
+    z-index: 25;
+    animation: coinPileTextFloat 1s ease-out forwards;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes coinPileTextFloat {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% - 60px)) scale(0.8);
+    }
+}
 
 #click-overlay {
     position: absolute;
@@ -1400,7 +2328,7 @@ body.planet-mars #main-rock {
     /* Animation now handled by container */
 }
 
-/* When doge is floating, float the entire container (including santa hat) */
+/* When doge is floating, float the entire container */
 #character-container:has(#main-character.float) {
     animation: float 3s ease-in-out infinite;
 }
@@ -1433,6 +2361,11 @@ body.planet-mars #main-rock {
     animation: shadowCounterFloat 3s ease-in-out infinite;
 }
 
+/* Counter-animate shadow to keep it stationary when container bounces */
+#character-container:has(#main-character.bounce) #character-shadow {
+    animation: shadowCounterBounce 0.2s ease-out;
+}
+
 @keyframes shadowCounterFloat {
 
     0%,
@@ -1445,78 +2378,47 @@ body.planet-mars #main-rock {
     }
 }
 
-#santa-hat {
-    position: absolute;
-    width: 140px;
-    height: auto;
-    top: -65px;
-    left: 7px;
-    z-index: 20;
-    pointer-events: none;
-    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
-    /* Rotate slightly for style */
-    transform: rotate(-10deg);
-    /* Animations handled by container */
-}
-
-/* Planet-specific santa hat adjustments */
-/* Moon, Jupiter, Titan: move 7px to the left */
-body[data-planet="moon"] #santa-hat,
-body[data-planet="jupiter"] #santa-hat,
-body[data-planet="titan"] #santa-hat {
-    left: 0px;
-}
-
-/* Mars: smaller and adjusted position */
-body[data-planet="mars"] #santa-hat {
-    width: 110px;
-    left: 15px;
-    top: -45px;
-}
-
-@keyframes santaHatFloat {
-
-    0%,
-    100% {
-        transform: translateY(0px) rotate(-10deg);
-    }
-
-    50% {
-        transform: translateY(-10px) rotate(-10deg);
-    }
-}
-
-@keyframes santaHatBounce {
+@keyframes shadowCounterBounce {
     0% {
-        transform: translateY(0px) rotate(-10deg);
+        transform: translateY(0px);
     }
 
     50% {
-        transform: translateY(-15px) rotate(-10deg);
+        transform: translateY(15px);
     }
 
     100% {
-        transform: translateY(0px) rotate(-10deg);
+        transform: translateY(0px);
     }
 }
+
+
 
 #pickaxe {
     position: absolute;
     width: 142px;
-    /* 5% smaller than 150px */
-    height: auto;
+    height: 195px;
+    object-fit: contain;
     top: -50px;
-    /* Moved down 10 more pixels (was -60px, now -50px) */
     right: calc(20% - 50px);
-    /* Moved right 20 more pixels (was -30px, now -50px) */
     transform: rotate(30deg);
-    /* 30 degree resting angle */
     transform-origin: 50% 80%;
-    /* Rotate from 80% down the handle instead of bottom */
     z-index: 25;
-    /* Above santa hat and Doge */
     order: 1;
-    /* First in flex order */
+}
+
+#pickaxe.pickaxe-scale-half {
+    width: 107px;
+    height: 146px;
+    top: -15px;
+    right: calc(20% - 55px);
+}
+
+#pickaxe.pickaxe-shift-right {
+    width: 185px;
+    height: 255px;
+    top: -90px;
+    right: calc(20% - 80px);
 }
 
 #pickaxe.swinging {
@@ -1849,8 +2751,8 @@ body[data-planet="mars"] #santa-hat {
     align-items: center;
     justify-content: center;
     padding: 12px;
-    z-index: 4;
-    pointer-events: none;
+    z-index: 15;
+    pointer-events: auto;
     text-align: center;
     gap: 6px;
 }
@@ -1859,10 +2761,10 @@ body[data-planet="mars"] #santa-hat {
     content: '';
     position: absolute;
     inset: 12px;
-    background: rgba(245, 243, 240, 0.88);
-    border: 2px solid rgba(95, 90, 85, 0.45);
+    background: rgba(255, 235, 180, 0.92);
+    border: 2px solid rgba(185, 150, 65, 0.6);
     border-radius: 14px;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.12);
+    box-shadow: inset 0 2px 6px rgba(120, 80, 20, 0.15);
 }
 
 .helper-lock-icon,
@@ -1875,8 +2777,8 @@ body[data-planet="mars"] #santa-hat {
 .helper-lock-icon {
     width: 42px;
     height: 42px;
-    background-color: rgb(95, 90, 85);
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+    background-color: rgb(140, 100, 40);
+    filter: drop-shadow(0 3px 6px rgba(80, 50, 0, 0.35));
     -webkit-mask-image: url('assets/quickUI/padlock.png');
     mask-image: url('assets/quickUI/padlock.png');
     -webkit-mask-repeat: no-repeat;
@@ -1891,25 +2793,53 @@ body[data-planet="mars"] #santa-hat {
     font-family: 'DogeSans', sans-serif;
     font-size: 26px;
     letter-spacing: 2px;
-    color: rgb(95, 90, 85);
+    color: rgb(120, 80, 20);
     text-shadow:
-        0 0 0 rgb(95, 90, 85),
-        0.6px 0 0 rgb(95, 90, 85),
-        -0.6px 0 0 rgb(95, 90, 85),
-        0 0.6px 0 rgb(95, 90, 85),
-        0 -0.6px 0 rgb(95, 90, 85),
-        0.45px 0.45px 0 rgb(95, 90, 85),
-        -0.45px 0.45px 0 rgb(95, 90, 85),
-        0.45px -0.45px 0 rgb(95, 90, 85),
-        -0.45px -0.45px 0 rgb(95, 90, 85);
+        0 0 0 rgb(120, 80, 20),
+        0.6px 0 0 rgb(120, 80, 20),
+        -0.6px 0 0 rgb(120, 80, 20),
+        0 0.6px 0 rgb(120, 80, 20),
+        0 -0.6px 0 rgb(120, 80, 20),
+        0.45px 0.45px 0 rgb(120, 80, 20),
+        -0.45px 0.45px 0 rgb(120, 80, 20),
+        0.45px -0.45px 0 rgb(120, 80, 20),
+        -0.45px -0.45px 0 rgb(120, 80, 20);
 }
 
 .helper-lock-subtext {
     font-family: 'DogeSans', sans-serif;
     font-weight: 600;
     font-size: 12px;
-    color: rgb(95, 90, 85);
+    color: rgb(140, 100, 40);
     margin-top: 2px;
+}
+
+.moon-theme .helper-lock-overlay::before {
+    background: rgba(200, 225, 240, 0.92);
+    border: 2px solid rgba(120, 170, 200, 0.6);
+    box-shadow: inset 0 2px 6px rgba(40, 80, 120, 0.15);
+}
+
+.moon-theme .helper-lock-icon {
+    background-color: rgb(60, 110, 150);
+}
+
+.moon-theme .helper-lock-text {
+    color: rgb(50, 100, 140);
+    text-shadow:
+        0 0 0 rgb(50, 100, 140),
+        0.6px 0 0 rgb(50, 100, 140),
+        -0.6px 0 0 rgb(50, 100, 140),
+        0 0.6px 0 rgb(50, 100, 140),
+        0 -0.6px 0 rgb(50, 100, 140),
+        0.45px 0.45px 0 rgb(50, 100, 140),
+        -0.45px 0.45px 0 rgb(50, 100, 140),
+        0.45px -0.45px 0 rgb(50, 100, 140),
+        -0.45px -0.45px 0 rgb(50, 100, 140);
+}
+
+.moon-theme .helper-lock-subtext {
+    color: rgb(70, 120, 160);
 }
 
 .planet-mars .helper-lock-overlay::before {
@@ -3609,8 +4539,178 @@ body[data-planet="mars"] #santa-hat {
     display: none;
 }
 
+/* Force Mobile UI toggle — mirrors the mobile media query */
+.force-mobile .mobile-only {
+    display: block !important;
+}
+
+.force-mobile #right-panel {
+    display: none !important;
+}
+
+.force-mobile #planet-tabs {
+    display: none !important;
+}
+
+.force-mobile #version-indicator {
+    display: none !important;
+}
+
+.force-mobile #game-container {
+    flex-direction: column !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-top: 40px !important;
+}
+
+.force-mobile #left-panel {
+    width: 100% !important;
+    flex: 1 !important;
+}
+
 /* Mobile Media Query - Applies to screens 768px and below */
 @media screen and (max-width: 768px) {
+    /* Dogebag modal: fit screen and keep buttons reachable */
+    .switcher-modal-content.dogebag-modal-content {
+        width: calc(100vw - 18px);
+        max-width: calc(100vw - 18px);
+        max-height: calc(100vh - 70px);
+        overflow: visible;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    .dogebag-state {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding-bottom: 10px;
+    }
+
+    .dogebag-actions {
+        position: sticky;
+        bottom: 0;
+        background: none;
+        padding: 10px 0 4px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .dogebag-open-btn,
+    .dogebag-action-btn {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .dogebag-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    /* Inventory modals: fit screen, compact grid */
+    .switcher-modal {
+        left: 0 !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+    }
+
+    .switcher-modal-content {
+        width: calc(100vw - 18px);
+        max-width: calc(100vw - 18px);
+        max-height: calc(100vh - 70px);
+        padding: 0 12px 14px;
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inventory-modal-header {
+        margin: -14px -12px 10px;
+        padding-left: 12px;
+        padding-right: 12px;
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .inventory-toolbar {
+        gap: 6px;
+    }
+
+    .inventory-search {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+
+    .switcher-grid {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding-bottom: 10px;
+    }
+
+    .switcher-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        justify-content: stretch;
+    }
+
+    .item-card {
+        width: auto;
+        padding: 10px 8px;
+    }
+
+    .item-card-description,
+    .item-card-stats-list,
+    .item-card-stat {
+        display: none !important;
+    }
+
+    .item-card-quickstats {
+        display: flex; /* Re-enable on mobile as condensed stat summary */
+        margin: 6px 0 2px;
+        padding: 5px 6px;
+    }
+
+    .item-card-quickstat {
+        font-size: 9px;
+    }
+
+    .quickstat-dpc strong {
+        font-size: 11px; /* keep +2pts on mobile too */
+        -webkit-text-stroke: 0.3px rgba(90, 74, 42, 0.85);
+        text-shadow:
+            0.5px 0 rgba(90, 74, 42, 0.85),
+            -0.5px 0 rgba(90, 74, 42, 0.85),
+            0 0.5px rgba(90, 74, 42, 0.85),
+            0 -0.5px rgba(90, 74, 42, 0.85);
+    }
+
+    .item-card-icon {
+        width: 46px;
+        height: 46px;
+        margin-bottom: 6px;
+    }
+
+    .item-card-name {
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+
+    .item-card-rarity {
+        font-size: 10px;
+        margin-bottom: 0;
+    }
+
+    .modal-close-btn {
+        margin-top: 10px;
+        width: 100%;
+        padding: 12px 0;
+        border-radius: 12px;
+    }
 
     /* Show mobile elements */
     .mobile-only {
@@ -5274,4 +6374,325 @@ body[data-planet="mars"] #santa-hat {
     .planet-titan .mobile-planet-tab span {
         color: #2d2416;
     }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONTROLLER MODE — Xbox / Gamepad Support
+   Only active when body.controller-mode is set by ControllerManager.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Focus highlight ring for navigable elements */
+.controller-focus {
+    outline: 3px solid rgba(16, 124, 16, 0.9) !important;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(16, 124, 16, 0.25),
+        0 0 18px rgba(16, 124, 16, 0.35) !important;
+    border-radius: 8px;
+    transition: outline 0.15s ease, box-shadow 0.15s ease;
+    z-index: 50;
+    position: relative;
+}
+
+/* Pulse animation on the focused item */
+@keyframes controllerFocusPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 6px rgba(16, 124, 16, 0.25), 0 0 18px rgba(16, 124, 16, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(16, 124, 16, 0.35), 0 0 24px rgba(16, 124, 16, 0.5);
+    }
+}
+
+.controller-mode .controller-focus {
+    animation: controllerFocusPulse 1.6s ease-in-out infinite;
+}
+
+/* Controller button prompt badges */
+.controller-prompt {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Show prompts only in controller mode */
+.controller-mode .controller-prompt {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Prompt positioning variants */
+.controller-prompt-bottom {
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+}
+
+.controller-mode .controller-prompt-bottom {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Mine prompt: floats at the top-left of the rock container */
+#prompt-mine {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    bottom: auto;
+    right: auto;
+    transform: none;
+    margin: 0;
+    z-index: 100;
+}
+
+.controller-prompt-left {
+    left: -36px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+}
+
+.controller-mode .controller-prompt-left {
+    transform: translateY(-50%) translateX(0);
+}
+
+.controller-prompt-right {
+    right: -36px;
+    top: 50%;
+    transform: translateY(-50%) translateX(4px);
+}
+
+.controller-mode .controller-prompt-right {
+    transform: translateY(-50%) translateX(0);
+}
+
+.controller-prompt-top {
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+.controller-mode .controller-prompt-top {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Prompt label text */
+.prompt-label {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ddd;
+    letter-spacing: 0.5px;
+}
+
+/* SVG icon sizing within prompts */
+.ctrl-icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Xbox mode — hide the virtual cursor overlay */
+body.xbox-mode {
+    cursor: none !important;
+    -ms-overflow-style: none;
+}
+
+body.xbox-mode * {
+    cursor: none !important;
+}
+
+/* On controller mode, give interactive elements a subtle outline hint */
+.controller-mode .shop-grid-item,
+.controller-mode .upgrade-section.has-upgrade,
+.controller-mode .switcher-card,
+.controller-mode .setting-item,
+.controller-mode .setting-btn,
+.controller-mode .google-signin-btn {
+    transition: outline 0.15s ease, box-shadow 0.15s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Xbox mode: hide Google sign-in (clunky on console) */
+body.xbox-mode #sign-in-section {
+    display: none !important;
+}
+
+/* Entrance animation for prompts */
+@keyframes promptFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.controller-mode .controller-prompt {
+    animation: promptFadeIn 0.3s ease-out forwards;
+}
+
+/* ── Coin Pile X-Button Icon ──────────────────────────────────────── */
+.coin-pile-x-prompt {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    pointer-events: none;
+    z-index: 105;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.controller-mode .coin-pile-x-prompt {
+    opacity: 1;
+}
+
+/* ── Controller Dialog (in-game confirm/alert) ────────────────────── */
+.controller-dialog-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+}
+
+.controller-dialog-overlay.active {
+    display: flex;
+    animation: dialogFadeIn 0.25s ease-out;
+}
+
+@keyframes dialogFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.controller-dialog-box {
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
+    border: 2px solid #d4af37;
+    border-radius: 10px;
+    padding: 24px 28px 18px;
+    max-width: 440px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgb(135, 125, 105);
+    outline: 1px solid rgb(135, 125, 105);
+}
+
+.controller-dialog-title {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: rgb(80, 50, 0);
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.controller-dialog-message {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 13px;
+    color: rgb(100, 70, 20);
+    margin: 0 0 20px;
+    line-height: 1.55;
+    white-space: pre-line;
+}
+
+.controller-dialog-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.controller-dialog-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 9px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.controller-dialog-btn.confirm {
+    background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
+    border: 2px solid rgb(185, 150, 65);
+    color: rgb(80, 50, 0);
+}
+
+.controller-dialog-btn.confirm:hover,
+.controller-dialog-btn.confirm.controller-focus {
+    background: linear-gradient(to bottom, rgb(255, 230, 135) 50%, rgb(255, 220, 90) 50%);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5), 0 0 0 2px rgba(212, 175, 55, 0.3);
+    transform: scale(1.05);
+}
+
+.controller-dialog-btn.cancel {
+    background: linear-gradient(to bottom, rgba(220, 215, 200, 0.95) 50%, rgba(200, 195, 180, 0.95) 50%);
+    border: 2px solid rgb(160, 150, 130);
+    color: rgb(100, 80, 40);
+}
+
+.controller-dialog-btn.cancel:hover,
+.controller-dialog-btn.cancel.controller-focus {
+    background: linear-gradient(to bottom, rgba(230, 225, 210, 0.95) 50%, rgba(210, 205, 190, 0.95) 50%);
+    box-shadow: 0 0 10px rgba(160, 150, 130, 0.4), 0 0 0 2px rgba(160, 150, 130, 0.3);
+    transform: scale(1.05);
+}
+
+/* Alert mode: only has one button, hide cancel */
+.controller-dialog-overlay.alert-mode .controller-dialog-btn.cancel {
+    display: none;
+}
+
+.controller-dialog-hints {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    opacity: 0.5;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    color: rgb(120, 90, 40);
+}
+
+.controller-dialog-hints kbd {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: inherit;
+    font-weight: 700;
+    margin-right: 4px;
+    color: rgb(80, 50, 0);
 }

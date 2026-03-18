@@ -1,0 +1,13 @@
+NAME:
+Dimensional Ripping Planet Pin
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Wow

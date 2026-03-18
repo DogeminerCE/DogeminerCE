@@ -1,0 +1,12 @@
+"NAME"
+Sharpened Battle-Axe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+More sharp.
+
+"STATS"
++% Critical Chance
++% Wow

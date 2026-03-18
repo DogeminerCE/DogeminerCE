@@ -1,0 +1,13 @@
+"NAME"
+Rocket Powered GPU-Pickaxe
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+For any serious miner.
+
+"STATS"
++% Critical Chance
++% Loot Find
++% Luck

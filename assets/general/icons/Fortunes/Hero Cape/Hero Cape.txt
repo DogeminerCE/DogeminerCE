@@ -1,0 +1,13 @@
+NAME:
+Hero Cape
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Not all heroes wear capes.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Wow

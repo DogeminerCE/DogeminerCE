@@ -1,0 +1,12 @@
+"NAME"
+Barbell
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Good for working out. 20kg/44lbs.
+
+"STATS"
++% Loot Find
++ Gainz

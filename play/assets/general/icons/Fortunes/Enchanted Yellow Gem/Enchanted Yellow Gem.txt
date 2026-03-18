@@ -1,0 +1,13 @@
+NAME:
+Enchanted Yellow Gem
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Some sort of enchanted gem. Holding it feels... powerful, but dangerous.
+
+STATS:
++% Helper DPS
++ DPS
++% Luck

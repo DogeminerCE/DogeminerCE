@@ -1,0 +1,12 @@
+"NAME"
+Modern High-Tech Pickaxe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Very modern, such development. Thank you capitalism.
+
+"STATS"
++% Wow
++ Happiness

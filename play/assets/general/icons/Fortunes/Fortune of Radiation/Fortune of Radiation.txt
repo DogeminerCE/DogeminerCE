@@ -1,0 +1,12 @@
+NAME:
+Fortune of Radiation
+
+RARITY:
+Improved
+
+DESCRIPTION:
+It feels warm to the touch.
+
+STATS:
++% Wow
++% Higher Ground

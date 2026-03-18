@@ -1,0 +1,13 @@
+NAME:
+Diamond Doge Fortune
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Less shiny than expented tho.
+
+STATS:
++% Helper DPS
++ DPS
++% Loot Find

@@ -1,0 +1,12 @@
+NAME:
+Magic Planet Pin
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Luck
++ Happiness

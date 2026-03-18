@@ -77,6 +77,22 @@ class SaveManager {
                 this.saveGame(false);
             });
         }
+
+        // Listen for controller indicators setting changes
+        const controllerIndicatorsCheckbox = document.getElementById('controller-indicators-enabled');
+        if (controllerIndicatorsCheckbox) {
+            controllerIndicatorsCheckbox.addEventListener('change', (e) => {
+                if (window.controllerManager) {
+                    window.controllerManager.setShowIndicators(e.target.checked);
+                }
+                // Play check sound
+                if (window.audioManager) {
+                    window.audioManager.playSound('check');
+                }
+                // Trigger auto-save to save settings (don't show notification)
+                this.saveGame(false);
+            });
+        }
     }
 
     saveGame(showNotification = true) {
@@ -214,10 +230,20 @@ class SaveManager {
 
         const helperData = currentPlaced.map(serializePlacedHelper).filter(Boolean);
 
+        // Ensure the current active rock health is saved before serializing
+        if (this.game.planetRockData && this.game.currentLevel) {
+            this.game.planetRockData[this.game.currentLevel] = {
+                rocksBroken: this.game.rocksBroken,
+                currentHP: this.game.rockCurrentHP,
+                maxHP: this.game.rockMaxHP
+            };
+        }
+
         return {
             version: '1.0.0',
             timestamp: Date.now(),
             dogecoins: this.game.dogecoins,
+            planetRockData: this.game.planetRockData,
             totalMined: this.game.totalMined,
             totalClicks: this.game.totalClicks,
             dps: this.game.dps,
@@ -228,8 +254,12 @@ class SaveManager {
             marsHelpers: this.game.marsHelpers,
             jupiterHelpers: this.game.jupiterHelpers, // Keep Jupiter helper ownership synced across reloads.
             titanHelpers: this.game.titanHelpers, // Keep Titan helper ownership synced across reloads.
-            pickaxes: this.game.pickaxes,
-            currentPickaxe: this.game.currentPickaxe,
+            pickaxeInventory: this.game.pickaxeInventory,
+            equippedPickaxeId: this.game.equippedPickaxeId,
+            maxPickaxeDPC: this.game.maxPickaxeDPC,
+            fortuneInventory: this.game.fortuneInventory,
+            latestObtainedFortune: this.game.latestObtainedFortune || null,
+            rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
             placedHelpers: helperData,
@@ -250,13 +280,15 @@ class SaveManager {
                 soundEnabled: this.game.soundEnabled !== false,
                 musicEnabled: this.game.musicEnabled !== false,
                 notificationsEnabled: this.game.notificationsEnabled !== false,
-                autoSaveEnabled: this.game.autoSaveEnabled !== false
+                autoSaveEnabled: this.game.autoSaveEnabled !== false,
+                controllerIndicators: window.controllerManager ? window.controllerManager.showIndicators !== false : true
             },
             cutscenes: {
                 moonLaunch: !!this.game.hasPlayedMoonLaunch
             },
             unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth'],
-            HasPlayed_v0_04: this.game.HasPlayed_v0_04
+            HasPlayed_v0_04: this.game.HasPlayed_v0_04,
+            hasSeenDogebagIntro: this.game.hasSeenDogebagIntro || false
         };
     }
 
@@ -277,6 +309,7 @@ class SaveManager {
         document.body.dataset.planet = this.game.currentLevel;
 
         this.game.HasPlayed_v0_04 = saveData.HasPlayed_v0_04 || false;
+        this.game.hasSeenDogebagIntro = saveData.hasSeenDogebagIntro || false;
 
         this.game.helpers = Array.isArray(saveData.helpers)
             ? saveData.helpers.map(helper => ({ ...helper }))
@@ -293,8 +326,75 @@ class SaveManager {
         this.game.titanHelpers = Array.isArray(saveData.titanHelpers)
             ? saveData.titanHelpers.map(helper => ({ ...helper }))
             : []; // Preserve Titan helper ownership for reloads.
-        this.game.pickaxes = saveData.pickaxes || ['standard'];
-        this.game.currentPickaxe = saveData.currentPickaxe || 'standard';
+        this.game.pickaxeInventory = Array.isArray(saveData.pickaxeInventory) ? saveData.pickaxeInventory : [this.game.defaultPickaxe];
+        this.game.equippedPickaxeId = saveData.equippedPickaxeId || 'default_normal_pickaxe';
+        this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
+        this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
+        this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
+        if (saveData.planetRockData) {
+            this.game.planetRockData = saveData.planetRockData;
+        } else {
+            // Legacy migration: funnel old global rocks broken into earth, initialize others
+            this.game.planetRockData = {
+                earth: { rocksBroken: saveData.rocksBroken || 0, currentHP: null, maxHP: null },
+                moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+                titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+            };
+        }
+
+        // Load active level rock properties
+        const level = this.game.currentLevel;
+        const activeRockData = this.game.planetRockData[level] || { rocksBroken: 0, currentHP: null, maxHP: null };
+        this.game.rocksBroken = activeRockData.rocksBroken || 0;
+        this.game.rockBaseHP = this.game.getPlanetRockBaseHP(level);
+        
+        if (activeRockData.maxHP !== null && activeRockData.currentHP !== null) {
+            this.game.rockMaxHP = activeRockData.maxHP;
+            this.game.rockCurrentHP = activeRockData.currentHP;
+        } else {
+            // Recalculate rock HP based on rocks broken
+            this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
+            this.game.rockCurrentHP = this.game.rockMaxHP;
+        }
+        this.game.recalculatePlayerStats();
+
+        // Apply equipped pickaxe sprite to DOM
+        const equipped = this.game.getEquippedPickaxe();
+        const pickaxeImg = document.getElementById('pickaxe');
+        if (equipped && pickaxeImg) {
+            pickaxeImg.src = equipped.idleSprite;
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            const sp = equipped.idleSprite || '';
+            if (sp.includes('cleaver')) {
+                pickaxeImg.classList.add('pickaxe-scale-half');
+            }
+            const largeWeaponPatterns = [
+                'axe', 'hammer', 'sword', 'drill', 'shotgun', 'm4.',
+                'rocket', 'nuke', 'staff', 'scepter', 'gpu', 'sligpu',
+                'fryingpan', 'bigboot', 'eguitar', 'cod.', 'felps',
+                'barbell', 'poolnoodle', 'record'
+            ];
+            if (largeWeaponPatterns.some(p => sp.includes(p))) {
+                pickaxeImg.classList.add('pickaxe-shift-right');
+            }
+            // Update pickaxe button preview
+            const btnPreview = document.getElementById('pickaxe-btn-preview');
+            if (btnPreview) {
+                btnPreview.src = equipped.idleSprite;
+            }
+        }
+
+        // Restore fortune button preview (latest obtained)
+        if (typeof this.game.setLatestObtainedFortune === 'function') {
+            if (this.game.latestObtainedFortune && (this.game.latestObtainedFortune.sprite || this.game.latestObtainedFortune.name)) {
+                this.game.setLatestObtainedFortune(this.game.latestObtainedFortune);
+            } else if (Array.isArray(this.game.fortuneInventory) && this.game.fortuneInventory.length > 0) {
+                // Back-compat: if older save has no explicit latest, use last-added fortune.
+                this.game.setLatestObtainedFortune(this.game.fortuneInventory[this.game.fortuneInventory.length - 1]);
+            }
+        }
         this.game.upgrades = saveData.upgrades || {};
         this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
 
@@ -368,7 +468,7 @@ class SaveManager {
                 // Jupiter helpers
                 'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
                 'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
                 'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
                 // Titan helpers
                 'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -557,8 +657,19 @@ class SaveManager {
         if (notificationsCheckbox) notificationsCheckbox.checked = this.game.notificationsEnabled;
         if (autoSaveCheckbox) autoSaveCheckbox.checked = this.game.autoSaveEnabled;
 
+        // Restore controller indicators preference
+        const controllerIndicatorsEnabled = saveData.settings?.controllerIndicators !== false;
+        const controllerIndicatorsCheckbox = document.getElementById('controller-indicators-enabled');
+        if (controllerIndicatorsCheckbox) controllerIndicatorsCheckbox.checked = controllerIndicatorsEnabled;
+        if (window.controllerManager) {
+            window.controllerManager.setShowIndicators(controllerIndicatorsEnabled);
+        }
+
         this.game.updateDPS();
         this.game.updateUI();
+        if (this.game.updateRockHealthDisplay) {
+            this.game.updateRockHealthDisplay();
+        }
 
         if (window.uiManager) {
             if (this.game.currentLevel === 'moon') {
@@ -607,7 +718,7 @@ class SaveManager {
         const helperToPlanet = {
             // Earth helpers
             'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
-            'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+            'spaceRocket': 'earth', 'timeMachineRig': 'earth', 'infiniteDogebility': 'earth',
             // Moon helpers
             'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
             // Mars helpers
@@ -616,7 +727,7 @@ class SaveManager {
             // Jupiter helpers
             'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
             'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-            'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+            'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
             'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
             // Titan helpers
             'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -732,12 +843,15 @@ class SaveManager {
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
                     const saveData = JSON.parse(e.target.result);
 
                     if (this.validateSaveData(saveData)) {
-                        if (confirm('This will overwrite your current save. Continue?')) {
+                        const ok = await gameConfirm('This will overwrite your current save. Continue?', {
+                            title: 'Import Save'
+                        });
+                        if (ok) {
                             this.applySaveData(saveData);
                             this.saveGame();
                             this.game.showNotification('Save imported successfully!');
@@ -758,8 +872,14 @@ class SaveManager {
     }
 
     async resetGame() {
-        if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
-            if (confirm('This will permanently delete all your progress. Are you absolutely sure?')) {
+        const ok1 = await gameConfirm('Are you sure you want to reset your game? This cannot be undone!', {
+            title: 'Reset Game'
+        });
+        if (ok1) {
+            const ok2 = await gameConfirm('This will permanently delete all your progress. Are you absolutely sure?', {
+                title: 'Final Warning'
+            });
+            if (ok2) {
                 // Clear all possible save data
                 localStorage.removeItem(this.saveKey);
                 localStorage.removeItem(this.backupKey);
@@ -799,11 +919,27 @@ class SaveManager {
                 this.game.isPlacingHelpers = false;
                 this.game.upgrades = [];
                 this.game.helperUpgradeLevels = {};
-                this.game.pickaxes = [];
-                this.game.currentPickaxe = 'standard';
+                this.game.pickaxeInventory = [this.game.defaultPickaxe];
+                this.game.equippedPickaxeId = 'default_normal_pickaxe';
+                this.game.maxPickaxeDPC = 1;
+                this.game.fortuneInventory = [];
+                this.game.rocksBroken = 0;
+                this.game.planetRockData = {
+                    earth: { rocksBroken: 0, currentHP: null, maxHP: null },
+                    moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+                    jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
+                    titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+                };
+                this.game.rockBaseHP = this.game.getPlanetRockBaseHP('earth');
+                this.game.rockMaxHP = this.game.rockBaseHP;
+                this.game.rockCurrentHP = this.game.rockBaseHP;
+                this.game.lastDamageThresholdPercent = 100;
+                this.game.recalculatePlayerStats();
                 this.game.currentLevel = 'earth';
                 this.game.hasPlayedMoonLaunch = false;
                 this.game.isCutscenePlaying = false;
+                this.game.autoSaveEnabled = false; // Prevent auto-save from caching corrupted states before reload
 
                 // Clear all helper sprites from the DOM
                 this.game.clearAllHelperSprites();
@@ -836,7 +972,7 @@ class SaveManager {
                 totalMined: saveData.totalMined,
                 totalClicks: saveData.totalClicks,
                 helpers: saveData.helpers?.length || 0,
-                pickaxes: saveData.pickaxes?.length || 0
+                pickaxes: saveData.pickaxeInventory?.length || 0
             };
         } catch (error) {
             console.error('Error reading save info:', error);
@@ -858,8 +994,11 @@ class SaveManager {
     }
 
     // Save validation and repair
-    repairSave() {
-        if (!confirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Moving helpers to correct planets\n• Fixing invalid data\n\nProceed?')) {
+    async repairSave() {
+        const ok = await gameConfirm('This will attempt to repair corrupted save data.\n\nRepairs include:\n• Spreading out stacked helpers\n• Adding missing helper names\n• Moving helpers to correct planets\n• Fixing invalid data\n\nProceed?', {
+            title: 'Repair Save'
+        });
+        if (!ok) {
             return false;
         }
 
@@ -936,7 +1075,7 @@ class SaveManager {
             const helperToPlanet = {
                 // Earth helpers
                 'miningShibe': 'earth', 'dogeKennels': 'earth', 'streamerKittens': 'earth',
-                'spaceRocket': 'earth', 'timeMachineRig': 'earth',
+                'spaceRocket': 'earth', 'timeMachineRig': 'earth', 'infiniteDogebility': 'earth',
                 // Moon helpers
                 'moonShibe': 'moon', 'moonBase': 'moon', 'landerShibe': 'moon', 'marsRocket': 'moon',
                 // Mars helpers
@@ -945,7 +1084,7 @@ class SaveManager {
                 // Jupiter helpers
                 'cloudDancer': 'jupiter', 'stormChaser': 'jupiter', 'gasGiant': 'jupiter',
                 'cloudBase': 'jupiter', 'superShibe': 'jupiter', 'dogeAirShip': 'jupiter',
-                'flyingDoggo': 'jupiter', 'infiniteDogebility': 'jupiter', 'tardogeis': 'jupiter',
+                'flyingDoggo': 'jupiter', 'tardogeis': 'jupiter',
                 'dogeStar': 'jupiter', 'titanRocket': 'jupiter',
                 // Titan helpers
                 'titanBase': 'titan', 'roboShibe': 'titan', 'titanMiner': 'titan',
@@ -1056,9 +1195,13 @@ class SaveManager {
 
             // Show result
             if (repairsMade > 0) {
-                const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}`;
-                alert(message);
+                const message = `Save repaired!\n\n${repairLog.join('\n')}\n\nTotal fixes: ${repairsMade}\n\nThe game will now refresh.`;
+                await gameAlert(message, { title: 'Repair Complete' });
                 this.game.showNotification(`Repaired ${repairsMade} issues!`);
+                // Auto-refresh after repair
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
             } else {
                 this.game.showNotification('No issues found in save data.');
             }
@@ -1066,7 +1209,7 @@ class SaveManager {
             return true;
         } catch (error) {
             console.error('Error repairing save:', error);
-            alert('Error repairing save: ' + error.message);
+            await gameAlert('Error repairing save: ' + error.message, { title: 'Repair Error' });
             return false;
         }
     }

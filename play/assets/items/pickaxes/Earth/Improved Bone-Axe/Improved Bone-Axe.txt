@@ -1,0 +1,11 @@
+"NAME"
+Improved Bone-Axe
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+An okay combination of stick and bone.
+
+"STATS"
++% Critical Chance

@@ -1,0 +1,11 @@
+"NAME"
+Crude Rocket-Axe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A crude combination of stick and rocket.
+
+"STATS"
++% Critical Chance

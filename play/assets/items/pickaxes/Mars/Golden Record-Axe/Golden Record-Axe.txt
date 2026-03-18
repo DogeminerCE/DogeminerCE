@@ -1,0 +1,12 @@
+"NAME"
+Golden Record-Axe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+A broken golden record on a stick.
+
++% Luck
++% Loot Find
++ Dancing Skills

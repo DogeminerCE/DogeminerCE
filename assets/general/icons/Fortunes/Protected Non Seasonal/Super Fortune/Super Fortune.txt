@@ -1,0 +1,11 @@
+NAME:
+Super Fortune
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+This fortune contains stats from another timeline.
+
+STATS:
+This fortune copies every stat exactly from the previous timeline.

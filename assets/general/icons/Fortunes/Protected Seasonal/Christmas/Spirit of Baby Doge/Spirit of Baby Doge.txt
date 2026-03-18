@@ -1,0 +1,12 @@
+NAME:
+Spirit of Baby Doge
+
+RARITY:
+Improved
+
+DESCRIPTION:
+This fortune is filled with the spirit of the holidays.
+
+STATS:
++% Wow
++ Holiday Spirit

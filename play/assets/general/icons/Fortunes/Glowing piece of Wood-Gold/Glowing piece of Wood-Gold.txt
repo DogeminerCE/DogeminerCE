@@ -1,0 +1,13 @@
+NAME:
+Glowing piece of Wood-Gold
+
+RARITY:
+Rare
+
+DESCRIPTION:
+As a mostly unusable alloy, wood-gold can be quite beautiful.
+
+STATS:
++% Luck
++% Loot Find
++% Angriness

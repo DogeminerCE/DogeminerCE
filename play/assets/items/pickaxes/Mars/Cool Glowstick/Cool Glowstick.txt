@@ -1,0 +1,12 @@
+"NAME"
+Cool Glowstick
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+You feel special just holding it.
+
+"STATS"
++% Loot Find
++ Mystery Bonus

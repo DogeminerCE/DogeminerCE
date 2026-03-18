@@ -1,0 +1,13 @@
+"NAME"
+Dual GPU-Pickaxe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+Two are better than one.
+
+"STATS"
++% Critical Chance
++% Loot Find
++% Higher Ground

@@ -1,0 +1,13 @@
+"NAME"
+Rocket-Powered Battle-Axe
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+No description required, it speaks for itself.
+
+"STATS"
+
++% Critical Chance
++ Freedom

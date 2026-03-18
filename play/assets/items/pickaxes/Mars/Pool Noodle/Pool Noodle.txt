@@ -1,0 +1,11 @@
+"NAME"
+Pool Noodle
+
+"RARITY"
+Improved
+
+"DESCRIPTION"
+Logically speaking, this so-called pickaxe shouldn't hit hard. Can be used in pillow fights.
+
+"STATS"
++% Wow

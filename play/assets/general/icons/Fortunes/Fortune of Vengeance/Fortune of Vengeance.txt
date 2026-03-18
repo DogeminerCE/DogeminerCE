@@ -1,0 +1,13 @@
+NAME:
+Fortune of Vengeance
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Luck
++% Wow
++% Angriness

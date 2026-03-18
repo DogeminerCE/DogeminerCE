@@ -1,0 +1,13 @@
+"NAME"
+Dual GPU-Pickaxe OC
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+The overclocked version.
+
+"STATS"
++% Critical Chance
++% Loot Find
++ Karma

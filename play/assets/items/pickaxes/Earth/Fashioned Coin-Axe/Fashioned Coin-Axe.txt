@@ -1,0 +1,11 @@
+"NAME"
+Fashioned Coin-Axe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+The magic of the coin seems faded.
+
+"STATS"
+- Sadness

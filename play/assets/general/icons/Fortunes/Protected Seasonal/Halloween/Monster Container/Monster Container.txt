@@ -1,0 +1,13 @@
+NAME:
+Monster Container
+
+RARITY:
+Rare
+
+DESCRIPTION:
+It's a monster container with a living monster inside! Wonder what they were the king of?
+
+STATS:
++% Luck
++% Loot Find
++ Holiday Spirit

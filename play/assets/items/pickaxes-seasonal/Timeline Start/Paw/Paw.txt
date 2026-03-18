@@ -1,0 +1,12 @@
+"NAME"
+Paw
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+Soft and furry. Hurts to hit rocks with.
+
+"STATS"
+Doge Per Click: 1 (ALWAYS)
+Under no circumstances can the Paw be more than 1.

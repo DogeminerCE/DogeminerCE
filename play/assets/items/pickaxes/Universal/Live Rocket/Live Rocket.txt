@@ -1,0 +1,12 @@
+"NAME"
+Live Rocket
+
+"RARITY"
+Epic
+
+"DESCRIPTION"
+The dangerous game.
+
+"STATS"
++% Luck
++ Happiness

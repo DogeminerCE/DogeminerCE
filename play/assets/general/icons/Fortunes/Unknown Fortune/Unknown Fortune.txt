@@ -1,0 +1,12 @@
+NAME:
+Unknown Fortune
+
+RARITY:
+Epic
+
+DESCRIPTION:
+The properties of this fortune are unknown.
+
+STATS:
++ Mystery Bonus
+^ x400 (Multiply base by 400)

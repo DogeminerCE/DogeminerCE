@@ -1,0 +1,12 @@
+NAME:
+Empty Salt Shaker
+
+RARITY:
+Improved
+
+DESCRIPTION:
+There is no salt.
+
+STATS:
++% Helper DPS
++% ♥

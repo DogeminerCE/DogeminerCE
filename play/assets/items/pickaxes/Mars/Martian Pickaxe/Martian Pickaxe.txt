@@ -1,0 +1,12 @@
+"NAME"
+Martian Pickaxe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+A red-stained durable pickaxe
+
+"STATS"
++% Loot Find
++ Dancing Skills

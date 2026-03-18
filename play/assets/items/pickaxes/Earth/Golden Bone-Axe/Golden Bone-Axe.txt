@@ -1,0 +1,12 @@
+"NAME"
+Golden Bone Axe
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+There was once a golden dinosaur.
+
+"STATS"
++% Luck
++% Loot Find

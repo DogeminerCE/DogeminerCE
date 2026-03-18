@@ -1,0 +1,13 @@
+"NAME"
+Old Magic Wand
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+Looks like any other stick, just with some carvings on it. You wonder...
+
+"STATS"
++% Wow
++% Loot Find
++ Holiday Spirit

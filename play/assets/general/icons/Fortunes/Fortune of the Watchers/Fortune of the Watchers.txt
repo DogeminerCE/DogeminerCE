@@ -1,0 +1,12 @@
+NAME:
+Fortune of the Watchers
+
+RARITY:
+Improved
+
+DESCRIPTION:
+It doesn't look like anything to you.
+
+STATS:
++% Wow
+- Sadness

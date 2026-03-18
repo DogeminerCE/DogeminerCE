@@ -1,0 +1,12 @@
+NAME:
+An empty parchment
+
+RARITY:
+Common
+
+DESCRIPTION:
+Someone must have lost it. Looks old, handle with care.
+
+STATS:
++% Luck
++ Discipline

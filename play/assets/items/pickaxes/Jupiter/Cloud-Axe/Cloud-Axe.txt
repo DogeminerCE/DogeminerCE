@@ -1,0 +1,11 @@
+"NAME"
+Cloud-Axe
+
+"RARITY"
+Common
+
+"DESCRIPTION"
+A cloud that has hardened. Surprisingly sharp.
+
+"STATS"
++% Critical Chance

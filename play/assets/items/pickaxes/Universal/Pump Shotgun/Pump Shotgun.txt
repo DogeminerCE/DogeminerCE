@@ -1,0 +1,13 @@
+"NAME"
+Pump Shotgun
+
+"RARITY"
+Rare
+
+"DESCRIPTION"
+It has an inscription: "Not for use indoors."
+
+"STATS"
++% Luck
++% Wow
++ Freedom

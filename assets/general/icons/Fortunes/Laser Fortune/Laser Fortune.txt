@@ -1,0 +1,13 @@
+NAME:
+Laser Fortune
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++% Loot Find
++ Mystery Bonus

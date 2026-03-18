@@ -1,0 +1,13 @@
+"NAME"
+Hammer of Destruction
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+Extremely destructive, made out of the strongest metal known to doges.
+
+"STATS"
++% Wow
++% Luck
++ Mystery Bonus
