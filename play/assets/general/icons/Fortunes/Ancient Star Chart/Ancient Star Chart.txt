@@ -1,0 +1,13 @@
+NAME:
+Ancient Star Chart
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A very old star chart, carved into some stone of sorts. You can't really read it.
+
+STATS:
++% Loot Find
++% Helper Morale
++% Angriness

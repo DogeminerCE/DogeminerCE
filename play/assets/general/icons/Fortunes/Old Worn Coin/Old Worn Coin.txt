@@ -1,0 +1,12 @@
+NAME:
+Old Worn Coin
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Looks like it has been tossed too many times.
+
+STATS:
++% Helper DPS
++ Dancing Skills

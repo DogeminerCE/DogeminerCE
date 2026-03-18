@@ -1,0 +1,12 @@
+NAME:
+Magic Golden Bean
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Usually sold by shady merchants trying to fool children. It seems to have been imbued with something.
+
+STATS:
++% Luck
++% Higher Ground

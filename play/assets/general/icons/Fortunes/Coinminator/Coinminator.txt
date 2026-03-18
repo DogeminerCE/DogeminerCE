@@ -1,0 +1,13 @@
+NAME:
+Coinminator
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Simply holding it makes you fell strong.
+
+STATS:
++ DPS
++% Luck
++% Loot Find

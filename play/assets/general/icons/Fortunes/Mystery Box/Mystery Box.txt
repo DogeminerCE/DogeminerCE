@@ -1,0 +1,13 @@
+NAME:
+Mystery Box
+
+RARITY:
+Rare
+
+DESCRIPTION:
+You hear a faint ticking sound... it's probably nothing.
+
+STATS:
++% Helper DPS
++% Helper Morale
++% Angriness

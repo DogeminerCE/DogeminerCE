@@ -1,0 +1,13 @@
+NAME:
+Mysterious Diamond Box
+
+RARITY:
+Epic
+
+DESCRIPTION:
+It doesn't seem to open.
+
+STATS:
++% Helper DPS
++% Luck
++% Loot Find

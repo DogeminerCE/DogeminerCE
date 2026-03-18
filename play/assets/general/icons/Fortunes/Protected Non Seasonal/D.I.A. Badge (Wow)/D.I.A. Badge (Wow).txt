@@ -1,0 +1,11 @@
+NAME:
+D.I.A. Badge (Wow)
+
+RARITY:
+Rare
+
+DESCRIPTION:
+This badge is wow. For distinguished D.I.A agents only.
+
+STATS:
++% Wow

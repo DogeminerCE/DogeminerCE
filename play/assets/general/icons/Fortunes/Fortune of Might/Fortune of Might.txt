@@ -1,0 +1,13 @@
+NAME:
+Fortune of Might
+
+RARITY:
+Epic
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++ DPS
++% Loot Find
++% Wow

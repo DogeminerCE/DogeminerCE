@@ -1,0 +1,13 @@
+NAME:
+Sagan of the Universe
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+This artifact seems to bless those who touch it.
+
+STATS:
++% Helper DPS
++% Luck
++% Wow

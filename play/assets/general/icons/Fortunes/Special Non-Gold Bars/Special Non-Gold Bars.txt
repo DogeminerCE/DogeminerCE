@@ -1,0 +1,13 @@
+NAME:
+Special Non-Gold Bars
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+These might come in handy.
+
+STATS:
++% Helper DPS
++ DPS
++% Luck

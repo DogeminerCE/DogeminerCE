@@ -1,0 +1,13 @@
+NAME:
+Fortune of Günther
+
+RARITY:
+Rare
+
+DESCRIPTION:
+Legends speak of a golden-era pop-singer who inspried an entire world.
+
+STATS:
++% Helper DPS
++% Luck
++ Mystery Bonus

@@ -1,0 +1,12 @@
+NAME:
+Small Easter Island Map
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Neat map. Wait, where is the red X leading to the treasure?
+
+STATS:
++% Wow
++ Holiday Spirit

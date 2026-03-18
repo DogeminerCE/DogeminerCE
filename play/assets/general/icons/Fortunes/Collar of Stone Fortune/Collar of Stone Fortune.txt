@@ -1,0 +1,12 @@
+NAME:
+Collar of Stone Fortune
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++ Dancing Skills

@@ -1,0 +1,13 @@
+NAME:
+A Dogfinity Stone
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+An odd aura eminates from the stone. Truly one of the universes' most powerful artifacts.
+
+STATS:
++ DPS
++% Luck
++% Wow

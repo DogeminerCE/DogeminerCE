@@ -1,0 +1,12 @@
+NAME:
+Fortune of the Sweet
+
+RARITY:
+Common
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Luck
++ Discipline

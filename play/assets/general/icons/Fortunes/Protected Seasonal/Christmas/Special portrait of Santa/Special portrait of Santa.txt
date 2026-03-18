@@ -1,0 +1,13 @@
+NAME:
+Special portrait of Santa
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Looking at it makes you feel incredible joy and happiness.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Wow

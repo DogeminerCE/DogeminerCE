@@ -1,0 +1,11 @@
+NAME:
+D.I.A. Badge (Loot)
+
+RARITY:
+Rare
+
+DESCRIPTION:
+With this badge, finding things are easier. For distinguished D.I.A agents only.
+
+STATS:
++% Loot Find

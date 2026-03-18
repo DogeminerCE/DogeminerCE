@@ -1,0 +1,13 @@
+NAME:
+Strange Purple Essence
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Looks like a supernova frozen in time. Only much, much smaller. Seems 100% safe.
+
+STATS:
++% Helper DPS
++ DPS
++% Loot Find

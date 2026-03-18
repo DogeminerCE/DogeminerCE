@@ -1,0 +1,12 @@
+NAME:
+Disco Fortune
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mystery artifact imbued with some kind of magical power.
+
+STATS:
++% Luck
++% Higher Ground

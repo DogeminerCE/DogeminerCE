@@ -1,0 +1,12 @@
+NAME:
+Poisoned Apple
+
+RARITY:
+Improved
+
+DESCRPITION:
+This apple reeks of dark magic. Should probably not eat.
+
+STATS:
++% Loot Find
++ Holiday Spirit

@@ -1,0 +1,13 @@
+NAME:
+Fortune of the Ð
+
+RARITY:
+Rare
+
+DESCRIPTION:
+It's made out of solid gold.
+
+STATS:
++% Helper DPS
++% Helper Morale
++ Mystery Bonus

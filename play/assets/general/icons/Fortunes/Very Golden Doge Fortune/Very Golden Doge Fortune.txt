@@ -1,0 +1,13 @@
+NAME:
+Very Golden Doge Fortune
+
+RARITY:
+Rare
+
+DESCRIPTION:
+This is it. One of the rarest of fortunes.
+
+STATS:
++% Helper DPS
++ DPS
++% Angriness

@@ -1,0 +1,13 @@
+NAME:
+A Pristine Snowflake
+
+RARITY:
+Rare
+
+DESCRIPTION:
+Absolutely magnificent! Truly a wonder! How has it been kept in such a condition?
+
+STATS:
++% Helper DPS
++ DPS
++ Mystery Bonus

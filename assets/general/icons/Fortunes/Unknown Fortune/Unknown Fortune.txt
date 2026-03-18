@@ -9,4 +9,4 @@ The properties of this fortune are unknown.
 
 STATS:
 + Mystery Bonus
-^ x4000 (Multiply base by 4000)
+^ x400 (Multiply base by 400)

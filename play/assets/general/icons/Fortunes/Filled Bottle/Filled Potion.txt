@@ -1,0 +1,12 @@
+NAME:
+Filled Potion
+
+RARITY:
+Improved
+
+DESCRIPTION:
+The red liquid is unknown. Smells good. Could be poison, best not drink unless thirsty.
+
+STATS:
++% Luck
++ Dancing Skills

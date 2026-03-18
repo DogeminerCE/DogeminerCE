@@ -1,0 +1,13 @@
+NAME:
+Fortune of Blue Flames
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Wow
++% Helper Morale
++ Mystery Bonus

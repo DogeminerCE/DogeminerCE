@@ -35,6 +35,15 @@ async function initializeGame() {
             console.error('Failed to load pickaxe templates:', err);
         }
 
+        // Initialize fortune factory and load templates
+        updateLoadingInfo('Loading fortune templates...');
+        try {
+            game.fortuneFactory = new FortuneFactory();
+            await game.fortuneFactory.loadTemplates();
+        } catch (err) {
+            console.error('Failed to load fortune templates:', err);
+        }
+
         updateLoadingInfo('Setting up shop system...');
 
         // Initialize shop manager first (needed by UI manager)
@@ -592,6 +601,7 @@ function addDebugConsole() {
         <button onclick="game.forceRickSpawn()">Spawn Rick</button>
         <button onclick="game.createDogebag()">Spawn Dogebag</button>
         <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
+        <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>
         <button onclick="toggleDebugMode()">Close Debug</button>
     `;
@@ -626,6 +636,38 @@ function debugGrantAllPickaxes() {
     }
     window.game.showNotification(`Granted ${count} pickaxes!`);
     console.log(`Debug: Granted ${count} pickaxes to inventory`);
+}
+
+function debugGrantAllFortunes() {
+    if (!window.game || !window.game.fortuneFactory || !window.game.fortuneFactory.loaded) {
+        console.error('Fortune factory not loaded');
+        return;
+    }
+    const factory = window.game.fortuneFactory;
+    let count = 0;
+    for (const templateId of Object.keys(factory.templates)) {
+        const template = factory.templates[templateId];
+        if (!template) continue;
+
+        const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        const stats = factory._rollStats(template.statTemplates, window.game.playerStats.luck, window.game.playerStats.lootFind);
+
+        const fortune = {
+            instanceId,
+            templateId,
+            name: template.name,
+            rarity: template.rarity,
+            description: template.description,
+            stats,
+            sprite: template.sprite
+        };
+
+        window.game.fortuneInventory.push(fortune);
+        count++;
+    }
+    window.game.recalculatePlayerStats();
+    window.game.showNotification(`Granted ${count} fortunes!`);
+    console.log(`Debug: Granted ${count} fortunes to inventory`);
 }
 
 // Keyboard shortcuts

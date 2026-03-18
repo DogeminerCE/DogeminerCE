@@ -186,6 +186,7 @@ class DogeMinerGame {
 
         // Pickaxe & Fortune System
         this.pickaxeFactory = null; // Initialized async in main.js
+        this.fortuneFactory = null; // Initialized async in main.js
         this.pickaxeInventory = []; // Array of generated pickaxe instances
         this.equippedPickaxeId = null; // instanceId of equipped pickaxe
         this.maxPickaxeDPC = 1; // Tracks highest DPC for linear progression
@@ -1116,9 +1117,16 @@ class DogeMinerGame {
             }
         }
 
-        if (roll < 0.80) {
-            // Fortune (placeholder — will be implemented in Phase 4)
-            // For now, fall through to coins
+        if (roll < 0.80 && this.fortuneFactory && this.fortuneFactory.loaded) {
+            // Roll a fortune
+            const fortune = this.fortuneFactory.generateFortune(
+                this.playerStats.lootFind,
+                this.playerStats.luck,
+                this.currentLevel
+            );
+            if (fortune) {
+                return { type: 'fortune', item: fortune };
+            }
         }
 
         // Coins: 1.5x to 2.0x standard drop
@@ -1332,9 +1340,10 @@ class DogeMinerGame {
         const rarity = document.getElementById('dogebag-item-rarity');
         const desc = document.getElementById('dogebag-item-description');
         const dpcContainer = document.getElementById('dogebag-item-dpc');
+        const statsContainer = document.getElementById('dogebag-item-stats');
         const actions = document.getElementById('dogebag-actions');
 
-        if (icon) icon.src = fortune.icon || 'assets/general/dogecoin_70x70.png';
+        if (icon) icon.src = fortune.sprite || 'assets/general/dogecoin_70x70.png';
         if (name) name.textContent = fortune.name;
         if (rarity) {
             rarity.textContent = fortune.rarity.toUpperCase();
@@ -1342,6 +1351,17 @@ class DogeMinerGame {
         }
         if (desc) desc.textContent = fortune.description;
         if (dpcContainer) dpcContainer.style.display = 'none';
+
+        // Render fortune stats with proper formatting
+        if (statsContainer && fortune.stats && this.fortuneFactory) {
+            statsContainer.innerHTML = '';
+            fortune.stats.forEach(stat => {
+                const line = document.createElement('div');
+                line.className = `dogebag-stat-line ${stat.isCore ? 'stat-core' : 'stat-cosmetic'}`;
+                line.textContent = this.fortuneFactory.formatStatForDisplay(stat);
+                statsContainer.appendChild(line);
+            });
+        }
 
         if (actions) {
             actions.innerHTML = `
@@ -1550,16 +1570,20 @@ class DogeMinerGame {
             card.className = `item-card rarity-${fortune.rarity}`;
 
             let statsHtml = '';
-            if (fortune.stats) {
+            if (fortune.stats && Array.isArray(fortune.stats)) {
                 statsHtml = '<div class="item-card-stats-list">';
-                Object.entries(fortune.stats).forEach(([key, value]) => {
-                    statsHtml += `<div class="item-card-stat-line stat-core">+${value} ${key}</div>`;
+                fortune.stats.forEach(stat => {
+                    const cssClass = stat.isCore ? 'stat-core' : 'stat-cosmetic';
+                    const formatted = this.fortuneFactory
+                        ? this.fortuneFactory.formatStatForDisplay(stat)
+                        : `${stat.value} ${stat.displayName}`;
+                    statsHtml += `<div class="item-card-stat-line ${cssClass}">${formatted}</div>`;
                 });
                 statsHtml += '</div>';
             }
 
             card.innerHTML = `
-                <img src="${fortune.icon || 'assets/general/dogecoin_70x70.png'}" alt="${fortune.name}" class="item-card-icon">
+                <img src="${fortune.sprite || 'assets/general/dogecoin_70x70.png'}" alt="${fortune.name}" class="item-card-icon">
                 <div class="item-card-name">${fortune.name}</div>
                 <div class="item-card-rarity">${fortune.rarity}</div>
                 <div class="item-card-description">${fortune.description}</div>
@@ -1656,15 +1680,12 @@ class DogeMinerGame {
             });
         }
 
-        // Add all fortune stats
+        // Add all fortune stats (array-based format matching pickaxes)
         this.fortuneInventory.forEach(fortune => {
-            if (fortune.stats && typeof fortune.stats === 'object') {
-                // Fortune uses the simple { statName: value } format
-                Object.entries(fortune.stats).forEach(([key, value]) => {
-                    const normalizedKey = key.toLowerCase().replace(/\s+/g, '');
-                    if (this.playerStats.hasOwnProperty(normalizedKey)) {
-                        this.playerStats[normalizedKey] += value;
-                    }
+            if (fortune.stats && Array.isArray(fortune.stats)) {
+                fortune.stats.forEach(stat => {
+                    if (!stat.isCore) return;
+                    this._applyStatToPlayer(stat);
                 });
             }
         });
@@ -1688,8 +1709,10 @@ class DogeMinerGame {
             'lootfind': 'lootFind',
             'wow': 'wow',
             'critchance': 'critChance',
+            'criticalchance': 'critChance',
             'dpcmultiplier': 'dpcMultiplier',
             'helperdpsmultiplier': 'helperDpsMultiplier',
+            'helperdps': 'helperDpsMultiplier',
             'rocketcostreduction': 'rocketCostReduction',
             'dps': 'helperDpsMultiplier',
             'higherground': 'luck' // Higher Ground maps to luck

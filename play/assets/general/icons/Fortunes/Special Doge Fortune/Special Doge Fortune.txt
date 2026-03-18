@@ -1,0 +1,13 @@
+NAME:
+Special Doge Fortune
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+There is something very special about this fortune.
+
+STATS:
++ DPS
++ +% Luck
++ +% Loot Find
