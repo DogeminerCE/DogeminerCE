@@ -258,6 +258,7 @@ class SaveManager {
             equippedPickaxeId: this.game.equippedPickaxeId,
             maxPickaxeDPC: this.game.maxPickaxeDPC,
             fortuneInventory: this.game.fortuneInventory,
+            latestObtainedFortune: this.game.latestObtainedFortune || null,
             rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
@@ -327,6 +328,7 @@ class SaveManager {
         this.game.equippedPickaxeId = saveData.equippedPickaxeId || 'default_normal_pickaxe';
         this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
         this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
+        this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
         if (saveData.planetRockData) {
             this.game.planetRockData = saveData.planetRockData;
         } else {
@@ -379,6 +381,16 @@ class SaveManager {
             const btnPreview = document.getElementById('pickaxe-btn-preview');
             if (btnPreview) {
                 btnPreview.src = equipped.idleSprite;
+            }
+        }
+
+        // Restore fortune button preview (latest obtained)
+        if (typeof this.game.setLatestObtainedFortune === 'function') {
+            if (this.game.latestObtainedFortune && (this.game.latestObtainedFortune.sprite || this.game.latestObtainedFortune.name)) {
+                this.game.setLatestObtainedFortune(this.game.latestObtainedFortune);
+            } else if (Array.isArray(this.game.fortuneInventory) && this.game.fortuneInventory.length > 0) {
+                // Back-compat: if older save has no explicit latest, use last-added fortune.
+                this.game.setLatestObtainedFortune(this.game.fortuneInventory[this.game.fortuneInventory.length - 1]);
             }
         }
         this.game.upgrades = saveData.upgrades || {};

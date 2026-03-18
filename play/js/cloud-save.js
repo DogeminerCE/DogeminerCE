@@ -324,6 +324,7 @@ class CloudSaveManager {
             equippedPickaxeId: window.game.equippedPickaxeId || 'default_normal_pickaxe',
             maxPickaxeDPC: window.game.maxPickaxeDPC || 1,
             fortuneInventory: window.game.fortuneInventory || [],
+            latestObtainedFortune: window.game.latestObtainedFortune || null,
             rocksBroken: window.game.rocksBroken || 0,
             planetRockData: window.game.planetRockData,
             playTime: window.game.playTime || 0,
@@ -354,6 +355,7 @@ class CloudSaveManager {
             window.game.equippedPickaxeId = gameData.equippedPickaxeId || 'default_normal_pickaxe';
             window.game.maxPickaxeDPC = gameData.maxPickaxeDPC || 1;
             window.game.fortuneInventory = Array.isArray(gameData.fortuneInventory) ? gameData.fortuneInventory : [];
+            window.game.latestObtainedFortune = gameData.latestObtainedFortune || null;
 
             if (gameData.planetRockData) {
                 window.game.planetRockData = gameData.planetRockData;
@@ -386,6 +388,15 @@ class CloudSaveManager {
             window.game.playTime = gameData.playTime || 0;
             window.game.highestDps = gameData.highestDps || 0;
             window.game.achievements = gameData.achievements || {};
+
+            // Restore fortune button preview (latest obtained)
+            if (typeof window.game.setLatestObtainedFortune === 'function') {
+                if (window.game.latestObtainedFortune && (window.game.latestObtainedFortune.sprite || window.game.latestObtainedFortune.name)) {
+                    window.game.setLatestObtainedFortune(window.game.latestObtainedFortune);
+                } else if (Array.isArray(window.game.fortuneInventory) && window.game.fortuneInventory.length > 0) {
+                    window.game.setLatestObtainedFortune(window.game.fortuneInventory[window.game.fortuneInventory.length - 1]);
+                }
+            }
 
             // Load settings
             if (gameData.settings) {

@@ -645,6 +645,7 @@ function debugGrantAllFortunes() {
     }
     const factory = window.game.fortuneFactory;
     let count = 0;
+    let lastFortune = null;
     for (const templateId of Object.keys(factory.templates)) {
         const template = factory.templates[templateId];
         if (!template) continue;
@@ -663,9 +664,13 @@ function debugGrantAllFortunes() {
         };
 
         window.game.fortuneInventory.push(fortune);
+        lastFortune = fortune;
         count++;
     }
     window.game.recalculatePlayerStats();
+    if (lastFortune && typeof window.game.setLatestObtainedFortune === 'function') {
+        window.game.setLatestObtainedFortune(lastFortune);
+    }
     window.game.showNotification(`Granted ${count} fortunes!`);
     console.log(`Debug: Granted ${count} fortunes to inventory`);
 }
