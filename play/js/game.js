@@ -211,6 +211,7 @@ class DogeMinerGame {
         // Fortune system
         this.fortuneInventory = []; // Array of fortune instances
         this.ownedFortunes = []; // Legacy compat
+        this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
 
         // Player stats (recalculated from equipped pickaxe + fortunes)
         this.playerStats = {
@@ -1430,6 +1431,7 @@ class DogeMinerGame {
             this.showNotification(`${pending.item.name} added to inventory!`);
         } else if (pending.type === 'fortune') {
             this.fortuneInventory.push(pending.item);
+            this.setLatestObtainedFortune(pending.item);
             this.recalculatePlayerStats();
             this.showNotification(`${pending.item.name} fortune acquired!`);
         } else if (pending.type === 'coins') {
@@ -1634,6 +1636,32 @@ class DogeMinerGame {
         const btnPreview = document.getElementById('pickaxe-btn-preview');
         if (btnPreview) {
             btnPreview.src = pickaxe.idleSprite;
+        }
+    }
+
+    /**
+     * Updates "latest obtained fortune" state + button preview.
+     * This is intentionally separate from fortuneInventory ordering.
+     */
+    setLatestObtainedFortune(fortune) {
+        if (!fortune) return;
+        const sprite = fortune.sprite || '';
+        const name = fortune.name || '';
+        if (!sprite && !name) return;
+
+        this.latestObtainedFortune = { name, sprite };
+
+        const img = document.getElementById('fortune-btn-preview');
+        if (img) {
+            img.src = sprite || '';
+            img.alt = name ? `${name} (Fortune)` : 'Fortunes';
+            if (sprite) {
+                img.classList.remove('fortune-icon-placeholder');
+                img.style.visibility = '';
+            } else {
+                img.classList.add('fortune-icon-placeholder');
+                img.style.visibility = 'hidden';
+            }
         }
     }
 
