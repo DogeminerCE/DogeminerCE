@@ -1,0 +1,13 @@
+NAME:
+Wizard Robe
+
+RARITY:
+Rare
+
+DESCRIPTION:
+Goes well with a hat. Seems a little small.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Angriness

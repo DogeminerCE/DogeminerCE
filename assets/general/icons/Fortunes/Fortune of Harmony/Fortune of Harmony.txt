@@ -1,0 +1,12 @@
+NAME:
+Fortune of Harmony
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A soothing calm flows from this fortune.
+
+STATS:
++% Helper DPS
++ Discipline

@@ -1,0 +1,12 @@
+NAME:
+Cake of Jelly
+
+RARITY:
+Improved
+
+DESCRIPTION
+Smells weird, eating not recommended.
+
+STATS:
++% Helper DPS
++ Mystery Bonus

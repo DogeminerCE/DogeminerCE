@@ -1,0 +1,12 @@
+NAME:
+Osterfeuer Fortune
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Such small Easter Fire, apparently of german origin.
+
+STATS:
++% Wow
++ Holiday Spirit

@@ -1,0 +1,13 @@
+NAME:
+Witches' Rune Stone
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A magical run stone, commonly used by witches to perform dark magic. It emits a scent of fear.
+
+STATS:
++% Loot Find
++% Helper Morale
++% Angriness

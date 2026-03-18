@@ -1,0 +1,12 @@
+NAME:
+Empty Bottle
+
+RARITY:
+Common
+
+DESCRIPTION:
+It's empty. Might be useful in an emergency.
+
+STATS:
++% Luck
++ Happiness

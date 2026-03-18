@@ -1,0 +1,12 @@
+NAME:
+Fortune of Cunning
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Wearing this removes any feelings of fear.
+
+STATS:
++% Helper DPS
++ Happiness

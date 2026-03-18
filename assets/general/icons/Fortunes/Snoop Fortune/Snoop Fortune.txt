@@ -1,0 +1,13 @@
+NAME:
+Snoop Fortune
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+This artifact seems to bless those who touch it.
+
+STATS:
++% Helper DPS
++ DPS
++% Loot Find

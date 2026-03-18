@@ -1,0 +1,13 @@
+NAME:
+Golden Scales
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Looks just like a dragons scaled would. Not that dragons exist.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Wow

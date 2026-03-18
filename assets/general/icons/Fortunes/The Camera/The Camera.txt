@@ -1,0 +1,13 @@
+NAME:
+The Camera
+
+RARITY:
+Rare
+
+DESCRIPTION:
+It has an inscription, "Mom's"
+
+STATS:
++% Helper DPS
++% Helper Morale
++ Mystery Bonus

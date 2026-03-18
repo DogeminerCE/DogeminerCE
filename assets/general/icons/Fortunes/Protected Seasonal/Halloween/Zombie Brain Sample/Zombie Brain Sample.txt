@@ -1,0 +1,12 @@
+NAME:
+Zombie Brain Sample
+
+RARITY:
+Improved
+
+DESCRIPTION:
+The vial actually contains brains!
+
+STATS:
++% Loot Find
++ Holiday Spirit

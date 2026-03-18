@@ -1,0 +1,12 @@
+NAME:
+Helpful Doge-Elf
+
+RARITY:
+Improved
+
+DESCRIPTION:
+These magical Doge-Elves are known to be able to create almost anything for good doges.
+
+STATS:
++% Loot Find
+- Sadness

@@ -1,0 +1,13 @@
+NAME:
+Fortune of the Planet
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++% Helper Morale
++ Mystery Bonus

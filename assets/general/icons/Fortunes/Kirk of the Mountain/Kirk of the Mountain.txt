@@ -1,0 +1,13 @@
+NAME:
+Kirk of the Mountain
+
+RARITY:
+Epic
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++% Luck
++% Wow

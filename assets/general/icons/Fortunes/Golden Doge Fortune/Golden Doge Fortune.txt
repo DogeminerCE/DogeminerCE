@@ -1,0 +1,13 @@
+NAME:
+Golden Doge Fortune
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Helper DPS
++% Wow
++ Angriness

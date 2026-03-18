@@ -1,0 +1,13 @@
+NAME:
+Ring of Doge
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+The ultimate ring of ultimate wow.
+
+STATS:
++ DPS
++% Helper DPS
++% Critical Chance

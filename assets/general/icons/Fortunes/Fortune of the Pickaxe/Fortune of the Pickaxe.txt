@@ -1,0 +1,12 @@
+NAME:
+Fortune of the Pickaxe
+
+RARITY:
+Common
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Luck
++ Mystery Bonus

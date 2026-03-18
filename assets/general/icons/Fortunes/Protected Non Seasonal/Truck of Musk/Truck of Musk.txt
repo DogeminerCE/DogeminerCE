@@ -1,0 +1,13 @@
+NAME:
+Truck of Musk
+
+RARITY:
+Rare
+
+DESCRIPTION:
+A much dank toy-version of a vehicle.
+
+STATS:
++% Loot Find
++% Helper Morale
++ Mystery Bonus

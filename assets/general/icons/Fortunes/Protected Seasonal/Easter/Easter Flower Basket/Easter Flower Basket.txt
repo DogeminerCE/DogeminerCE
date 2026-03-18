@@ -1,0 +1,12 @@
+NAME:
+Easter Flower Basket
+
+RARITY:
+Common
+
+DESCRIPTION:
+Flowers in a basket? A tradition? Hoomans must have made this.
+
+STATS:
++% Luck
++% ♥
