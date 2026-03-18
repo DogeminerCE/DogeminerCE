@@ -1467,6 +1467,7 @@ body {
 
 .dogebag-actions {
     display: flex;
+    justify-content: center;
     gap: 10px;
     margin-top: 8px;
 }
@@ -4594,6 +4595,7 @@ body.planet-mars #main-rock {
         background: none;
         padding: 10px 0 4px;
         justify-content: center;
+        align-items: center;
         width: 100%;
     }
 
