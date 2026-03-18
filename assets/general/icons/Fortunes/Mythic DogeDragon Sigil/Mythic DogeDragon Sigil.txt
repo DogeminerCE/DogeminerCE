@@ -1,0 +1,13 @@
+NAME:
+Mythic DogeDragon Sigil
+
+RARITY:
+Rare
+
+DESCRIPTION:
+It glows without an energy source. Cool.
+
+STATS:
++% Luck
++% Loot Find
++% Angriness

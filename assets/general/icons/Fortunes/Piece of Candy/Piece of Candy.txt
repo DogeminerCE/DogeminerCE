@@ -1,0 +1,11 @@
+NAME:
+Piece of Candy
+
+RARITY:
+Improved
+
+DESCRIPTION:
+Very large, probably not meant for doges. Potentially lethal.
+
++% Luck
++ Dancing Skill

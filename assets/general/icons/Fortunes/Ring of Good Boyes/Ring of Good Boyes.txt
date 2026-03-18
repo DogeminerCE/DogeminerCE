@@ -1,0 +1,12 @@
+NAME:
+Ring of Good Boyes
+
+RARITY:
+Improved
+
+DESCRIPTION:
+A mysterious artifact imbued with some kind of magical power.
+
+STATS:
++% Wow
++% Higher Ground

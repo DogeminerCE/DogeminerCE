@@ -1,0 +1,13 @@
+NAME:
+Very Large Diamond
+
+RARITY:
+Epic
+
+DESCRIPTION:
+It's too big to use as currency and too hard to smash.
+
+STATS:
++% Helper DPS
++ DPS
++% Luck

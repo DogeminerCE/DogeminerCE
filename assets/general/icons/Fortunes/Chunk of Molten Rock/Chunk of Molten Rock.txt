@@ -1,0 +1,12 @@
+NAME:
+Chunk of Molten Rock
+
+RARITY:
+Improved
+
+DESCRIPTION:
+It's still very warm.
+
+STATS:
++% Helper DPS
++ Mystery Bonus

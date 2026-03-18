@@ -1,0 +1,13 @@
+NAME:
+Fortune of the Brofist
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Every bro needs a brofist. This should do.
+
+STATS:
++% Helper DPS
++% Loot Find
++% Wow

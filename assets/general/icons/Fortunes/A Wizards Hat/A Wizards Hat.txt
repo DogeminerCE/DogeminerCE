@@ -1,0 +1,13 @@
+NAME:
+A Wizards Hat
+
+RARITY:
+Rare
+
+DESCRIPTION:
+Might come in handy. Need to find a robe to go with it.
+
+STATS:
++ DPS
++% Luck
++% Angriness
