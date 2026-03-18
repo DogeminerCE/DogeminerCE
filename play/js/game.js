@@ -212,7 +212,6 @@ class DogeMinerGame {
         this.fortuneInventory = []; // Array of fortune instances
         this.ownedFortunes = []; // Legacy compat
         this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
-
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
             pickaxe: { search: '', rarity: '', sort: 'newest' },
