@@ -1185,8 +1185,11 @@ class DogeMinerGame {
      * Base 10% chance, scaled by luck.
      */
     rollDogebagDrop() {
-        const baseChance = 0.10;
-        const chance = baseChance * (1 + this.playerStats.luck);
+        const baseChance = 0.05; // 5% base
+        // Scale logarithmically to prevent infinite 100% drops
+        const luckMultiplier = 1 + Math.log2(1 + this.playerStats.luck / 50);
+        // Hard-cap the absolute maximum drop rate to 30%
+        const chance = Math.min(0.30, baseChance * luckMultiplier);
         return Math.random() < chance;
     }
 
