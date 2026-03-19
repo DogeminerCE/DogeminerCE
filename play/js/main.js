@@ -333,6 +333,13 @@ function closeFortuneModal() {
     }
 }
 
+function toggleStatsSidebar(inventoryType) {
+    const sidebar = document.getElementById(`${inventoryType}-stats-sidebar`);
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+    }
+}
+
 // Dogebag modal functions
 function openDogebagContents() {
     if (window.game) {

@@ -1633,6 +1633,7 @@ class DogeMinerGame {
         if (modal) {
             modal.classList.add('active');
             this._bindInventoryToolbar('pickaxe');
+            this.updateStatsSidebar('pickaxe');
             this.renderPickaxeGrid();
             this.playSound('inventoryOpen');
         }
@@ -1657,6 +1658,7 @@ class DogeMinerGame {
         if (modal) {
             modal.classList.add('active');
             this._bindInventoryToolbar('fortune');
+            this.updateStatsSidebar('fortune');
             this.renderFortuneGrid();
             this.playSound('inventoryOpen');
         }
@@ -1671,6 +1673,35 @@ class DogeMinerGame {
             modal.classList.remove('active');
             this.playSound('inventoryClose');
         }
+    }
+
+    /**
+     * Refreshes the custom user stats sidebar inside grids dynamically
+     */
+    updateStatsSidebar(inventoryType) {
+        const contentContainer = document.getElementById(`${inventoryType}-stats-content`);
+        if (!contentContainer) return;
+        
+        const formatPercent = (val) => `${(val * 100).toFixed(1)}%`;
+        const formatMult = (val) => `x${val.toFixed(2)}`;
+        const formatFlat = (val) => `+${val.toFixed(1)}`;
+        
+        let html = '';
+        const statList = [
+            { label: 'Luck', value: `+${(this.playerStats.luck || 0).toFixed(1)}` },
+            { label: 'Loot Find', value: `+${(this.playerStats.lootFind || 0).toFixed(1)}%` },
+            { label: 'Wow', value: `+${(this.playerStats.wow || 0).toFixed(1)}` },
+            { label: 'Critical Chance', value: formatPercent(this.playerStats.critChance || 0) },
+            { label: 'Base DPC Mult.', value: formatMult(this.playerStats.dpcMultiplier || 1) },
+            { label: 'Helper DPS Mult.', value: formatMult(this.playerStats.helperDpsMultiplier || 1) },
+            { label: 'Cost Reduction', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
+        ];
+        
+        statList.forEach(stat => {
+            html += `<div class="stat-sidebar-item"><span class="stat-sidebar-label">${stat.label}</span><span class="stat-sidebar-value">${stat.value}</span></div>`;
+        });
+        
+        contentContainer.innerHTML = html;
     }
 
     /**

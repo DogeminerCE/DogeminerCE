@@ -6696,5 +6696,127 @@ body.xbox-mode #sign-in-section {
     font-family: inherit;
     font-weight: 700;
     margin-right: 4px;
-    color: rgb(80, 50, 0);
+}
+
+/* ========== INVENTORY STATS SIDEBAR ========== */
+.inventory-split-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: flex-start;
+}
+.switcher-grid-container {
+    flex: 1;
+    min-width: 0;
+}
+.inventory-stats-sidebar {
+    width: 250px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(184, 134, 11, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    position: sticky;
+    top: 0px; 
+}
+.stats-sidebar-header {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #5a4a2a;
+    border-bottom: 2px solid rgba(184, 134, 11, 0.2);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.stats-sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.stat-sidebar-item {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 13px;
+    color: #5a4a2a;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(184, 134, 11, 0.15);
+}
+.stat-sidebar-label {
+    font-weight: bold;
+}
+.stat-sidebar-value {
+    color: #b8860b;
+    font-weight: 900;
+}
+.stats-toggle-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(to bottom, #f1c35a 0 50%, #c78b2b 50% 100%);
+    border: 2px solid #b8860b;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgba(80, 50, 0, 0.2);
+}
+.mobile-only {
+    display: none !important;
+}
+.desktop-only {
+    display: inline-block;
+}
+.desktop-only {
+    display: inline-block;
+}
+@media (max-width: 768px) {
+    #switcher-buttons {
+        z-index: 150 !important; /* Forces UI buttons ABOVE the massive rock hit-box on narrow screens */
+    }
+    .desktop-only {
+        display: none !important;
+    }
+    .inventory-split-layout {
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+    }
+    .switcher-grid-container {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .inventory-stats-sidebar {
+        display: none;
+        width: auto;
+        position: static;
+        margin-bottom: 10px;
+        align-self: stretch;
+        order: -1;
+    }
+    .inventory-stats-sidebar.mobile-open {
+        display: flex;
+    }
+    .mobile-only {
+        display: inline-block !important;
+    }
+    .inventory-toolbar-right {
+        min-width: 100%;
+        justify-content: space-between;
+    }
+    
+    .modal-close-btn.mobile-only {
+        width: 100%;
+        margin-top: 10px;
+        flex-shrink: 0;
+    }
 }
