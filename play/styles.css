@@ -2395,6 +2395,12 @@ body.planet-mars #main-rock {
 
 
 
+
+#character-container {
+    position: relative;
+    z-index: 2;
+}
+
 #pickaxe {
     position: absolute;
     width: 142px;
