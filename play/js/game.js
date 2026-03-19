@@ -4148,7 +4148,8 @@ class DogeMinerGame {
             return total + (upgradeDPS || helper.dps);
         }, 0);
 
-        this.dps = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
+        const baseDpsTotal = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
+        this.dps = baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1);
 
         // Update highest DPS
         if (this.dps > this.highestDps) {

@@ -309,7 +309,8 @@ class FortuneFactory {
      */
     _rollStats(statTemplates, playerLuck = 0, playerLootFind = 0) {
         // Combined scaling factor from luck and loot find
-        const scaleFactor = 1 + (playerLuck / 5) + (playerLootFind / 50);
+        // Use a logarithmic curve to decisively prevent explosive infinite stat loops
+        const scaleFactor = 1 + Math.log2(1 + (playerLuck / 50) + (playerLootFind / 500));
 
         return statTemplates.map(st => {
             let value;

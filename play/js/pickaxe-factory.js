@@ -370,18 +370,18 @@ class PickaxeFactory {
             } else {
                 // Roll a random value based on indicator type
                 if (st.indicator === '+%') {
-                    // Percentage stats: roll 1-25%, scaled by Wow
+                    // Percentage stats: roll 1-25%, scaled logarithmically by Wow
                     const baseRoll = 1 + Math.random() * 24;
-                    value = baseRoll * (1 + Math.random() * (playerWow || 0));
+                    value = baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10));
                     value = Math.round(value * 10) / 10; // Round to 1 decimal
                 } else if (st.indicator === '+') {
-                    // Flat additive stats: roll 1-100, scaled by Wow
+                    // Flat additive stats: roll 1-100, scaled logarithmically by Wow
                     const baseRoll = 1 + Math.floor(Math.random() * 99);
-                    value = Math.floor(baseRoll * (1 + Math.random() * (playerWow || 0)));
+                    value = Math.floor(baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10)));
                 } else if (st.indicator === '-') {
                     // Reduction stats: roll 1-50 (stored as positive, displayed with -)
                     const baseRoll = 1 + Math.floor(Math.random() * 49);
-                    value = Math.floor(baseRoll * (1 + Math.random() * (playerWow || 0)));
+                    value = Math.floor(baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10)));
                 }
 
                 // Apply multiplier if present (e.g., "5*Calculated value")
