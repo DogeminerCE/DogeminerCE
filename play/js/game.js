@@ -888,7 +888,7 @@ class DogeMinerGame {
 
                 if (threshold >= 75) {
                     // 90% and 75% thresholds: coins only
-                    if (Math.random() < 0.5) {
+                    if (Math.random() < 0.35) {
                         this.expelCoinPiles();
                     }
                 } else {
@@ -896,7 +896,7 @@ class DogeMinerGame {
                     if (this.rollDogebagDrop()) {
                         this.createDogebag();
                     }
-                    if (Math.random() < 0.5) {
+                    if (Math.random() < 0.35) {
                         this.expelCoinPiles();
                     }
                 }
@@ -921,14 +921,15 @@ class DogeMinerGame {
         }
 
         for (let i = 0; i < pileCount; i++) {
-            // Use power-based coin drop with some variance
-            const variance = 0.3 + Math.random() * 1.4; // 0.3x to 1.7x
-            const amount = Math.max(1, Math.floor(this.calculateCoinDrop() * variance));
-
-            // Pick sprite based on relative amount
-            const maxDrop = this.calculateCoinDrop() * 1.7;
-            const percentage = Math.min(75, Math.floor((amount / maxDrop) * 75));
+            // Pick a highly visually-skewed weighted percentage (1-75)
+            const percentage = this.getWeightedCoinPercentage();
             const sprite = this.getCoinPileSprite(percentage);
+
+            // Bind the actual Dogecoin payout directly to this visual size percentage!
+            // E.g. 5% (Small) -> 0.17x variance. 75% (Large) -> 1.2x variance.
+            const variance = 0.1 + (percentage / 75) * 1.1;
+            const maxDrop = this.calculateCoinDrop(); 
+            const amount = Math.max(1, Math.floor(maxDrop * variance));
 
             // Stagger the pile creation slightly
             setTimeout(() => {
