@@ -8,26 +8,31 @@
 
 const CONTROLLER_ICONS = {
     // Face buttons
-    A: `<svg class="ctrl-icon ctrl-a" viewBox="0 0 32 32" width="24" height="24"><circle cx="16" cy="16" r="14" fill="#107C10"/><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">A</text></svg>`,
-    B: `<svg class="ctrl-icon ctrl-b" viewBox="0 0 32 32" width="24" height="24"><circle cx="16" cy="16" r="14" fill="#E81123"/><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">B</text></svg>`,
-    X: `<svg class="ctrl-icon ctrl-x" viewBox="0 0 32 32" width="24" height="24"><circle cx="16" cy="16" r="14" fill="#0078D7"/><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">X</text></svg>`,
-    Y: `<svg class="ctrl-icon ctrl-y" viewBox="0 0 32 32" width="24" height="24"><circle cx="16" cy="16" r="14" fill="#FFB900"/><text x="16" y="22" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">Y</text></svg>`,
+    A: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_A.png" width="24" height="24" alt="A">`,
+    B: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_B.png" width="24" height="24" alt="B">`,
+    X: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_X.png" width="24" height="24" alt="X">`,
+    Y: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Y.png" width="24" height="24" alt="Y">`,
 
     // Bumpers / triggers
-    LB: `<svg class="ctrl-icon ctrl-lb" viewBox="0 0 40 24" width="32" height="20"><rect x="1" y="1" width="38" height="22" rx="6" fill="#333" stroke="#aaa" stroke-width="1.5"/><text x="20" y="17" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">LB</text></svg>`,
-    RB: `<svg class="ctrl-icon ctrl-rb" viewBox="0 0 40 24" width="32" height="20"><rect x="1" y="1" width="38" height="22" rx="6" fill="#333" stroke="#aaa" stroke-width="1.5"/><text x="20" y="17" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">RB</text></svg>`,
-    LT: `<svg class="ctrl-icon ctrl-lt" viewBox="0 0 40 24" width="32" height="20"><rect x="1" y="1" width="38" height="22" rx="6" fill="#444" stroke="#aaa" stroke-width="1.5"/><text x="20" y="17" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">LT</text></svg>`,
-    RT: `<svg class="ctrl-icon ctrl-rt" viewBox="0 0 40 24" width="32" height="20"><rect x="1" y="1" width="38" height="22" rx="6" fill="#444" stroke="#aaa" stroke-width="1.5"/><text x="20" y="17" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="DogeSans,sans-serif">RT</text></svg>`,
+    LB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LB.png" height="20" alt="LB">`,
+    RB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RB.png" height="20" alt="RB">`,
+    LT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LT.png" height="20" alt="LT">`,
+    RT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RT.png" height="20" alt="RT">`,
 
     // D-Pad
-    DPAD_UP: `<svg class="ctrl-icon ctrl-dpad" viewBox="0 0 24 24" width="18" height="18"><polygon points="12,4 4,16 20,16" fill="#ccc"/></svg>`,
-    DPAD_DOWN: `<svg class="ctrl-icon ctrl-dpad" viewBox="0 0 24 24" width="18" height="18"><polygon points="12,20 4,8 20,8" fill="#ccc"/></svg>`,
+    DPAD_UP: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Up.png" height="20" alt="D-Pad Up">`,
+    DPAD_DOWN: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Down.png" height="20" alt="D-Pad Down">`,
+    DPAD_LEFT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Left.png" height="20" alt="D-Pad Left">`,
+    DPAD_RIGHT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Right.png" height="20" alt="D-Pad Right">`,
 
-    // Menu / Start
-    MENU: `<svg class="ctrl-icon ctrl-menu" viewBox="0 0 32 24" width="24" height="18"><rect x="6" y="5" width="20" height="2.5" rx="1" fill="#ccc"/><rect x="6" y="10.5" width="20" height="2.5" rx="1" fill="#ccc"/><rect x="6" y="16" width="20" height="2.5" rx="1" fill="#ccc"/></svg>`,
+    // Menu / View
+    MENU: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Menu.png" height="20" alt="Menu">`,
 
     // Left stick
-    LSTICK: `<svg class="ctrl-icon ctrl-lstick" viewBox="0 0 32 32" width="20" height="20"><circle cx="16" cy="16" r="12" fill="none" stroke="#aaa" stroke-width="2"/><circle cx="16" cy="16" r="5" fill="#666"/></svg>`,
+    LSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Left_Stick.png" height="24" alt="LS">`,
+    
+    // Right stick
+    RSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Right_Stick.png" height="24" alt="RS">`,
 };
 
 function getControllerIcon(button) {
@@ -130,6 +135,15 @@ class ControllerManager {
         // Repeat-fire for mining
         this.miningHeld = false;
         this.miningRepeatTimer = null;
+
+        // Virtual cursor state
+        this.vcActive = false;
+        this.vcX = window.innerWidth / 2;
+        this.vcY = window.innerHeight / 2;
+        this.vcHideTimeout = null;
+        this.vcElement = null;
+        this.vcPrompt = null;
+        this.vcToggledOn = false;
 
         // Analog stick dead zone
         this.DEAD_ZONE = 0.35;
@@ -309,9 +323,13 @@ class ControllerManager {
             this._handleX();
         }
 
-        // Y Button — Toggle pickaxe modal
+        // Y Button — Toggle pickaxe modal (or Save in Settings)
         if (justPressed(GP.Y)) {
-            this._handleY();
+            if (this.focusContext === 'settings') {
+                if (window.saveManager) saveManager.saveGame();
+            } else {
+                this._handleY();
+            }
         }
 
         // LB / RB — Cycle panel tabs
@@ -322,14 +340,42 @@ class ControllerManager {
             this._cyclePanelTab(1);
         }
 
-        // LT / RT — Cycle planet tabs
+        // Virtual Cursor (Right Stick logic)
+        let rx = axes[AXIS.RIGHT_X] || 0;
+        let ry = axes[AXIS.RIGHT_Y] || 0;
+        let rightStickActive = Math.abs(rx) > this.DEAD_ZONE || Math.abs(ry) > this.DEAD_ZONE;
+        
+        let shouldProcessCursor = this.vcToggledOn || (this.game && this.game.isPlacingHelpers);
+
+        if (shouldProcessCursor) {
+            if (rightStickActive) {
+                this._handleRightStick(rx, ry);
+            } else if (this.game && this.game.isPlacingHelpers && (!this.vcElement || this.vcPrompt.style.display === 'none')) {
+                // Wake up prompt automatically for helper placement mode
+                this._handleRightStick(0, 0);
+            }
+        }
+
+        // LT / RT — Interaction logic
         if (buttons[GP.LT] && buttons[GP.LT].value > 0.5 &&
             !(this.prevButtons[GP.LT] && this.prevButtons[GP.LT].value > 0.5)) {
             this._cyclePlanetTab(-1);
         }
         if (buttons[GP.RT] && buttons[GP.RT].value > 0.5 &&
             !(this.prevButtons[GP.RT] && this.prevButtons[GP.RT].value > 0.5)) {
-            this._cyclePlanetTab(1);
+            if ((this.game && this.game.isPlacingHelpers) || this.vcActive) {
+                this._simulateVirtualClick(true);
+            } else {
+                this._cyclePlanetTab(1);
+            }
+        }
+        
+        // RT released for drag drop
+        if ((!buttons[GP.RT] || buttons[GP.RT].value <= 0.5) &&
+            (this.prevButtons[GP.RT] && this.prevButtons[GP.RT].value > 0.5)) {
+            if (this.vcActive || (this.game && this.game.isPlacingHelpers)) {
+                this._simulateVirtualClick(false);
+            }
         }
 
         // D-Pad / Left Stick — Navigate focus
@@ -358,11 +404,17 @@ class ControllerManager {
             }
         }
 
-        // Start / Menu — Quick save
+        // Start / Menu — Toggle Fortunes Inventory
         if (justPressed(GP.START)) {
-            if (window.saveManager) {
-                saveManager.saveGame();
+            // Can toggle from mining or inside the modal
+            if (this.focusContext === 'mining' || this.focusContext === 'modal') {
+                this._handleMenuButton();
             }
+        }
+
+        // Select / View — Toggle Cursor Mode
+        if (justPressed(GP.SELECT)) {
+            this._toggleCursorMode();
         }
 
         // Store state for next frame
@@ -392,6 +444,25 @@ class ControllerManager {
             if (this.game) {
                 this.game.processClick();
             }
+        }
+    }
+
+    _toggleCursorMode() {
+        this.vcToggledOn = !this.vcToggledOn;
+        
+        const standardPrompts = document.querySelectorAll('.controller-prompt:not(#vc-prompt-container)');
+        standardPrompts.forEach(p => {
+            if (this.vcToggledOn) {
+                p.style.setProperty('opacity', '0', 'important');
+            } else {
+                p.style.removeProperty('opacity');
+            }
+        });
+
+        if (this.vcToggledOn) {
+            this._handleRightStick(0, 0);
+        } else {
+            this._hideVirtualCursor();
         }
     }
 
@@ -434,6 +505,20 @@ class ControllerManager {
             this.focusContext = 'mining';
         } else {
             if (window.game) window.game.openPickaxeModal();
+            this.focusContext = 'modal';
+            this.focusIndex = 0;
+        }
+        this._updateFocus();
+    }
+
+    _handleMenuButton() {
+        // Toggle fortunes modal
+        const fortuneModal = document.getElementById('fortune-modal');
+        if (fortuneModal && fortuneModal.classList.contains('active')) {
+            if (window.game) window.game.closeFortuneModal();
+            this.focusContext = 'mining';
+        } else {
+            if (window.game) window.game.openFortuneModal();
             this.focusContext = 'modal';
             this.focusIndex = 0;
         }
@@ -566,8 +651,14 @@ class ControllerManager {
         if (this.focusContext === 'modal') {
             const items = this._getModalFocusables();
             if (items.length === 0) return;
-            if (moveY > 0 || moveX > 0) this.focusIndex++;
-            if (moveY < 0 || moveX < 0) this.focusIndex--;
+            
+            const cols = this._getGridColumns(items);
+
+            if (moveY > 0) this.focusIndex += cols;
+            if (moveY < 0) this.focusIndex -= cols;
+            if (moveX > 0) this.focusIndex++;
+            if (moveX < 0) this.focusIndex--;
+
             this.focusIndex = Math.max(0, Math.min(this.focusIndex, items.length - 1));
             this._updateFocus();
             return;
@@ -666,6 +757,22 @@ class ControllerManager {
         }
     }
 
+    _getGridColumns(items) {
+        if (items.length < 2) return 1;
+        const firstTop = items[0].getBoundingClientRect().top;
+        let cols = 1;
+        // Count how many items belong on the first visible row horizontally
+        // We use a small threshold in case there is slight alignment drift
+        for (let i = 1; i < items.length; i++) {
+            if (Math.abs(items[i].getBoundingClientRect().top - firstTop) < 10) {
+                cols++;
+            } else {
+                break;
+            }
+        }
+        return Math.max(1, cols);
+    }
+
     _getFocusableItems() {
         if (this.focusContext === 'shop') {
             const isMobile = window.innerWidth <= 768;
@@ -698,11 +805,12 @@ class ControllerManager {
     _getModalFocusables() {
         const pickaxeModal = document.getElementById('pickaxe-modal');
         if (pickaxeModal && pickaxeModal.classList.contains('active')) {
-            return Array.from(pickaxeModal.querySelectorAll('.switcher-card, .pickaxe-card'));
+            // We use .item-card as that's the class assigned during renderPickaxeGrid and renderFortuneGrid
+            return Array.from(pickaxeModal.querySelectorAll('.switcher-card, .item-card'));
         }
         const fortuneModal = document.getElementById('fortune-modal');
         if (fortuneModal && fortuneModal.classList.contains('active')) {
-            return Array.from(fortuneModal.querySelectorAll('.switcher-card, .fortune-card'));
+            return Array.from(fortuneModal.querySelectorAll('.switcher-card, .item-card'));
         }
         return [];
     }
@@ -863,9 +971,12 @@ class ControllerManager {
 
         // Pickaxe button prompt
         this._addPrompt('pickaxe-btn', 'Y', '', 'prompt-pickaxe');
+        
+        // Fortunes button prompt (Menu Button)
+        this._addPrompt('fortune-btn', 'MENU', '', 'prompt-fortunes');
 
-        // Save prompt on settings
-        this._addPrompt('settings-tab-btn', 'MENU', 'Save', 'prompt-save');
+        // Save prompt on settings (Y Button)
+        this._addPrompt('settings-tab-btn', 'Y', 'Save', 'prompt-save');
     }
 
     _addPrompt(containerId, button, label, promptId, position = 'bottom') {
@@ -958,8 +1069,18 @@ class ControllerManager {
         this.showIndicators = enabled;
         if (enabled && this.controllerMode) {
             this._createPrompts();
+            if (this.vcActive && this.vcPrompt) {
+                this.vcPrompt.style.display = 'flex';
+                this.vcPrompt.style.setProperty('opacity', '1', 'important');
+            }
         } else {
             this._removePrompts();
+            if (this.vcPrompt) {
+                this.vcPrompt.style.setProperty('opacity', '0', 'important');
+                setTimeout(() => {
+                    if (!this.showIndicators) this.vcPrompt.style.display = 'none';
+                }, 400);
+            }
         }
     }
 
@@ -1070,6 +1191,202 @@ class ControllerManager {
             if (moveX !== 0) {
                 this._dialogFocusIdx = this._dialogFocusIdx === 0 ? 1 : 0;
                 this._updateDialogFocus();
+            }
+        }
+    }
+
+    // ── Virtual Cursor & Drag-and-Drop ───────────────────────────────────
+
+    _initVirtualCursor() {
+        if (!this.vcElement) {
+            this.vcElement = document.createElement('img');
+            this.vcElement.id = 'controller-virtual-cursor';
+            this.vcElement.src = 'assets/quickUI/Cursor for Controller/pointer.cur';
+            this.vcElement.alt = 'Virtual Cursor';
+            this.vcElement.style.position = 'fixed';
+            this.vcElement.style.zIndex = '999999';
+            this.vcElement.style.pointerEvents = 'none';
+            this.vcElement.style.display = 'none';
+            this.vcElement.style.setProperty('opacity', '1', 'important');
+            this.vcElement.style.setProperty('transition', 'opacity 0.4s ease', 'important');
+            this.vcElement.style.width = '32px';
+            this.vcElement.style.height = '32px';
+            
+            // Tooltip container attached to the cursor
+            this.vcPrompt = document.createElement('div');
+            this.vcPrompt.id = 'vc-prompt-container';
+            this.vcPrompt.className = 'controller-prompt'; // Without -bottom to prevent conflicting bottom: -28px rules
+            this.vcPrompt.style.position = 'fixed';
+            this.vcPrompt.style.zIndex = '999999';
+            this.vcPrompt.style.pointerEvents = 'none';
+            this.vcPrompt.style.display = 'none';
+            this.vcPrompt.style.setProperty('opacity', '1', 'important');
+            this.vcPrompt.style.setProperty('transition', 'opacity 0.4s ease', 'important');
+            this.vcPrompt.style.whiteSpace = 'nowrap';
+            // Use margin to reliably offset tooltip, bypassing any global transforms
+            this.vcPrompt.style.marginLeft = '26px';
+            this.vcPrompt.style.marginTop = '32px';
+            
+            document.body.appendChild(this.vcElement);
+            document.body.appendChild(this.vcPrompt);
+            
+            this.vcX = window.innerWidth / 2;
+            this.vcY = window.innerHeight / 2;
+            this.vcFadeTimeout = null;
+        }
+    }
+
+    _handleRightStick(rx, ry) {
+        if (!this.vcElement) {
+            this._initVirtualCursor();
+            if (this.game) {
+                this.vcX = this.game.mouseX || window.innerWidth / 2;
+                this.vcY = this.game.mouseY || window.innerHeight / 2;
+            }
+        }
+        
+        let shouldShowCursor = false;
+        if (this.game && this.game.isPlacingHelpers) {
+            shouldShowCursor = false;
+            this._updateVirtualCursorPrompt('RT', 'Place');
+        } else if (this.game && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+            shouldShowCursor = true;
+            this._updateVirtualCursorPrompt('RT', 'Drop');
+        } else {
+            shouldShowCursor = true;
+            this._updateVirtualCursorPrompt('RT', 'Move Helper');
+        }
+        
+        this.vcActive = true;
+        
+        // Ensure opacity is ready for appearing
+        if (this.vcFadeTimeout) {
+            clearTimeout(this.vcFadeTimeout);
+            this.vcFadeTimeout = null;
+        }
+        
+        // Show the cursor synchronously
+        this.vcElement.style.display = shouldShowCursor ? 'block' : 'none';
+        
+        // Only show prompt if indicators are enabled
+        if (this.showIndicators) {
+            this.vcPrompt.style.display = 'flex';
+        } else {
+            this.vcPrompt.style.display = 'none';
+        }
+        
+        // Small delay before setting opacity so the browser registers the transition from display block
+        requestAnimationFrame(() => {
+            if (this.vcElement) this.vcElement.style.setProperty('opacity', '1', 'important');
+            if (this.showIndicators && this.vcPrompt) {
+                this.vcPrompt.style.setProperty('opacity', '1', 'important');
+            }
+        });
+        
+        const speed = 18;
+        if (Math.abs(rx) > this.DEAD_ZONE) this.vcX += rx * speed;
+        if (Math.abs(ry) > this.DEAD_ZONE) this.vcY += ry * speed;
+        
+        this.vcX = Math.max(0, Math.min(window.innerWidth, this.vcX));
+        this.vcY = Math.max(0, Math.min(window.innerHeight, this.vcY));
+        
+        this.vcElement.style.left = this.vcX + 'px';
+        this.vcElement.style.top = this.vcY + 'px';
+        
+        this.vcPrompt.style.left = this.vcX + 'px';
+        this.vcPrompt.style.top = this.vcY + 'px';
+        
+        // Keep the game's mouse tracking up-to-date
+        const moveEvt = new MouseEvent('mousemove', {
+            clientX: this.vcX,
+            clientY: this.vcY,
+            bubbles: true,
+            cancelable: true
+        });
+        document.dispatchEvent(moveEvt);
+
+        if (!this.vcToggledOn) {
+            if (this.vcHideTimeout) clearTimeout(this.vcHideTimeout);
+            this.vcHideTimeout = setTimeout(() => {
+                this._hideVirtualCursor();
+            }, 5000);
+        }
+    }
+    
+    _updateVirtualCursorPrompt(button, label) {
+        if (this.vcPrompt) {
+            const rtHtml = `${getControllerIcon(button)}<span class="prompt-label" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; margin-right: 12px;">${label}</span>`;
+            const rsHtml = `${getControllerIcon('RSTICK')}<span class="prompt-label" style="text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;">Move Cursor</span>`;
+            this.vcPrompt.innerHTML = rtHtml + rsHtml;
+        }
+    }
+    
+    _hideVirtualCursor() {
+        this.vcActive = false;
+        
+        // Use setProperty with !important to cleanly override .controller-mode .controller-prompt
+        if (this.vcElement) this.vcElement.style.setProperty('opacity', '0', 'important');
+        if (this.vcPrompt) this.vcPrompt.style.setProperty('opacity', '0', 'important');
+        
+        this.vcFadeTimeout = setTimeout(() => {
+            if (!this.vcActive) {
+                if (this.vcElement) this.vcElement.style.display = 'none';
+                if (this.vcPrompt) this.vcPrompt.style.display = 'none';
+            }
+        }, 500); // 0.5s transition
+        
+        if (this.game && !this.game.isPlacingHelpers && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+            this._simulateVirtualClick(false);
+        }
+    }
+    
+    _simulateVirtualClick(isDown) {
+        const target = document.elementFromPoint(this.vcX, this.vcY) || document.body;
+        
+        if (this.game && this.game.isPlacingHelpers) {
+            if (isDown) {
+                const clickEvt = new MouseEvent('click', {
+                    clientX: this.vcX,
+                    clientY: this.vcY,
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                document.dispatchEvent(clickEvt);
+            }
+        } else if (this.game && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+            if (!isDown) {
+                const upEvt = new MouseEvent('mouseup', {
+                    clientX: this.vcX,
+                    clientY: this.vcY,
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                document.dispatchEvent(upEvt);
+                this._updateVirtualCursorPrompt('RT', 'Move Helper');
+            }
+        } else {
+            if (isDown) {
+                const downEvt = new MouseEvent('mousedown', {
+                    clientX: this.vcX,
+                    clientY: this.vcY,
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                target.dispatchEvent(downEvt);
+                
+                const clickEvt = new MouseEvent('click', {
+                    clientX: this.vcX,
+                    clientY: this.vcY,
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                target.dispatchEvent(clickEvt);
+                
+                this._updateVirtualCursorPrompt('RT', 'Drop');
             }
         }
     }
