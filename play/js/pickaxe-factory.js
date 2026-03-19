@@ -321,7 +321,24 @@ class PickaxeFactory {
         if (template.zeroDPC) {
             baseDPC = 0;
         } else {
-            baseDPC = Math.max(1, Math.floor(currentMaxDPC * 1.15));
+            // Apply a base exponential multiplier and a healthy flat additive boost
+            const multiplier = 1.15 + (Math.random() * 0.15); // 1.15x to 1.30x
+            const flatBoost = 3 + Math.floor(Math.random() * 8); // +3 to +10 flat
+            
+            baseDPC = Math.floor((currentMaxDPC * multiplier) + flatBoost);
+
+            // Scale heavily by the rarity of the roll to make rare drops wildly exciting
+            const rarityScales = {
+                common: 1.0,
+                improved: 1.3,
+                rare: 1.8,
+                epic: 2.5,
+                legendary: 4.0
+            };
+            const rScale = rarityScales[template.rarity] || 1.0;
+            
+            baseDPC = Math.floor(baseDPC * rScale);
+
             // Ensure it's always an upgrade (at least +1)
             if (baseDPC <= currentMaxDPC && currentMaxDPC > 0) {
                 baseDPC = currentMaxDPC + 1;
