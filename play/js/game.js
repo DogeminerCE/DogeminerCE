@@ -669,11 +669,7 @@ class DogeMinerGame {
         // (we know the pattern: filename-use.png)
         if (this._activeSpritePaths && this._activeSpritePaths.has(equipped.templateId)) {
             pickaxeImg.src = activePath;
-            // Swap back to idle after swing
-            clearTimeout(this._activeSpriteTimeout);
-            this._activeSpriteTimeout = setTimeout(() => {
-                pickaxeImg.src = idlePath;
-            }, 150);
+            this._currentIdleSpritePath = idlePath;
         }
     }
 
@@ -2173,13 +2169,20 @@ class DogeMinerGame {
         const pickaxe = document.getElementById('pickaxe');
         if (!pickaxe) return;
 
-        // Always start the swing immediately
-        pickaxe.classList.remove('pickaxe-intro');
-        pickaxe.classList.remove('swinging');
-        void pickaxe.offsetWidth; // Force reflow so animation can restart
-        pickaxe.classList.add('swinging');
+        const now = Date.now();
+        const diff = now - (this.lastRealSwing || 0);
+        this.lastRealSwing = now;
+        
+        // DM2 swing timing: fast chain-clicks = 34ms, fresh clicks = 68ms
+        const swingTime = (diff < 200) ? 34 : 68;
+        this._currentSwingDuration = swingTime;
+        this._swingStartTime = now;
 
-        // Clear any existing timeout since we're starting a new swing
+        pickaxe.style.transition = `transform ${swingTime}ms ease-in`;
+        pickaxe.classList.remove('pickaxe-intro');
+        pickaxe.classList.add('swing-down');
+
+        // Clear any pending return timeout
         if (this.swingTimeout) {
             clearTimeout(this.swingTimeout);
             this.swingTimeout = null;
@@ -2187,22 +2190,45 @@ class DogeMinerGame {
     }
 
     endSwing() {
+        if (this.isMouseDown || this.isSpaceDown) return;
+
         const pickaxe = document.getElementById('pickaxe');
         if (!pickaxe) return;
 
-        if (!this.isMouseDown && !this.isSpaceDown) {
-            if (this.swingTimeout) {
-                clearTimeout(this.swingTimeout);
-                this.swingTimeout = null;
-            }
-
-            this.swingTimeout = setTimeout(() => {
-                if (!this.isMouseDown && !this.isSpaceDown) {
-                    pickaxe.classList.remove('swinging');
-                }
-                this.swingTimeout = null;
-            }, 150); // Allow swing animation to complete before resetting
+        // Clear any existing pending return
+        if (this.swingTimeout) {
+            clearTimeout(this.swingTimeout);
+            this.swingTimeout = null;
         }
+
+        // Calculate how long the swing has been active
+        const elapsed = Date.now() - (this._swingStartTime || 0);
+        const remaining = (this._currentSwingDuration || 34) - elapsed;
+
+        if (remaining > 0) {
+            // Swing hasn't finished yet — delay the return so it completes fully
+            this.swingTimeout = setTimeout(() => {
+                this._doSwingReturn(pickaxe);
+            }, remaining);
+        } else {
+            // Swing already completed, return immediately
+            this._doSwingReturn(pickaxe);
+        }
+    }
+
+    _doSwingReturn(pickaxe) {
+        if (this.isMouseDown || this.isSpaceDown) return;
+
+        // DM2 unpick time: MINIMUM_SWING_TIME * 4 = 136ms
+        pickaxe.style.transition = 'transform 136ms ease-out';
+        pickaxe.classList.remove('swing-down');
+
+        // Revert to idle sprite
+        if (this._currentIdleSpritePath) {
+            pickaxe.src = this._currentIdleSpritePath;
+        }
+
+        this.swingTimeout = null;
     }
 
     // Rock health system removed - simplified mining
