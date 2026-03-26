@@ -1237,6 +1237,165 @@ body {
     padding: 30px;
 }
 
+/* ========== PLANET-THEMED INVENTORY MODALS ========== */
+/* Earth is the default (warm gold/yellow). These overrides match each planet's shop/panel theme. */
+
+/* ---- Moon: light blue (uses .moon-theme class on body) ---- */
+.moon-theme .switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(225,235,240,0.98) 20%, rgba(210,230,240,0.98) 80%);
+    border-color: rgb(160,200,225);
+}
+.moon-theme .inventory-modal-header {
+    background: linear-gradient(to bottom, rgba(225,235,240,0.98) 20%, rgba(210,230,240,0.98) 80%);
+    border-bottom-color: rgba(160,200,225,0.35);
+}
+.moon-theme .modal-title { color: #3a5a6a; }
+.moon-theme .modal-subtitle,
+.moon-theme .inventory-count { color: #5a7a8a; }
+.moon-theme .inventory-search,
+.moon-theme .inventory-select {
+    border-color: rgba(160,200,225,0.55);
+    color: #3a5a6a;
+}
+.moon-theme .inventory-search:focus,
+.moon-theme .inventory-select:focus { border-color: rgb(160,200,225); }
+.moon-theme .modal-close-btn {
+    background: linear-gradient(to bottom, #c8dce8 0 50%, #a8c8d8 50% 100%);
+    border-color: rgb(120,185,235);
+    color: #3a5a6a;
+}
+.moon-theme .modal-close-btn:hover {
+    background: linear-gradient(to bottom, #d8e8f0 0 50%, #b8d4e0 50% 100%);
+}
+.moon-theme .item-card-name { color: #3a5a6a; }
+.moon-theme .item-card-rarity { color: #5a7a8a; }
+.moon-theme .item-card-description { color: #6a8a9a; }
+.moon-theme .item-card-stat span { color: #3a5a6a; }
+
+/* ---- Mars: dark red panels + purple buttons, white text ---- */
+.planet-mars .switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(80,35,30,0.98) 20%, rgba(90,30,25,0.98) 80%);
+    border-color: rgb(130,80,75);
+}
+.planet-mars .inventory-modal-header {
+    background: linear-gradient(to bottom, rgba(80,35,30,0.98) 20%, rgba(90,30,25,0.98) 80%);
+    border-bottom-color: rgba(130,80,75,0.5);
+}
+.planet-mars .modal-title { color: #fff; }
+.planet-mars .modal-subtitle,
+.planet-mars .inventory-count { color: rgba(255,255,255,0.75); }
+.planet-mars .inventory-search,
+.planet-mars .inventory-select {
+    border-color: rgb(130,80,75);
+    background: rgba(125,30,95,0.4);
+    color: #fff;
+}
+.planet-mars .inventory-search::placeholder { color: rgba(255,255,255,0.5); }
+.planet-mars .inventory-search:focus,
+.planet-mars .inventory-select:focus {
+    border-color: rgb(160,90,85);
+    background: rgba(125,30,95,0.6);
+}
+.planet-mars .modal-close-btn {
+    background: linear-gradient(to bottom, rgb(125,30,95) 0 50%, rgb(115,25,90) 50% 100%);
+    border-color: rgb(130,80,75);
+    color: #fff;
+}
+.planet-mars .modal-close-btn:hover {
+    background: linear-gradient(to bottom, rgb(135,40,105) 0 50%, rgb(125,35,100) 50% 100%);
+}
+.planet-mars .item-card-name { color: #fff; }
+.planet-mars .item-card-rarity { color: rgba(255,255,255,0.7); }
+.planet-mars .item-card-description { color: rgba(255,255,255,0.6); }
+.planet-mars .item-card-stat span { color: #fff; }
+.planet-mars .item-card {
+    background: linear-gradient(to bottom, rgba(100,45,40,0.9), rgba(80,35,30,0.9));
+}
+.planet-mars .item-card.rarity-common {
+    border-color: rgb(150,100,95);
+    background: linear-gradient(to bottom, rgba(100,55,50,0.9), rgba(85,45,40,0.9));
+}
+.planet-mars .item-card.rarity-improved {
+    border-color: #6b8e23;
+    background: linear-gradient(to bottom, rgba(75,60,40,0.9), rgba(65,55,35,0.9));
+}
+.planet-mars .item-card.rarity-rare {
+    border-color: #6080cc;
+    background: linear-gradient(to bottom, rgba(60,45,70,0.9), rgba(50,40,65,0.9));
+}
+.planet-mars .item-card.rarity-epic {
+    border-color: #b050e0;
+    background: linear-gradient(to bottom, rgba(80,35,70,0.9), rgba(70,30,60,0.9));
+}
+.planet-mars .item-card.rarity-legendary {
+    border-color: #ffa500;
+    background: linear-gradient(to bottom, rgba(100,55,30,0.9), rgba(90,45,25,0.9));
+}
+
+/* ---- Jupiter: deep amber-brown ---- */
+.planet-jupiter .switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(232,220,200,0.98) 20%, rgba(216,196,160,0.98) 80%);
+    border-color: #9a7840;
+}
+.planet-jupiter .inventory-modal-header {
+    background: linear-gradient(to bottom, rgba(232,220,200,0.98) 20%, rgba(216,196,160,0.98) 80%);
+    border-bottom-color: rgba(154,120,64,0.35);
+}
+.planet-jupiter .modal-title { color: #4a3a22; }
+.planet-jupiter .modal-subtitle,
+.planet-jupiter .inventory-count { color: #6a5a3a; }
+.planet-jupiter .inventory-search,
+.planet-jupiter .inventory-select {
+    border-color: rgba(154,120,64,0.55);
+    color: #4a3a22;
+}
+.planet-jupiter .inventory-search:focus,
+.planet-jupiter .inventory-select:focus { border-color: #9a7840; }
+.planet-jupiter .modal-close-btn {
+    background: linear-gradient(to bottom, #e0c8a0 0 50%, #c8a878 50% 100%);
+    border-color: #9a7840;
+    color: #4a3a22;
+}
+.planet-jupiter .modal-close-btn:hover {
+    background: linear-gradient(to bottom, #e8d0b0 0 50%, #d0b888 50% 100%);
+}
+.planet-jupiter .item-card-name { color: #4a3a22; }
+.planet-jupiter .item-card-rarity { color: #6a5a3a; }
+.planet-jupiter .item-card-description { color: #7a6a4a; }
+.planet-jupiter .item-card-stat span { color: #4a3a22; }
+
+/* ---- Titan: bright golden-amber ---- */
+.planet-titan .switcher-modal-content {
+    background: linear-gradient(to bottom, rgba(240,224,176,0.98) 20%, rgba(232,200,112,0.98) 80%);
+    border-color: #b09030;
+}
+.planet-titan .inventory-modal-header {
+    background: linear-gradient(to bottom, rgba(240,224,176,0.98) 20%, rgba(232,200,112,0.98) 80%);
+    border-bottom-color: rgba(176,144,48,0.35);
+}
+.planet-titan .modal-title { color: #2d2416; }
+.planet-titan .modal-subtitle,
+.planet-titan .inventory-count { color: #5a4a2a; }
+.planet-titan .inventory-search,
+.planet-titan .inventory-select {
+    border-color: rgba(176,144,48,0.55);
+    color: #2d2416;
+}
+.planet-titan .inventory-search:focus,
+.planet-titan .inventory-select:focus { border-color: #b09030; }
+.planet-titan .modal-close-btn {
+    background: linear-gradient(to bottom, #f0d870 0 50%, #d8c050 50% 100%);
+    border-color: #b09030;
+    color: #2d2416;
+}
+.planet-titan .modal-close-btn:hover {
+    background: linear-gradient(to bottom, #f8e088 0 50%, #e0c860 50% 100%);
+}
+.planet-titan .item-card-name { color: #2d2416; }
+.planet-titan .item-card-rarity { color: #5a4a2a; }
+.planet-titan .item-card-description { color: #6a5a3a; }
+.planet-titan .item-card-stat span { color: #2d2416; }
+
 /* ========== DOGEBAG SYSTEM ========== */
 
 /* In-world dogebag element */
@@ -4562,6 +4721,93 @@ body.planet-mars #main-rock {
     flex: 1 !important;
 }
 
+/* Force Mobile: Helper bar (mirrors the @media query styles) */
+.force-mobile #mobile-helper-bar {
+    position: fixed;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    left: 100px;
+    transform: scale(0.85);
+    transform-origin: bottom left;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 8px;
+    z-index: 500;
+    max-width: calc(100vw - 105px);
+    overflow-x: auto;
+    padding: 6px 15px;
+    background: linear-gradient(to bottom, rgba(240, 235, 220, 0.95) 20%, rgba(255, 240, 180, 0.95) 80%);
+    border: 2px solid #d4af37;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.force-mobile #mobile-helper-bar:empty {
+    display: none !important;
+}
+
+.force-mobile .mobile-helper-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+}
+
+.force-mobile .mobile-helper-count {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #8b4513;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1px 6px;
+    border-radius: 8px;
+    border: 1px solid #d4af37;
+    min-width: 24px;
+    text-align: center;
+}
+
+.force-mobile .mobile-helper-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    border: 2px solid transparent;
+}
+
+.force-mobile .mobile-helper-item.affordable .mobile-helper-icon {
+    border-color: #2ecc71;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+}
+
+/* Force Mobile: Planet toggle button */
+.force-mobile #mobile-planet-toggle {
+    position: fixed;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    left: 20px;
+    width: 70px;
+    height: 85px;
+    z-index: 1001;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Force Mobile: Planet menu */
+.force-mobile #mobile-planet-menu {
+    display: block;
+}
+
+/* Force Mobile: Mobile menu toggle */
+.force-mobile #mobile-menu-toggle {
+    display: flex !important;
+}
+
 /* Mobile Media Query - Applies to screens 768px and below */
 @media screen and (max-width: 768px) {
     /* Dogebag modal: fit screen and keep buttons reachable */
@@ -4833,7 +5079,8 @@ body.planet-mars #main-rock {
         /* Right of planet switcher (20px + 70px + 10px gap) */
         transform: scale(0.85);
         transform-origin: bottom left;
-        display: flex;
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: flex-start;
         align-items: flex-end;
         gap: 8px;
