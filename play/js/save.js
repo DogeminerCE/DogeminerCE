@@ -259,6 +259,8 @@ class SaveManager {
             maxPickaxeDPC: this.game.maxPickaxeDPC,
             fortuneInventory: this.game.fortuneInventory,
             latestObtainedFortune: this.game.latestObtainedFortune || null,
+            moonDogebagCount: this.game.moonDogebagCount || 0,
+            mysteryBoxObtained: this.game.mysteryBoxObtained || false,
             rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
@@ -331,6 +333,8 @@ class SaveManager {
         this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
         this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
         this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
+        this.game.moonDogebagCount = saveData.moonDogebagCount || 0;
+        this.game.mysteryBoxObtained = saveData.mysteryBoxObtained || false;
         if (saveData.planetRockData) {
             this.game.planetRockData = saveData.planetRockData;
         } else {
@@ -924,6 +928,8 @@ class SaveManager {
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
                 this.game.latestObtainedFortune = null;
+                this.game.moonDogebagCount = 0;
+                this.game.mysteryBoxObtained = false;
                 // Clear the fortune button preview image
                 const fortunePreviewImg = document.getElementById('fortune-btn-preview');
                 if (fortunePreviewImg) {

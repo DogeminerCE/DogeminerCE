@@ -212,6 +212,8 @@ class DogeMinerGame {
         this.fortuneInventory = []; // Array of fortune instances
         this.ownedFortunes = []; // Legacy compat
         this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
+        this.moonDogebagCount = 0; // Tracks how many Moon Dogebags have been opened
+        this.mysteryBoxObtained = false; // Whether the Mystery Box has been granted
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
             pickaxe: { search: '', rarity: '', sort: 'newest' },
@@ -1195,6 +1197,41 @@ class DogeMinerGame {
      * Then creates the dogebag element on the ground.
      */
     generateDogebagContents() {
+        // Track Moon Dogebag openings for the Mystery Box guarantee
+        if (this.currentLevel === 'moon') {
+            this.moonDogebagCount = (this.moonDogebagCount || 0) + 1;
+
+            // Mystery Box: guaranteed within the first 5 Moon Dogebags (if not yet obtained)
+            if (!this.mysteryBoxObtained && this.moonDogebagCount <= 5 && this.fortuneFactory && this.fortuneFactory.loaded) {
+                const mysteryTemplate = Object.values(this.fortuneFactory.templates).find(
+                    t => t.name === 'Mystery Box'
+                );
+                if (mysteryTemplate) {
+                    // Roll it on the last qualifying bag, or randomly within the window
+                    const bagsLeft = 5 - this.moonDogebagCount;
+                    const rollChance = bagsLeft === 0 ? 1 : 1 / (bagsLeft + 1);
+                    if (Math.random() < rollChance) {
+                        this.mysteryBoxObtained = true;
+                        const stats = this.fortuneFactory._rollStats(
+                            mysteryTemplate.statTemplates,
+                            this.playerStats.luck,
+                            this.playerStats.lootFind
+                        );
+                        const fortune = {
+                            instanceId: `fortune_mysterybox_${Date.now()}`,
+                            templateId: mysteryTemplate.id,
+                            name: mysteryTemplate.name,
+                            rarity: mysteryTemplate.rarity,
+                            description: mysteryTemplate.description,
+                            stats,
+                            sprite: mysteryTemplate.sprite
+                        };
+                        return { type: 'fortune', item: fortune };
+                    }
+                }
+            }
+        }
+
         // 60% pickaxe, 20% fortune, 20% coins
         const roll = Math.random();
 
@@ -1215,11 +1252,12 @@ class DogeMinerGame {
         }
 
         if (roll < 0.80 && this.fortuneFactory && this.fortuneFactory.loaded) {
-            // Roll a fortune
+            // Roll a fortune — Mystery Box excluded from normal drops
             const fortune = this.fortuneFactory.generateFortune(
                 this.playerStats.lootFind,
                 this.playerStats.luck,
-                this.currentLevel
+                this.currentLevel,
+                ['mysterybox'] // Exclude Mystery Box from normal drop pool
             );
             if (fortune) {
                 return { type: 'fortune', item: fortune };

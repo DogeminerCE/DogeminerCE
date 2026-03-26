@@ -24,24 +24,19 @@ async function initializeGame() {
         // Set initial planet attribute for CSS targeting
         document.body.dataset.planet = game.currentLevel;
 
-        // Initialize pickaxe factory and load templates
-        updateLoadingInfo('Loading pickaxe templates...');
+        // Initialize and load both item factories concurrently
+        updateLoadingInfo('Loading item templates...');
+        game.pickaxeFactory = new PickaxeFactory();
+        game.fortuneFactory = new FortuneFactory();
         try {
-            game.pickaxeFactory = new PickaxeFactory();
-            await game.pickaxeFactory.loadTemplates();
+            await Promise.all([
+                game.pickaxeFactory.loadTemplates(),
+                game.fortuneFactory.loadTemplates()
+            ]);
             // Pass active sprite set to game for click animation
             game._activeSpritePaths = game.pickaxeFactory.templatesWithActiveSprite;
         } catch (err) {
-            console.error('Failed to load pickaxe templates:', err);
-        }
-
-        // Initialize fortune factory and load templates
-        updateLoadingInfo('Loading fortune templates...');
-        try {
-            game.fortuneFactory = new FortuneFactory();
-            await game.fortuneFactory.loadTemplates();
-        } catch (err) {
-            console.error('Failed to load fortune templates:', err);
+            console.error('Failed to load item templates:', err);
         }
 
         updateLoadingInfo('Setting up shop system...');

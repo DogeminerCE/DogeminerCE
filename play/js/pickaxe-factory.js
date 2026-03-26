@@ -40,20 +40,22 @@ class PickaxeFactory {
                 // Fetch the planet directory listing
                 const pickaxeFolders = await this._fetchDirectoryListing(basePath, planet);
 
-                for (const folder of pickaxeFolders) {
-                    try {
-                        const template = await this._loadTemplate(basePath, planet, folder);
-                        if (template) {
-                            const templateId = `${planetKey}_${this._sanitizeId(template.name)}`;
-                            template.id = templateId;
-                            template.planetOfOrigin = planetKey;
-                            this.templates[templateId] = template;
-                            this.templatesByPlanet[planetKey].push(templateId);
-                        }
-                    } catch (err) {
-                        console.warn(`Failed to load pickaxe template: ${planet}/${folder}`, err);
-                    }
-                }
+                const folderPromises = pickaxeFolders.map(folder =>
+                    this._loadTemplate(basePath, planet, folder)
+                        .then(template => {
+                            if (template) {
+                                const templateId = `${planetKey}_${this._sanitizeId(template.name)}`;
+                                template.id = templateId;
+                                template.planetOfOrigin = planetKey;
+                                this.templates[templateId] = template;
+                                this.templatesByPlanet[planetKey].push(templateId);
+                            }
+                        })
+                        .catch(err => {
+                            console.warn(`Failed to load pickaxe template: ${planet}/${folder}`, err);
+                        })
+                );
+                await Promise.all(folderPromises);
             } catch (err) {
                 console.warn(`Failed to scan pickaxe planet folder: ${planet}`, err);
             }

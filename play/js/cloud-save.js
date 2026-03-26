@@ -325,6 +325,8 @@ class CloudSaveManager {
             maxPickaxeDPC: window.game.maxPickaxeDPC || 1,
             fortuneInventory: window.game.fortuneInventory || [],
             latestObtainedFortune: window.game.latestObtainedFortune || null,
+            moonDogebagCount: window.game.moonDogebagCount || 0,
+            mysteryBoxObtained: window.game.mysteryBoxObtained || false,
             rocksBroken: window.game.rocksBroken || 0,
             planetRockData: window.game.planetRockData,
             playTime: window.game.playTime || 0,
@@ -356,6 +358,8 @@ class CloudSaveManager {
             window.game.maxPickaxeDPC = gameData.maxPickaxeDPC || 1;
             window.game.fortuneInventory = Array.isArray(gameData.fortuneInventory) ? gameData.fortuneInventory : [];
             window.game.latestObtainedFortune = gameData.latestObtainedFortune || null;
+            window.game.moonDogebagCount = gameData.moonDogebagCount || 0;
+            window.game.mysteryBoxObtained = gameData.mysteryBoxObtained || false;
 
             if (gameData.planetRockData) {
                 window.game.planetRockData = gameData.planetRockData;

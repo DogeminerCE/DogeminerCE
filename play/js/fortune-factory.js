@@ -22,29 +22,31 @@ class FortuneFactory {
     async loadTemplates() {
         const basePath = 'assets/general/icons/Fortunes';
 
-        for (const folderName of FORTUNE_MANIFEST) {
-            try {
-                const template = await this._loadTemplate(basePath, folderName);
-                if (template) {
-                    const templateId = this._sanitizeId(template.name);
-                    template.id = templateId;
+        const loadPromises = FORTUNE_MANIFEST.map(folderName =>
+            this._loadTemplate(basePath, folderName)
+                .then(template => {
+                    if (template) {
+                        const templateId = this._sanitizeId(template.name);
+                        template.id = templateId;
 
-                    // Determine planet restriction from name
-                    const nameUpper = template.name.toUpperCase();
-                    if (nameUpper.includes('MOON')) {
-                        template.planetRestriction = 'moon';
-                    } else if (nameUpper.includes('MARS')) {
-                        template.planetRestriction = 'mars';
-                    } else {
-                        template.planetRestriction = null; // Available everywhere
+                        // Determine planet restriction from name
+                        const nameUpper = template.name.toUpperCase();
+                        if (nameUpper.includes('MOON') || nameUpper === 'MYSTERY BOX') {
+                            template.planetRestriction = 'moon';
+                        } else if (nameUpper.includes('MARS')) {
+                            template.planetRestriction = 'mars';
+                        } else {
+                            template.planetRestriction = null; // Available everywhere
+                        }
+
+                        this.templates[templateId] = template;
                     }
-
-                    this.templates[templateId] = template;
-                }
-            } catch (err) {
-                console.warn(`Failed to load fortune template: ${folderName}`, err);
-            }
-        }
+                })
+                .catch(err => {
+                    console.warn(`Failed to load fortune template: ${folderName}`, err);
+                })
+        );
+        await Promise.all(loadPromises);
 
         this.loaded = true;
         console.log(`FortuneFactory: Loaded ${Object.keys(this.templates).length} templates.`);
@@ -229,10 +231,11 @@ class FortuneFactory {
      * @param {number} playerLootFind - The player's Loot Find stat
      * @param {number} playerLuck - The player's Luck stat
      * @param {string} currentPlanet - The current planet (for planet-restricted fortunes)
+     * @param {string[]} excludeIds - Template IDs to exclude from the drop pool
      * @returns {Object} A unique fortune instance
      */
-    generateFortune(playerLootFind = 0, playerLuck = 0, currentPlanet = 'earth') {
-        const templateId = this.rollTemplate(playerLootFind, currentPlanet);
+    generateFortune(playerLootFind = 0, playerLuck = 0, currentPlanet = 'earth', excludeIds = []) {
+        const templateId = this.rollTemplate(playerLootFind, currentPlanet, excludeIds);
         if (!templateId) return null;
 
         const template = this.templates[templateId];
@@ -259,9 +262,11 @@ class FortuneFactory {
      * Rolls a random fortune template weighted by rarity and player's Loot Find.
      * Filters out planet-restricted fortunes that don't match the current planet.
      */
-    rollTemplate(playerLootFind = 0, currentPlanet = 'earth') {
+    rollTemplate(playerLootFind = 0, currentPlanet = 'earth', excludeIds = []) {
         const planetKey = currentPlanet.toLowerCase();
         const templateIds = Object.keys(this.templates).filter(id => {
+            // Exclude explicitly excluded template IDs
+            if (excludeIds.includes(id)) return false;
             const template = this.templates[id];
             // If fortune has a planet restriction, only include it on that planet
             if (template.planetRestriction) {
