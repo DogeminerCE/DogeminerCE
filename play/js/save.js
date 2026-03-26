@@ -923,6 +923,15 @@ class SaveManager {
                 this.game.equippedPickaxeId = 'default_normal_pickaxe';
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
+                this.game.latestObtainedFortune = null;
+                // Clear the fortune button preview image
+                const fortunePreviewImg = document.getElementById('fortune-btn-preview');
+                if (fortunePreviewImg) {
+                    fortunePreviewImg.src = '';
+                    fortunePreviewImg.alt = 'Fortunes';
+                    fortunePreviewImg.classList.add('fortune-icon-placeholder');
+                    fortunePreviewImg.style.visibility = 'hidden';
+                }
                 this.game.rocksBroken = 0;
                 this.game.planetRockData = {
                     earth: { rocksBroken: 0, currentHP: null, maxHP: null },

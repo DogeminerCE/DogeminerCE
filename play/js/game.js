@@ -1690,6 +1690,7 @@ class DogeMinerGame {
             { label: 'Critical Chance', value: formatPercent(this.playerStats.critChance || 0) },
             { label: 'Base DPC Mult.', value: formatMult(this.playerStats.dpcMultiplier || 1) },
             { label: 'Helper DPS Mult.', value: formatMult(this.playerStats.helperDpsMultiplier || 1) },
+            { label: 'Flat DPS Bonus', value: `+${Math.floor(this.playerStats.flatHelperDps || 0)}` },
             { label: 'Cost Reduction', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
         ];
         
@@ -2026,6 +2027,7 @@ class DogeMinerGame {
             critChance: 0.05, // 5% base
             dpcMultiplier: 1,
             helperDpsMultiplier: 1,
+            flatHelperDps: 0, // Flat DPS bonus from fortunes (added after multiplier)
             rocketCostReduction: 0
         };
 
@@ -2090,7 +2092,12 @@ class DogeMinerGame {
                 this.playerStats[playerKey] += stat.value;
             }
         } else if (stat.indicator === '+') {
-            this.playerStats[playerKey] += stat.value;
+            // Flat DPS stats should add to flatHelperDps, not the multiplier
+            if (playerKey === 'helperDpsMultiplier') {
+                this.playerStats.flatHelperDps += stat.value;
+            } else {
+                this.playerStats[playerKey] += stat.value;
+            }
         } else if (stat.indicator === '-') {
             // Reduction stats are beneficial, so still add
             this.playerStats[playerKey] += stat.value;
@@ -4210,7 +4217,7 @@ class DogeMinerGame {
         }, 0);
 
         const baseDpsTotal = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
-        this.dps = baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1);
+        this.dps = baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1) + (this.playerStats.flatHelperDps || 0);
 
         // Update highest DPS
         if (this.dps > this.highestDps) {
