@@ -2,7 +2,7 @@
 Purple Lollipop
 
 "RARITY"
-Moon
+Common
 
 "DESCRIPTION"
 Extra large. Do not eat.

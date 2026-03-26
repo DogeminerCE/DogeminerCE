@@ -1308,60 +1308,37 @@ body {
 .planet-mars .item-card-rarity { color: rgba(255,255,255,0.7); }
 .planet-mars .item-card-description { color: rgba(255,255,255,0.6); }
 .planet-mars .item-card-stat span { color: #fff; }
-.planet-mars .item-card {
-    background: linear-gradient(to bottom, rgba(100,45,40,0.9), rgba(80,35,30,0.9));
-}
-.planet-mars .item-card.rarity-common {
-    border-color: rgb(150,100,95);
-    background: linear-gradient(to bottom, rgba(100,55,50,0.9), rgba(85,45,40,0.9));
-}
-.planet-mars .item-card.rarity-improved {
-    border-color: #6b8e23;
-    background: linear-gradient(to bottom, rgba(75,60,40,0.9), rgba(65,55,35,0.9));
-}
-.planet-mars .item-card.rarity-rare {
-    border-color: #6080cc;
-    background: linear-gradient(to bottom, rgba(60,45,70,0.9), rgba(50,40,65,0.9));
-}
-.planet-mars .item-card.rarity-epic {
-    border-color: #b050e0;
-    background: linear-gradient(to bottom, rgba(80,35,70,0.9), rgba(70,30,60,0.9));
-}
-.planet-mars .item-card.rarity-legendary {
-    border-color: #ffa500;
-    background: linear-gradient(to bottom, rgba(100,55,30,0.9), rgba(90,45,25,0.9));
-}
 
-/* ---- Jupiter: deep amber-brown ---- */
+/* ---- Jupiter: warm gold to pink/lavender ---- */
 .planet-jupiter .switcher-modal-content {
-    background: linear-gradient(to bottom, rgba(232,220,200,0.98) 20%, rgba(216,196,160,0.98) 80%);
-    border-color: #9a7840;
+    background: linear-gradient(to bottom, rgba(225,190,135,0.98) 20%, rgba(240,215,255,0.98) 80%);
+    border-color: rgb(225,180,105);
 }
 .planet-jupiter .inventory-modal-header {
-    background: linear-gradient(to bottom, rgba(232,220,200,0.98) 20%, rgba(216,196,160,0.98) 80%);
-    border-bottom-color: rgba(154,120,64,0.35);
+    background: linear-gradient(to bottom, rgba(225,190,135,0.98) 20%, rgba(235,200,210,0.98) 80%);
+    border-bottom-color: rgba(225,180,105,0.5);
 }
 .planet-jupiter .modal-title { color: #4a3a22; }
 .planet-jupiter .modal-subtitle,
-.planet-jupiter .inventory-count { color: #6a5a3a; }
+.planet-jupiter .inventory-count { color: #5a4a3a; }
 .planet-jupiter .inventory-search,
 .planet-jupiter .inventory-select {
-    border-color: rgba(154,120,64,0.55);
+    border-color: rgba(225,180,105,0.7);
     color: #4a3a22;
 }
 .planet-jupiter .inventory-search:focus,
-.planet-jupiter .inventory-select:focus { border-color: #9a7840; }
+.planet-jupiter .inventory-select:focus { border-color: rgb(225,180,105); }
 .planet-jupiter .modal-close-btn {
-    background: linear-gradient(to bottom, #e0c8a0 0 50%, #c8a878 50% 100%);
-    border-color: #9a7840;
+    background: linear-gradient(to bottom, rgb(250,205,125) 0 50%, rgb(240,190,115) 50% 100%);
+    border-color: rgb(225,180,105);
     color: #4a3a22;
 }
 .planet-jupiter .modal-close-btn:hover {
-    background: linear-gradient(to bottom, #e8d0b0 0 50%, #d0b888 50% 100%);
+    background: linear-gradient(to bottom, rgb(255,215,135) 0 50%, rgb(250,200,125) 50% 100%);
 }
 .planet-jupiter .item-card-name { color: #4a3a22; }
-.planet-jupiter .item-card-rarity { color: #6a5a3a; }
-.planet-jupiter .item-card-description { color: #7a6a4a; }
+.planet-jupiter .item-card-rarity { color: #6a5a4a; }
+.planet-jupiter .item-card-description { color: #7a6a5a; }
 .planet-jupiter .item-card-stat span { color: #4a3a22; }
 
 /* ---- Titan: bright golden-amber ---- */
@@ -5160,7 +5137,7 @@ body.planet-mars #main-rock {
     }
 
     .planet-jupiter #mobile-helper-bar {
-        background: linear-gradient(to bottom, rgba(225, 190, 135, 0.95) 20%, rgba(240, 215, 160, 0.95) 80%);
+        background: linear-gradient(to bottom, rgba(225, 190, 135, 0.95) 20%, rgba(240, 215, 255, 0.95) 80%);
         border-color: rgb(225, 180, 105);
     }
 
@@ -7007,6 +6984,40 @@ body.xbox-mode #sign-in-section {
     cursor: pointer;
     box-shadow: 0 2px 0 rgba(80, 50, 0, 0.2);
 }
+
+/* ---- Moon User Stats ---- */
+.moon-theme .inventory-stats-sidebar { border-color: rgba(112,136,168,0.3); }
+.moon-theme .stats-sidebar-header { color: #3a5a6a; border-bottom-color: rgba(112,136,168,0.2); }
+.moon-theme .stat-sidebar-item { color: #3a5a6a; border-color: rgba(112,136,168,0.15); }
+.moon-theme .stat-sidebar-value { color: #7088a8; }
+
+/* ---- Mars User Stats (Dark UI) ---- */
+.planet-mars .inventory-stats-sidebar {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(130,80,75,0.5);
+}
+.planet-mars .stats-sidebar-header {
+    color: #fff;
+    border-bottom-color: rgba(130,80,75,0.4);
+}
+.planet-mars .stat-sidebar-item {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255,255,255,0.9);
+    border-color: rgba(130,80,75,0.3);
+}
+.planet-mars .stat-sidebar-value { color: #ffbbaadd; }
+
+/* ---- Jupiter User Stats ---- */
+.planet-jupiter .inventory-stats-sidebar { border-color: rgba(225,180,105,0.5); }
+.planet-jupiter .stats-sidebar-header { color: #4a3a22; border-bottom-color: rgba(225,180,105,0.4); }
+.planet-jupiter .stat-sidebar-item { color: #4a3a22; border-color: rgba(225,180,105,0.3); }
+.planet-jupiter .stat-sidebar-value { color: #b060a0; }
+
+/* ---- Titan User Stats ---- */
+.planet-titan .inventory-stats-sidebar { border-color: rgba(176,144,48,0.3); }
+.planet-titan .stats-sidebar-header { color: #2d2416; border-bottom-color: rgba(176,144,48,0.2); }
+.planet-titan .stat-sidebar-item { color: #2d2416; border-color: rgba(176,144,48,0.15); }
+.planet-titan .stat-sidebar-value { color: #b09030; }
 .mobile-only {
     display: none !important;
 }
