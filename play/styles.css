@@ -866,6 +866,431 @@ body {
     z-index: 1;
 }
 
+/* ========== MYSTERY BOX ========== */
+
+/* Mystery Box Sidebar Button */
+.mystery-box-sidebar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease;
+    margin-top: -6px;
+    margin-left: 8px;
+}
+
+.mystery-box-sidebar-btn:hover {
+    transform: scale(1.1);
+}
+
+.mystery-box-sidebar-btn:active {
+    transform: scale(0.95);
+}
+
+.mbox-sidebar-icon {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+.mbox-sidebar-timer {
+    font-family: 'DogeSans', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    color: #e8a020;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    margin-top: 4px;
+}
+
+/* Ready state - shaking animation */
+.mystery-box-ready .mbox-sidebar-icon {
+    animation: sidebarReadyShake 1.8s ease-in-out infinite;
+}
+
+.mystery-box-ready .mbox-sidebar-timer {
+    color: #4ade60;
+}
+
+@keyframes sidebarReadyShake {
+    0%, 20%, 100% {
+        transform: translateX(0) scale(1.05);
+        filter: drop-shadow(0 0 12px rgba(255, 200, 0, 0.9));
+    }
+    4%, 12% {
+        transform: translateX(-4px) scale(1.05);
+    }
+    8%, 16% {
+        transform: translateX(4px) scale(1.05);
+    }
+}
+
+/* Mystery Box Modal */
+.mystery-box-modal-content {
+    width: 460px;
+    max-width: 95vw;
+    border-radius: 14px;
+    border: 3px solid #e8a020;
+    background: linear-gradient(to bottom, rgba(255, 252, 240, 0.98) 20%, rgba(255, 248, 220, 0.98) 80%);
+    position: relative;
+    text-align: center;
+    overflow: visible !important;
+    padding: 0 0 50px 0 !important;
+    box-shadow: none !important;
+}
+
+.mbox-scroll-body {
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mbox-scroll-body::after {
+    content: '';
+    display: block;
+    min-height: 90px;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+#mystery-box-modal.switcher-modal {
+    left: 0;
+    width: 1144px;
+}
+
+/* Mystery Box Modal open/close animation */
+#mystery-box-modal > .switcher-modal-content {
+    transform: scale(0.05);
+    opacity: 0;
+    transform-origin: 5% 5%;
+    transition: transform 0.25s cubic-bezier(0.5, 0, 0.75, 0),
+               opacity 0.15s ease;
+}
+
+#mystery-box-modal.active > .switcher-modal-content {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+               opacity 0.25s ease;
+}
+
+/* Mystery Box modal header */
+.mbox-header {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #5a4a2a;
+    -webkit-text-stroke: 1px #c8960e;
+    paint-order: stroke fill;
+    margin: 0;
+}
+
+.mbox-subtitle {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    color: #7a6a5a;
+    margin: 4px 0 10px;
+}
+
+.mbox-subtitle strong {
+    color: #c8960e;
+    font-weight: 900;
+}
+
+/* Radial glow behind box */
+.mbox-display {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.mbox-radial {
+    position: absolute;
+    inset: 0;
+    margin-left: -14px;
+    background: url('../assets/general/fx/radial.png') center/contain no-repeat;
+    opacity: 0.35;
+    animation: mboxRadialSpin 20s linear infinite;
+}
+
+@keyframes mboxRadialSpin {
+    to { transform: rotate(360deg); }
+}
+
+.mbox-display img.mbox-icon {
+    position: relative;
+    z-index: 1;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.mbox-icon-ready-shake {
+    animation: sidebarReadyShake 1.8s ease-in-out infinite;
+}
+
+/* Status text */
+.mbox-status {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    margin: 6px 0;
+}
+
+.mbox-status.ready {
+    color: #2ecc71;
+    animation: mboxReadyPulse 1.5s ease-in-out infinite;
+}
+
+.mbox-status.not-ready {
+    color: #888;
+}
+
+@keyframes mboxReadyPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Timer display */
+.mbox-timer {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 13px;
+    color: #aaa;
+    margin: 2px 0 6px;
+}
+
+/* 2x reward info */
+.mbox-bonus-info {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    color: #c8960e;
+    margin: 6px 0 44px;
+    font-weight: bold;
+}
+
+.mbox-bonus-info strong {
+    color: #ff9900;
+}
+
+/* Open / Close / Grab buttons */
+.mbox-action-btn {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(to bottom, #4ade60 0 50%, #2ecc71 50% 100%);
+    border: 3px solid #27ae60;
+    border-radius: 12px;
+    padding: 12px 40px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    box-shadow: 0 3px 0 rgba(0, 80, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: max-content;
+    z-index: 10;
+}
+
+.mbox-action-btn:hover {
+    transform: scale(1.06);
+    background: linear-gradient(to bottom, #5ef878 0 50%, #3edb80 50% 100%);
+}
+
+.mbox-action-btn:active {
+    transform: scale(0.96);
+}
+
+.mbox-action-btn.close-btn {
+    background: linear-gradient(to bottom, #ffe7a4 0 50%, #f1c35a 50% 100%);
+    border-color: #c78b2b;
+    color: #5a4a2a;
+    text-shadow: none;
+    box-shadow: 0 3px 0 rgba(80, 50, 0, 0.2);
+}
+
+.mbox-action-btn.close-btn:hover {
+    background: linear-gradient(to bottom, #fff0bf 0 50%, #f6d07c 50% 100%);
+}
+
+/* Planet-specific theming for the Close Button */
+.moon-theme .mbox-action-btn.close-btn {
+    background: linear-gradient(to bottom, #f0f4f8 0 50%, #d5e0ec 50% 100%);
+    border-color: #8aa4c2;
+    color: #3b5068;
+    box-shadow: 0 3px 0 rgba(40, 60, 90, 0.2);
+}
+.moon-theme .mbox-action-btn.close-btn:hover {
+    background: linear-gradient(to bottom, #ffffff 0 50%, #eaedf4 50% 100%);
+}
+
+.planet-mars .mbox-action-btn.close-btn {
+    background: linear-gradient(to bottom, #ffdbca 0 50%, #e2a192 50% 100%);
+    border-color: #aa5a4c;
+    color: #5c2317;
+    box-shadow: 0 3px 0 rgba(80, 20, 10, 0.2);
+}
+.planet-mars .mbox-action-btn.close-btn:hover {
+    background: linear-gradient(to bottom, #ffece1 0 50%, #f3c1b6 50% 100%);
+}
+
+.planet-jupiter .mbox-action-btn.close-btn {
+    background: linear-gradient(to bottom, #ffe8fb 0 50%, #dfaee5 50% 100%);
+    border-color: #a858ad;
+    color: #4a194c;
+    box-shadow: 0 3px 0 rgba(70, 20, 70, 0.2);
+}
+.planet-jupiter .mbox-action-btn.close-btn:hover {
+    background: linear-gradient(to bottom, #fff3fd 0 50%, #eed0f2 50% 100%);
+}
+
+.planet-titan .mbox-action-btn.close-btn {
+    background: linear-gradient(to bottom, #ffeebb 0 50%, #d8b855 50% 100%);
+    border-color: #a08020;
+    color: #443300;
+    box-shadow: 0 3px 0 rgba(60, 50, 0, 0.2);
+}
+.planet-titan .mbox-action-btn.close-btn:hover {
+    background: linear-gradient(to bottom, #fff6dd 0 50%, #ecd384 50% 100%);
+}
+
+/* Reward cards area */
+.mbox-rewards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding: 0 20px;
+    margin-bottom: 44px;
+}
+
+.mbox-reward-card {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid rgba(184, 134, 11, 0.3);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 248, 230, 0.6));
+    text-align: left;
+    align-items: flex-start;
+}
+
+.mbox-reward-icon-wrap {
+    width: 90px;
+    min-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.mbox-reward-icon-wrap img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.mbox-reward-icon-label {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5a4a2a;
+    text-align: center;
+    word-break: break-word;
+}
+
+.mbox-reward-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.mbox-reward-rarity {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.mbox-reward-name {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: #5a4a2a;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.mbox-reward-desc {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    color: #8a7a6a;
+    margin-bottom: 6px;
+}
+
+.mbox-reward-stat {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 1px 0;
+}
+
+.mbox-reward-stat.stat-core {
+    color: #5a4a2a;
+}
+
+.mbox-reward-stat.stat-cosmetic {
+    color: #8a7a6a;
+    font-style: italic;
+}
+
+.mbox-reward-dpc {
+    font-family: 'DogeSans', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    color: #c8960e;
+    margin-bottom: 4px;
+}
+
+/* Rarity color coding for reward cards */
+.mbox-reward-card.rarity-common { border-color: #aaaaaa; }
+.mbox-reward-card.rarity-improved { border-color: #6b8e23; }
+.mbox-reward-card.rarity-rare { border-color: #6080cc; }
+.mbox-reward-card.rarity-epic {
+    border-color: #b050e0;
+    background: linear-gradient(to bottom, rgba(220, 200, 240, 0.5), rgba(240, 220, 255, 0.5));
+}
+.mbox-reward-card.rarity-legendary {
+    border-color: #ffa500;
+    background: linear-gradient(to bottom, rgba(255, 240, 200, 0.5), rgba(255, 230, 180, 0.5));
+}
+
+.mbox-reward-card .mbox-reward-icon-wrap img.rarity-common { background: rgba(180, 180, 180, 0.15); }
+.mbox-reward-card .mbox-reward-icon-wrap img.rarity-improved { background: rgba(107, 142, 35, 0.15); }
+.mbox-reward-card .mbox-reward-icon-wrap img.rarity-rare { background: rgba(96, 128, 204, 0.15); }
+.mbox-reward-card .mbox-reward-icon-wrap img.rarity-epic { background: rgba(176, 80, 224, 0.15); }
+.mbox-reward-card .mbox-reward-icon-wrap img.rarity-legendary { background: rgba(255, 165, 0, 0.15); }
+
 /* Switcher Modal (Pickaxe & Fortune) */
 .switcher-modal {
     display: flex;           /* Always flex — show/hide via visibility + transitions */
@@ -7018,6 +7443,48 @@ body.xbox-mode #sign-in-section {
 .planet-titan .stats-sidebar-header { color: #2d2416; border-bottom-color: rgba(176,144,48,0.2); }
 .planet-titan .stat-sidebar-item { color: #2d2416; border-color: rgba(176,144,48,0.15); }
 .planet-titan .stat-sidebar-value { color: #b09030; }
+
+/* =========================================================
+   MYSTERY BOX TRANSITION ANIMATIONS
+   ========================================================= */
+
+@keyframes mboxOpeningShake {
+    0% { transform: translate(2px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); filter: brightness(1.1); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(0px, 2px) rotate(0deg); filter: brightness(1.2); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); filter: brightness(1.3); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(2px, 1px) rotate(-1deg); filter: brightness(1.4); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(2px, 2px) rotate(0deg); filter: brightness(1.5); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@keyframes mboxFlash {
+    0% { filter: brightness(3) drop-shadow(0 0 40px #fff); transform: scale(1.3); }
+    100% { filter: brightness(1) drop-shadow(0 0 0px #fff); transform: scale(1); }
+}
+
+.mbox-reward-card {
+    animation: rewardFlyOut 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.mbox-reward-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+@keyframes rewardFlyOut {
+    0% {
+        opacity: 0;
+        transform: translateY(80px) scale(0.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 .mobile-only {
     display: none !important;
 }

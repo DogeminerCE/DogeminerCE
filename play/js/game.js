@@ -214,6 +214,11 @@ class DogeMinerGame {
         this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
         this.moonDogebagCount = 0; // Tracks how many Moon Dogebags have been opened
         this.mysteryBoxObtained = false; // Whether the Mystery Box has been granted
+        this.mysteryBoxOpenCount = 0; // Total times opened
+        this.mysteryBoxTimerRemaining = 0; // ms remaining on cooldown
+        this.mysteryBoxLastSaveTime = 0; // Date.now() when last saved/closed
+        this._mysteryBoxInterval = null; // setInterval ref
+
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
             pickaxe: { search: '', rarity: '', sort: 'newest' },
@@ -1212,6 +1217,9 @@ class DogeMinerGame {
                     const rollChance = bagsLeft === 0 ? 1 : 1 / (bagsLeft + 1);
                     if (Math.random() < rollChance) {
                         this.mysteryBoxObtained = true;
+                        if (typeof this.initMysteryBox === 'function') {
+                            this.initMysteryBox();
+                        }
                         const stats = this.fortuneFactory._rollStats(
                             mysteryTemplate.statTemplates,
                             this.playerStats.luck,
@@ -1360,6 +1368,361 @@ class DogeMinerGame {
 
     /**
      * Opens the dogebag modal (State 1: prompt)
+     */
+    // ==========================================
+    // MYSTERY BOX SYSTEM
+    // ==========================================
+
+    /**
+     * Initializes the Mystery Box button and timer if obtained.
+     * Called on save load or when first obtained from Moon Dogebag.
+     */
+    initMysteryBox() {
+        if (!this.mysteryBoxObtained) return;
+
+        const btn = document.getElementById('mystery-box-btn');
+        if (btn) btn.style.display = ''; // Reveal button
+
+        // Compute elapsed offline time if applicable
+        if (this.mysteryBoxLastSaveTime && this.mysteryBoxTimerRemaining > 0) {
+            const elapsed = Date.now() - this.mysteryBoxLastSaveTime;
+            this.mysteryBoxTimerRemaining = Math.max(0, this.mysteryBoxTimerRemaining - elapsed);
+        }
+
+        this.startMysteryBoxTimer();
+    }
+
+    /**
+     * Starts the 1-second countdown interval.
+     */
+    startMysteryBoxTimer() {
+        // Clear existing just in case
+        if (this._mysteryBoxInterval) clearInterval(this._mysteryBoxInterval);
+
+        const tick = () => {
+            if (this.mysteryBoxTimerRemaining <= 0) {
+                this.mysteryBoxTimerRemaining = 0;
+                clearInterval(this._mysteryBoxInterval);
+                this._mysteryBoxInterval = null;
+                
+                // Add glowing ready state 
+                const btn = document.getElementById('mystery-box-btn');
+                if (btn && !btn.classList.contains('mystery-box-ready')) {
+                    btn.classList.add('mystery-box-ready');
+                    const btnIcon = document.getElementById('mystery-box-btn-icon');
+                    if (btnIcon) {
+                        btnIcon.style.animationDelay = `-${(Date.now() % 1800) / 1000}s`;
+                    }
+                }
+
+                const sidebarTimer = document.getElementById('mbox-sidebar-timer');
+                if (sidebarTimer) sidebarTimer.textContent = 'OPEN!';
+                
+                // If modal is currently open, update it
+                const statusEl = document.getElementById('mbox-status-text');
+                if (statusEl && statusEl.textContent.includes('doesn\'t want to open')) {
+                    this.openMysteryBoxModal(); // Re-render as Ready
+                }
+            } else {
+                this.mysteryBoxTimerRemaining -= 1000;
+                
+                // Update open modal timer if visible
+                const timerEl = document.getElementById('mbox-timer-text');
+                if (timerEl) {
+                    timerEl.textContent = `Opens in: ${this._formatMs(this.mysteryBoxTimerRemaining)}`;
+                }
+
+                // Update sidebar button timer
+                const sidebarTimer = document.getElementById('mbox-sidebar-timer');
+                if (sidebarTimer) {
+                    sidebarTimer.textContent = this._formatMs(this.mysteryBoxTimerRemaining);
+                }
+            }
+        };
+
+        // If already ready, just tick once to apply glow. Otherwise start interval
+        if (this.mysteryBoxTimerRemaining <= 0) {
+            tick();
+        } else {
+            // Remove glow if it somehow had it
+            const btn = document.getElementById('mystery-box-btn');
+            if (btn) btn.classList.remove('mystery-box-ready');
+            this._mysteryBoxInterval = setInterval(tick, 1000);
+        }
+    }
+
+    /**
+     * Formats milliseconds into MM:SS
+     */
+    _formatMs(ms) {
+        const totalSeconds = Math.ceil(ms / 1000);
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    /**
+     * Opens the Mystery Box Modal, rendering either Not Ready or Ready.
+     */
+    openMysteryBoxModal() {
+        this.playSound('inventoryOpen');
+        const modal = document.getElementById('mystery-box-modal');
+        const content = document.getElementById('mystery-box-modal-body');
+        if (!modal || !content) return;
+
+        const isReady = this.mysteryBoxTimerRemaining <= 0;
+        const opensTo2x = 10 - (this.mysteryBoxOpenCount % 10);
+        const is2xNow = isReady && (opensTo2x === 10 || opensTo2x === 0);
+        const syncDelay = isReady ? `-${(Date.now() % 1800) / 1000}s` : '0s';
+
+        let html = `
+            <div class="mbox-scroll-body">
+                <h2 class="mbox-header">Mystery Box</h2>
+                <p class="mbox-subtitle">${isReady && is2xNow ? 'Open for <strong>2x rewards!</strong>' : '&nbsp;'}</p>
+                
+                <div class="mbox-display">
+                    <div class="mbox-radial"></div>
+                    <img src="assets/general/mysterybox_big.png" 
+                         style="animation-delay: ${syncDelay};"
+                         class="mbox-icon ${isReady ? 'mbox-icon-ready-shake' : ''}" alt="Mystery Box">
+                </div>
+        `;
+
+        if (!isReady) {
+            html += `
+                <div class="mbox-timer" id="mbox-timer-text">Opens in: ${this._formatMs(this.mysteryBoxTimerRemaining)}</div>
+                <div class="mbox-bonus-info">Open <strong>${opensTo2x}</strong> more for 2x rewards!</div>
+            </div>
+            <button class="mbox-action-btn close-btn" onclick="window.game.closeMysteryBoxModal(false)">CLOSE</button>
+            `;
+        } else {
+            html += `
+                <div class="mbox-status ready" id="mbox-status-text">Open now!</div>
+                <div class="mbox-bonus-info">&nbsp;</div>
+            </div>
+            <button class="mbox-action-btn" onclick="window.game.openMysteryBoxRewards()">OPEN NOW</button>
+            `;
+        }
+
+        content.innerHTML = html;
+        modal.classList.add('active');
+    }
+
+    /**
+     * Rolls items when OPEN NOW is clicked
+     */
+    openMysteryBoxRewards() {
+        this.mysteryBoxOpenCount++;
+        const is2x = (this.mysteryBoxOpenCount % 10 === 0);
+        const numRewards = is2x ? 2 : 1;
+        
+        let rewards = [];
+        for (let i = 0; i < numRewards; i++) {
+            const reward = this._rollMysteryBoxReward();
+            if (reward) rewards.push(reward);
+        }
+
+        // Store rewards to be given on Close
+        this._pendingMysteryBoxRewards = rewards;
+
+        // Reset timer to 20 mins (1,200,000 ms)
+        this.mysteryBoxTimerRemaining = 1200000;
+        this.mysteryBoxLastSaveTime = Date.now();
+        
+        const btn = document.getElementById('mystery-box-btn');
+        if (btn) btn.classList.remove('mystery-box-ready');
+        
+        this.startMysteryBoxTimer();
+        
+        if (window.saveManager) window.saveManager.saveGame(false);
+
+        this._renderMysteryBoxRewards(rewards);
+    }
+
+    /**
+     * Rolls a specific reward for the Mystery Box.
+     * 90% Fortune (with doubled rarity chance), 10% Pickaxe.
+     */
+    _rollMysteryBoxReward() {
+        const roll = Math.random();
+        
+        if (roll < 0.10 && this.pickaxeFactory && this.pickaxeFactory.loaded) {
+            // Pickaxe Drop
+            // Mystery box can drop from any planet
+            const planets = ['earth', 'moon', 'mars', 'jupiter', 'titan'];
+            const randomPlanet = planets[Math.floor(Math.random() * planets.length)];
+            
+            const templateId = this.pickaxeFactory.rollTemplate(randomPlanet, this.playerStats.lootFind);
+            if (templateId) {
+                const pickaxe = this.pickaxeFactory.generatePickaxe(
+                    templateId,
+                    this.maxPickaxeDPC,
+                    this.playerStats.wow
+                );
+                return { type: 'pickaxe', item: pickaxe };
+            }
+        } 
+        
+        // Fortune drop (Fallback or 90% chance)
+        if (this.fortuneFactory && this.fortuneFactory.loaded) {
+            // Provide a boosted LootFind (simulated) to double effective rarity drop chances
+            // The formula is baseThreshold / (1 + (LootFind / 100)). 
+            // Doubling the denominator (LootFind/100 -> (LootFind+100)/100) halves the threshold.
+            const boostedLootFind = this.playerStats.lootFind + 100;
+
+            const fortune = this.fortuneFactory.generateFortune(
+                boostedLootFind,
+                this.playerStats.luck,
+                this.currentLevel,
+                ['mysterybox']
+            );
+            return { type: 'fortune', item: fortune };
+        }
+        
+        return null; // Should not happen if loaded
+    }
+
+    /**
+     * Shows what was inside the Mystery Box
+     */
+    _renderMysteryBoxRewards(rewards) {
+        // Play sounds
+        const hasPickaxe = rewards.some(r => r.type === 'pickaxe');
+        if (hasPickaxe) this.playSound('receivePickaxe');
+        else this.playSound('collectItem');
+
+        const content = document.getElementById('mystery-box-modal-body');
+        if (!content) return;
+
+        let html = `
+            <!-- Open Box Backdrop -->
+            <div class="mbox-display" style="position: absolute; top: 120px; left: 0; right: 0; margin: auto; z-index: 0; opacity: 0.5; pointer-events: none;">
+                <div class="mbox-radial"></div>
+                <img src="assets/general/mysterybox_big_open.png" class="mbox-icon" alt="Mystery Box">
+            </div>
+            
+            <div class="mbox-scroll-body" style="position: relative; z-index: 2;">
+                <h2 class="mbox-header">Mystery Box</h2>
+                <p class="mbox-subtitle" style="color: #c8960e; font-weight: bold; font-size: 16px;">You found:</p>
+                <div class="mbox-rewards">
+        `;
+
+        rewards.forEach(reward => {
+            const item = reward.item;
+            
+            // Build stats html
+            let statsHtml = '';
+            if (reward.type === 'pickaxe' && this.pickaxeFactory) {
+                statsHtml += `<div class="mbox-reward-dpc">&#x2B08; ${this.formatNumber(item.baseDPC)}</div>`;
+                item.stats.forEach(stat => {
+                    const isCore = stat.isCore ? 'stat-core' : 'stat-cosmetic';
+                    statsHtml += `<div class="mbox-reward-stat ${isCore}">${this.pickaxeFactory.formatStatForDisplay(stat)}</div>`;
+                });
+            } else if (reward.type === 'fortune' && this.fortuneFactory) {
+                item.stats.forEach(stat => {
+                    const isCore = stat.isCore ? 'stat-core' : 'stat-cosmetic';
+                    statsHtml += `<div class="mbox-reward-stat ${isCore}">${this.fortuneFactory.formatStatForDisplay(stat)}</div>`;
+                });
+            }
+
+            const imgClass = `rarity-${item.rarity}`;
+            const sprite = (reward.type === 'pickaxe') ? item.idleSprite : (item.sprite || 'assets/general/dogecoin_70x70.png');
+
+            html += `
+                <div class="mbox-reward-card rarity-${item.rarity}">
+                    <div class="mbox-reward-icon-wrap">
+                        <img src="${sprite}" class="${imgClass}" alt="${item.name}">
+                        <div class="mbox-reward-icon-label">${item.name}</div>
+                    </div>
+                    <div class="mbox-reward-details">
+                        <div class="mbox-reward-rarity" style="color: var(--rarity-${item.rarity}-color, #555)">${item.rarity} ${reward.type}</div>
+                        <div class="mbox-reward-name">${item.name}</div>
+                        <div class="mbox-reward-desc">${item.description}</div>
+                        ${statsHtml}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        if (hasPickaxe) {
+            html += `
+                <div style="display: flex; gap: 15px;">
+                    <button class="mbox-action-btn" onclick="window.game.mysteryBoxEquip()" style="background: linear-gradient(to bottom, #4ade60, #22c55e); border-color: #16a34a;">EQUIP</button>
+                    <button class="mbox-action-btn" onclick="window.game.closeMysteryBoxModal(true)">LOOT</button>
+                </div>
+            `;
+        } else {
+            html += `
+                <button class="mbox-action-btn" onclick="window.game.closeMysteryBoxModal(true)">GRAB</button>
+            `;
+        }
+
+        content.innerHTML = html;
+    }
+
+    /**
+     * Handles EQUIP action from mystery box modal (equips the pickaxe)
+     */
+    mysteryBoxEquip() {
+        if (!this._pendingMysteryBoxRewards) return;
+        
+        // Find the pickaxe
+        const pickaxeReward = this._pendingMysteryBoxRewards.find(r => r.type === 'pickaxe');
+        
+        // Process all rewards properly first
+        this.closeMysteryBoxModal(true);
+        
+        // Equip immediately
+        if (pickaxeReward) {
+            this.equipPickaxe(pickaxeReward.item.instanceId);
+            this.showNotification('Pickaxe Equipped!');
+        }
+    }
+
+    /**
+     * Closes the Mystery Box modal and conditionally grants pending rewards.
+     * @param {boolean} processRewards - If true, adds pending items to inventory.
+     */
+    closeMysteryBoxModal(processRewards = false) {
+        if (!processRewards) {
+            this.playSound('inventoryClose');
+        }
+        
+        const modal = document.getElementById('mystery-box-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+
+        if (processRewards && this._pendingMysteryBoxRewards) {
+            let requiresStatsUpdate = false;
+            
+            this._pendingMysteryBoxRewards.forEach(reward => {
+                if (reward.type === 'fortune') {
+                    this.fortuneInventory.unshift(reward.item); // Add to front
+                    this.setLatestObtainedFortune(reward.item); // Built-in method that updates the button preview
+                    requiresStatsUpdate = true;
+                } else if (reward.type === 'pickaxe') {
+                    this.addPickaxeToInventory(reward.item); // Built-in method that tracks maxDPC
+                }
+            });
+            
+            this._pendingMysteryBoxRewards = null;
+            
+            if (requiresStatsUpdate) {
+                this.recalculatePlayerStats();      
+                this.updateStatsSidebar('fortune');            
+            }
+            if (window.saveManager) window.saveManager.saveGame(true);
+        }
+    }
+
+    /**
+     * Opens the dogebag modal (State 1: prompt OR State 2: reveal directly)
      */
     openDogebagModal(bagElement) {
         this._currentDogebag = bagElement;

@@ -73,6 +73,21 @@
                     </div>
                     <span class="switcher-label">FORTUNES</span>
                 </button>
+                <button class="switcher-btn mystery-box-sidebar-btn" id="mystery-box-btn"
+                        onclick="window.game.openMysteryBoxModal()" style="display:none">
+                    <img id="mystery-box-btn-icon" src="assets/general/mysterybox_big.png"
+                         alt="Mystery Box" class="mbox-sidebar-icon">
+                    <div id="mbox-sidebar-timer" class="mbox-sidebar-timer">--:--</div>
+                </button>
+            </div>
+
+            <!-- Mystery Box Modal -->
+            <div id="mystery-box-modal" class="switcher-modal">
+                <div class="switcher-modal-content mystery-box-modal-content">
+                    <div id="mystery-box-modal-body">
+                        <!-- States rendered dynamically by JS -->
+                    </div>
+                </div>
             </div>
 
             <!-- Platform (behind everything) -->

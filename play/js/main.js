@@ -602,6 +602,7 @@ function addDebugConsole() {
         <button onclick="game.rotateBackground()">Rotate Background</button>
         <button onclick="game.forceRickSpawn()">Spawn Rick</button>
         <button onclick="game.createDogebag()">Spawn Dogebag</button>
+        <button onclick="game.mysteryBoxTimerRemaining = 0; game.startMysteryBoxTimer()">Skip Mystery Box Timer</button>
         <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
         <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>

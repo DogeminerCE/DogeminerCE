@@ -327,6 +327,9 @@ class CloudSaveManager {
             latestObtainedFortune: window.game.latestObtainedFortune || null,
             moonDogebagCount: window.game.moonDogebagCount || 0,
             mysteryBoxObtained: window.game.mysteryBoxObtained || false,
+            mysteryBoxOpenCount: window.game.mysteryBoxOpenCount || 0,
+            mysteryBoxTimerRemaining: window.game.mysteryBoxTimerRemaining || 0,
+            mysteryBoxLastSaveTime: Date.now(),
             rocksBroken: window.game.rocksBroken || 0,
             planetRockData: window.game.planetRockData,
             playTime: window.game.playTime || 0,
@@ -360,6 +363,21 @@ class CloudSaveManager {
             window.game.latestObtainedFortune = gameData.latestObtainedFortune || null;
             window.game.moonDogebagCount = gameData.moonDogebagCount || 0;
             window.game.mysteryBoxObtained = gameData.mysteryBoxObtained || false;
+            window.game.mysteryBoxOpenCount = gameData.mysteryBoxOpenCount || 0;
+            window.game.mysteryBoxTimerRemaining = gameData.mysteryBoxTimerRemaining || 0;
+
+            // Retroactive Mystery Box unlock for older saves
+            if (!window.game.mysteryBoxObtained && Array.isArray(window.game.fortuneInventory)) {
+                if (window.game.fortuneInventory.some(f => f && f.name === 'Mystery Box')) {
+                    window.game.mysteryBoxObtained = true;
+                    window.game.mysteryBoxTimerRemaining = 0; // ready immediately
+                }
+            }
+            
+            if (gameData.mysteryBoxLastSaveTime && window.game.mysteryBoxTimerRemaining > 0) {
+                const elapsed = Date.now() - gameData.mysteryBoxLastSaveTime;
+                window.game.mysteryBoxTimerRemaining = Math.max(0, window.game.mysteryBoxTimerRemaining - elapsed);
+            }
 
             if (gameData.planetRockData) {
                 window.game.planetRockData = gameData.planetRockData;
@@ -460,6 +478,10 @@ class CloudSaveManager {
                     window.uiManager.hideMoonLocked?.();
                     window.uiManager.updateShopContent?.();
                 }
+            }
+            
+            if (typeof window.game.initMysteryBox === 'function') {
+                window.game.initMysteryBox();
             }
         }
     }

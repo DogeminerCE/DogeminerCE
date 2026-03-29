@@ -261,6 +261,9 @@ class SaveManager {
             latestObtainedFortune: this.game.latestObtainedFortune || null,
             moonDogebagCount: this.game.moonDogebagCount || 0,
             mysteryBoxObtained: this.game.mysteryBoxObtained || false,
+            mysteryBoxOpenCount: this.game.mysteryBoxOpenCount || 0,
+            mysteryBoxTimerRemaining: this.game.mysteryBoxTimerRemaining || 0,
+            mysteryBoxLastSaveTime: Date.now(),
             rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
@@ -335,6 +338,23 @@ class SaveManager {
         this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
         this.game.moonDogebagCount = saveData.moonDogebagCount || 0;
         this.game.mysteryBoxObtained = saveData.mysteryBoxObtained || false;
+        this.game.mysteryBoxOpenCount = saveData.mysteryBoxOpenCount || 0;
+        this.game.mysteryBoxTimerRemaining = saveData.mysteryBoxTimerRemaining || 0;
+        
+        // Retroactive Mystery Box unlock for older saves
+        if (!this.game.mysteryBoxObtained && Array.isArray(this.game.fortuneInventory)) {
+            if (this.game.fortuneInventory.some(f => f && f.name === 'Mystery Box')) {
+                this.game.mysteryBoxObtained = true;
+                this.game.mysteryBoxTimerRemaining = 0; // ready immediately
+            }
+        }
+        
+        // Timer countdown based on offline time
+        if (saveData.mysteryBoxLastSaveTime && this.game.mysteryBoxTimerRemaining > 0) {
+            const elapsed = Date.now() - saveData.mysteryBoxLastSaveTime;
+            this.game.mysteryBoxTimerRemaining = Math.max(0, this.game.mysteryBoxTimerRemaining - elapsed);
+        }
+
         if (saveData.planetRockData) {
             this.game.planetRockData = saveData.planetRockData;
         } else {
@@ -715,6 +735,10 @@ class SaveManager {
 
         // Check for cross-planet helpers and notify player
         this.checkForCrossPlanetHelpers();
+
+        if (typeof this.game.initMysteryBox === 'function') {
+            this.game.initMysteryBox();
+        }
     }
 
     // Detect if any helpers are on the wrong planet and notify player
@@ -930,6 +954,11 @@ class SaveManager {
                 this.game.latestObtainedFortune = null;
                 this.game.moonDogebagCount = 0;
                 this.game.mysteryBoxObtained = false;
+                this.game.mysteryBoxOpenCount = 0;
+                this.game.mysteryBoxTimerRemaining = 0;
+                this.game.mysteryBoxLastSaveTime = 0;
+                const mboxBtn = document.getElementById('mystery-box-btn');
+                if (mboxBtn) mboxBtn.style.display = 'none';
                 // Clear the fortune button preview image
                 const fortunePreviewImg = document.getElementById('fortune-btn-preview');
                 if (fortunePreviewImg) {
