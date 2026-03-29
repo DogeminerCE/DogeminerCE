@@ -15,30 +15,25 @@ class FortuneFactory {
         this.loaded = false;
     }
 
-    /**
-     * Loads all fortune templates from the folder structure.
-     * Scans /assets/general/icons/Fortunes/{FortuneName}/ directories.
-     */
     async loadTemplates() {
         const basePath = 'assets/general/icons/Fortunes';
 
+        // Load standard drop fortunes
         const loadPromises = FORTUNE_MANIFEST.map(folderName =>
-            this._loadTemplate(basePath, folderName)
+            this._loadTemplate(basePath + '/' + encodeURIComponent(folderName), folderName)
                 .then(template => {
                     if (template) {
                         const templateId = this._sanitizeId(template.name);
                         template.id = templateId;
 
-                        // Determine planet restriction from name
                         const nameUpper = template.name.toUpperCase();
                         if (nameUpper.includes('MOON') || nameUpper === 'MYSTERY BOX') {
                             template.planetRestriction = 'moon';
                         } else if (nameUpper.includes('MARS')) {
                             template.planetRestriction = 'mars';
                         } else {
-                            template.planetRestriction = null; // Available everywhere
+                            template.planetRestriction = null;
                         }
-
                         this.templates[templateId] = template;
                     }
                 })
@@ -46,6 +41,23 @@ class FortuneFactory {
                     console.warn(`Failed to load fortune template: ${folderName}`, err);
                 })
         );
+        
+        // Load SPECIAL Patreons/Ko-fi fortunes explicitly
+        loadPromises.push(
+            this._loadTemplate(basePath + '/Protected Non Seasonal/Badge of Patronage', 'Badge of Patronage')
+            .then(template => {
+                 if (template) {
+                     const templateId = this._sanitizeId(template.name);
+                     template.id = templateId;
+                     template.planetRestriction = null;
+                     template.isSoulbound = true; // Special soulbound flag
+                     // Add to templates so it can be generated, but it won't be rolled normally
+                     // because it's not in the regular logic
+                     this.templates[templateId] = template;
+                 }
+            })
+        );
+
         await Promise.all(loadPromises);
 
         this.loaded = true;
@@ -55,9 +67,7 @@ class FortuneFactory {
     /**
      * Loads a single fortune template from its folder.
      */
-    async _loadTemplate(basePath, folderName) {
-        const folderPath = `${basePath}/${encodeURIComponent(folderName)}`;
-
+    async _loadTemplate(folderPath, folderName) {
         // Fetch the .txt file (named after the folder)
         const txtPath = `${folderPath}/${encodeURIComponent(folderName)}.txt`;
         let txtContent;
@@ -73,10 +83,11 @@ class FortuneFactory {
         // Parse the txt content
         const template = this._parseTxt(txtContent);
 
-        // Find the sprite
         const spriteName = FORTUNE_SPRITES[folderName];
         if (spriteName) {
-            template.sprite = `${basePath}/${encodeURIComponent(folderName)}/${spriteName}`;
+            template.sprite = `${folderPath}/${spriteName}`;
+        } else if (folderName === 'Badge of Patronage') {
+            template.sprite = `${folderPath}/patreonbadge.png`;
         } else {
             // Fallback
             template.sprite = 'assets/general/dogecoin_70x70.png';
@@ -227,6 +238,41 @@ class FortuneFactory {
     }
 
     /**
+     * Bypasses RNG drops and spawns an explicit template ID.
+     */
+    generateSpecialFortune(templateId) {
+        const template = this.templates[templateId];
+        if (!template) return null;
+
+        const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        
+        // Soulbound fortunes ignore player luck modifiers, passing 0s explicitly
+        let stats = [];
+        if (templateId === 'badge_of_patronage') {
+            stats = [
+                { name: 'Patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
+                { name: 'Loot Find', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
+                { name: 'Luck', displayName: 'Luck', indicator: '+%', isCore: false, value: 15 },
+                { name: 'Wow', displayName: 'Wow', indicator: '+%', isCore: false, value: 15 }
+            ];
+        } else {
+            const useBaseStats = template.isSoulbound;
+            stats = this._rollStats(template.statTemplates, useBaseStats ? 0 : 500, useBaseStats ? 0 : 5000, useBaseStats);
+        }
+
+        return {
+            instanceId,
+            templateId,
+            name: template.name,
+            rarity: template.rarity,
+            description: template.description,
+            stats,
+            sprite: template.sprite,
+            isSoulbound: template.isSoulbound || false
+        };
+    }
+
+    /**
      * Generates a unique fortune instance from a randomly selected template.
      * @param {number} playerLootFind - The player's Loot Find stat
      * @param {number} playerLuck - The player's Luck stat
@@ -245,7 +291,7 @@ class FortuneFactory {
         const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 
         // Roll stats based on Luck + Loot Find (NOT Wow)
-        const stats = this._rollStats(template.statTemplates, playerLuck, playerLootFind);
+        const stats = this._rollStats(template.statTemplates, playerLuck, playerLootFind, false);
 
         return {
             instanceId,
@@ -268,6 +314,10 @@ class FortuneFactory {
             // Exclude explicitly excluded template IDs
             if (excludeIds.includes(id)) return false;
             const template = this.templates[id];
+            
+            // NEVER natural roll soulbound/special fortunes
+            if (template.isSoulbound) return false;
+
             // If fortune has a planet restriction, only include it on that planet
             if (template.planetRestriction) {
                 return template.planetRestriction === planetKey;
@@ -312,10 +362,10 @@ class FortuneFactory {
      * Rolls random numerical values for all stats on a fortune.
      * Fortune stats scale with Luck + Loot Find (NOT Wow like pickaxes).
      */
-    _rollStats(statTemplates, playerLuck = 0, playerLootFind = 0) {
+    _rollStats(statTemplates, playerLuck = 0, playerLootFind = 0, useBaseStatsOnly = false) {
         // Combined scaling factor from luck and loot find
         // Use a logarithmic curve to decisively prevent explosive infinite stat loops
-        const scaleFactor = 1 + Math.log2(1 + (playerLuck / 50) + (playerLootFind / 500));
+        const scaleFactor = useBaseStatsOnly ? 1 : (1 + Math.log2(1 + (playerLuck / 50) + (playerLootFind / 500)));
 
         return statTemplates.map(st => {
             let value;

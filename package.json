@@ -22,12 +22,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/dogeminer-community-edition.git"
+    "url": "https://github.com/DogeMinerCE/DogeMinerCE.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/dogeminer-community-edition/issues"
+    "url": "https://github.com/DogeMinerCE/DogeMinerCE/issues"
   },
-  "homepage": "https://github.com/your-username/dogeminer-community-edition#readme",
+  "homepage": "https://github.com/DogeMinerCE/DogeMinerCE#readme",
   "devDependencies": {},
   "dependencies": {},
   "engines": {

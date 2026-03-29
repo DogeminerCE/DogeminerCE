@@ -1325,7 +1325,8 @@ body {
 /* ---- Inventory open/close animation (Pickaxe & Fortune modals) ---- */
 /* Expands from top-left (where the switcher buttons sit), like un-minimising a window */
 #pickaxe-modal > .switcher-modal-content,
-#fortune-modal > .switcher-modal-content {
+#fortune-modal > .switcher-modal-content,
+#supporter-modal > .switcher-modal-content {
     transform: scale(0.05);
     opacity: 0;
     transform-origin: 5% 5%;   /* Near the top-left corner */
@@ -1335,7 +1336,8 @@ body {
 }
 
 #pickaxe-modal.active > .switcher-modal-content,
-#fortune-modal.active > .switcher-modal-content {
+#fortune-modal.active > .switcher-modal-content,
+#supporter-modal.active > .switcher-modal-content {
     transform: scale(1);
     opacity: 1;
     /* Opening curves — bouncy overshoot for a satisfying pop-in */
@@ -2146,23 +2148,59 @@ body {
 }
 
 /* Version Indicator */
-#version-indicator {
+/* Footer Badges Container */
+#footer-badges {
     position: absolute;
-    bottom: -35px;
-    /* Position below the left panel */
+    bottom: -33px;
     left: 28px;
-    /* Move right by 28px to align with left panel */
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
     z-index: 25;
     pointer-events: none;
-    /* Prevent interaction */
+    height: 22px;
+}
+
+#version-indicator {
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
     background: rgba(0, 0, 0, 0.6);
-    padding: 3px 6px;
+    padding: 0 6px;
+    height: 22px;
+    line-height: 20px;
+    box-sizing: border-box;
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Supporter Badge (next to version indicator) */
+#supporter-stat-display {
+    color: #ffd700;
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0 6px;
+    height: 22px;
+    line-height: 20px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    transition: background 0.2s, border-color 0.2s;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+#supporter-stat-display:hover {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: rgba(255, 215, 0, 0.7);
 }
 
 /* Left Panel - Mining Area */

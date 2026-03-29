@@ -1513,7 +1513,7 @@ class DogeMinerGame {
      */
     openMysteryBoxRewards() {
         this.mysteryBoxOpenCount++;
-        const is2x = (this.mysteryBoxOpenCount % 10 === 0);
+        const is2x = this.isSupporter || (this.mysteryBoxOpenCount % 10 === 0);
         const numRewards = is2x ? 2 : 1;
         
         let rewards = [];
@@ -2409,11 +2409,87 @@ class DogeMinerGame {
     }
 
     /**
+     * Sets Supporter status, grants soulbound perks and triggers updates
+     */
+    setSupporterStatus(isSupporter, silent = false) {
+        if (!isSupporter) return; // Right now we only enable it
+        if (!this.isSupporter) {
+            this.isSupporter = true;
+            console.log('Supporter status activated! Granting unified perks + Badge of Patronage.');
+        }
+
+        // Hide "Become a Supporter" button
+        const supporterSection = document.getElementById('supporter-settings-section');
+        if (supporterSection) supporterSection.style.display = 'none';
+
+        // Show Global Supporter UI Indicator
+        const supporterStat = document.getElementById('supporter-stat-display');
+        if (supporterStat) supporterStat.style.display = 'flex';
+
+        // Grant Soulbound Fortune if Factory loaded and player doesn't have it
+        if (this.fortuneFactory && this.fortuneFactory.loaded) {
+            const hasBadge = this.fortuneInventory.some(f => f.templateId === 'badge_of_patronage' || f.name === 'Badge of Patronage');
+            if (!hasBadge) {
+                console.log('Supporter verified: Injecting Soulbound Badge of Patronage');
+                const badge = this.fortuneFactory.generateSpecialFortune('badge_of_patronage');
+                if (badge) {
+                    this.fortuneInventory.push(badge);
+                    this.setLatestObtainedFortune(badge);
+                    
+                    if (!silent) {
+                        this.showNotification('Badge of Patronage Secured!');
+                        this.playSound('longSparkle');
+                        if (typeof this.showFloatingText === 'function') {
+                            this.showFloatingText('Supporter Perks Activated!', window.innerWidth / 2, window.innerHeight / 2, '#f96854', 36);
+                        }
+                    }
+                }
+            }
+        }
+        
+        this.recalculatePlayerStats();
+        if (typeof this.updateShopPrices === 'function') {
+            this.updateShopPrices();
+        }
+    }
+
+    /**
+     * Debug: Revokes supporter status and removes the Badge of Patronage.
+     * Usage: window.game.revokeSupporterStatus()
+     */
+    revokeSupporterStatus() {
+        this.isSupporter = false;
+
+        // Remove Badge of Patronage from inventory
+        this.fortuneInventory = this.fortuneInventory.filter(f => f.templateId !== 'badge_of_patronage' && f.name !== 'Badge of Patronage');
+
+        // Re-show "Become a Supporter" settings section
+        const supporterSection = document.getElementById('supporter-settings-section');
+        if (supporterSection) supporterSection.style.display = '';
+
+        // Hide the Supporter badge
+        const supporterStat = document.getElementById('supporter-stat-display');
+        if (supporterStat) supporterStat.style.display = 'none';
+
+        this.recalculatePlayerStats();
+        if (typeof this.updateShopPrices === 'function') {
+            this.updateShopPrices();
+        }
+
+        if (window.saveManager) window.saveManager.saveGame(false);
+        console.log('Supporter status revoked. Badge removed. Save updated.');
+    }
+
+    /**
      * Gets the current DPC based on equipped pickaxe and player stats
      */
     getPickaxeDPC() {
         const pickaxe = this.getEquippedPickaxe();
-        return pickaxe ? pickaxe.baseDPC * this.playerStats.dpcMultiplier : 1;
+        let val = pickaxe ? pickaxe.baseDPC * this.playerStats.dpcMultiplier : 1;
+        if (this.isSupporter) {
+            val *= 1.05; // 5% increased DPC for supporters
+        }
+        return Math.floor(val);
     }
 
     /**
@@ -2459,6 +2535,22 @@ class DogeMinerGame {
                 this.playerStats.helperDpsMultiplier += dpsStat.value;
             }
         }
+
+        // Ko-fi Supporter 5% Helper DPS multiplier!
+        if (this.isSupporter) {
+            this.playerStats.helperDpsMultiplier *= 1.05;
+        }
+    }
+
+    /**
+     * Returns the finalized cost for helpers, including Supporter discount.
+     */
+    getHelperCost(baseCost, ownedCount) {
+        let cost = baseCost * Math.pow(1.15, ownedCount);
+        if (this.isSupporter) {
+            cost *= 0.95; // 5% reduced cost
+        }
+        return Math.floor(cost);
     }
 
     /**
@@ -2881,7 +2973,7 @@ class DogeMinerGame {
 
         const helperArray = this.getHelperArrayForLevel();
         const owned = helperArray.filter(h => h.type === helperType).length;
-        const cost = Math.floor(helperData.baseCost * Math.pow(1.15, owned));
+        const cost = this.getHelperCost(helperData.baseCost, owned);
 
         if (this.dogecoins < cost) {
             return false;
@@ -3030,7 +3122,7 @@ class DogeMinerGame {
             const helperData = shopData[helperType];
 
             // Calculate cost for next purchase
-            const nextCost = Math.floor(helperData.baseCost * Math.pow(1.15, count));
+            const nextCost = this.getHelperCost(helperData.baseCost, count);
             const canAfford = this.dogecoins >= nextCost;
 
             // Check if item exists
@@ -4702,7 +4794,7 @@ class DogeMinerGame {
                     if (helper) {
                         const helperArray = this.getHelperArrayForLevel();
                         const owned = helperArray.filter(h => h.type === helperType).length;
-                        const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
+                        const cost = this.getHelperCost(helper.baseCost, owned);
                         const canAfford = this.dogecoins >= cost;
 
                         // Update quantity

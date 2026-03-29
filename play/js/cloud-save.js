@@ -211,10 +211,15 @@ class CloudSaveManager {
         }
 
         try {
-            // Delete the user's save data from Firestore
+            // Only clear gameData, PRESERVE supporter fields (isSupporter, totalTipAmount, eligibleForGameKey)
+            // These are set by the Ko-Fi webhook and represent real-money purchases that must never be wiped.
             const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
-            await window.firebase.deleteDoc(userDocRef);
-            console.log('Cloud save deleted successfully');
+            await window.firebase.setDoc(userDocRef, {
+                gameData: null,
+                lastSaved: null,
+                version: null
+            }, { merge: true });
+            console.log('Cloud save data cleared (supporter status preserved)');
 
         } catch (error) {
             console.error('Failed to delete cloud save:', error);
@@ -240,6 +245,12 @@ class CloudSaveManager {
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                
+                // Ko-Fi Supporter Sync
+                if (data.isSupporter && window.game) {
+                    window.game.setSupporterStatus(true);
+                }
+
                 if (data.gameData) {
                     this.loadGameState(data.gameData);
                     if (window.notificationManager) {
@@ -276,6 +287,12 @@ class CloudSaveManager {
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                
+                // Ko-Fi Supporter Sync
+                if (data.isSupporter && window.game) {
+                    window.game.setSupporterStatus(true);
+                }
+
                 if (data.gameData) {
                     this.loadGameState(data.gameData);
                     console.log('Game auto-loaded from cloud');

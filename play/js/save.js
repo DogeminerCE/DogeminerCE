@@ -293,7 +293,8 @@ class SaveManager {
             },
             unlockedLevels: this.game.unlockedLevels ? Array.from(this.game.unlockedLevels) : ['earth'],
             HasPlayed_v0_04: this.game.HasPlayed_v0_04,
-            hasSeenDogebagIntro: this.game.hasSeenDogebagIntro || false
+            hasSeenDogebagIntro: this.game.hasSeenDogebagIntro || false,
+            isSupporter: this.game.isSupporter || false
         };
     }
 
@@ -315,6 +316,15 @@ class SaveManager {
 
         this.game.HasPlayed_v0_04 = saveData.HasPlayed_v0_04 || false;
         this.game.hasSeenDogebagIntro = saveData.hasSeenDogebagIntro || false;
+        this.game.isSupporter = saveData.isSupporter || false;
+        
+        // Ensure Supporter UI state is immediately restored
+        if (this.game.isSupporter) {
+            const supporterSection = document.getElementById('supporter-settings-section');
+            if (supporterSection) supporterSection.style.display = 'none';
+            const supporterBadge = document.getElementById('supporter-stat-display');
+            if (supporterBadge) supporterBadge.style.display = 'block';
+        }
 
         this.game.helpers = Array.isArray(saveData.helpers)
             ? saveData.helpers.map(helper => ({ ...helper }))
@@ -383,6 +393,17 @@ class SaveManager {
             this.game.rockCurrentHP = this.game.rockMaxHP;
         }
         this.game.recalculatePlayerStats();
+
+        // Re-trigger supporter setup AFTER fortune inventory has been restored
+        // This ensures the badge check runs against the loaded inventory, not an empty array
+        if (this.game.isSupporter) {
+            const hadBadgeBefore = this.game.fortuneInventory.some(f => f.templateId === 'badge_of_patronage' || f.name === 'Badge of Patronage');
+            this.game.setSupporterStatus(true, true); // silent=true to suppress sounds on routine load
+            // If the badge was just re-injected (wasn't in saved inventory), persist it immediately
+            if (!hadBadgeBefore) {
+                this.saveGame(false);
+            }
+        }
 
         // Apply equipped pickaxe sprite to DOM
         const equipped = this.game.getEquippedPickaxe();
@@ -951,6 +972,9 @@ class SaveManager {
                 this.game.equippedPickaxeId = 'default_normal_pickaxe';
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
+                // Preserve supporter status across resets — this represents a real-money purchase
+                // The badge will be re-granted automatically by setSupporterStatus on next load
+                const wasSupporter = this.game.isSupporter;
                 this.game.latestObtainedFortune = null;
                 this.game.moonDogebagCount = 0;
                 this.game.mysteryBoxObtained = false;
@@ -994,6 +1018,13 @@ class SaveManager {
 
                 // Show notification
                 this.game.showNotification('Game reset successfully!');
+
+                // Preserve supporter status in local storage before reload
+                // This is a real-money purchase and must survive game resets
+                if (wasSupporter) {
+                    this.game.isSupporter = true;
+                    this.saveGame(false); // Write a fresh save with isSupporter = true
+                }
 
                 // Reload after a short delay to ensure UI updates
                 setTimeout(() => {

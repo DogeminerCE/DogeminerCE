@@ -1,14 +1,14 @@
 NAME:
 Badge of Patronage
 
-RARITY
+RARITY:
 Legendary
 
-DESCIRPITON:
+DESCRIPTION:
 Such patronage. Much help. Bestest Doge.
 
 STATS:
-+ Patronage
-+% Loot Find
-+% Luck
-+% Wow
+100 Patronage
+15% Loot Find
+15% Luck
+15% Wow

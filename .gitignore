@@ -75,3 +75,10 @@ Combined_Context.md
 combine.py
 WebP Conversion Plan.md
 fortune_implementation_chat_history.md
+
+# Agent Context / Skill files
+skills-lock.json
+.trae\skills
+.agents\skills
+.trae
+.agents

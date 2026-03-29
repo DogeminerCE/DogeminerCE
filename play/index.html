@@ -136,8 +136,13 @@
             </div>
         </div>
 
-        <!-- Version Indicator -->
-        <div id="version-indicator">v0.05 (ALPHA)</div>
+        <!-- Version Indicator & Supporter Badge -->
+        <div id="footer-badges">
+            <div id="version-indicator">v0.05 (ALPHA)</div>
+            <div id="supporter-stat-display" onclick="openSupporterModal()" style="display: none;">
+                &#x1F496; SUPPORTER
+            </div>
+        </div>
 
         <!-- Planet Tabs -->
         <div id="planet-tabs">
@@ -294,6 +299,77 @@
                 </div>
             </div>
         </div>
+
+        <!-- Supporter Modal -->
+        <div id="supporter-modal" class="switcher-modal" style="align-items: center; justify-content: center;">
+            <div class="switcher-modal-content" style="width: 850px; max-width: 95%; max-height: 95%; overflow-y: auto; text-align: center; box-shadow: none !important;">
+                <div class="inventory-modal-header" style="justify-content: center; position: relative;">
+                    <h2 class="modal-title" style="color: #f96854;">BECOME A SUPPORTER</h2>
+                    <button class="modal-close-btn desktop-only" onclick="closeSupporterModal()" style="position: absolute; right: 20px;">CLOSE</button>
+                </div>
+                
+                <div style="padding: 15px; color: #4a3d2e;" id="supporter-donate-content">
+                    <p style="font-size: 14.5px; font-weight: 500; margin-top: 0; margin-bottom: 15px;">Thank you for enjoying DogeMiner CE! If you want to support our development, you can toss us a tip on Ko-Fi!</p>
+                    
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+                        <h3 style="color: #ffd700; margin-top: 0; margin-bottom: 5px;">In-Game Perks 🐕</h3>
+                        <p style="margin: 0; margin-bottom: 10px; font-size: 14px; font-style: italic; color: #eee;">Any amount donated, big or small, instantly grants you these account-wide perks!</p>
+                        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.4; font-size: 15px;">
+                            <li><strong>Badge of Patronage:</strong> A permanent, soulbound Fortune (+100 Patronage, +15% Loot Find, +15% Luck, +15% Wow) that sticks with you across resets!</li>
+                            <li><strong>Efficiency:</strong> All Helpers cost 5% less to hire.</li>
+                            <li><strong>Power:</strong> 5% increased Helper DPS and Pickaxe DPC.</li>
+                            <li><strong>Double Trouble:</strong> The Mystery Box ALWAYS grants DOUBLE rewards!</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: rgba(25, 118, 210, 0.3); border: 1px solid #1976D2; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+                        <h3 style="color: #64B5F6; margin-top: 0; margin-bottom: 5px;">FREE Game Key Offer! 🎮</h3>
+                        <p style="margin: 0; line-height: 1.4; font-size: 15px;">Anyone who donates <strong>$5 or more</strong> will automatically receive a <strong>FREE game key</strong> for the official Steam / Xbox / iOS / Android versions when they release!</p>
+                    </div>
+                    
+                    <div style="background: rgba(249, 104, 84, 0.2); border: 1px solid #f96854; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+                        <h3 style="color: #f96854; margin-top: 0; margin-bottom: 5px;">Supporting the Future 🚀</h3>
+                        <p style="margin: 0; line-height: 1.4; font-size: 15px;">Half of all funds collected go directly to the original creator of the game, <strong>rkn</strong>! This means every donation also supports the continued development of DogeMiner 2 and the upcoming DogeMiner 3!</p>
+                    </div>
+
+                    <div style="background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <h3 style="color: #f44336; margin-top: 0; margin-bottom: 10px; text-align: left;">How to claim your perks:</h3>
+                        <ol style="text-align: left; line-height: 1.4; font-size: 15px; margin-left: 20px; margin-bottom: 15px;">
+                            <li>You MUST be signed into Cloud Save before continuing.</li>
+                            <li>Click the button below to copy your <strong>Cloud Save ID</strong>.</li>
+                            <li>Go to our Ko-Fi page and paste your Cloud Save ID <strong>EXACTLY AS IT COPIES</strong> into the donation message box.</li>
+                            <li>Do <strong>NOT</strong> add any other text to the message box, or the automated system might fail to grant your perks!</li>
+                        </ol>
+                        
+                        <div style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                            <input type="text" id="supporter-save-id-display" readonly style="width: 80%; padding: 10px; background: #222; color: #aaa; border: 1px solid #444; border-radius: 4px; text-align: center;" value="Please sign into Cloud Save first...">
+                            <button class="setting-btn" id="copy-save-id-btn" onclick="copySupporterSaveId()" style="background: #2196F3; border-color: #1976D2; color: white; width: 80%;">Copy Cloud Save ID</button>
+                        </div>
+                    </div>
+
+                    <a href="https://ko-fi.com/dogeminerce" target="_blank" class="setting-btn" style="display: inline-block; background: linear-gradient(to bottom, #f96854 50%, #d14633 50%); border-color: #a83525; color: white; font-size: 18px; padding: 15px 30px; text-decoration: none; border-width: 2px;">Take me to Ko-Fi! ☕</a>
+                </div>
+
+                <!-- Supporter Perks Active View (shown only when player IS a supporter) -->
+                <div style="padding: 20px; color: #4a3d2e; display: none;" id="supporter-perks-content">
+                    <p style="font-size: 15px; margin-top: 0; margin-bottom: 20px; color: #4a3d2e; font-weight: 600;">Thank you for supporting DogeMiner CE! Here are the perks currently active on your account:</p>
+
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+                        <ul style="list-style-type: none; margin: 0; padding: 0; line-height: 2; font-size: 15px; color: #eee;">
+                            <li>🏅 <strong style="color: #ffd700;">Badge of Patronage</strong> — +100 Patronage, +15% Loot Find, +15% Luck, +15% Wow</li>
+                            <li>💰 <strong style="color: #7CFC00;">Efficiency</strong> — All Helpers cost 5% less to hire</li>
+                            <li>⚔️ <strong style="color: #00BFFF;">Power</strong> — +5% Helper DPS and Pickaxe DPC</li>
+                            <li>🎁 <strong style="color: #FF69B4;">Double Trouble</strong> — The Mystery Box always grants double rewards</li>
+                        </ul>
+                    </div>
+
+                    <p style="font-size: 13px; color: #a58e6e; margin-top: 10px;">These perks are permanent and tied to your Cloud Save account.</p>
+                </div>
+                
+                <button class="modal-close-btn mobile-only" onclick="closeSupporterModal()">CLOSE</button>
+            </div>
+        </div>
+
         <div id="right-panel" class="game-panel">
             <!-- Panel Tabs -->
             <div id="panel-tabs">
@@ -456,6 +532,11 @@
                                         <option value="5000">5 Seconds</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="settings-section" id="supporter-settings-section">
+                                <h3>Support DogeMiner CE</h3>
+                                <p style="font-size: 14px; color: #a58e6e; margin-bottom: 15px;">Want to support development? Unlock sweet in-game perks!</p>
+                                <button class="setting-btn" style="background: linear-gradient(#f96854, #d14633); border-color: #a83525; color: white;" onclick="openSupporterModal()">Become a Supporter!</button>
                             </div>
                         </div>
 
@@ -637,6 +718,8 @@
         <video id="cutscene-video" class="cutscene-video" playsinline></video>
         <button id="cutscene-skip" class="cutscene-skip hidden">SKIP</button>
     </div>
+
+
 
     <!-- Firebase SDK -->
     <script type="module">

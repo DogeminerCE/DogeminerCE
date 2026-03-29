@@ -328,6 +328,74 @@ function closeFortuneModal() {
     }
 }
 
+window.openSupporterModal = function() {
+    // Fill the ID if logged in
+    const input = document.getElementById('supporter-save-id-display');
+    if (input) {
+        if (window.firebase && window.firebase.auth && window.firebase.auth.currentUser) {
+            input.value = window.firebase.auth.currentUser.uid;
+        } else {
+            input.value = "Please sign into Cloud Save first...";
+        }
+    }
+    const modal = document.getElementById('supporter-modal');
+    if (modal) {
+        const donateContent = document.getElementById('supporter-donate-content');
+        const perksContent = document.getElementById('supporter-perks-content');
+        const title = modal.querySelector('.modal-title');
+
+        if (window.game && window.game.isSupporter) {
+            // Show perks overview, hide donation content
+            if (donateContent) donateContent.style.display = 'none';
+            if (perksContent) perksContent.style.display = 'block';
+            if (title) title.textContent = 'SUPPORTER PERKS ACTIVE';
+        } else {
+            // Show donation content, hide perks overview
+            if (donateContent) donateContent.style.display = 'block';
+            if (perksContent) perksContent.style.display = 'none';
+            if (title) title.textContent = 'BECOME A SUPPORTER';
+        }
+
+        modal.classList.add('active');
+    }
+};
+
+window.closeSupporterModal = function() {
+    const modal = document.getElementById('supporter-modal');
+    if (modal) modal.classList.remove('active');
+};
+
+window.copySupporterSaveId = function() {
+    const input = document.getElementById('supporter-save-id-display');
+    if (!input || input.value === "Please sign into Cloud Save first...") {
+        if (window.notificationManager) {
+            window.notificationManager.showWarning("You must sign into Cloud Save first!");
+        }
+        return;
+    }
+
+    // Select and copy
+    input.select();
+    input.setSelectionRange(0, 99999); /* For mobile devices */
+
+    navigator.clipboard.writeText(input.value).then(() => {
+        if (window.notificationManager) {
+            window.notificationManager.showSuccess("Cloud Save ID copied to clipboard!");
+        }
+    }).catch(err => {
+        console.error('Failed to copy ID: ', err);
+        // Fallback for older browsers
+        try {
+            document.execCommand("copy");
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess("Cloud Save ID copied to clipboard!");
+            }
+        } catch (e) {
+            if (window.notificationManager) window.notificationManager.showError("Failed to copy automatically.");
+        }
+    });
+};
+
 function toggleStatsSidebar(inventoryType) {
     const sidebar = document.getElementById(`${inventoryType}-stats-sidebar`);
     if (sidebar) {
