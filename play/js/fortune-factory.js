@@ -415,6 +415,21 @@ class FortuneFactory {
     }
 
     /**
+     * Formats a stat for display in the UI.
+     * e.g., { indicator: '+%', value: 15.5, displayName: 'Luck' } → "+15.5% Luck"
+     */
+    formatStatForDisplay(stat) {
+        if (stat.indicator === '+%') {
+            return `+${stat.value}% ${stat.displayName}`;
+        } else if (stat.indicator === '+') {
+            return `+${stat.value} ${stat.displayName}`;
+        } else if (stat.indicator === '-') {
+            return `-${stat.value} ${stat.displayName}`;
+        }
+        return `${stat.value} ${stat.displayName}`;
+    }
+
+    /**
      * Sanitizes a name into a valid ID string
      */
     _sanitizeId(name) {
