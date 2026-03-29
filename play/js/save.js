@@ -942,11 +942,6 @@ class SaveManager {
                     }
                 }
 
-                // Delete cloud save if user is signed in to prevent restore on reload
-                if (window.cloudSaveManager && window.cloudSaveManager.currentUser) {
-                    await window.cloudSaveManager.deleteCloudSave();
-                }
-
                 // Reset game state directly
                 this.game.dogecoins = 0;
                 this.game.totalMined = 0;
@@ -972,6 +967,7 @@ class SaveManager {
                 this.game.equippedPickaxeId = 'default_normal_pickaxe';
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
+                
                 // Preserve supporter status across resets — this represents a real-money purchase
                 // The badge will be re-granted automatically by setSupporterStatus on next load
                 const wasSupporter = this.game.isSupporter;
@@ -983,6 +979,7 @@ class SaveManager {
                 this.game.mysteryBoxLastSaveTime = 0;
                 const mboxBtn = document.getElementById('mystery-box-btn');
                 if (mboxBtn) mboxBtn.style.display = 'none';
+                
                 // Clear the fortune button preview image
                 const fortunePreviewImg = document.getElementById('fortune-btn-preview');
                 if (fortunePreviewImg) {
@@ -991,6 +988,7 @@ class SaveManager {
                     fortunePreviewImg.classList.add('fortune-icon-placeholder');
                     fortunePreviewImg.style.visibility = 'hidden';
                 }
+                
                 this.game.rocksBroken = 0;
                 this.game.planetRockData = {
                     earth: { rocksBroken: 0, currentHP: null, maxHP: null },
@@ -999,6 +997,7 @@ class SaveManager {
                     jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
                     titan: { rocksBroken: 0, currentHP: null, maxHP: null }
                 };
+                
                 this.game.rockBaseHP = this.game.getPlanetRockBaseHP('earth');
                 this.game.rockMaxHP = this.game.rockBaseHP;
                 this.game.rockCurrentHP = this.game.rockBaseHP;
@@ -1007,7 +1006,21 @@ class SaveManager {
                 this.game.currentLevel = 'earth';
                 this.game.hasPlayedMoonLaunch = false;
                 this.game.isCutscenePlaying = false;
-                this.game.autoSaveEnabled = false; // Prevent auto-save from caching corrupted states before reload
+                this.game.autoSaveEnabled = false; // Prevent interval auto-save from misfiring
+                
+                // Restore supporter flag immediately so it gets baked into the fresh save
+                if (wasSupporter) {
+                    this.game.isSupporter = true;
+                }
+
+                // Unconditionally write a fresh local save containing the 0-state
+                this.saveGame(false);
+
+                // Overwrite the cloud save with the 0-state to act as a fallback, then issue deletion
+                if (window.cloudSaveManager && window.cloudSaveManager.currentUser) {
+                    await window.cloudSaveManager.saveToCloudSilent();
+                    await window.cloudSaveManager.deleteCloudSave();
+                }
 
                 // Clear all helper sprites from the DOM
                 this.game.clearAllHelperSprites();
@@ -1018,13 +1031,6 @@ class SaveManager {
 
                 // Show notification
                 this.game.showNotification('Game reset successfully!');
-
-                // Preserve supporter status in local storage before reload
-                // This is a real-money purchase and must survive game resets
-                if (wasSupporter) {
-                    this.game.isSupporter = true;
-                    this.saveGame(false); // Write a fresh save with isSupporter = true
-                }
 
                 // Reload after a short delay to ensure UI updates
                 setTimeout(() => {
