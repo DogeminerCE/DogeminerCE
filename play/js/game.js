@@ -2454,33 +2454,6 @@ class DogeMinerGame {
     }
 
     /**
-     * Debug: Revokes supporter status and removes the Badge of Patronage.
-     * Usage: window.game.revokeSupporterStatus()
-     */
-    revokeSupporterStatus() {
-        this.isSupporter = false;
-
-        // Remove Badge of Patronage from inventory
-        this.fortuneInventory = this.fortuneInventory.filter(f => f.templateId !== 'badge_of_patronage' && f.name !== 'Badge of Patronage');
-
-        // Re-show "Become a Supporter" settings section
-        const supporterSection = document.getElementById('supporter-settings-section');
-        if (supporterSection) supporterSection.style.display = '';
-
-        // Hide the Supporter badge
-        const supporterStat = document.getElementById('supporter-stat-display');
-        if (supporterStat) supporterStat.style.display = 'none';
-
-        this.recalculatePlayerStats();
-        if (typeof this.updateShopPrices === 'function') {
-            this.updateShopPrices();
-        }
-
-        if (window.saveManager) window.saveManager.saveGame(false);
-        console.log('Supporter status revoked. Badge removed. Save updated.');
-    }
-
-    /**
      * Gets the current DPC based on equipped pickaxe and player stats
      */
     getPickaxeDPC() {
