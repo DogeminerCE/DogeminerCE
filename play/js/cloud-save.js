@@ -145,13 +145,18 @@ class CloudSaveManager {
 
             // Get current game state
             const gameData = this.getGameState();
-            console.log('Manual save - gameData:', gameData);
 
             if (gameData === null) {
                 if (window.notificationManager) {
                     window.notificationManager.showError('Cannot save: Game not initialized');
                 }
                 return;
+            }
+
+            // Stripping isSupporter from the cloud-specific payload to prevent client-side clobbering 
+            // of the root-level Source of Truth (which is managed by Ko-Fi/Manual edits).
+            if (gameData && typeof gameData === 'object') {
+                delete gameData.isSupporter;
             }
 
             // Save to Firestore
@@ -182,7 +187,12 @@ class CloudSaveManager {
         try {
             // Get current game state
             const gameData = this.getGameState();
-            console.log('Silent save - gameData:', gameData);
+            
+            // Stripping isSupporter from the cloud-specific payload to prevent client-side clobbering 
+            // of the root-level Source of Truth (which is managed by Ko-Fi/Manual edits).
+            if (gameData && typeof gameData === 'object') {
+                delete gameData.isSupporter;
+            }
 
             if (gameData === null) {
                 console.error('Cannot save to cloud: gameData is null');
