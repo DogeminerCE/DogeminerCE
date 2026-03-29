@@ -25,7 +25,7 @@ class DogeMinerGame {
             'Timmy', 'Mary', 'Martha', 'Linda', 'Jimothy', 'Scout', 'Barley', 'Cherry', 'Vader', 'Mochatitan',
             'Babylion122', 'rkn', 'Raspy', 'Melon', 'News', 'Rick', 'Sam', 'Josiah', 'Ren', 'Creedoo',
             'Cottage', 'Cheese', 'Bikini', 'Silver', 'Sorrel', 'Kyle', 'DwellingStars', 'Done', 'Peanut', 'Fry',
-            'Bruno', 'Charlie', 'Emmet', 'Lucy', 'Vincent', 'tothestars693', 'Cherie', 'Crush', 'RockMelon', 'HoneyMelon', 'Karvão',
+            'Bruno', 'Charlie', 'Emmet', 'Lucy', 'Vincent', 'tothestars693', 'Cherie', 'Crush', 'RockMelon', 'HoneyMelon', 'Karvão', 'NinjaJayBird', 'Ava',
         ];
 
         this.helperNames = {
@@ -169,8 +169,8 @@ class DogeMinerGame {
         // Planet-specific rock health tracking map
         this.planetRockData = {
             earth: { rocksBroken: 0, currentHP: null, maxHP: null },
-            moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
-            mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
+            moon: { rocksBroken: 0, currentHP: null, maxHP: null },
+            mars: { rocksBroken: 0, currentHP: null, maxHP: null },
             jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
             titan: { rocksBroken: 0, currentHP: null, maxHP: null }
         };
@@ -931,7 +931,7 @@ class DogeMinerGame {
             // Bind the actual Dogecoin payout directly to this visual size percentage!
             // E.g. 5% (Small) -> 0.17x variance. 75% (Large) -> 1.2x variance.
             const variance = 0.1 + (percentage / 75) * 1.1;
-            const maxDrop = this.calculateCoinDrop(); 
+            const maxDrop = this.calculateCoinDrop();
             const amount = Math.max(1, Math.floor(maxDrop * variance));
 
             // Stagger the pile creation slightly
@@ -1014,7 +1014,7 @@ class DogeMinerGame {
 
         // Final position: below the rock, spread horizontally
         let finalOffsetX;
-        
+
         if (total > 1) {
             // Segment the horizontal space based on the index so multiple piles don't spawn on top of each other
             const sectionWidth = 240 / total;
@@ -1059,7 +1059,7 @@ class DogeMinerGame {
         setTimeout(() => {
             if (pile.parentNode) {
                 pile.style.animation = 'coinPileWarning 5s linear forwards';
-                
+
                 setTimeout(() => {
                     if (pile.parentNode) {
                         pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
@@ -1079,7 +1079,7 @@ class DogeMinerGame {
      */
     collectCoinPile(pile, amount) {
         if (!pile.parentNode || pile.dataset.collected) return; // Prevent double collection
-        
+
         // Mark as collected to prevent any further interaction
         pile.dataset.collected = "true";
         pile.style.pointerEvents = 'none';
@@ -1308,7 +1308,7 @@ class DogeMinerGame {
         // Position similar to coin piles but dispersed further (approx 35% further spread)
         let finalOffsetX = (Math.random() - 0.5) * 320; // Was 240
         let finalOffsetY = 90 + Math.random() * 110;    // Was 80 + rand(80)
-        
+
         // Prevent spawning in the direct center where the health percentage text is
         // Instead of splitting them left and right (which creates an awkward gap), 
         // we'll push them downwards if they land in the central column where the text is.
@@ -1404,7 +1404,7 @@ class DogeMinerGame {
                 this.mysteryBoxTimerRemaining = 0;
                 clearInterval(this._mysteryBoxInterval);
                 this._mysteryBoxInterval = null;
-                
+
                 // Add glowing ready state 
                 const btn = document.getElementById('mystery-box-btn');
                 if (btn && !btn.classList.contains('mystery-box-ready')) {
@@ -1417,7 +1417,7 @@ class DogeMinerGame {
 
                 const sidebarTimer = document.getElementById('mbox-sidebar-timer');
                 if (sidebarTimer) sidebarTimer.textContent = 'OPEN!';
-                
+
                 // If modal is currently open, update it
                 const statusEl = document.getElementById('mbox-status-text');
                 if (statusEl && statusEl.textContent.includes('doesn\'t want to open')) {
@@ -1425,7 +1425,7 @@ class DogeMinerGame {
                 }
             } else {
                 this.mysteryBoxTimerRemaining -= 1000;
-                
+
                 // Update open modal timer if visible
                 const timerEl = document.getElementById('mbox-timer-text');
                 if (timerEl) {
@@ -1515,7 +1515,7 @@ class DogeMinerGame {
         this.mysteryBoxOpenCount++;
         const is2x = this.isSupporter || (this.mysteryBoxOpenCount % 10 === 0);
         const numRewards = is2x ? 2 : 1;
-        
+
         let rewards = [];
         for (let i = 0; i < numRewards; i++) {
             const reward = this._rollMysteryBoxReward();
@@ -1528,12 +1528,12 @@ class DogeMinerGame {
         // Reset timer to 20 mins (1,200,000 ms)
         this.mysteryBoxTimerRemaining = 1200000;
         this.mysteryBoxLastSaveTime = Date.now();
-        
+
         const btn = document.getElementById('mystery-box-btn');
         if (btn) btn.classList.remove('mystery-box-ready');
-        
+
         this.startMysteryBoxTimer();
-        
+
         if (window.saveManager) window.saveManager.saveGame(false);
 
         this._renderMysteryBoxRewards(rewards);
@@ -1545,13 +1545,13 @@ class DogeMinerGame {
      */
     _rollMysteryBoxReward() {
         const roll = Math.random();
-        
+
         if (roll < 0.10 && this.pickaxeFactory && this.pickaxeFactory.loaded) {
             // Pickaxe Drop
             // Mystery box can drop from any planet
             const planets = ['earth', 'moon', 'mars', 'jupiter', 'titan'];
             const randomPlanet = planets[Math.floor(Math.random() * planets.length)];
-            
+
             const templateId = this.pickaxeFactory.rollTemplate(randomPlanet, this.playerStats.lootFind);
             if (templateId) {
                 const pickaxe = this.pickaxeFactory.generatePickaxe(
@@ -1561,8 +1561,8 @@ class DogeMinerGame {
                 );
                 return { type: 'pickaxe', item: pickaxe };
             }
-        } 
-        
+        }
+
         // Fortune drop (Fallback or 90% chance)
         if (this.fortuneFactory && this.fortuneFactory.loaded) {
             // Provide a boosted LootFind (simulated) to double effective rarity drop chances
@@ -1578,7 +1578,7 @@ class DogeMinerGame {
             );
             return { type: 'fortune', item: fortune };
         }
-        
+
         return null; // Should not happen if loaded
     }
 
@@ -1609,7 +1609,7 @@ class DogeMinerGame {
 
         rewards.forEach(reward => {
             const item = reward.item;
-            
+
             // Build stats html
             let statsHtml = '';
             if (reward.type === 'pickaxe' && this.pickaxeFactory) {
@@ -1670,13 +1670,13 @@ class DogeMinerGame {
      */
     mysteryBoxEquip() {
         if (!this._pendingMysteryBoxRewards) return;
-        
+
         // Find the pickaxe
         const pickaxeReward = this._pendingMysteryBoxRewards.find(r => r.type === 'pickaxe');
-        
+
         // Process all rewards properly first
         this.closeMysteryBoxModal(true);
-        
+
         // Equip immediately
         if (pickaxeReward) {
             this.equipPickaxe(pickaxeReward.item.instanceId);
@@ -1692,7 +1692,7 @@ class DogeMinerGame {
         if (!processRewards) {
             this.playSound('inventoryClose');
         }
-        
+
         const modal = document.getElementById('mystery-box-modal');
         if (modal) {
             modal.classList.remove('active');
@@ -1700,7 +1700,7 @@ class DogeMinerGame {
 
         if (processRewards && this._pendingMysteryBoxRewards) {
             let requiresStatsUpdate = false;
-            
+
             this._pendingMysteryBoxRewards.forEach(reward => {
                 if (reward.type === 'fortune') {
                     this.fortuneInventory.unshift(reward.item); // Add to front
@@ -1710,12 +1710,12 @@ class DogeMinerGame {
                     this.addPickaxeToInventory(reward.item); // Built-in method that tracks maxDPC
                 }
             });
-            
+
             this._pendingMysteryBoxRewards = null;
-            
+
             if (requiresStatsUpdate) {
-                this.recalculatePlayerStats();      
-                this.updateStatsSidebar('fortune');            
+                this.recalculatePlayerStats();
+                this.updateStatsSidebar('fortune');
             }
             if (window.saveManager) window.saveManager.saveGame(true);
         }
@@ -2078,11 +2078,11 @@ class DogeMinerGame {
     updateStatsSidebar(inventoryType) {
         const contentContainer = document.getElementById(`${inventoryType}-stats-content`);
         if (!contentContainer) return;
-        
+
         const formatPercent = (val) => `${(val * 100).toFixed(1)}%`;
         const formatMult = (val) => `x${val.toFixed(2)}`;
         const formatFlat = (val) => `+${val.toFixed(1)}`;
-        
+
         let html = '';
         const statList = [
             { label: 'Luck', value: `+${(this.playerStats.luck || 0).toFixed(1)}` },
@@ -2094,11 +2094,11 @@ class DogeMinerGame {
             { label: 'Flat DPS Bonus', value: `+${Math.floor(this.playerStats.flatHelperDps || 0)}` },
             { label: 'Cost Reduction', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
         ];
-        
+
         statList.forEach(stat => {
             html += `<div class="stat-sidebar-item"><span class="stat-sidebar-label">${stat.label}</span><span class="stat-sidebar-value">${stat.value}</span></div>`;
         });
-        
+
         contentContainer.innerHTML = html;
     }
 
@@ -2435,7 +2435,7 @@ class DogeMinerGame {
                 if (badge) {
                     this.fortuneInventory.push(badge);
                     this.setLatestObtainedFortune(badge);
-                    
+
                     if (!silent) {
                         this.showNotification('Badge of Patronage Secured!');
                         this.playSound('longSparkle');
@@ -2446,7 +2446,7 @@ class DogeMinerGame {
                 }
             }
         }
-        
+
         this.recalculatePlayerStats();
         if (typeof this.updateShopPrices === 'function') {
             this.updateShopPrices();
@@ -2645,7 +2645,7 @@ class DogeMinerGame {
         const now = Date.now();
         const diff = now - (this.lastRealSwing || 0);
         this.lastRealSwing = now;
-        
+
         // DM2 swing timing: fast chain-clicks = 34ms, fresh clicks = 68ms
         const swingTime = (diff < 200) ? 34 : 68;
         this._currentSwingDuration = swingTime;
