@@ -323,19 +323,25 @@ class PickaxeFactory {
         if (template.zeroDPC) {
             baseDPC = 0;
         } else {
-            // Apply a base exponential multiplier and a healthy flat additive boost
-            const multiplier = 1.15 + (Math.random() * 0.15); // 1.15x to 1.30x
-            const flatBoost = 3 + Math.floor(Math.random() * 8); // +3 to +10 flat
+            // Logarithmic dampening: growth rate starts strong and diminishes as DPC rises
+            // This prevents runaway exponential compounding into trillions/quadrillions
+            const logDpc = Math.log10(Math.max(2, currentMaxDPC));
+            const growthRate = 0.20 / (1 + logDpc * 0.25);
+            const multiplier = 1 + growthRate + (Math.random() * growthRate * 0.5);
+
+            // Scaling flat boost (meaningful early, proportionally small late)
+            const flatBoost = Math.max(1, Math.floor(Math.sqrt(currentMaxDPC) * 0.5))
+                            + Math.floor(Math.random() * 3);
             
             baseDPC = Math.floor((currentMaxDPC * multiplier) + flatBoost);
 
-            // Scale heavily by the rarity of the roll to make rare drops wildly exciting
+            // Rarity scaling — exciting but not game-breaking
             const rarityScales = {
                 common: 1.0,
-                improved: 1.3,
-                rare: 1.8,
-                epic: 2.5,
-                legendary: 4.0
+                improved: 1.1,
+                rare: 1.25,
+                epic: 1.5,
+                legendary: 2.0
             };
             const rScale = rarityScales[template.rarity] || 1.0;
             

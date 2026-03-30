@@ -540,7 +540,10 @@ class DogeMinerGame {
         }
 
         // Rock health system — deal damage to rock
-        this.rockCurrentHP = Math.max(0, this.rockCurrentHP - damage);
+        // Cap rock damage per hit to 15% of max HP to prevent one-shotting
+        const maxRockDamage = Math.max(1, Math.floor(this.rockMaxHP * 0.15));
+        const rockDamage = Math.min(damage, maxRockDamage);
+        this.rockCurrentHP = Math.max(0, this.rockCurrentHP - rockDamage);
         this.updateRockSprite();
         this.checkCoinPileExpulsion();
         this.updateRockHealthDisplay();
@@ -2402,8 +2405,8 @@ class DogeMinerGame {
      */
     addPickaxeToInventory(pickaxe) {
         this.pickaxeInventory.push(pickaxe);
-        // Update maxDPC tracker
-        if (pickaxe.baseDPC > this.maxPickaxeDPC) {
+        // Update maxDPC tracker (skip zeroDPC pickaxes like Staff of SunDoge)
+        if (pickaxe.baseDPC > 0 && pickaxe.baseDPC > this.maxPickaxeDPC) {
             this.maxPickaxeDPC = pickaxe.baseDPC;
         }
     }
@@ -2490,6 +2493,27 @@ class DogeMinerGame {
             });
         }
 
+        // Retroactive fix: Staff of SunDoge pickaxes with non-zero DPC
+        let needsMaxDpcRecalc = false;
+        this.pickaxeInventory.forEach(p => {
+            if ((p.name === 'Staff of the SunDoge' || p.isStaffOfSundoge) && p.baseDPC !== 0) {
+                console.log(`[Retroactive Fix] Staff of SunDoge "${p.instanceId}" had baseDPC=${p.baseDPC}, forcing to 0`);
+                p.baseDPC = 0;
+                needsMaxDpcRecalc = true;
+            }
+        });
+
+        // Recalculate maxPickaxeDPC from corrected inventory if needed
+        if (needsMaxDpcRecalc) {
+            this.maxPickaxeDPC = 1;
+            this.pickaxeInventory.forEach(p => {
+                if (p.baseDPC > this.maxPickaxeDPC) {
+                    this.maxPickaxeDPC = p.baseDPC;
+                }
+            });
+            console.log(`[Retroactive Fix] Recalculated maxPickaxeDPC = ${this.maxPickaxeDPC}`);
+        }
+
         // Add all fortune stats (array-based format matching pickaxes)
         this.fortuneInventory.forEach(fortune => {
             // Retroactive fix for bad badge_of_patronage stats saved in earlier versions
@@ -2515,6 +2539,16 @@ class DogeMinerGame {
                         rocketStat.fixedValue = 5;
                     }
                 }
+            }
+
+            // Retroactive fix for Fortune of Diesel typo (Mystery Bonuss)
+            if (fortune.stats && Array.isArray(fortune.stats)) {
+                fortune.stats.forEach(stat => {
+                    if (stat.displayName === 'Mystery Bonuss') {
+                        stat.displayName = 'Mystery Bonus';
+                        stat.name = 'mysterybonus';
+                    }
+                });
             }
 
             if (fortune.stats && Array.isArray(fortune.stats)) {

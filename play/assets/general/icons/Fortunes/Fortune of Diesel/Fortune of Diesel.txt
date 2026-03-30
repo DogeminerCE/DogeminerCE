@@ -10,4 +10,4 @@ A mysterious artifact imbued with some kind of magical power.
 STATS:
 +% Loot Find
 +% Wow
-+ Mystery Bonuss
++ Mystery Bonus
