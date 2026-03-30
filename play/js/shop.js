@@ -606,7 +606,16 @@ class ShopManager {
         const helper = this.shopData.helpers[helperType];
         if (!helper) return Infinity;
 
-        return Math.floor(helper.baseCost * Math.pow(1.15, owned));
+        let cost = helper.baseCost * Math.pow(1.15, owned);
+        if (this.game && this.game.isSupporter) {
+            cost *= 0.95;
+        }
+
+        if (this.game && helperType === 'spaceRocket' && this.game.playerStats && this.game.playerStats.rocketCostReduction > 0) {
+            cost *= (1 - this.game.playerStats.rocketCostReduction);
+        }
+
+        return Math.floor(cost);
     }
 
     canAffordHelper(helperType) {

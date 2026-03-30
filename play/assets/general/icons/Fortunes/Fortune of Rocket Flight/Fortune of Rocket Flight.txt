@@ -8,6 +8,6 @@ DESCRIPTION:
 A mysterious artifact imbued with some kind of magical power.
 
 STATS:
--% Space Rocket Costs
+-5% Space Rocket Costs
 +% Loot Find
 + Mystery Bonus

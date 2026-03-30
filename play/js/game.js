@@ -2092,7 +2092,7 @@ class DogeMinerGame {
             { label: 'Base DPC Mult.', value: formatMult(this.playerStats.dpcMultiplier || 1) },
             { label: 'Helper DPS Mult.', value: formatMult(this.playerStats.helperDpsMultiplier || 1) },
             { label: 'Flat DPS Bonus', value: `+${Math.floor(this.playerStats.flatHelperDps || 0)}` },
-            { label: 'Cost Reduction', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
+            { label: 'Space Rocket Costs', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
         ];
 
         statList.forEach(stat => {
@@ -2502,6 +2502,21 @@ class DogeMinerGame {
                 ];
             }
 
+            // Retroactive fix for bad Fortune of Rocket Flight stats
+            if (fortune.templateId === 'fortune_of_rocket_flight' || fortune.name === 'Fortune of Rocket Flight') {
+                if (Array.isArray(fortune.stats)) {
+                    const rocketStat = fortune.stats.find(s => s.name === 'spacerocketcosts' || s.displayName === 'Space Rocket Costs');
+                    if (rocketStat) {
+                        rocketStat.name = 'spacerocketcosts';
+                        rocketStat.displayName = 'Space Rocket Costs';
+                        rocketStat.indicator = '-%';
+                        rocketStat.isCore = true;
+                        rocketStat.value = 5;
+                        rocketStat.fixedValue = 5;
+                    }
+                }
+            }
+
             if (fortune.stats && Array.isArray(fortune.stats)) {
                 fortune.stats.forEach(stat => {
                     if (!stat.isCore) return;
@@ -2528,11 +2543,16 @@ class DogeMinerGame {
     /**
      * Returns the finalized cost for helpers, including Supporter discount.
      */
-    getHelperCost(baseCost, ownedCount) {
+    getHelperCost(baseCost, ownedCount, helperType = null) {
         let cost = baseCost * Math.pow(1.15, ownedCount);
         if (this.isSupporter) {
             cost *= 0.95; // 5% reduced cost
         }
+
+        if (helperType === 'spaceRocket' && this.playerStats && this.playerStats.rocketCostReduction > 0) {
+            cost *= (1 - this.playerStats.rocketCostReduction);
+        }
+
         return Math.floor(cost);
     }
 
@@ -2550,6 +2570,7 @@ class DogeMinerGame {
             'helperdpsmultiplier': 'helperDpsMultiplier',
             'helperdps': 'helperDpsMultiplier',
             'rocketcostreduction': 'rocketCostReduction',
+            'spacerocketcosts': 'rocketCostReduction',
             'dps': 'helperDpsMultiplier',
             'higherground': 'luck' // Higher Ground maps to luck
         };
@@ -2574,6 +2595,9 @@ class DogeMinerGame {
             } else {
                 this.playerStats[playerKey] += stat.value;
             }
+        } else if (stat.indicator === '-%') {
+            // Percentage reduction stats (divide by 100)
+            this.playerStats[playerKey] += stat.value / 100;
         } else if (stat.indicator === '-') {
             // Reduction stats are beneficial, so still add
             this.playerStats[playerKey] += stat.value;
@@ -2956,7 +2980,7 @@ class DogeMinerGame {
 
         const helperArray = this.getHelperArrayForLevel();
         const owned = helperArray.filter(h => h.type === helperType).length;
-        const cost = this.getHelperCost(helperData.baseCost, owned);
+        const cost = this.getHelperCost(helperData.baseCost, owned, helperType);
 
         if (this.dogecoins < cost) {
             return false;
@@ -3105,7 +3129,7 @@ class DogeMinerGame {
             const helperData = shopData[helperType];
 
             // Calculate cost for next purchase
-            const nextCost = this.getHelperCost(helperData.baseCost, count);
+            const nextCost = this.getHelperCost(helperData.baseCost, count, helperType);
             const canAfford = this.dogecoins >= nextCost;
 
             // Check if item exists
@@ -4777,7 +4801,7 @@ class DogeMinerGame {
                     if (helper) {
                         const helperArray = this.getHelperArrayForLevel();
                         const owned = helperArray.filter(h => h.type === helperType).length;
-                        const cost = this.getHelperCost(helper.baseCost, owned);
+                        const cost = this.getHelperCost(helper.baseCost, owned, helperType);
                         const canAfford = this.dogecoins >= cost;
 
                         // Update quantity

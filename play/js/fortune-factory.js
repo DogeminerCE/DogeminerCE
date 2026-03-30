@@ -10,7 +10,7 @@ class FortuneFactory {
         this.coreStats = new Set([
             'luck', 'lootfind', 'wow', 'critchance',
             'dpcmultiplier', 'helperdpsmultiplier', 'rocketcostreduction',
-            'dps', 'helperdps', 'criticalchance', 'higherground'
+            'dps', 'helperdps', 'criticalchance', 'higherground', 'spacerocketcosts'
         ]);
         this.loaded = false;
     }
@@ -199,18 +199,30 @@ class FortuneFactory {
     _parseStatLine(line) {
         let indicator, statName;
 
-        // Check for fixed numeric values: "+10% DPS" or "+1 Defuse Kit"
+        // Check for fixed numeric values: "+10% DPS", "+1 Defuse Kit", or "-5% Rocket Costs"
         const fixedPercentMatch = line.match(/^\+(\d+)%\s+(.+)$/);
+        const fixedMinusPercentMatch = line.match(/^\-(\d+)%\s+(.+)$/);
         const fixedFlatMatch = line.match(/^\+(\d+)\s+(.+)$/);
+
+        let fixedValue = null;
 
         if (fixedPercentMatch) {
             indicator = '+%';
             statName = fixedPercentMatch[2].trim();
+            fixedValue = parseInt(fixedPercentMatch[1], 10);
+        } else if (fixedMinusPercentMatch) {
+            indicator = '-%';
+            statName = fixedMinusPercentMatch[2].trim();
+            fixedValue = parseInt(fixedMinusPercentMatch[1], 10);
         } else if (fixedFlatMatch) {
             indicator = '+';
             statName = fixedFlatMatch[2].trim();
+            fixedValue = parseInt(fixedFlatMatch[1], 10);
         } else if (line.startsWith('+%')) {
             indicator = '+%';
+            statName = line.substring(2).trim();
+        } else if (line.startsWith('-%')) {
+            indicator = '-%';
             statName = line.substring(2).trim();
         } else if (line.startsWith('+')) {
             indicator = '+';
@@ -229,11 +241,18 @@ class FortuneFactory {
         const normalizedName = statName.toLowerCase().replace(/\s+/g, '');
         const isCore = this.coreStats.has(normalizedName);
 
+        // Core mappings
+        if (normalizedName === 'spacerocketcosts') {
+            // Internally handled essentially the same as rocketcostreduction,
+            // but mapped correctly for user display. 
+        }
+
         return {
             name: normalizedName,
             displayName: statName,
             indicator,
-            isCore
+            isCore,
+            fixedValue
         };
     }
 
@@ -370,7 +389,9 @@ class FortuneFactory {
         return statTemplates.map(st => {
             let value;
 
-            if (st.indicator === '+%') {
+            if (st.fixedValue !== null && st.fixedValue !== undefined) {
+                value = st.fixedValue;
+            } else if (st.indicator === '+%') {
                 // Percentage stats: roll 1-25%, scaled by luck+lootFind
                 const baseRoll = 1 + Math.random() * 24;
                 value = baseRoll * scaleFactor;
@@ -378,6 +399,10 @@ class FortuneFactory {
             } else if (st.indicator === '+') {
                 // Flat additive stats: roll 1-100, scaled by luck+lootFind
                 const baseRoll = 1 + Math.floor(Math.random() * 99);
+                value = Math.floor(baseRoll * scaleFactor);
+            } else if (st.indicator === '-%') {
+                // Percentage reduction stats (if not fixed)
+                const baseRoll = 1 + Math.floor(Math.random() * 9);
                 value = Math.floor(baseRoll * scaleFactor);
             } else if (st.indicator === '-') {
                 // Reduction stats: roll 1-50, stored as positive, displayed with -
@@ -400,29 +425,13 @@ class FortuneFactory {
         });
     }
 
-    /**
-     * Formats a stat for display in the UI.
-     */
     formatStatForDisplay(stat) {
         if (stat.indicator === '+%') {
             return `+${stat.value}% ${stat.displayName}`;
         } else if (stat.indicator === '+') {
             return `+${stat.value} ${stat.displayName}`;
-        } else if (stat.indicator === '-') {
-            return `-${stat.value} ${stat.displayName}`;
-        }
-        return `${stat.value} ${stat.displayName}`;
-    }
-
-    /**
-     * Formats a stat for display in the UI.
-     * e.g., { indicator: '+%', value: 15.5, displayName: 'Luck' } → "+15.5% Luck"
-     */
-    formatStatForDisplay(stat) {
-        if (stat.indicator === '+%') {
-            return `+${stat.value}% ${stat.displayName}`;
-        } else if (stat.indicator === '+') {
-            return `+${stat.value} ${stat.displayName}`;
+        } else if (stat.indicator === '-%') {
+            return `-${stat.value}% ${stat.displayName}`;
         } else if (stat.indicator === '-') {
             return `-${stat.value} ${stat.displayName}`;
         }
