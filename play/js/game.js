@@ -1703,7 +1703,7 @@ class DogeMinerGame {
 
             this._pendingMysteryBoxRewards.forEach(reward => {
                 if (reward.type === 'fortune') {
-                    this.fortuneInventory.unshift(reward.item); // Add to front
+                    this.fortuneInventory.push(reward.item); // Add to end (newest)
                     this.setLatestObtainedFortune(reward.item); // Built-in method that updates the button preview
                     requiresStatsUpdate = true;
                 } else if (reward.type === 'pickaxe') {
