@@ -256,11 +256,6 @@ class CloudSaveManager {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 
-                // Ko-Fi Supporter Sync
-                if (data.isSupporter && window.game) {
-                    window.game.setSupporterStatus(true);
-                }
-
                 if (data.gameData) {
                     this.loadGameState(data.gameData);
                     if (window.notificationManager) {
@@ -270,6 +265,12 @@ class CloudSaveManager {
                     if (window.notificationManager) {
                         window.notificationManager.showWarning('No save data found in cloud');
                     }
+                }
+
+                // Ko-Fi Supporter Sync MUST happen AFTER loadGameState 
+                // because loadGameState clears status to false.
+                if (data.isSupporter && window.game) {
+                    window.game.setSupporterStatus(true);
                 }
             } else {
                 if (window.notificationManager) {
@@ -298,14 +299,14 @@ class CloudSaveManager {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 
-                // Ko-Fi Supporter Sync
-                if (data.isSupporter && window.game) {
-                    window.game.setSupporterStatus(true);
-                }
-
                 if (data.gameData) {
                     this.loadGameState(data.gameData);
                     console.log('Game auto-loaded from cloud');
+                }
+
+                // Ko-Fi Supporter Sync MUST happen AFTER loadGameState
+                if (data.isSupporter && window.game) {
+                    window.game.setSupporterStatus(true);
                 }
             }
 
