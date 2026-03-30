@@ -2492,6 +2492,16 @@ class DogeMinerGame {
 
         // Add all fortune stats (array-based format matching pickaxes)
         this.fortuneInventory.forEach(fortune => {
+            // Retroactive fix for bad badge_of_patronage stats saved in earlier versions
+            if (fortune.templateId === 'badge_of_patronage') {
+                fortune.stats = [
+                    { name: 'patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
+                    { name: 'lootfind', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
+                    { name: 'luck', displayName: 'Luck', indicator: '+%', isCore: true, value: 15 },
+                    { name: 'wow', displayName: 'Wow', indicator: '+%', isCore: true, value: 15 }
+                ];
+            }
+
             if (fortune.stats && Array.isArray(fortune.stats)) {
                 fortune.stats.forEach(stat => {
                     if (!stat.isCore) return;

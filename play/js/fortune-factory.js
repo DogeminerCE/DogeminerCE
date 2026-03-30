@@ -250,10 +250,10 @@ class FortuneFactory {
         let stats = [];
         if (templateId === 'badge_of_patronage') {
             stats = [
-                { name: 'Patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
-                { name: 'Loot Find', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
-                { name: 'Luck', displayName: 'Luck', indicator: '+%', isCore: false, value: 15 },
-                { name: 'Wow', displayName: 'Wow', indicator: '+%', isCore: false, value: 15 }
+                { name: 'patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
+                { name: 'lootfind', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
+                { name: 'luck', displayName: 'Luck', indicator: '+%', isCore: true, value: 15 },
+                { name: 'wow', displayName: 'Wow', indicator: '+%', isCore: true, value: 15 }
             ];
         } else {
             const useBaseStats = template.isSoulbound;
