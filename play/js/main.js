@@ -718,6 +718,7 @@ function debugGrantAllFortunes() {
     let count = 0;
     let lastFortune = null;
     for (const templateId of Object.keys(factory.templates)) {
+        if (templateId === 'badge_of_patronage') continue;
         const template = factory.templates[templateId];
         if (!template) continue;
 
