@@ -1472,13 +1472,13 @@ class DogeMinerGame {
 
         const isReady = this.mysteryBoxTimerRemaining <= 0;
         const opensTo2x = 10 - (this.mysteryBoxOpenCount % 10);
-        const is2xNow = isReady && (opensTo2x === 10 || opensTo2x === 0);
+        const is2xNow = isReady && (this.isSupporter || opensTo2x === 10 || opensTo2x === 0);
         const syncDelay = isReady ? `-${(Date.now() % 1800) / 1000}s` : '0s';
 
         let html = `
             <div class="mbox-scroll-body">
                 <h2 class="mbox-header">Mystery Box</h2>
-                <p class="mbox-subtitle">${isReady && is2xNow ? 'Open for <strong>2x rewards!</strong>' : '&nbsp;'}</p>
+                <p class="mbox-subtitle">${isReady && is2xNow ? 'Open for <strong style="color: #ff9800;">2x rewards!</strong>' : '&nbsp;'}</p>
                 
                 <div class="mbox-display">
                     <div class="mbox-radial"></div>
@@ -1491,7 +1491,7 @@ class DogeMinerGame {
         if (!isReady) {
             html += `
                 <div class="mbox-timer" id="mbox-timer-text">Opens in: ${this._formatMs(this.mysteryBoxTimerRemaining)}</div>
-                <div class="mbox-bonus-info">Open <strong>${opensTo2x}</strong> more for 2x rewards!</div>
+                <div class="mbox-bonus-info">${this.isSupporter ? '<strong style="color: #ff9800;">Supporter: ALWAYS 2X REWARDS!</strong>' : `Open <strong>${opensTo2x}</strong> more for 2x rewards!`}</div>
             </div>
             <button class="mbox-action-btn close-btn" onclick="window.game.closeMysteryBoxModal(false)">CLOSE</button>
             `;
