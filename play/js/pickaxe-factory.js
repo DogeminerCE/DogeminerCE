@@ -19,7 +19,7 @@ class PickaxeFactory {
         this.coreStats = new Set([
             'luck', 'lootfind', 'wow', 'critchance',
             'dpcmultiplier', 'helperdpsmultiplier', 'rocketcostreduction',
-            'dps', 'higherground'
+            'dps', 'higherground', 'criticalchance'
         ]);
         this.loaded = false;
         // Set of template IDs that have active (-use.png) sprites
@@ -326,7 +326,7 @@ class PickaxeFactory {
             // Logarithmic dampening: growth rate starts strong and diminishes as DPC rises
             // This prevents runaway exponential compounding into trillions/quadrillions
             const logDpc = Math.log10(Math.max(2, currentMaxDPC));
-            const growthRate = 0.20 / (1 + logDpc * 0.25);
+            const growthRate = 0.15 / (1 + logDpc * 0.35);
             const multiplier = 1 + growthRate + (Math.random() * growthRate * 0.5);
 
             // Scaling flat boost (meaningful early, proportionally small late)

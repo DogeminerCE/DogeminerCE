@@ -1182,8 +1182,10 @@ class DogeMinerGame {
     calculateCoinDrop() {
         const equipped = this.getEquippedPickaxe();
         const baseDPC = equipped ? equipped.baseDPC : 1;
-        const baseDrop = baseDPC * 50;
-        const multiplier = 1 + (this.playerStats.lootFind / 100) + (this.playerStats.luck / 10);
+        const baseDrop = baseDPC * 15;
+        // Moderate luck impact: log2 curve preserves excitement without breaking math
+        const luckMult = Math.max(0, Math.log2(1 + (this.playerStats.luck / 10)));
+        const multiplier = 1 + (this.playerStats.lootFind / 100) + luckMult;
         return Math.max(1, Math.floor(baseDrop * multiplier));
     }
 
@@ -2494,12 +2496,23 @@ class DogeMinerGame {
         }
 
         // Retroactive fix: Staff of SunDoge pickaxes with non-zero DPC
+        // AND Retroactive fix: 'criticalchance' stats correctly marked as isCore
         let needsMaxDpcRecalc = false;
         this.pickaxeInventory.forEach(p => {
             if ((p.name === 'Staff of the SunDoge' || p.isStaffOfSundoge) && p.baseDPC !== 0) {
                 console.log(`[Retroactive Fix] Staff of SunDoge "${p.instanceId}" had baseDPC=${p.baseDPC}, forcing to 0`);
                 p.baseDPC = 0;
                 needsMaxDpcRecalc = true;
+            }
+            if (p.stats && Array.isArray(p.stats)) {
+                p.stats.forEach(stat => {
+                    if (stat.name === 'criticalchance' || stat.displayName === 'Critical Chance') {
+                        if (!stat.isCore) {
+                            console.log(`[Retroactive Fix] Marking criticalchance on ${p.name} as isCore=true`);
+                            stat.isCore = true;
+                        }
+                    }
+                });
             }
         });
 
