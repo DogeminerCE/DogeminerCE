@@ -2585,6 +2585,10 @@ class DogeMinerGame {
         if (this.isSupporter) {
             this.playerStats.helperDpsMultiplier *= 1.05;
         }
+
+        // Update the actual DPS value and UI display
+        this.updateDPS();
+        this.updateUI();
     }
 
     /**
