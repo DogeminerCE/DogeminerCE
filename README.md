@@ -4,7 +4,6 @@
 [![License](https://img.shields.io/badge/license-APACHE-blue.svg)](Code%20License)
 [![Play Online](https://img.shields.io/badge/play-online-green.svg)](https://dogeminerce.com)
 [![Discord](https://img.shields.io/badge/discord-join-7289da.svg?logo=discord&logoColor=white)](https://discord.gg/7wHMAQwMtr)
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V21OB2YE)
 
 A modern, open-source Dogecoin mining simulator built with JavaScript and HTML5. Mine Dogecoins, buy helpers, upgrade your pickaxes, and build your DogeCoin empire!
 
