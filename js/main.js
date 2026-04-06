@@ -1,4 +1,4 @@
-// DogeMiner: Community Edition - Main Initialization
+// Dogeminer: Community Edition - Main Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
 });
@@ -7,39 +7,39 @@ async function initializeGame() {
     try {
         showLoadingScreen();
         updateLoadingProgress(10);
-        
+
         // Initialize game instance
         game = new DogeMinerGame();
         updateLoadingProgress(30);
-        
+
         // Initialize managers
         uiManager = new UIManager(game);
         updateLoadingProgress(50);
-        
+
         shopManager = new ShopManager(game);
         updateLoadingProgress(70);
-        
+
         saveManager = new SaveManager(game);
         updateLoadingProgress(80);
-        
+
         notificationManager = new NotificationManager(game);
         updateLoadingProgress(90);
-        
+
         // Try to load existing save
         if (!saveManager.loadGame()) {
             // No save found, start new game
             notificationManager.showInfo('Welcome to DogeMiner: Community Edition!');
         }
-        
+
         updateLoadingProgress(100);
-        
+
         // Hide loading screen after a short delay
         setTimeout(() => {
             hideLoadingScreen();
             game.isPlaying = true;
             notificationManager.showSuccess('Game loaded successfully!');
         }, 500);
-        
+
     } catch (error) {
         console.error('Error initializing game:', error);
         hideLoadingScreen();
@@ -130,37 +130,37 @@ async function preloadAssets() {
         'assets/backgrounds/bg/bgmoon01.jpg',
         'assets/backgrounds/bg/bg4.jpg',
         'assets/backgrounds/bg/bgjup01.jpg',
-        
+
         // Rocks
         'assets/general/rocks/earth.png',
         'assets/general/rocks/moon.png',
         'assets/general/rocks/mars.png',
         'assets/general/rocks/jupiter.png',
-        
+
         // Characters
         'assets/general/character/standard.png',
         'assets/general/character/happydoge.png',
         'assets/general/character/spacehelmet.png',
-        
+
         // Icons
         'assets/general/dogecoin_70x70.png',
         'assets/general/persec_icon.png',
         'assets/general/logo.png',
-        
+
         // Helper icons
         'assets/helpers/helpers/shibes/shibes-idle-0.png',
         'assets/helpers/helpers/kittens/kittens-idle-0.png',
         'assets/helpers/helpers/kennels/kennels-idle-0.png',
         'assets/helpers/helpers/rockets/rockets-idle-0.png',
         'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
-        
+
         // Pickaxe icons
         'assets/items/items/pickaxes/standard.png',
         'assets/items/items/pickaxes/stronger.png',
         'assets/items/items/pickaxes/golden.png',
         'assets/items/items/pickaxes/rocketaxe.png'
     ];
-    
+
     const loadPromises = assets.map(asset => {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -169,7 +169,7 @@ async function preloadAssets() {
             img.src = asset;
         });
     });
-    
+
     try {
         await Promise.all(loadPromises);
         console.log('All assets preloaded successfully');
@@ -186,7 +186,7 @@ class PerformanceMonitor {
         this.lastTime = performance.now();
         this.fpsElement = null;
     }
-    
+
     start() {
         this.fpsElement = document.createElement('div');
         this.fpsElement.style.cssText = `
@@ -202,24 +202,24 @@ class PerformanceMonitor {
             z-index: 10000;
         `;
         document.body.appendChild(this.fpsElement);
-        
+
         this.update();
     }
-    
+
     update() {
         this.frameCount++;
         const currentTime = performance.now();
-        
+
         if (currentTime - this.lastTime >= 1000) {
             this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
             this.frameCount = 0;
             this.lastTime = currentTime;
-            
+
             if (this.fpsElement) {
                 this.fpsElement.textContent = `FPS: ${this.fps}`;
             }
         }
-        
+
         requestAnimationFrame(() => this.update());
     }
 }
@@ -229,17 +229,17 @@ let debugMode = false;
 
 function toggleDebugMode() {
     debugMode = !debugMode;
-    
+
     if (debugMode) {
         // Enable debug features
         if (!window.performanceMonitor) {
             window.performanceMonitor = new PerformanceMonitor();
             window.performanceMonitor.start();
         }
-        
+
         // Add debug console
         addDebugConsole();
-        
+
         console.log('Debug mode enabled');
     } else {
         // Disable debug features
@@ -247,9 +247,9 @@ function toggleDebugMode() {
             window.performanceMonitor.fpsElement?.remove();
             window.performanceMonitor = null;
         }
-        
+
         removeDebugConsole();
-        
+
         console.log('Debug mode disabled');
     }
 }
@@ -270,7 +270,7 @@ function addDebugConsole() {
         z-index: 10000;
         max-width: 300px;
     `;
-    
+
     debugConsole.innerHTML = `
         <div>Debug Console</div>
         <button onclick="game.dogecoins += 1000">+1000 Coins</button>
@@ -281,7 +281,7 @@ function addDebugConsole() {
         <button onclick="saveManager.repairSave()">Repair Save</button>
         <button onclick="toggleDebugMode()">Close Debug</button>
     `;
-    
+
     document.body.appendChild(debugConsole);
 }
 
@@ -299,34 +299,34 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         toggleDebugMode();
     }
-    
+
     // Quick save with Ctrl+S
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         saveGame();
     }
-    
+
     // Quick load with Ctrl+L
     if (e.ctrlKey && e.key === 'l') {
         e.preventDefault();
         loadGame();
     }
-    
+
     // Toggle shop with S
     if (e.key === 's' && !e.ctrlKey) {
         switchMainTab('shop');
     }
-    
+
     // Toggle upgrades with U
     if (e.key === 'u') {
         switchMainTab('upgrades');
     }
-    
+
     // Toggle achievements with A
     if (e.key === 'a') {
         switchMainTab('achievements');
     }
-    
+
     // Rotate background with B
     if (e.key === 'b') {
         if (game) {
@@ -338,7 +338,7 @@ document.addEventListener('keydown', (e) => {
 // Error handling
 window.addEventListener('error', (e) => {
     console.error('Game error:', e.error);
-    
+
     if (notificationManager) {
         notificationManager.showError('An error occurred. Check console for details.');
     }
@@ -346,7 +346,7 @@ window.addEventListener('error', (e) => {
 
 window.addEventListener('unhandledrejection', (e) => {
     console.error('Unhandled promise rejection:', e.reason);
-    
+
     if (notificationManager) {
         notificationManager.showError('An error occurred. Check console for details.');
     }
