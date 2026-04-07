@@ -309,9 +309,9 @@ class UIManager {
                 const rockElement = document.getElementById('main-rock');
                 const platform = document.getElementById('platform');
                 if (planetName === 'earth') {
-                    document.getElementById('main-rock').src = 'assets/general/rocks/earth.png';
+                    document.getElementById('main-rock').src = 'assets/general/rocks/earth.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatform.png';
+                        platform.src = '../assets/quickUI/dogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
@@ -321,9 +321,9 @@ class UIManager {
                         audioManager.playBackgroundMusic();
                     }
                 } else if (planetName === 'moon') {
-                    rockElement.src = 'assets/general/rocks/moon.png';
+                    rockElement.src = 'assets/general/rocks/moon.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatformmoon.png';
+                        platform.src = '../assets/quickUI/dogeplatformmoon.webp';
                     }
                     document.body.classList.add('moon-theme');
                     document.body.classList.remove('planet-mars');
@@ -333,9 +333,9 @@ class UIManager {
                         audioManager.playBackgroundMusic();
                     }
                 } else if (planetName === 'mars') {
-                    rockElement.src = 'assets/general/rocks/mars.png';
+                    rockElement.src = 'assets/general/rocks/mars.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/marsdogeplatform.png';
+                        platform.src = '../assets/quickUI/marsdogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.add('planet-mars');
@@ -345,10 +345,10 @@ class UIManager {
                         audioManager.playBackgroundMusic();
                     }
                 } else if (planetName === 'jupiter') {
-                    rockElement.src = 'assets/general/rocks/jupiter.png';
+                    rockElement.src = 'assets/general/rocks/jupiter.webp';
                     if (platform) {
                         // Jupiter uses its own platform art so the scene matches the new assets.
-                        platform.src = '../assets/quickUI/jupiterdogeplatform.png';
+                        platform.src = '../assets/quickUI/jupiterdogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
@@ -359,9 +359,9 @@ class UIManager {
                     }
                 } else if (planetName === 'titan') {
                     // Titan uses its own rock and platform
-                    rockElement.src = 'assets/general/rocks/titan.png';
+                    rockElement.src = 'assets/general/rocks/titan.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/titandogeplatform.png';
+                        platform.src = '../assets/quickUI/titandogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
@@ -376,51 +376,51 @@ class UIManager {
                 if (planetName === 'earth') {
                     // Earth backgrounds
                     this.game.backgrounds = [
-                        'backgrounds/bg1.jpg',
-                        'backgrounds/bg3.jpg',
-                        'backgrounds/bg4.jpg',
-                        'backgrounds/bg5.jpg',
-                        'backgrounds/bg6.jpg',
-                        'backgrounds/bg7.jpg',
-                        'backgrounds/bg9.jpg',
-                        'backgrounds/bg-new.jpg'
+                        'backgrounds/bg1.webp',
+                        'backgrounds/bg3.webp',
+                        'backgrounds/bg4.webp',
+                        'backgrounds/bg5.webp',
+                        'backgrounds/bg6.webp',
+                        'backgrounds/bg7.webp',
+                        'backgrounds/bg9.webp',
+                        'backgrounds/bg-new.webp'
                     ];
                 } else if (planetName === 'moon') {
                     // Moon backgrounds (same as earth since DOM only has 8 background elements)
                     this.game.backgrounds = [
-                        'backgrounds/bg1.jpg',
-                        'backgrounds/bg3.jpg',
-                        'backgrounds/bg4.jpg',
-                        'backgrounds/bg5.jpg',
-                        'backgrounds/bg6.jpg',
-                        'backgrounds/bg7.jpg',
-                        'backgrounds/bg9.jpg',
-                        'backgrounds/bg-new.jpg'
+                        'backgrounds/bg1.webp',
+                        'backgrounds/bg3.webp',
+                        'backgrounds/bg4.webp',
+                        'backgrounds/bg5.webp',
+                        'backgrounds/bg6.webp',
+                        'backgrounds/bg7.webp',
+                        'backgrounds/bg9.webp',
+                        'backgrounds/bg-new.webp'
                     ];
                 } else if (planetName === 'mars') {
                     this.game.backgrounds = [
-                        'backgrounds/bg6.jpg',
-                        'assets/backgrounds/bg101.jpg',
-                        'assets/backgrounds/bg102.jpg',
-                        'assets/backgrounds/bg103.jpg',
-                        'assets/backgrounds/bg104.jpg',
-                        'assets/backgrounds/bg105.jpg',
-                        'backgrounds/bg-new.jpg'
+                        'backgrounds/bg6.webp',
+                        'assets/backgrounds/bg101.webp',
+                        'assets/backgrounds/bg102.webp',
+                        'assets/backgrounds/bg103.webp',
+                        'assets/backgrounds/bg104.webp',
+                        'assets/backgrounds/bg105.webp',
+                        'backgrounds/bg-new.webp'
                     ];
                 } else if (planetName === 'jupiter') {
                     this.game.backgrounds = [
-                        'assets/backgrounds/bgjup01.jpg',
-                        'assets/backgrounds/bgjup02.jpg',
-                        'assets/backgrounds/bgjup03.jpg',
-                        'assets/backgrounds/dogewow.jpg'
+                        'assets/backgrounds/bgjup01.webp',
+                        'assets/backgrounds/bgjup02.webp',
+                        'assets/backgrounds/bgjup03.webp',
+                        'assets/backgrounds/dogewow.webp'
                     ];
                 } else if (planetName === 'titan') {
                     // Titan uses its own background set for atmospheric effect
                     this.game.backgrounds = [
-                        'assets/backgrounds/titan02.jpg',
-                        'assets/backgrounds/titan03.jpg',
-                        'assets/backgrounds/titan04.jpg',
-                        'assets/backgrounds/titan05.jpg'
+                        'assets/backgrounds/titan02.webp',
+                        'assets/backgrounds/titan03.webp',
+                        'assets/backgrounds/titan04.webp',
+                        'assets/backgrounds/titan05.webp'
                     ];
                 }
                 this.game.currentBackgroundIndex = 0;
@@ -696,7 +696,7 @@ class UIManager {
                     <div class="shop-item-description">${displayDesc}</div>
                     <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" 
                             ${buttonDisabled} style="width: ${buttonWidth};">
-                        <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                        <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
                         <span class="buy-btn-price">${priceText}</span>
                     </button>
                     ${lockOverlayHtml}
@@ -1028,7 +1028,7 @@ class UIManager {
 
         // Check if the current character is already correct to avoid unnecessary updates
         const currentSrc = characterImage.src;
-        const targetSrc = `assets/general/character/${characterType}.png`;
+        const targetSrc = `assets/general/character/${characterType}.webp`;
 
         // Only update if the source has changed (avoid unnecessary reloading)
         if (!currentSrc.endsWith(targetSrc)) {
@@ -1186,7 +1186,7 @@ class UIManager {
 
                 // Get sprite path for the upgraded helper
                 const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
-                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.png';
+                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.webp';
 
                 // Calculate total DPS (new DPS * helper count)
                 const totalDps = upgrade.newDps * upgrade.helperCount;
@@ -1211,7 +1211,7 @@ class UIManager {
                                 <button class="shop-buy-btn upgrade-buy-btn${canAfford ? '' : ' disabled'}" 
                                         data-upgrade-helper="${upgrade.helperType}"
                                         ${canAfford ? '' : 'disabled'}>
-                                    <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                                    <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
                                     <span class="buy-btn-price">${priceText}</span>
                                 </button>
                             </div>
@@ -1225,7 +1225,7 @@ class UIManager {
                     <div class="upgrade-empty-state">
                         <div class="upgrade-empty-text">LOOKING FOR UPGRADES...</div>
                         <div class="searchdog-container-centered">
-                            <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog" data-section="${index}">
+                            <img class="searchdog" src="assets/general/searchdog_1.webp" alt="Searchdog" data-section="${index}">
                         </div>
                     </div>
                 `;
@@ -1575,7 +1575,7 @@ class UIManager {
                         const toggleIcon = document.getElementById('mobile-current-planet-icon');
                         const toggleText = document.getElementById('mobile-planet-name');
                         if (toggleIcon) {
-                            toggleIcon.src = `assets/general/${planet}.png`;
+                            toggleIcon.src = `assets/general/${planet}.webp`;
                         }
                         if (toggleText) {
                             toggleText.textContent = planet.charAt(0).toUpperCase() + planet.slice(1);
@@ -1662,7 +1662,7 @@ class UIManager {
         const mobilePlanetTabs = document.querySelectorAll('.mobile-planet-tab');
 
         if (toggleIcon) {
-            toggleIcon.src = `assets/general/${this.game.currentLevel}.png`;
+            toggleIcon.src = `assets/general/${this.game.currentLevel}.webp`;
         }
         if (toggleText) {
             toggleText.textContent = this.game.currentLevel.charAt(0).toUpperCase() + this.game.currentLevel.slice(1);
@@ -1705,7 +1705,7 @@ class UIManager {
             // Open menu
             mobileMenu.classList.add('open');
             toggleBtn.classList.add('menu-open');
-            toggleIcon.src = 'assets/general/btn_down.png';
+            toggleIcon.src = 'assets/general/btn_down.webp';
 
             // Update mobile content when opening
             this.updateMobileShopContent();
@@ -1713,7 +1713,7 @@ class UIManager {
             // Close menu
             mobileMenu.classList.remove('open');
             toggleBtn.classList.remove('menu-open');
-            toggleIcon.src = 'assets/general/btn_up.png';
+            toggleIcon.src = 'assets/general/btn_up.webp';
         }
     }
 
@@ -1729,7 +1729,7 @@ class UIManager {
         this.mobileMenuOpen = false;
         mobileMenu.classList.remove('open');
         if (toggleBtn) toggleBtn.classList.remove('menu-open');
-        if (toggleIcon) toggleIcon.src = 'assets/general/btn_up.png';
+        if (toggleIcon) toggleIcon.src = 'assets/general/btn_up.webp';
     }
 
     // Switch between mobile tabs
@@ -1957,7 +1957,7 @@ class UIManager {
                         <div class="shop-item-info">
                             <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
                             <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" ${buttonDisabled}>
-                                <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                                <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
                                 <span class="buy-btn-price">${priceText}</span>
                             </button>
                         </div>
@@ -2013,7 +2013,7 @@ class UIManager {
 
                 // Get sprite path for the upgraded helper
                 const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
-                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.png';
+                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.webp';
 
                 // Calculate total DPS (new DPS * helper count)
                 const totalDps = upgrade.newDps * upgrade.helperCount;
@@ -2036,7 +2036,7 @@ class UIManager {
                                             data-upgrade-helper="${upgrade.helperType}"
                                             data-section-index="${i}"
                                             ${canAfford ? '' : 'disabled'}>
-                                        <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                                        <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
                                         <span class="buy-btn-price">${priceText}</span>
                                     </button>
                                     <div class="mobile-upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
@@ -2052,7 +2052,7 @@ class UIManager {
                         <div class="mobile-upgrade-empty-state">
                             <div class="mobile-upgrade-empty-text">LOOKING FOR UPGRADES...</div>
                             <div class="searchdog-container-centered">
-                                <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog">
+                                <img class="searchdog" src="assets/general/searchdog_1.webp" alt="Searchdog">
                             </div>
                         </div>
                     </div>

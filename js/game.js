@@ -30,14 +30,14 @@ class DogeMinerGame {
 
         // Background rotation
         this.backgrounds = [
-            'backgrounds/bg1.jpg',
-            'backgrounds/bg3.jpg',
-            'backgrounds/bg4.jpg',
-            'backgrounds/bg5.jpg',
-            'backgrounds/bg6.jpg',
-            'backgrounds/bg7.jpg',
-            'backgrounds/bg9.jpg',
-            'backgrounds/bg-new.jpg'
+            'backgrounds/bg1.webp',
+            'backgrounds/bg3.webp',
+            'backgrounds/bg4.webp',
+            'backgrounds/bg5.webp',
+            'backgrounds/bg6.webp',
+            'backgrounds/bg7.webp',
+            'backgrounds/bg9.webp',
+            'backgrounds/bg-new.webp'
         ];
         this.currentBackgroundIndex = 0;
         this.backgroundRotationInterval = null;
@@ -49,10 +49,10 @@ class DogeMinerGame {
         this.rickInterval = null;
         this.rickVisible = false;
         this.rickSprites = [
-            'assets/general/rm/r1.png',
-            'assets/general/rm/r2.png',
-            'assets/general/rm/r3.png',
-            'assets/general/rm/r4.png'
+            'assets/general/rm/r1.webp',
+            'assets/general/rm/r2.webp',
+            'assets/general/rm/r3.webp',
+            'assets/general/rm/r4.webp'
         ];
         this.currentRickSprite = 0;
         this.rickAnimationDirection = 1; // 1 for forward, -1 for backward
@@ -74,35 +74,35 @@ class DogeMinerGame {
                 name: 'Shibe',
                 baseCost: 10,
                 baseDps: 1,
-                icon: 'assets/helpers/helpers/shibes/shibes-idle-0.png',
+                icon: 'assets/helpers/helpers/shibes/shibes-idle-0.webp',
                 description: 'A loyal mining companion'
             },
             kitten: {
                 name: 'Kitten',
                 baseCost: 50,
                 baseDps: 5,
-                icon: 'assets/helpers/helpers/kittens/kittens-idle-0.png',
+                icon: 'assets/helpers/helpers/kittens/kittens-idle-0.webp',
                 description: 'Cute but effective miner'
             },
             kennel: {
                 name: 'Kennel',
                 baseCost: 200,
                 baseDps: 20,
-                icon: 'assets/helpers/helpers/kennels/kennels-idle-0.png',
+                icon: 'assets/helpers/helpers/kennels/kennels-idle-0.webp',
                 description: 'Houses multiple shibes'
             },
             rocket: {
                 name: 'Rocket',
                 baseCost: 1000,
                 baseDps: 100,
-                icon: 'assets/helpers/helpers/rockets/rockets-idle-0.png',
+                icon: 'assets/helpers/helpers/rockets/rockets-idle-0.webp',
                 description: 'Advanced mining technology'
             },
             marsbase: {
                 name: 'Mars Base',
                 baseCost: 5000,
                 baseDps: 500,
-                icon: 'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
+                icon: 'assets/helpers/helpers/marsbase/marsbase-idle-0.webp',
                 description: 'Interplanetary mining facility'
             }
         };
@@ -113,28 +113,28 @@ class DogeMinerGame {
                 name: 'Standard Pickaxe',
                 cost: 0,
                 multiplier: 1,
-                icon: 'assets/items/items/pickaxes/standard.png',
+                icon: 'assets/items/items/pickaxes/standard.webp',
                 description: 'Basic mining tool'
             },
             stronger: {
                 name: 'Stronger Pickaxe',
                 cost: 100,
                 multiplier: 2,
-                icon: 'assets/items/items/pickaxes/stronger.png',
+                icon: 'assets/items/items/pickaxes/stronger.webp',
                 description: 'More powerful mining'
             },
             golden: {
                 name: 'Golden Pickaxe',
                 cost: 500,
                 multiplier: 5,
-                icon: 'assets/items/items/pickaxes/golden.png',
+                icon: 'assets/items/items/pickaxes/golden.webp',
                 description: 'Luxury mining equipment'
             },
             rocketaxe: {
                 name: 'Rocket Pickaxe',
                 cost: 2000,
                 multiplier: 10,
-                icon: 'assets/items/items/pickaxes/rocketaxe.png',
+                icon: 'assets/items/items/pickaxes/rocketaxe.webp',
                 description: 'Space-age mining technology'
             }
         };
@@ -143,29 +143,29 @@ class DogeMinerGame {
         this.levels = {
             earth: {
                 name: 'Earth',
-                background: 'assets/backgrounds/bg/bg1.jpg',
-                rock: 'assets/general/rocks/earth.png',
+                background: 'assets/backgrounds/bg/bg1.webp',
+                rock: 'assets/general/rocks/earth.webp',
                 unlockCost: 0,
                 description: 'Start your mining journey on Earth'
             },
             moon: {
                 name: 'Moon',
-                background: 'assets/backgrounds/bg/bgmoon01.jpg',
-                rock: 'assets/general/rocks/moon.png',
+                background: 'assets/backgrounds/bg/bgmoon01.webp',
+                rock: 'assets/general/rocks/moon.webp',
                 unlockCost: 10000,
                 description: 'Mine in low gravity'
             },
             mars: {
                 name: 'Mars',
-                background: 'assets/backgrounds/bg/bg4.jpg',
-                rock: 'assets/general/rocks/mars.png',
+                background: 'assets/backgrounds/bg/bg4.webp',
+                rock: 'assets/general/rocks/mars.webp',
                 unlockCost: 100000,
                 description: 'Red planet mining operations'
             },
             jupiter: {
                 name: 'Jupiter',
-                background: 'assets/backgrounds/bg/bgjup01.jpg',
-                rock: 'assets/general/rocks/jupiter.png',
+                background: 'assets/backgrounds/bg/bgjup01.webp',
+                rock: 'assets/general/rocks/jupiter.webp',
                 unlockCost: 1000000,
                 description: 'Gas giant mining'
             }
@@ -324,7 +324,7 @@ class DogeMinerGame {
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('img');
-            particle.src = 'assets/general/rocks/earth_particle.png';
+            particle.src = 'assets/general/rocks/earth_particle.webp';
             particle.className = 'earth-particle';
             particle.style.left = x + 'px';
             particle.style.top = y + 'px';
@@ -417,7 +417,7 @@ class DogeMinerGame {
 
         // Create DogeCoin
         const coin = document.createElement('img');
-        coin.src = 'assets/general/dogecoin_70x70.png';
+        coin.src = 'assets/general/dogecoin_70x70.webp';
         coin.className = 'dogecoin-effect';
         coin.style.position = 'absolute';
         coin.style.left = startX + 'px';
@@ -587,7 +587,7 @@ class DogeMinerGame {
         const originalSrc = doge.src;
 
         // Change to closed eyes
-        doge.src = 'assets/general/character/closed_eyes.png';
+        doge.src = 'assets/general/character/closed_eyes.webp';
 
         // Blink for 200ms
         setTimeout(() => {
@@ -614,7 +614,7 @@ class DogeMinerGame {
         // Create portal background
         const portal = document.createElement('img');
         portal.id = 'rick-portal';
-        portal.src = 'assets/general/rm/portal.png';
+        portal.src = 'assets/general/rm/portal.webp';
         portal.style.position = 'absolute';
         portal.style.bottom = '170px'; // Moved up 150px
         portal.style.right = '10px'; // Moved to the right

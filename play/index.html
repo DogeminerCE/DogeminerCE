@@ -8,9 +8,9 @@
     <title>DogeMiner:CE</title>
 
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.webp">
     <link rel="manifest" href="../favicon_io/site.webmanifest">
 
     <link rel="stylesheet" href="styles.css?v=36">
@@ -43,14 +43,14 @@
     <div id="page-background">
         <!-- Background Images -->
         <div id="background-container">
-            <img src="backgrounds/bg1.jpg" alt="Background" id="background-image-1" class="background-image active">
-            <img src="backgrounds/bg3.jpg" alt="Background" id="background-image-2" class="background-image">
-            <img src="backgrounds/bg4.jpg" alt="Background" id="background-image-3" class="background-image">
-            <img src="backgrounds/bg5.jpg" alt="Background" id="background-image-4" class="background-image">
-            <img src="backgrounds/bg6.jpg" alt="Background" id="background-image-5" class="background-image">
-            <img src="backgrounds/bg7.jpg" alt="Background" id="background-image-6" class="background-image">
-            <img src="backgrounds/bg9.jpg" alt="Background" id="background-image-7" class="background-image">
-            <img src="backgrounds/bg-new.jpg" alt="Background" id="background-image-8" class="background-image">
+            <img src="backgrounds/bg1.webp" alt="Background" id="background-image-1" class="background-image active">
+            <img src="backgrounds/bg3.webp" alt="Background" id="background-image-2" class="background-image">
+            <img src="backgrounds/bg4.webp" alt="Background" id="background-image-3" class="background-image">
+            <img src="backgrounds/bg5.webp" alt="Background" id="background-image-4" class="background-image">
+            <img src="backgrounds/bg6.webp" alt="Background" id="background-image-5" class="background-image">
+            <img src="backgrounds/bg7.webp" alt="Background" id="background-image-6" class="background-image">
+            <img src="backgrounds/bg9.webp" alt="Background" id="background-image-7" class="background-image">
+            <img src="backgrounds/bg-new.webp" alt="Background" id="background-image-8" class="background-image">
         </div>
     </div>
 
@@ -62,7 +62,7 @@
             <div id="switcher-buttons">
                 <button class="switcher-btn" id="pickaxe-btn" onclick="openPickaxeModal()">
                     <div class="switcher-btn-circle">
-                        <img id="pickaxe-btn-preview" src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.png"
+                        <img id="pickaxe-btn-preview" src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.webp"
                             alt="Pickaxes" class="switcher-btn-icon">
                     </div>
                     <span class="switcher-label">PICKAXES</span>
@@ -75,7 +75,7 @@
                 </button>
                 <button class="switcher-btn mystery-box-sidebar-btn" id="mystery-box-btn"
                         onclick="window.game.openMysteryBoxModal()" style="display:none">
-                    <img id="mystery-box-btn-icon" src="assets/general/mysterybox_big.png"
+                    <img id="mystery-box-btn-icon" src="assets/general/mysterybox_big.webp"
                          alt="Mystery Box" class="mbox-sidebar-icon">
                     <div id="mbox-sidebar-timer" class="mbox-sidebar-timer">--:--</div>
                 </button>
@@ -92,21 +92,21 @@
 
             <!-- Platform (behind everything) -->
             <div id="platform-container">
-                <img src="../assets/quickUI/dogeplatform.png" alt="Platform" id="platform">
+                <img src="../assets/quickUI/dogeplatform.webp" alt="Platform" id="platform">
             </div>
 
             <!-- Mining Area -->
             <div id="mining-area">
                 <!-- Character with Shadow Circle -->
                 <div id="character-container">
-                    <img src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.png" alt="Pickaxe" id="pickaxe">
-                    <img src="assets/general/character/standard.png" alt="Doge" id="main-character">
+                    <img src="assets/items/pickaxes/Earth/Normal Pickaxe/standard.webp" alt="Pickaxe" id="pickaxe">
+                    <img src="assets/general/character/standard.webp" alt="Doge" id="main-character">
                     <div id="character-shadow"></div>
                 </div>
 
                 <!-- Rock -->
                 <div id="rock-container">
-                    <img src="assets/general/rocks/earth.png" alt="Rock" id="main-rock">
+                    <img src="assets/general/rocks/earth.webp" alt="Rock" id="main-rock">
                     <div id="click-overlay"></div>
                     <div id="rock-health-container">
                         <div id="rock-health-text">100%</div>
@@ -126,11 +126,11 @@
             <!-- Stats Display -->
             <div id="stats-display">
                 <div class="stat-item">
-                    <img src="assets/general/dogecoin_70x70.png" alt="Dogecoin" class="stat-icon">
+                    <img src="assets/general/dogecoin_70x70.webp" alt="Dogecoin" class="stat-icon">
                     <span id="dogecoin-amount">0</span>
                 </div>
                 <div class="stat-item">
-                    <img src="assets/general/persec_icon.png" alt="DPS" class="stat-icon">
+                    <img src="assets/general/persec_icon.webp" alt="DPS" class="stat-icon">
                     <span id="dps-amount">0</span>
                 </div>
             </div>
@@ -147,19 +147,19 @@
         <!-- Planet Tabs -->
         <div id="planet-tabs">
             <button class="planet-tab active" data-planet="earth" onclick="switchPlanet('earth')">
-                <img src="assets/general/earth_tab.png" alt="Earth">
+                <img src="assets/general/earth_tab.webp" alt="Earth">
             </button>
             <button class="planet-tab" data-planet="moon" onclick="switchPlanet('moon')">
-                <img src="assets/general/moon_tab.png" alt="Moon">
+                <img src="assets/general/moon_tab.webp" alt="Moon">
             </button>
             <button class="planet-tab" data-planet="mars" onclick="switchPlanet('mars')">
-                <img src="assets/general/mars_tab.png" alt="Mars">
+                <img src="assets/general/mars_tab.webp" alt="Mars">
             </button>
             <button class="planet-tab" data-planet="jupiter" onclick="switchPlanet('jupiter')">
-                <img src="assets/general/jupiter_tab.png" alt="Jupiter">
+                <img src="assets/general/jupiter_tab.webp" alt="Jupiter">
             </button>
             <button class="planet-tab" data-planet="titan" onclick="switchPlanet('titan')">
-                <img src="assets/general/titan_tab.png" alt="Titan">
+                <img src="assets/general/titan_tab.webp" alt="Titan">
             </button>
         </div>
 
@@ -257,7 +257,7 @@
             <div class="switcher-modal-content dogebag-modal-content">
                 <!-- State 1: The Prompt -->
                 <div id="dogebag-state-prompt" class="dogebag-state">
-                    <img src="assets/general/icons/dogebag.png" alt="Dogebag" class="dogebag-modal-icon">
+                    <img src="assets/general/icons/dogebag.webp" alt="Dogebag" class="dogebag-modal-icon">
                     <h2 class="modal-title">A DOGEBAG!</h2>
                     <p class="modal-subtitle">A DOGEBAG is a magical container that may contain special items!</p>
                     <button class="dogebag-open-btn" onclick="openDogebagContents()">OPEN</button>
@@ -265,7 +265,7 @@
                 <!-- State 2: The Reveal -->
                 <div id="dogebag-state-reveal" class="dogebag-state" style="display:none;">
                     <div class="dogebag-radial-container">
-                        <img src="assets/general/fx/radial.png" alt="" class="dogebag-radial-fx">
+                        <img src="assets/general/fx/radial.webp" alt="" class="dogebag-radial-fx">
                         <img id="dogebag-item-icon" src="" alt="" class="dogebag-item-icon">
                     </div>
                     <h2 class="modal-title">DOGEBAG CONTAINED:</h2>
@@ -273,7 +273,7 @@
                     <div id="dogebag-item-rarity" class="dogebag-item-rarity"></div>
                     <div id="dogebag-item-description" class="dogebag-item-description"></div>
                     <div id="dogebag-item-dpc" class="dogebag-item-dpc" style="display:none;">
-                        <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                        <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
                         <span id="dogebag-dpc-value"></span>
                     </div>
                     <div id="dogebag-item-stats" class="dogebag-item-stats"></div>
@@ -375,20 +375,20 @@
             <div id="panel-tabs">
                 <div class="tabs-left">
                     <button class="tab-btn active" onclick="switchMainTab('shop')">
-                        <img src="assets/quickUI/Pickaxe.png" alt="Shop" class="tab-icon">
+                        <img src="assets/quickUI/Pickaxe.webp" alt="Shop" class="tab-icon">
                         <span class="tab-text">SHOP</span>
                     </button>
                     <button class="tab-btn" onclick="switchMainTab('upgrades')">
-                        <img src="assets/quickUI/ArrowUp.png" alt="Upgrades" class="tab-icon">
+                        <img src="assets/quickUI/ArrowUp.webp" alt="Upgrades" class="tab-icon">
                         <span class="tab-text">UPGRADE</span>
                     </button>
                 </div>
                 <div class="tabs-right">
                     <button class="tab-btn moon-tab" id="achievements-tab-btn" onclick="switchMainTab('achievements')">
-                        <img src="assets/quickUI/Trophy ICON.png" alt="Achievements" class="tab-icon">
+                        <img src="assets/quickUI/Trophy ICON.webp" alt="Achievements" class="tab-icon">
                     </button>
                     <button class="tab-btn moon-tab" id="settings-tab-btn" onclick="switchMainTab('settings')">
-                        <img src="assets/quickUI/settings icon.png" alt="Settings" class="tab-icon">
+                        <img src="assets/quickUI/settings icon.webp" alt="Settings" class="tab-icon">
                     </button>
                 </div>
             </div>
@@ -408,7 +408,7 @@
                         <!-- Section 1: Helper Upgrades -->
                         <div class="upgrade-section" id="helper-upgrades-1">
                             <div class="searchdog-container">
-                                <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog"
+                                <img class="searchdog" src="assets/general/searchdog_1.webp" alt="Searchdog"
                                     data-section="0">
                             </div>
                             <h3 class="section-title">Helper Upgrades</h3>
@@ -420,7 +420,7 @@
                         <!-- Section 2: Helper Upgrades -->
                         <div class="upgrade-section" id="helper-upgrades-2">
                             <div class="searchdog-container">
-                                <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog"
+                                <img class="searchdog" src="assets/general/searchdog_1.webp" alt="Searchdog"
                                     data-section="1">
                             </div>
                             <h3 class="section-title">Helper Upgrades</h3>
@@ -432,7 +432,7 @@
                         <!-- Section 3: Helper Upgrades -->
                         <div class="upgrade-section" id="helper-upgrades-3">
                             <div class="searchdog-container">
-                                <img class="searchdog" src="assets/general/searchdog_1.png" alt="Searchdog"
+                                <img class="searchdog" src="assets/general/searchdog_1.webp" alt="Searchdog"
                                     data-section="2">
                             </div>
                             <h3 class="section-title">Helper Upgrades</h3>
@@ -600,7 +600,7 @@
 
     <!-- Mobile Planet Toggle & Menu -->
     <div id="mobile-planet-toggle" class="mobile-only">
-        <img src="assets/general/earth.png" alt="Current Planet" id="mobile-current-planet-icon">
+        <img src="assets/general/earth.webp" alt="Current Planet" id="mobile-current-planet-icon">
         <span id="mobile-planet-name">Earth</span>
     </div>
 
@@ -611,26 +611,26 @@
         </div>
         <div class="mobile-planet-list">
             <button class="mobile-planet-tab active" data-planet="earth">
-                <img src="assets/general/earth.png" alt="Earth">
+                <img src="assets/general/earth.webp" alt="Earth">
                 <span>Earth</span>
             </button>
             <button class="mobile-planet-tab" data-planet="moon" disabled>
-                <img src="assets/general/moon.png" alt="Moon">
+                <img src="assets/general/moon.webp" alt="Moon">
                 <span>Moon</span>
                 <div class="mobile-lock-overlay">LOCKED</div>
             </button>
             <button class="mobile-planet-tab" data-planet="mars" disabled>
-                <img src="assets/general/mars.png" alt="Mars">
+                <img src="assets/general/mars.webp" alt="Mars">
                 <span>Mars</span>
                 <div class="mobile-lock-overlay">LOCKED</div>
             </button>
             <button class="mobile-planet-tab" data-planet="jupiter" disabled>
-                <img src="assets/general/jupiter.png" alt="Jupiter">
+                <img src="assets/general/jupiter.webp" alt="Jupiter">
                 <span>Jupiter</span>
                 <div class="mobile-lock-overlay">LOCKED</div>
             </button>
             <button class="mobile-planet-tab" data-planet="titan" disabled>
-                <img src="assets/general/titan.png" alt="Titan">
+                <img src="assets/general/titan.webp" alt="Titan">
                 <span>Titan</span>
                 <div class="mobile-lock-overlay">LOCKED</div>
             </button>
@@ -641,28 +641,28 @@
     <div id="mobile-bottom-menu" class="mobile-only">
         <!-- Toggle Button attached to menu for synced animation -->
         <button id="mobile-menu-toggle">
-            <img src="assets/general/btn_up.png" id="mobile-toggle-icon" alt="Menu">
+            <img src="assets/general/btn_up.webp" id="mobile-toggle-icon" alt="Menu">
         </button>
         <!-- Mobile Panel Tabs -->
         <div id="mobile-panel-tabs">
             <div class="mobile-tabs-left">
                 <button class="mobile-tab-btn active" data-tab="shop" onclick="switchMobileTab('shop')">
-                    <img src="assets/quickUI/Pickaxe.png" alt="Shop" class="tab-icon">
+                    <img src="assets/quickUI/Pickaxe.webp" alt="Shop" class="tab-icon">
                     <span class="tab-text">SHOP</span>
                 </button>
                 <button class="mobile-tab-btn" data-tab="upgrades" onclick="switchMobileTab('upgrades')">
-                    <img src="assets/quickUI/ArrowUp.png" alt="Upgrades" class="tab-icon">
+                    <img src="assets/quickUI/ArrowUp.webp" alt="Upgrades" class="tab-icon">
                     <span class="tab-text">UPGRADE</span>
                 </button>
             </div>
             <div class="mobile-tabs-right">
                 <button class="mobile-tab-btn" id="mobile-achievements-tab-btn" data-tab="achievements"
                     onclick="switchMobileTab('achievements')">
-                    <img src="assets/quickUI/Trophy ICON.png" alt="Achievements" class="tab-icon">
+                    <img src="assets/quickUI/Trophy ICON.webp" alt="Achievements" class="tab-icon">
                 </button>
                 <button class="mobile-tab-btn" id="mobile-settings-tab-btn" data-tab="settings"
                     onclick="switchMobileTab('settings')">
-                    <img src="assets/quickUI/settings icon.png" alt="Settings" class="tab-icon">
+                    <img src="assets/quickUI/settings icon.webp" alt="Settings" class="tab-icon">
                 </button>
             </div>
         </div>
@@ -706,7 +706,7 @@
     <div id="loading-screen">
         <div class="loading-content">
             <!-- Loading logo uses encoded spaces so it resolves consistently across static servers -->
-            <img src="assets/DogeMiner%20CE%20Logo.png" alt="DogeMiner CE" class="loading-logo">
+            <img src="assets/DogeMiner%20CE%20Logo.webp" alt="DogeMiner CE" class="loading-logo">
             <div class="loading-title">INITIALIZING</div>
             <img src="assets/quickUI/dogeloader.svg" alt="Loading" class="loading-spinner">
             <div class="loading-info" id="loading-info">Loading DogeMiner: Community Edition...</div>

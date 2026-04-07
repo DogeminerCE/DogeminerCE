@@ -22,7 +22,7 @@ class PickaxeFactory {
             'dps', 'higherground', 'criticalchance'
         ]);
         this.loaded = false;
-        // Set of template IDs that have active (-use.png) sprites
+        // Set of template IDs that have active (-use.webp) sprites
         this.templatesWithActiveSprite = new Set();
     }
 
@@ -99,14 +99,14 @@ class PickaxeFactory {
         // Parse the txt content
         const template = this._parseTxt(txtContent);
 
-        // Find the sprite (the .png file in the folder)
+        // Find the sprite (the .webp file in the folder)
         // We'll try the known sprite names from our manifest
         const spriteName = PICKAXE_SPRITES[`${planet}/${folderName}`];
         if (spriteName) {
             template.idleSprite = `${folderPath}/${spriteName}`;
         } else {
             // Fallback: guess common names
-            template.idleSprite = `${folderPath}/${folderName.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;
+            template.idleSprite = `${folderPath}/${folderName.toLowerCase().replace(/[^a-z0-9]/g, '')}.webp`;
         }
 
         template.folderPath = folderPath;
@@ -507,10 +507,10 @@ class PickaxeFactory {
 
     /**
      * Builds the set of template IDs that have active sprites.
-     * Active sprites follow the pattern: idle_sprite_name-use.png
+     * Active sprites follow the pattern: idle_sprite_name-use.webp
      */
     _buildActiveSpriteSet() {
-        // Known templates with active (-use.png) sprites
+        // Known templates with active (-use.webp) sprites
         const activeSpriteKeys = [
             'Earth/Pickaxe Rick',
             'Jupiter/Gas Carbine',
@@ -586,89 +586,89 @@ const PICKAXE_MANIFEST = {
 };
 
 // Sprite filename mapping for pickaxes whose sprite doesn't match a simple pattern.
-// Format: 'Planet/FolderName' → 'sprite_filename.png'
+// Format: 'Planet/FolderName' → 'sprite_filename.webp'
 const PICKAXE_SPRITES = {
     // Earth
-    'Earth/Normal Pickaxe': 'standard.png',
-    'Earth/Crude Stick-Axe': 'sticks.png',
-    'Earth/Fashioned Bone-Axe': 'boneaxe.png',
-    'Earth/Fashioned Coin-Axe': 'brokencoin.png',
-    'Earth/Stronger Pickaxe': 'stronger.png',
-    'Earth/Bronze Pickaxe': 'yellowbronze.png',
-    'Earth/Improved Bone-Axe': 'boneaxe.png',
-    'Earth/Lucky Pickaxe': 'stronger.png',
-    'Earth/Golden Pickaxe': 'golden.png',
-    'Earth/Potted Cactus': 'cactus.png',
-    'Earth/Lucky Golden Pickaxe': 'golden.png',
-    'Earth/Golden Bone-Axe': 'goldenbone.png',
-    'Earth/Pickaxe Rick': 'pickaxerick.png',
-    'Earth/T.A.R.P.I.S': 'tarpis.png',
+    'Earth/Normal Pickaxe': 'standard.webp',
+    'Earth/Crude Stick-Axe': 'sticks.webp',
+    'Earth/Fashioned Bone-Axe': 'boneaxe.webp',
+    'Earth/Fashioned Coin-Axe': 'brokencoin.webp',
+    'Earth/Stronger Pickaxe': 'stronger.webp',
+    'Earth/Bronze Pickaxe': 'yellowbronze.webp',
+    'Earth/Improved Bone-Axe': 'boneaxe.webp',
+    'Earth/Lucky Pickaxe': 'stronger.webp',
+    'Earth/Golden Pickaxe': 'golden.webp',
+    'Earth/Potted Cactus': 'cactus.webp',
+    'Earth/Lucky Golden Pickaxe': 'golden.webp',
+    'Earth/Golden Bone-Axe': 'goldenbone.webp',
+    'Earth/Pickaxe Rick': 'pickaxerick.webp',
+    'Earth/T.A.R.P.I.S': 'tarpis.webp',
     // Moon
-    'Moon/Blue Pickaxe': 'bluepick.png',
-    'Moon/Cod of Duty': 'cod.png',
-    'Moon/Das Big Boot': 'bigboot.png',
-    'Moon/Moon Rock-Axe': 'moonrock.png',
-    'Moon/Purple Lollipop': 'lollipaxe.png',
-    'Moon/Used Rocket': 'usedrocket.png',
+    'Moon/Blue Pickaxe': 'bluepick.webp',
+    'Moon/Cod of Duty': 'cod.webp',
+    'Moon/Das Big Boot': 'bigboot.webp',
+    'Moon/Moon Rock-Axe': 'moonrock.webp',
+    'Moon/Purple Lollipop': 'lollipaxe.webp',
+    'Moon/Used Rocket': 'usedrocket.webp',
     // Mars
-    'Mars/Broken Record-Axe': 'record.png',
-    'Mars/Cool Glowstick': 'blueglowstick.png',
-    'Mars/F.E.L.P.S': 'felps.png',
-    'Mars/Golden Record-Axe': 'goldenrecord.png',
-    'Mars/Green Lollipop': 'lollipaxe_green.png',
-    'Mars/Martian Pickaxe': 'marspick.png',
-    'Mars/Party Pickaxe': 'partypickaxe.png',
-    'Mars/Pool Noodle': 'poolnoodle.png',
-    'Mars/Red Lollipop': 'lollipaxe_red.png',
-    'Mars/Smelly Glowstick': 'greenglowstick.png',
-    'Mars/Sticky Glowstick': 'blueglowstick.png',
-    'Mars/Strange Glowstick': 'greenglowstick.png',
-    'Mars/Superheated Magmastick': 'magmastick.png',
+    'Mars/Broken Record-Axe': 'record.webp',
+    'Mars/Cool Glowstick': 'blueglowstick.webp',
+    'Mars/F.E.L.P.S': 'felps.webp',
+    'Mars/Golden Record-Axe': 'goldenrecord.webp',
+    'Mars/Green Lollipop': 'lollipaxe_green.webp',
+    'Mars/Martian Pickaxe': 'marspick.webp',
+    'Mars/Party Pickaxe': 'partypickaxe.webp',
+    'Mars/Pool Noodle': 'poolnoodle.webp',
+    'Mars/Red Lollipop': 'lollipaxe_red.webp',
+    'Mars/Smelly Glowstick': 'greenglowstick.webp',
+    'Mars/Sticky Glowstick': 'blueglowstick.webp',
+    'Mars/Strange Glowstick': 'greenglowstick.webp',
+    'Mars/Superheated Magmastick': 'magmastick.webp',
     // Jupiter
-    'Jupiter/Cloud-Axe': 'hardenedcloud.png',
-    'Jupiter/Gas Carbine': 'm4.png',
-    'Jupiter/Gold-Bronzed Dagger': 'dagger.png',
-    'Jupiter/Huge Drill': 'hugedrill.png',
-    'Jupiter/Huge Golden Drill': 'goldendrill.png',
-    'Jupiter/Scepter De La Sol': 'sunscepter.png',
-    'Jupiter/Staff of the SunDoge': 'magicstaff.png',
+    'Jupiter/Cloud-Axe': 'hardenedcloud.webp',
+    'Jupiter/Gas Carbine': 'm4.webp',
+    'Jupiter/Gold-Bronzed Dagger': 'dagger.webp',
+    'Jupiter/Huge Drill': 'hugedrill.webp',
+    'Jupiter/Huge Golden Drill': 'goldendrill.webp',
+    'Jupiter/Scepter De La Sol': 'sunscepter.webp',
+    'Jupiter/Staff of the SunDoge': 'magicstaff.webp',
     // Titan
-    'Titan/Axe of Greatness': 'bigaxe.png',
-    'Titan/Axe of Magnificence': 'bigaxe2.png',
-    'Titan/Hammer of Boom': 'goldenhammer.png',
-    'Titan/Hammer of Destruction': 'bighammer2.png',
-    'Titan/Hammer of Smashing': 'bighammer.png',
-    'Titan/Modern High-Tech Pickaxe': 'modernaxe.png',
-    'Titan/The Diamond Avenger': 'diasword.png',
-    'Titan/The Golden Avenger': 'goldsword.png',
-    'Titan/The Superior Avenger': 'supersword.png',
-    'Titan/Ancient Golden Axe': 'ancientaxe.png',
-    'Titan/Light-blade Pickaxe': 'lightaxe.png',
+    'Titan/Axe of Greatness': 'bigaxe.webp',
+    'Titan/Axe of Magnificence': 'bigaxe2.webp',
+    'Titan/Hammer of Boom': 'goldenhammer.webp',
+    'Titan/Hammer of Destruction': 'bighammer2.webp',
+    'Titan/Hammer of Smashing': 'bighammer.webp',
+    'Titan/Modern High-Tech Pickaxe': 'modernaxe.webp',
+    'Titan/The Diamond Avenger': 'diasword.webp',
+    'Titan/The Golden Avenger': 'goldsword.webp',
+    'Titan/The Superior Avenger': 'supersword.webp',
+    'Titan/Ancient Golden Axe': 'ancientaxe.webp',
+    'Titan/Light-blade Pickaxe': 'lightaxe.webp',
     // Universal
-    'Universal/Barbell': 'barbell_empty.png',
-    'Universal/Battle-Axe': 'axe.png',
-    'Universal/Crude Rocket-Axe': 'cruderocket.png',
-    'Universal/Dual GPU-Pickaxe': 'sligpu.png',
-    'Universal/Dual GPU-Pickaxe OC': 'sligpu_oc.png',
-    'Universal/Electric Guitar': 'eguitar.png',
-    "Universal/Firefighter's Axe": 'fireaxe.png',
-    'Universal/GPU-Pickaxe': 'gpu.png',
-    'Universal/Gold-Bronze Pickaxe': 'yellowbronze.png',
-    'Universal/Gold-Tipped FireAxe': 'fireaxegold.png',
-    'Universal/Golden Meat Cleaver': 'cleavergold.png',
-    'Universal/Improved Saw-Axe': 'sawaxe2.png',
-    'Universal/Improvised Saw-Axe': 'sawaxe.png',
-    'Universal/Large Frying Pan': 'fryingpan.png',
-    'Universal/Live Rocket': 'rocket.png',
-    'Universal/Loaded Barbell': 'barbell_halfweights.png',
-    'Universal/Meat Cleaver': 'cleaver.png',
-    'Universal/Nitro-Fueled Rocket-Axe': 'rocketaxe.png',
-    'Universal/Nuclear-Tipped Rocket': 'nuke.png',
-    'Universal/Pump Shotgun': 'shotgun.png',
-    'Universal/Rocket Powered GPU-Pickaxe': 'gpurocket.png',
-    'Universal/Rocket-Powered Battle-Axe': 'rocketaxe.png',
-    'Universal/Sharpened Battle-Axe': 'axe.png',
-    'Universal/Unstable Drill': 'smalldrill.png',
-    'Universal/Very Improved Saw-Axe': 'sawaxe3.png',
-    'Universal/Very Loaded Barbell': 'barbell_weights.png'
+    'Universal/Barbell': 'barbell_empty.webp',
+    'Universal/Battle-Axe': 'axe.webp',
+    'Universal/Crude Rocket-Axe': 'cruderocket.webp',
+    'Universal/Dual GPU-Pickaxe': 'sligpu.webp',
+    'Universal/Dual GPU-Pickaxe OC': 'sligpu_oc.webp',
+    'Universal/Electric Guitar': 'eguitar.webp',
+    "Universal/Firefighter's Axe": 'fireaxe.webp',
+    'Universal/GPU-Pickaxe': 'gpu.webp',
+    'Universal/Gold-Bronze Pickaxe': 'yellowbronze.webp',
+    'Universal/Gold-Tipped FireAxe': 'fireaxegold.webp',
+    'Universal/Golden Meat Cleaver': 'cleavergold.webp',
+    'Universal/Improved Saw-Axe': 'sawaxe2.webp',
+    'Universal/Improvised Saw-Axe': 'sawaxe.webp',
+    'Universal/Large Frying Pan': 'fryingpan.webp',
+    'Universal/Live Rocket': 'rocket.webp',
+    'Universal/Loaded Barbell': 'barbell_halfweights.webp',
+    'Universal/Meat Cleaver': 'cleaver.webp',
+    'Universal/Nitro-Fueled Rocket-Axe': 'rocketaxe.webp',
+    'Universal/Nuclear-Tipped Rocket': 'nuke.webp',
+    'Universal/Pump Shotgun': 'shotgun.webp',
+    'Universal/Rocket Powered GPU-Pickaxe': 'gpurocket.webp',
+    'Universal/Rocket-Powered Battle-Axe': 'rocketaxe.webp',
+    'Universal/Sharpened Battle-Axe': 'axe.webp',
+    'Universal/Unstable Drill': 'smalldrill.webp',
+    'Universal/Very Improved Saw-Axe': 'sawaxe3.webp',
+    'Universal/Very Loaded Barbell': 'barbell_weights.webp'
 };

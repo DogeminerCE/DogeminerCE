@@ -110,14 +110,14 @@ class DogeMinerGame {
 
         // Background rotation
         this.backgrounds = [
-            'backgrounds/bg1.jpg',
-            'backgrounds/bg3.jpg',
-            'backgrounds/bg4.jpg',
-            'backgrounds/bg5.jpg',
-            'backgrounds/bg6.jpg',
-            'backgrounds/bg7.jpg',
-            'backgrounds/bg9.jpg',
-            'backgrounds/bg-new.jpg'
+            'backgrounds/bg1.webp',
+            'backgrounds/bg3.webp',
+            'backgrounds/bg4.webp',
+            'backgrounds/bg5.webp',
+            'backgrounds/bg6.webp',
+            'backgrounds/bg7.webp',
+            'backgrounds/bg9.webp',
+            'backgrounds/bg-new.webp'
         ];
         this.currentBackgroundIndex = 0;
         this.backgroundRotationInterval = null;
@@ -129,33 +129,33 @@ class DogeMinerGame {
         this.levels = {
             earth: {
                 name: 'Earth',
-                background: 'assets/backgrounds/bg/bg1.jpg',
-                rock: 'assets/general/rocks/earth.png',
-                character: 'assets/general/character/standard.png'
+                background: 'assets/backgrounds/bg/bg1.webp',
+                rock: 'assets/general/rocks/earth.webp',
+                character: 'assets/general/character/standard.webp'
             },
             moon: {
                 name: 'Moon',
-                background: 'assets/backgrounds/bg/bgmoon01.jpg',
-                rock: 'assets/general/rocks/moon.png',
-                character: 'assets/general/character/spacehelmet.png'
+                background: 'assets/backgrounds/bg/bgmoon01.webp',
+                rock: 'assets/general/rocks/moon.webp',
+                character: 'assets/general/character/spacehelmet.webp'
             },
             mars: {
                 name: 'Mars',
-                background: 'assets/backgrounds/bg/bgmars01.jpg',
-                rock: 'assets/general/rocks/mars.png',
-                character: 'assets/general/character/party.png'
+                background: 'assets/backgrounds/bg/bgmars01.webp',
+                rock: 'assets/general/rocks/mars.webp',
+                character: 'assets/general/character/party.webp'
             },
             jupiter: {
                 name: 'Jupiter',
-                background: 'assets/backgrounds/bg/bgmars01.jpg',
-                rock: 'assets/general/rocks/jupiter.png',
-                character: 'assets/general/character/spacehelmet.png'
+                background: 'assets/backgrounds/bg/bgmars01.webp',
+                rock: 'assets/general/rocks/jupiter.webp',
+                character: 'assets/general/character/spacehelmet.webp'
             },
             titan: {
                 name: 'Titan',
-                background: 'assets/backgrounds/titan02.jpg',
-                rock: 'assets/general/rocks/titan.png',
-                character: 'assets/general/character/spacehelmet.png'
+                background: 'assets/backgrounds/titan02.webp',
+                rock: 'assets/general/rocks/titan.webp',
+                character: 'assets/general/character/spacehelmet.webp'
             }
         };
 
@@ -201,7 +201,7 @@ class DogeMinerGame {
             planetOfOrigin: 'earth',
             baseDPC: 1,
             stats: [],
-            idleSprite: 'assets/items/pickaxes/Earth/Normal Pickaxe/standard.png',
+            idleSprite: 'assets/items/pickaxes/Earth/Normal Pickaxe/standard.webp',
             isStaffOfSundoge: false,
             specialInstructions: ''
         };
@@ -249,10 +249,10 @@ class DogeMinerGame {
         // DPS interval for performance
         this.dpsInterval = null;
         this.rickSprites = [
-            'assets/general/rm/r1.png',
-            'assets/general/rm/r2.png',
-            'assets/general/rm/r3.png',
-            'assets/general/rm/r4.png'
+            'assets/general/rm/r1.webp',
+            'assets/general/rm/r2.webp',
+            'assets/general/rm/r3.webp',
+            'assets/general/rm/r4.webp'
         ];
         this.currentRickSprite = 0;
         this.rickAnimationDirection = 1; // 1 for forward, -1 for backward
@@ -673,10 +673,10 @@ class DogeMinerGame {
 
         // Check if this pickaxe has an active sprite (idle sprite with -use suffix)
         const idlePath = equipped.idleSprite;
-        const activePath = idlePath.replace(/\.png$/, '-use.png');
+        const activePath = idlePath.replace(/\.webp$/, '-use.webp');
 
         // Only swap if active sprite seems likely to exist
-        // (we know the pattern: filename-use.png)
+        // (we know the pattern: filename-use.webp)
         if (this._activeSpritePaths && this._activeSpritePaths.has(equipped.templateId)) {
             pickaxeImg.src = activePath;
             this._currentIdleSpritePath = idlePath;
@@ -720,16 +720,16 @@ class DogeMinerGame {
         let happySprite;
         switch (this.currentLevel) {
             case 'earth':
-                happySprite = 'assets/general/character/happydoge.png';
+                happySprite = 'assets/general/character/happydoge.webp';
                 break;
             case 'mars':
-                happySprite = 'assets/general/character/happy_party.png';
+                happySprite = 'assets/general/character/happy_party.webp';
                 break;
             case 'moon':
             case 'jupiter':
             case 'titan':
             default:
-                happySprite = 'assets/general/character/happy_space.png';
+                happySprite = 'assets/general/character/happy_space.webp';
                 break;
         }
 
@@ -753,12 +753,12 @@ class DogeMinerGame {
      */
     _getCharacterSprite() {
         switch (this.currentLevel) {
-            case 'earth': return 'assets/general/character/standard.png';
+            case 'earth': return 'assets/general/character/standard.webp';
             case 'moon':
             case 'jupiter':
-            case 'titan': return 'assets/general/character/spacehelmet.png';
-            case 'mars': return 'assets/general/character/party.png';
-            default: return 'assets/general/character/standard.png';
+            case 'titan': return 'assets/general/character/spacehelmet.webp';
+            case 'mars': return 'assets/general/character/party.webp';
+            default: return 'assets/general/character/standard.webp';
         }
     }
 
@@ -792,8 +792,8 @@ class DogeMinerGame {
 
         // Build the sprite path
         const spritePath = spriteSuffix === ''
-            ? `assets/general/rocks/${planet}.png`
-            : `assets/general/rocks/${planet}${spriteSuffix}.png`;
+            ? `assets/general/rocks/${planet}.webp`
+            : `assets/general/rocks/${planet}${spriteSuffix}.webp`;
 
         // Only update and trigger smoke if sprite actually changed
         if (rock.src !== spritePath && !rock.src.endsWith(spritePath)) {
@@ -828,7 +828,7 @@ class DogeMinerGame {
         // Create 3 smoke sprites with different rotations
         for (let i = 0; i < 3; i++) {
             const smoke = document.createElement('img');
-            smoke.src = 'assets/general/cartoonsmoke.png';
+            smoke.src = 'assets/general/cartoonsmoke.webp';
             smoke.className = 'rock-smoke';
             smoke.alt = '';
             smoke.draggable = false;
@@ -964,24 +964,24 @@ class DogeMinerGame {
 
         if (percentage <= 10) {
             sprites = [
-                'assets/general/icons/small_stack_1.png',
-                'assets/general/icons/small_stack_2.png',
-                'assets/general/icons/small_stack_3.png'
+                'assets/general/icons/small_stack_1.webp',
+                'assets/general/icons/small_stack_2.webp',
+                'assets/general/icons/small_stack_3.webp'
             ];
         } else if (percentage <= 24) {
             sprites = [
-                'assets/general/icons/medium_stack_1.png',
-                'assets/general/icons/medium_stack_2.png'
+                'assets/general/icons/medium_stack_1.webp',
+                'assets/general/icons/medium_stack_2.webp'
             ];
         } else if (percentage <= 45) {
             sprites = [
-                'assets/general/icons/medium_stack_3.png',
-                'assets/general/icons/medium_stack_4.png'
+                'assets/general/icons/medium_stack_3.webp',
+                'assets/general/icons/medium_stack_4.webp'
             ];
         } else {
             sprites = [
-                'assets/general/icons/large_stack_1.png',
-                'assets/general/icons/large_stack_2.png'
+                'assets/general/icons/large_stack_1.webp',
+                'assets/general/icons/large_stack_2.webp'
             ];
         }
 
@@ -1359,15 +1359,15 @@ class DogeMinerGame {
     getDogebagInfo() {
         switch (this.currentLevel) {
             case 'moon':
-                return { sprite: 'assets/general/icons/mooncrate.png', name: 'Moon Crate' };
+                return { sprite: 'assets/general/icons/mooncrate.webp', name: 'Moon Crate' };
             case 'mars':
-                return { sprite: 'assets/general/icons/marschest.png', name: 'Mars Chest' };
+                return { sprite: 'assets/general/icons/marschest.webp', name: 'Mars Chest' };
             case 'jupiter':
-                return { sprite: 'assets/general/icons/cloudcache.png', name: 'Cloud Cache' };
+                return { sprite: 'assets/general/icons/cloudcache.webp', name: 'Cloud Cache' };
             case 'titan':
-                return { sprite: 'assets/general/icons/titanbox.png', name: 'Titan Depot' };
+                return { sprite: 'assets/general/icons/titanbox.webp', name: 'Titan Depot' };
             default:
-                return { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+                return { sprite: 'assets/general/icons/dogebag.webp', name: 'Dogebag' };
         }
     }
 
@@ -1487,7 +1487,7 @@ class DogeMinerGame {
                 
                 <div class="mbox-display">
                     <div class="mbox-radial"></div>
-                    <img src="assets/general/mysterybox_big.png" 
+                    <img src="assets/general/mysterybox_big.webp" 
                          style="animation-delay: ${syncDelay};"
                          class="mbox-icon ${isReady ? 'mbox-icon-ready-shake' : ''}" alt="Mystery Box">
                 </div>
@@ -1603,7 +1603,7 @@ class DogeMinerGame {
             <!-- Open Box Backdrop -->
             <div class="mbox-display" style="position: absolute; top: 120px; left: 0; right: 0; margin: auto; z-index: 0; opacity: 0.5; pointer-events: none;">
                 <div class="mbox-radial"></div>
-                <img src="assets/general/mysterybox_big_open.png" class="mbox-icon" alt="Mystery Box">
+                <img src="assets/general/mysterybox_big_open.webp" class="mbox-icon" alt="Mystery Box">
             </div>
             
             <div class="mbox-scroll-body" style="position: relative; z-index: 2;">
@@ -1631,7 +1631,7 @@ class DogeMinerGame {
             }
 
             const imgClass = `rarity-${item.rarity}`;
-            const sprite = (reward.type === 'pickaxe') ? item.idleSprite : (item.sprite || 'assets/general/dogecoin_70x70.png');
+            const sprite = (reward.type === 'pickaxe') ? item.idleSprite : (item.sprite || 'assets/general/dogecoin_70x70.webp');
 
             html += `
                 <div class="mbox-reward-card rarity-${item.rarity}">
@@ -1740,7 +1740,7 @@ class DogeMinerGame {
         if (!modal || !prompt || !reveal) return;
 
         // Update modal to show the correct planet-specific bag
-        const bagInfo = bagElement._dogebagInfo || { sprite: 'assets/general/icons/dogebag.png', name: 'Dogebag' };
+        const bagInfo = bagElement._dogebagInfo || { sprite: 'assets/general/icons/dogebag.webp', name: 'Dogebag' };
         const modalIcon = prompt.querySelector('.dogebag-modal-icon');
         const modalTitle = prompt.querySelector('.modal-title');
         const modalSubtitle = prompt.querySelector('.modal-subtitle');
@@ -1878,7 +1878,7 @@ class DogeMinerGame {
         const statsContainer = document.getElementById('dogebag-item-stats');
         const actions = document.getElementById('dogebag-actions');
 
-        if (icon) icon.src = fortune.sprite || 'assets/general/dogecoin_70x70.png';
+        if (icon) icon.src = fortune.sprite || 'assets/general/dogecoin_70x70.webp';
         if (name) name.textContent = fortune.name;
         if (rarity) {
             rarity.textContent = fortune.rarity.toUpperCase();
@@ -1919,7 +1919,7 @@ class DogeMinerGame {
         const statsContainer = document.getElementById('dogebag-item-stats');
         const actions = document.getElementById('dogebag-actions');
 
-        if (icon) icon.src = 'assets/general/dogecoin_70x70.png';
+        if (icon) icon.src = 'assets/general/dogecoin_70x70.webp';
         if (name) {
             name.textContent = this.formatNumber(amount) + ' Dogecoins';
             name.className = 'dogebag-item-name dogebag-coin-reveal';
@@ -2147,7 +2147,7 @@ class DogeMinerGame {
                 ${quickStatsHtml}
                 <div class="item-card-description">${pickaxe.description}</div>
                 <div class="item-card-stat">
-                    <img src="assets/general/dogecoin_70x70.png" alt="DPC">
+                    <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
                     <span>${pickaxe.baseDPC}</span>
                 </div>
                 ${statsHtml}
@@ -2200,7 +2200,7 @@ class DogeMinerGame {
             }
 
             card.innerHTML = `
-                <img src="${fortune.sprite || 'assets/general/dogecoin_70x70.png'}" alt="${fortune.name}" class="item-card-icon">
+                <img src="${fortune.sprite || 'assets/general/dogecoin_70x70.webp'}" alt="${fortune.name}" class="item-card-icon">
                 <div class="item-card-name">${fortune.name}</div>
                 <div class="item-card-rarity">${fortune.rarity}</div>
                 ${quickStatsHtml}
@@ -2221,7 +2221,7 @@ class DogeMinerGame {
             const dpc = typeof item.baseDPC === 'number' ? item.baseDPC : null;
             if (dpc !== null) {
                 lines.push(
-                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.png" alt="DPC" class="quickstat-dogecoin-icon"><strong>${dpc}</strong></span>`
+                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.webp" alt="DPC" class="quickstat-dogecoin-icon"><strong>${dpc}</strong></span>`
                 );
             }
         }
@@ -2673,13 +2673,13 @@ class DogeMinerGame {
         const doge = document.getElementById('main-character');
         if (doge) {
             if (this.currentLevel === 'earth') {
-                doge.src = 'assets/general/character/standard.png';
+                doge.src = 'assets/general/character/standard.webp';
             } else if (this.currentLevel === 'moon') {
-                doge.src = 'assets/general/character/spacehelmet.png';
+                doge.src = 'assets/general/character/spacehelmet.webp';
             } else if (this.currentLevel === 'mars') {
-                doge.src = 'assets/general/character/party.png';
+                doge.src = 'assets/general/character/party.webp';
             } else if (this.currentLevel === 'jupiter') {
-                doge.src = 'assets/general/character/spacehelmet.png';
+                doge.src = 'assets/general/character/spacehelmet.webp';
             }
             doge.classList.remove('float');
         }
@@ -2809,7 +2809,7 @@ class DogeMinerGame {
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('img');
-            particle.src = 'assets/general/rocks/earth_particle.png';
+            particle.src = 'assets/general/rocks/earth_particle.webp';
             particle.className = 'earth-particle';
             if (this.currentLevel === 'moon') {
                 particle.classList.add('moon-particle');
@@ -2881,7 +2881,7 @@ class DogeMinerGame {
 
         // Create DogeCoin image
         const coin = document.createElement('img');
-        coin.src = 'assets/general/dogecoin_70x70.png';
+        coin.src = 'assets/general/dogecoin_70x70.webp';
         coin.className = 'dogecoin-effect';
         coin.style.position = 'absolute';
         coin.style.left = startX + 'px';
@@ -4822,14 +4822,14 @@ class DogeMinerGame {
             // Return default for other helper types (assumes lowercase folder/prefix matching helperType)
             const lowerType = helperType.toLowerCase();
             return {
-                idle: `assets/helpers/${lowerType}/${lowerType}-idle-0.png`,
-                mining: `assets/helpers/${lowerType}/${lowerType}-mine-0.png`
+                idle: `assets/helpers/${lowerType}/${lowerType}-idle-0.webp`,
+                mining: `assets/helpers/${lowerType}/${lowerType}-mine-0.webp`
             };
         }
 
         return {
-            idle: `assets/helpers/${info.folder}/${info.prefix}-idle-${upgradeLevel}.png`,
-            mining: `assets/helpers/${info.folder}/${info.prefix}-mine-${upgradeLevel}.png`
+            idle: `assets/helpers/${info.folder}/${info.prefix}-idle-${upgradeLevel}.webp`,
+            mining: `assets/helpers/${info.folder}/${info.prefix}-mine-${upgradeLevel}.webp`
         };
     }
 
@@ -5051,21 +5051,21 @@ class DogeMinerGame {
         // Choose the correct closed eyes sprite based on current planet
         let closedEyesSprite;
         if (this.currentLevel === 'earth') {
-            closedEyesSprite = 'assets/general/character/closed_eyes.png';
+            closedEyesSprite = 'assets/general/character/closed_eyes.webp';
         } else if (this.currentLevel === 'moon') {
-            closedEyesSprite = 'assets/general/character/closed_space.png';
+            closedEyesSprite = 'assets/general/character/closed_space.webp';
         } else if (this.currentLevel === 'mars') {
             // Mars uses party sprite with happy variant for blinking
-            closedEyesSprite = 'assets/general/character/happy_party.png';
+            closedEyesSprite = 'assets/general/character/happy_party.webp';
         } else if (this.currentLevel === 'jupiter') {
             // Jupiter uses space helmet sprite like the Moon
-            closedEyesSprite = 'assets/general/character/closed_space.png';
+            closedEyesSprite = 'assets/general/character/closed_space.webp';
         } else if (this.currentLevel === 'titan') {
             // Titan uses space helmet (eyes open), blink with closed_space (eyes closed)
-            closedEyesSprite = 'assets/general/character/closed_space.png';
+            closedEyesSprite = 'assets/general/character/closed_space.webp';
         } else {
             // Default fallback
-            closedEyesSprite = 'assets/general/character/closed_eyes.png';
+            closedEyesSprite = 'assets/general/character/closed_eyes.webp';
         }
 
         // Change to closed eyes
@@ -5090,8 +5090,8 @@ class DogeMinerGame {
             searchdogs.forEach(searchdog => {
                 if (searchdog) {
                     searchdog.src = isFrame1
-                        ? 'assets/general/searchdog_2.png'
-                        : 'assets/general/searchdog_1.png';
+                        ? 'assets/general/searchdog_2.webp'
+                        : 'assets/general/searchdog_1.webp';
                 }
             });
             isFrame1 = !isFrame1;
@@ -5117,7 +5117,7 @@ class DogeMinerGame {
         // Create portal background
         const portal = document.createElement('img');
         portal.id = 'rick-portal';
-        portal.src = 'assets/general/rm/portal.png';
+        portal.src = 'assets/general/rm/portal.webp';
         portal.style.position = 'absolute';
         portal.style.bottom = '170px'; // Moved up 150px
         portal.style.right = '10px'; // Moved to the right
@@ -5471,38 +5471,38 @@ class DogeMinerGame {
         const earthHelpers = {
             'miningShibe': {
                 baseDps: 0.2,
-                icon: 'assets/helpers/shibes/shibes-idle-0.png',
-                miningSprite: 'assets/helpers/shibes/shibes-mine-0.png',
+                icon: 'assets/helpers/shibes/shibes-idle-0.webp',
+                miningSprite: 'assets/helpers/shibes/shibes-mine-0.webp',
                 name: 'Mining Shibe'
             },
             'dogeKennels': {
                 baseDps: 2,
-                icon: 'assets/helpers/kennels/kennels-idle-0.png',
-                miningSprite: 'assets/helpers/kennels/kennels-mine-0.png',
+                icon: 'assets/helpers/kennels/kennels-idle-0.webp',
+                miningSprite: 'assets/helpers/kennels/kennels-mine-0.webp',
                 name: 'Doge Kennels'
             },
             'streamerKittens': {
                 baseDps: 4,
-                icon: 'assets/helpers/kittens/kittens-idle-0.png',
-                miningSprite: 'assets/helpers/kittens/kittens-mine-0.png',
+                icon: 'assets/helpers/kittens/kittens-idle-0.webp',
+                miningSprite: 'assets/helpers/kittens/kittens-mine-0.webp',
                 name: 'Streamer Kittens'
             },
             'spaceRocket': {
                 baseDps: 9,
-                icon: 'assets/helpers/rockets/rockets-idle-0.png',
-                miningSprite: 'assets/helpers/rockets/rockets-mine-0.png',
+                icon: 'assets/helpers/rockets/rockets-idle-0.webp',
+                miningSprite: 'assets/helpers/rockets/rockets-mine-0.webp',
                 name: 'Space Rocket'
             },
             'timeMachineRig': {
                 baseDps: 20,
-                icon: 'assets/helpers/rigs/rigs-idle-0.png',
-                miningSprite: 'assets/helpers/rigs/rigs-mine-0.png',
+                icon: 'assets/helpers/rigs/rigs-idle-0.webp',
+                miningSprite: 'assets/helpers/rigs/rigs-mine-0.webp',
                 name: 'Time Machine Mining Rig'
             },
             'infiniteDogebility': {
                 baseDps: 50,
-                icon: 'assets/helpers/dogebility/dogebility-idle-0.png',
-                miningSprite: 'assets/helpers/dogebility/dogebility-mine-0.png',
+                icon: 'assets/helpers/dogebility/dogebility-idle-0.webp',
+                miningSprite: 'assets/helpers/dogebility/dogebility-mine-0.webp',
                 name: 'Infinite Dogebility'
             }
         };
@@ -5510,38 +5510,38 @@ class DogeMinerGame {
         const moonHelpers = {
             'moonBase': {
                 baseDps: 12,
-                icon: 'assets/helpers/bases/bases-idle-0.png',
-                miningSprite: 'assets/helpers/bases/bases-mine-0.png',
+                icon: 'assets/helpers/bases/bases-idle-0.webp',
+                miningSprite: 'assets/helpers/bases/bases-mine-0.webp',
                 name: 'Moon Base'
             },
             'moonShibe': {
                 baseDps: 9,
-                icon: 'assets/helpers/moonshibe/moonshibe-idle-0.png',
-                miningSprite: 'assets/helpers/moonshibe/moonshibe-mine-0.png',
+                icon: 'assets/helpers/moonshibe/moonshibe-idle-0.webp',
+                miningSprite: 'assets/helpers/moonshibe/moonshibe-mine-0.webp',
                 name: 'Moon Shibe'
             },
             'dogeCar': {
                 baseDps: 12,
-                icon: 'assets/helpers/dogecar/dogecar-idle-0.png',
-                miningSprite: 'assets/helpers/dogecar/dogecar-mine-0.png',
+                icon: 'assets/helpers/dogecar/dogecar-idle-0.webp',
+                miningSprite: 'assets/helpers/dogecar/dogecar-mine-0.webp',
                 name: 'Doge Car'
             },
             'landerShibe': {
                 baseDps: 20,
-                icon: 'assets/helpers/landershibe/landershibe-idle-0.png',
-                miningSprite: 'assets/helpers/landershibe/landershibe-mine-0.png',
+                icon: 'assets/helpers/landershibe/landershibe-idle-0.webp',
+                miningSprite: 'assets/helpers/landershibe/landershibe-mine-0.webp',
                 name: 'Lander Shibe'
             },
             'marsRocket': {
                 baseDps: 50,
-                icon: 'assets/helpers/marsrocket/marsrocket-idle-0.png',
-                miningSprite: 'assets/helpers/marsrocket/marsrocket-mine-0.png',
+                icon: 'assets/helpers/marsrocket/marsrocket-idle-0.webp',
+                miningSprite: 'assets/helpers/marsrocket/marsrocket-mine-0.webp',
                 name: 'Mars Rocket'
             },
             'dogeGate': {
                 baseDps: 155,
-                icon: 'assets/helpers/dogegate/dogegate-idle-0.png',
-                miningSprite: 'assets/helpers/dogegate/dogegate-mine-0.png',
+                icon: 'assets/helpers/dogegate/dogegate-idle-0.webp',
+                miningSprite: 'assets/helpers/dogegate/dogegate-mine-0.webp',
                 name: 'Doge Gate'
             }
         };

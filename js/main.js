@@ -126,39 +126,39 @@ function updateLoadingProgress(progress) {
 async function preloadAssets() {
     const assets = [
         // Backgrounds
-        'assets/backgrounds/bg/bg1.jpg',
-        'assets/backgrounds/bg/bgmoon01.jpg',
-        'assets/backgrounds/bg/bg4.jpg',
-        'assets/backgrounds/bg/bgjup01.jpg',
+        'assets/backgrounds/bg/bg1.webp',
+        'assets/backgrounds/bg/bgmoon01.webp',
+        'assets/backgrounds/bg/bg4.webp',
+        'assets/backgrounds/bg/bgjup01.webp',
 
         // Rocks
-        'assets/general/rocks/earth.png',
-        'assets/general/rocks/moon.png',
-        'assets/general/rocks/mars.png',
-        'assets/general/rocks/jupiter.png',
+        'assets/general/rocks/earth.webp',
+        'assets/general/rocks/moon.webp',
+        'assets/general/rocks/mars.webp',
+        'assets/general/rocks/jupiter.webp',
 
         // Characters
-        'assets/general/character/standard.png',
-        'assets/general/character/happydoge.png',
-        'assets/general/character/spacehelmet.png',
+        'assets/general/character/standard.webp',
+        'assets/general/character/happydoge.webp',
+        'assets/general/character/spacehelmet.webp',
 
         // Icons
-        'assets/general/dogecoin_70x70.png',
-        'assets/general/persec_icon.png',
-        'assets/general/logo.png',
+        'assets/general/dogecoin_70x70.webp',
+        'assets/general/persec_icon.webp',
+        'assets/general/logo.webp',
 
         // Helper icons
-        'assets/helpers/helpers/shibes/shibes-idle-0.png',
-        'assets/helpers/helpers/kittens/kittens-idle-0.png',
-        'assets/helpers/helpers/kennels/kennels-idle-0.png',
-        'assets/helpers/helpers/rockets/rockets-idle-0.png',
-        'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
+        'assets/helpers/helpers/shibes/shibes-idle-0.webp',
+        'assets/helpers/helpers/kittens/kittens-idle-0.webp',
+        'assets/helpers/helpers/kennels/kennels-idle-0.webp',
+        'assets/helpers/helpers/rockets/rockets-idle-0.webp',
+        'assets/helpers/helpers/marsbase/marsbase-idle-0.webp',
 
         // Pickaxe icons
-        'assets/items/items/pickaxes/standard.png',
-        'assets/items/items/pickaxes/stronger.png',
-        'assets/items/items/pickaxes/golden.png',
-        'assets/items/items/pickaxes/rocketaxe.png'
+        'assets/items/items/pickaxes/standard.webp',
+        'assets/items/items/pickaxes/stronger.webp',
+        'assets/items/items/pickaxes/golden.webp',
+        'assets/items/items/pickaxes/rocketaxe.webp'
     ];
 
     const loadPromises = assets.map(asset => {

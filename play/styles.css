@@ -1020,7 +1020,7 @@ body {
     position: absolute;
     inset: 0;
     margin-left: -14px;
-    background: url('../assets/general/fx/radial.png') center/contain no-repeat;
+    background: url('../assets/general/fx/radial.webp') center/contain no-repeat;
     opacity: 0.35;
     animation: mboxRadialSpin 20s linear infinite;
 }
@@ -3372,8 +3372,8 @@ body.planet-mars #main-rock {
     height: 42px;
     background-color: rgb(140, 100, 40);
     filter: drop-shadow(0 3px 6px rgba(80, 50, 0, 0.35));
-    -webkit-mask-image: url('assets/quickUI/padlock.png');
-    mask-image: url('assets/quickUI/padlock.png');
+    -webkit-mask-image: url('assets/quickUI/padlock.webp');
+    mask-image: url('assets/quickUI/padlock.webp');
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     -webkit-mask-position: center;

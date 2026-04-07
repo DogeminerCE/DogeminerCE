@@ -108,30 +108,30 @@ async function initializeGame() {
             if (mainCharacter && mainRock && game) {
                 // Set correct character sprite
                 if (game.currentLevel === 'earth') {
-                    mainCharacter.src = 'assets/general/character/standard.png';
-                    mainRock.src = 'assets/general/rocks/earth.png';
+                    mainCharacter.src = 'assets/general/character/standard.webp';
+                    mainRock.src = 'assets/general/rocks/earth.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatform.png';
+                        platform.src = '../assets/quickUI/dogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
                     game.backgrounds = [
-                        'backgrounds/bg1.jpg',
-                        'backgrounds/bg3.jpg',
-                        'backgrounds/bg4.jpg',
-                        'backgrounds/bg5.jpg',
-                        'backgrounds/bg6.jpg',
-                        'backgrounds/bg7.jpg',
-                        'backgrounds/bg9.jpg',
-                        'backgrounds/bg-new.jpg'
+                        'backgrounds/bg1.webp',
+                        'backgrounds/bg3.webp',
+                        'backgrounds/bg4.webp',
+                        'backgrounds/bg5.webp',
+                        'backgrounds/bg6.webp',
+                        'backgrounds/bg7.webp',
+                        'backgrounds/bg9.webp',
+                        'backgrounds/bg-new.webp'
                     ];
                 } else if (game.currentLevel === 'moon') {
-                    mainCharacter.src = 'assets/general/character/spacehelmet.png';
-                    mainRock.src = 'assets/general/rocks/moon.png';
+                    mainCharacter.src = 'assets/general/character/spacehelmet.webp';
+                    mainRock.src = 'assets/general/rocks/moon.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatformmoon.png';
+                        platform.src = '../assets/quickUI/dogeplatformmoon.webp';
                     }
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
@@ -142,58 +142,58 @@ async function initializeGame() {
                         uiManager.hideMoonLocked();
                     }
                 } else if (game.currentLevel === 'mars') {
-                    mainCharacter.src = 'assets/general/character/party.png';
-                    mainRock.src = 'assets/general/rocks/mars.png';
+                    mainCharacter.src = 'assets/general/character/party.webp';
+                    mainRock.src = 'assets/general/rocks/mars.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/marsdogeplatform.png';
+                        platform.src = '../assets/quickUI/marsdogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-mars');
                     game.backgrounds = [
-                        'backgrounds/bg6.jpg',
-                        'assets/backgrounds/bg101.jpg', // Mars extras live under play/assets/backgrounds/
-                        'assets/backgrounds/bg102.jpg',
-                        'assets/backgrounds/bg103.jpg',
-                        'assets/backgrounds/bg104.jpg',
-                        'assets/backgrounds/bg105.jpg',
-                        'backgrounds/bg-new.jpg'
+                        'backgrounds/bg6.webp',
+                        'assets/backgrounds/bg101.webp', // Mars extras live under play/assets/backgrounds/
+                        'assets/backgrounds/bg102.webp',
+                        'assets/backgrounds/bg103.webp',
+                        'assets/backgrounds/bg104.webp',
+                        'assets/backgrounds/bg105.webp',
+                        'backgrounds/bg-new.webp'
                     ];
                 } else if (game.currentLevel === 'jupiter') {
                     // Jupiter reuses the space suit but swaps to the dedicated platform art.
-                    mainCharacter.src = 'assets/general/character/spacehelmet.png';
-                    mainRock.src = 'assets/general/rocks/jupiter.png';
+                    mainCharacter.src = 'assets/general/character/spacehelmet.webp';
+                    mainRock.src = 'assets/general/rocks/jupiter.webp';
                     if (platform) {
-                        platform.src = '../assets/quickUI/jupiterdogeplatform.png';
+                        platform.src = '../assets/quickUI/jupiterdogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-jupiter');
                     game.backgrounds = [
-                        'assets/backgrounds/bgjup01.jpg',
-                        'assets/backgrounds/bgjup02.jpg',
-                        'assets/backgrounds/bgjup03.jpg',
-                        'assets/backgrounds/dogewow.jpg'
+                        'assets/backgrounds/bgjup01.webp',
+                        'assets/backgrounds/bgjup02.webp',
+                        'assets/backgrounds/bgjup03.webp',
+                        'assets/backgrounds/dogewow.webp'
                     ];
                 } else if (game.currentLevel === 'titan') {
                     // Titan uses the space helmet like Jupiter and Moon
-                    mainCharacter.src = 'assets/general/character/spacehelmet.png';
-                    mainRock.src = 'assets/general/rocks/titan.png';
+                    mainCharacter.src = 'assets/general/character/spacehelmet.webp';
+                    mainRock.src = 'assets/general/rocks/titan.webp';
                     if (platform) {
                         // Titan uses its own platform
-                        platform.src = '../assets/quickUI/titandogeplatform.png';
+                        platform.src = '../assets/quickUI/titandogeplatform.webp';
                     }
                     document.body.classList.remove('moon-theme');
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.add('planet-titan');
                     game.backgrounds = [
-                        'assets/backgrounds/titan02.jpg',
-                        'assets/backgrounds/titan03.jpg',
-                        'assets/backgrounds/titan04.jpg',
-                        'assets/backgrounds/titan05.jpg'
+                        'assets/backgrounds/titan02.webp',
+                        'assets/backgrounds/titan03.webp',
+                        'assets/backgrounds/titan04.webp',
+                        'assets/backgrounds/titan05.webp'
                     ];
                 }
 
@@ -515,40 +515,40 @@ function updateLoadingInfo(info) {
 async function preloadAssets() {
     const assets = [
         // Backgrounds
-        'assets/backgrounds/bg/bg1.jpg',
-        'assets/backgrounds/bg/bgmoon01.jpg',
-        'assets/backgrounds/bg/bg4.jpg',
-        'assets/backgrounds/bg/bgjup01.jpg',
+        'assets/backgrounds/bg/bg1.webp',
+        'assets/backgrounds/bg/bgmoon01.webp',
+        'assets/backgrounds/bg/bg4.webp',
+        'assets/backgrounds/bg/bgjup01.webp',
 
         // Rocks
-        'assets/general/rocks/earth.png',
-        'assets/general/rocks/moon.png',
-        'assets/general/rocks/mars.png',
-        'assets/general/rocks/jupiter.png',
+        'assets/general/rocks/earth.webp',
+        'assets/general/rocks/moon.webp',
+        'assets/general/rocks/mars.webp',
+        'assets/general/rocks/jupiter.webp',
 
         // Characters
-        'assets/general/character/standard.png',
-        'assets/general/character/happydoge.png',
-        'assets/general/character/spacehelmet.png',
+        'assets/general/character/standard.webp',
+        'assets/general/character/happydoge.webp',
+        'assets/general/character/spacehelmet.webp',
 
         // Icons
-        'assets/general/dogecoin_70x70.png',
-        'assets/general/persec_icon.png',
-        'assets/general/logo.png',
+        'assets/general/dogecoin_70x70.webp',
+        'assets/general/persec_icon.webp',
+        'assets/general/logo.webp',
 
         // Helper icons
-        'assets/helpers/shibes/shibes-idle-0.png',
-        'assets/helpers/kittens/kittens-idle-0.png',
-        'assets/helpers/kennels/kennels-idle-0.png',
-        'assets/helpers/rockets/rockets-idle-0.png',
-        'assets/helpers/marsbase/marsbase-idle-0.png',
+        'assets/helpers/shibes/shibes-idle-0.webp',
+        'assets/helpers/kittens/kittens-idle-0.webp',
+        'assets/helpers/kennels/kennels-idle-0.webp',
+        'assets/helpers/rockets/rockets-idle-0.webp',
+        'assets/helpers/marsbase/marsbase-idle-0.webp',
 
 
         // Pickaxe icons
-        'assets/items/pickaxes/standard.png',
-        'assets/items/pickaxes/stronger.png',
-        'assets/items/pickaxes/golden.png',
-        'assets/items/pickaxes/rocketaxe.png'
+        'assets/items/pickaxes/standard.webp',
+        'assets/items/pickaxes/stronger.webp',
+        'assets/items/pickaxes/golden.webp',
+        'assets/items/pickaxes/rocketaxe.webp'
     ];
 
     const loadPromises = assets.map(asset => {

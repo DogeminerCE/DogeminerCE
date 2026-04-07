@@ -8,31 +8,31 @@
 
 const CONTROLLER_ICONS = {
     // Face buttons
-    A: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_A.png" width="24" height="24" alt="A">`,
-    B: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_B.png" width="24" height="24" alt="B">`,
-    X: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_X.png" width="24" height="24" alt="X">`,
-    Y: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Y.png" width="24" height="24" alt="Y">`,
+    A: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_A.webp" width="24" height="24" alt="A">`,
+    B: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_B.webp" width="24" height="24" alt="B">`,
+    X: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_X.webp" width="24" height="24" alt="X">`,
+    Y: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Y.webp" width="24" height="24" alt="Y">`,
 
     // Bumpers / triggers
-    LB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LB.png" height="20" alt="LB">`,
-    RB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RB.png" height="20" alt="RB">`,
-    LT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LT.png" height="20" alt="LT">`,
-    RT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RT.png" height="20" alt="RT">`,
+    LB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LB.webp" height="20" alt="LB">`,
+    RB: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RB.webp" height="20" alt="RB">`,
+    LT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_LT.webp" height="20" alt="LT">`,
+    RT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_RT.webp" height="20" alt="RT">`,
 
     // D-Pad
-    DPAD_UP: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Up.png" height="20" alt="D-Pad Up">`,
-    DPAD_DOWN: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Down.png" height="20" alt="D-Pad Down">`,
-    DPAD_LEFT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Left.png" height="20" alt="D-Pad Left">`,
-    DPAD_RIGHT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Right.png" height="20" alt="D-Pad Right">`,
+    DPAD_UP: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Up.webp" height="20" alt="D-Pad Up">`,
+    DPAD_DOWN: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Down.webp" height="20" alt="D-Pad Down">`,
+    DPAD_LEFT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Left.webp" height="20" alt="D-Pad Left">`,
+    DPAD_RIGHT: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Dpad_Right.webp" height="20" alt="D-Pad Right">`,
 
     // Menu / View
-    MENU: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Menu.png" height="20" alt="Menu">`,
+    MENU: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Menu.webp" height="20" alt="Menu">`,
 
     // Left stick
-    LSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Left_Stick.png" height="24" alt="LS">`,
+    LSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Left_Stick.webp" height="24" alt="LS">`,
     
     // Right stick
-    RSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Right_Stick.png" height="24" alt="RS">`,
+    RSTICK: `<img class="ctrl-icon" src="assets/Xbox%20Series/XboxSeriesX_Right_Stick.webp" height="24" alt="RS">`,
 };
 
 function getControllerIcon(button) {
