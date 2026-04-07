@@ -346,6 +346,13 @@ class SaveManager {
         this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
         this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
         this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
+
+        // Migrate old .png/.jpg sprite paths to .webp (post-WebP conversion)
+        this._migrateSpritePaths(this.game.pickaxeInventory);
+        this._migrateSpritePaths(this.game.fortuneInventory);
+        if (this.game.latestObtainedFortune) {
+            this._migrateSpritePaths([this.game.latestObtainedFortune]);
+        }
         this.game.moonDogebagCount = saveData.moonDogebagCount || 0;
         this.game.mysteryBoxObtained = saveData.mysteryBoxObtained || false;
         this.game.mysteryBoxOpenCount = saveData.mysteryBoxOpenCount || 0;
@@ -813,6 +820,23 @@ class SaveManager {
             setTimeout(() => {
                 this.game.showNotification(`⚠️ Save issue detected! ${misplacedCount} helpers on wrong planets. Go to Settings > Repair Save to fix.`, 8000);
             }, 2000);
+        }
+    }
+
+    /**
+     * Migrates old .png/.jpg sprite paths to .webp in inventory items.
+     * Called during save loading to handle saves from before the WebP conversion.
+     */
+    _migrateSpritePaths(items) {
+        if (!Array.isArray(items)) return;
+        for (const item of items) {
+            if (!item || typeof item !== 'object') continue;
+            // Migrate all string properties that look like image paths
+            for (const key of Object.keys(item)) {
+                if (typeof item[key] === 'string' && /\.(png|jpg|jpeg)$/i.test(item[key])) {
+                    item[key] = item[key].replace(/\.(png|jpg|jpeg)$/i, '.webp');
+                }
+            }
         }
     }
 
