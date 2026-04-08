@@ -98,7 +98,7 @@ async function initializeGame() {
         const saveLoaded = saveManager.loadGame();
         if (!saveLoaded) {
             // No save found, start new game
-            notificationManager.showInfo('Welcome to DogeMiner: Community Edition!');
+            notificationManager.showInfo('Welcome to DogeminerCE!');
         } else {
             // Make sure character sprite and rock are correctly set based on current level
             const mainCharacter = document.getElementById('main-character');
