@@ -416,9 +416,12 @@ class SaveManager {
         const equipped = this.game.getEquippedPickaxe();
         const pickaxeImg = document.getElementById('pickaxe');
         if (equipped && pickaxeImg) {
-            pickaxeImg.src = equipped.idleSprite;
+            const fallbackSprite = 'assets/items/pickaxes/Earth/Normal Pickaxe/standard.webp';
+            const equippedSprite = equipped.idleSprite || equipped.sprite || fallbackSprite;
+            
+            pickaxeImg.src = equippedSprite;
             pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
-            const sp = equipped.idleSprite || '';
+            const sp = equippedSprite;
             if (sp.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
             }
@@ -434,7 +437,7 @@ class SaveManager {
             // Update pickaxe button preview
             const btnPreview = document.getElementById('pickaxe-btn-preview');
             if (btnPreview) {
-                btnPreview.src = equipped.idleSprite;
+                btnPreview.src = equippedSprite;
             }
         }
 
@@ -831,6 +834,12 @@ class SaveManager {
         if (!Array.isArray(items)) return;
         for (const item of items) {
             if (!item || typeof item !== 'object') continue;
+            
+            // Map legacy .sprite to .idleSprite for pickaxes (Fortunes still use .sprite mostly but this is safe)
+            if (!item.idleSprite && item.sprite) {
+                item.idleSprite = item.sprite;
+            }
+            
             // Migrate all string properties that look like image paths
             for (const key of Object.keys(item)) {
                 if (typeof item[key] === 'string' && /\.(png|jpg|jpeg)$/i.test(item[key])) {
