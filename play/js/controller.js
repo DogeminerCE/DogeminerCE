@@ -299,18 +299,6 @@ class ControllerManager {
         if (justPressed(GP.A)) {
             this._handleA();
         }
-        // A held — rapid mining (when not browsing shop/upgrades/settings/modal)
-        const canMineHeld = this.focusContext !== 'shop' && this.focusContext !== 'upgrades' && this.focusContext !== 'settings' && this.focusContext !== 'modal';
-        if (isHeld(GP.A) && canMineHeld) {
-            if (!this.miningHeld) {
-                this.miningHeld = true;
-                this._startMiningRepeat();
-            }
-        } else {
-            if (this.miningHeld) {
-                this.miningHeld = false;
-                this._stopMiningRepeat();
-            }
         }
 
         // B Button — Back / Close
@@ -523,25 +511,6 @@ class ControllerManager {
             this.focusIndex = 0;
         }
         this._updateFocus();
-    }
-
-    // ── Mining Repeat (A held) ───────────────────────────────────────────
-
-    _startMiningRepeat() {
-        this._stopMiningRepeat();
-        // Fire at the game's max CPS rate (~15 times/sec = 67ms)
-        this.miningRepeatTimer = setInterval(() => {
-            if (this.game && this.focusContext === 'mining') {
-                this.game.processClick();
-            }
-        }, 67);
-    }
-
-    _stopMiningRepeat() {
-        if (this.miningRepeatTimer) {
-            clearInterval(this.miningRepeatTimer);
-            this.miningRepeatTimer = null;
-        }
     }
 
     // ── Tab Cycling ──────────────────────────────────────────────────────
