@@ -1038,6 +1038,7 @@ class SaveManager {
                 this.game.recalculatePlayerStats();
                 this.game.currentLevel = 'earth';
                 this.game.hasPlayedMoonLaunch = false;
+                this.game.hasSeenDogebagIntro = false;
                 this.game.isCutscenePlaying = false;
                 this.game.autoSaveEnabled = false; // Prevent interval auto-save from misfiring
                 

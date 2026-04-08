@@ -1201,7 +1201,8 @@ class DogeMinerGame {
      */
     rollDogebagDrop() {
         // Guarantee the player's first dogebag drops within their very first 4 rock breaks
-        if (!this.hasSeenDogebagIntro && this.rocksBroken >= 4) {
+        // Failsafe triggers if they have no items by the time they hit rock #4 (rocksBroken >= 3)
+        if (this.currentLevel === 'earth' && this.rocksBroken >= 3 && this.pickaxeInventory.length <= 1 && this.fortuneInventory.length === 0) {
             return true;
         }
 
