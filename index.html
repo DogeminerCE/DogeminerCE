@@ -123,7 +123,7 @@
             color: #333;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-y: auto;
             position: relative;
             z-index: 2;
         }
@@ -135,8 +135,9 @@
         }
 
         .landing-logo {
-            width: 800px;
-            height: auto;
+            width: min(800px, 80vw);
+            max-height: 35vh;
+            object-fit: contain;
             margin-bottom: 10px;
         }
 
@@ -385,6 +386,15 @@
 
             .landing-title {
                 font-size: 2.5em;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .landing-logo {
+                max-height: 25vh;
+            }
+            .landing-header {
+                margin-bottom: 5px;
             }
         }
     </style>

@@ -636,7 +636,13 @@ class DogeMinerGame {
             case 'titan': growthFactor = 1.85; break;
         }
         const finalHp = Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
-        return finalHp;
+        
+        // Prevent exploit where players with high DPC return to early planets to instantly farm rocks.
+        // Rocks must ALWAYS require at least ~10 clicks (by 15% damage cap) relative to current max DPC.
+        // 10 clicks * 15% maxHP = 150%. Therefore minHP roughly equals maxPickaxeDPC * 6.67
+        const minHP = Math.floor(this.maxPickaxeDPC * 6.67);
+
+        return Math.max(finalHp, minHP);
     }
 
     /**
