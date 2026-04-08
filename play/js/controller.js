@@ -285,6 +285,12 @@ class ControllerManager {
             return buttons[index] && buttons[index].pressed;
         };
 
+        // Detect "just released"
+        const justReleased = (index) => {
+            return this.prevButtons[index] && this.prevButtons[index].pressed &&
+                !(buttons[index] && buttons[index].pressed);
+        };
+
         // ── Handle input ─────────────────────────────────────────────────
 
         // If the in-game dialog is open, route all input there
@@ -297,6 +303,11 @@ class ControllerManager {
 
         if (justPressed(GP.A)) {
             this._handleA();
+        }
+        if (justReleased(GP.A)) {
+            if (this.game && typeof this.game.endSwing === 'function' && this.focusContext === 'mining') {
+                this.game.endSwing();
+            }
         }
 
         // B Button — Back / Close
