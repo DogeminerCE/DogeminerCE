@@ -35,6 +35,34 @@
             font-weight: 100 900;
             font-style: normal;
         }
+
+        /* Controller Cursor Hint */
+        #controller-cursor-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'DogeSans', sans-serif;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+        }
+
+        #controller-cursor-hint img {
+            height: 20px;
+            vertical-align: middle;
+        }
+
+        body.controller-mode #controller-cursor-hint {
+            display: flex;
+        }
     </style>
 </head>
 
@@ -305,6 +333,11 @@
                     <span class="dialog-hint"><kbd>B</kbd> Cancel</span>
                 </div>
             </div>
+        </div>
+
+        <!-- Controller Cursor Hint Tooltip -->
+        <div id="controller-cursor-hint">
+            Press <img src="assets/Xbox%20Series/XboxSeriesX_View.webp" alt="View Button"> to toggle Cursor
         </div>
 
         <!-- Supporter Modal -->

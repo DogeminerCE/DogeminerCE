@@ -323,13 +323,9 @@ class ControllerManager {
             this._handleX();
         }
 
-        // Y Button — Toggle pickaxe modal (or Save in Settings)
+        // Y Button — Toggle inventories focus
         if (justPressed(GP.Y)) {
-            if (this.focusContext === 'settings') {
-                if (window.saveManager) saveManager.saveGame();
-            } else {
-                this._handleY();
-            }
+            this._handleY();
         }
 
         // LB / RB — Cycle panel tabs
@@ -439,6 +435,13 @@ class ControllerManager {
         } else if (this.focusContext === 'modal') {
             // Select focused modal item
             this._selectModalItem();
+        } else if (this.focusContext === 'inventories') {
+            const items = this._getFocusableItems();
+            if (items[this.focusIndex]) {
+                items[this.focusIndex].click();
+                // We don't reset focusContext here because opening the modal will
+                // naturally take focus, or the button click handler will do it.
+            }
         } else {
             // On non-interactive tabs (achievements), A still mines
             if (this.game) {
@@ -498,27 +501,24 @@ class ControllerManager {
     }
 
     _handleY() {
-        // Toggle pickaxe modal
-        const pickaxeModal = document.getElementById('pickaxe-modal');
-        if (pickaxeModal && pickaxeModal.classList.contains('active')) {
-            if (window.game) window.game.closePickaxeModal();
+        // Toggle inventory buttons focus
+        if (this.focusContext === 'inventories') {
             this.focusContext = 'mining';
         } else {
-            if (window.game) window.game.openPickaxeModal();
-            this.focusContext = 'modal';
+            this.focusContext = 'inventories';
             this.focusIndex = 0;
         }
         this._updateFocus();
     }
 
     _handleMenuButton() {
-        // Toggle fortunes modal
-        const fortuneModal = document.getElementById('fortune-modal');
-        if (fortuneModal && fortuneModal.classList.contains('active')) {
-            if (window.game) window.game.closeFortuneModal();
+        // Toggle mystery box modal
+        const mysteryBoxModal = document.getElementById('mystery-box-modal');
+        if (mysteryBoxModal && mysteryBoxModal.classList.contains('active')) {
+            if (window.game && window.game.closeMysteryBoxModal) window.game.closeMysteryBoxModal();
             this.focusContext = 'mining';
         } else {
-            if (window.game) window.game.openFortuneModal();
+            if (window.game && window.game.openMysteryBoxModal) window.game.openMysteryBoxModal();
             this.focusContext = 'modal';
             this.focusIndex = 0;
         }
@@ -798,6 +798,12 @@ class ControllerManager {
             // Checkboxes + buttons in the settings tab (filter out hidden ones)
             return Array.from(container.querySelectorAll('.setting-item, .setting-btn, .google-signin-btn'))
                 .filter(el => el.offsetParent !== null);
+        }
+        if (this.focusContext === 'inventories') {
+            return [
+                document.getElementById('pickaxe-btn'),
+                document.getElementById('fortune-btn')
+            ].filter(Boolean);
         }
         return [];
     }
