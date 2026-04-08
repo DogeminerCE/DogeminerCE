@@ -7576,3 +7576,10 @@ body.xbox-mode #sign-in-section {
         flex-shrink: 0;
     }
 }
+#pickaxe.pickaxe-scale-baguette {
+    width: 160px;
+    height: 340px;
+    top: -195px;
+    right: calc(20% - 70px);
+    transform-origin: 50% 90%;
+}

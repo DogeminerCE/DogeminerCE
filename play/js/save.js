@@ -420,10 +420,12 @@ class SaveManager {
             const equippedSprite = equipped.idleSprite || equipped.sprite || fallbackSprite;
             
             pickaxeImg.src = equippedSprite;
-            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette');
             const sp = equippedSprite;
             if (sp.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
+            } else if (sp.includes('baguette')) {
+                pickaxeImg.classList.add('pickaxe-scale-baguette');
             }
             const largeWeaponPatterns = [
                 'axe', 'hammer', 'sword', 'drill', 'shotgun', 'm4.',

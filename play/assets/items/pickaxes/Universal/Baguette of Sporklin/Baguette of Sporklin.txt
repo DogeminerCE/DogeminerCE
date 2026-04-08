@@ -1,0 +1,16 @@
+"NAME"
+Baguette of Sporklin
+
+"RARITY"
+Legendary
+
+"DESCRIPTION"
+You feel a great sense of power and rememberence from this Baguette. Someone very WOW must have previously beheld it.
+
+"STATS"
++% Wow
++% Luck
++% Loot Find
++% Critical Chance
++ DPS
++ Rememberence

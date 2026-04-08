@@ -431,11 +431,20 @@ class PickaxeFactory {
      */
     getDropPool(planet) {
         const planetKey = planet.toLowerCase();
-        const pool = [...(this.templatesByPlanet[planetKey] || [])];
+        let pool = [...(this.templatesByPlanet[planetKey] || [])];
         // Always include Universal pickaxes
         if (planetKey !== 'universal') {
             pool.push(...(this.templatesByPlanet.universal || []));
         }
+        
+        // Filter out specific conditional pickaxes
+        if (window.game && window.game.unlockedLevels) {
+            // Baguette of Sporklin only drops if Jupiter and Titan are unlocked
+            if (!window.game.unlockedLevels.has('jupiter') || !window.game.unlockedLevels.has('titan')) {
+                pool = pool.filter(id => id !== 'universal/baguette of sporklin');
+            }
+        }
+
         return pool;
     }
 
@@ -573,7 +582,7 @@ const PICKAXE_MANIFEST = {
         'Ancient Golden Axe', 'Light-blade Pickaxe'
     ],
     'Universal': [
-        'Barbell', 'Battle-Axe', 'Crude Rocket-Axe', 'Dual GPU-Pickaxe',
+        'Baguette of Sporklin', 'Barbell', 'Battle-Axe', 'Crude Rocket-Axe', 'Dual GPU-Pickaxe',
         'Dual GPU-Pickaxe OC', 'Electric Guitar', "Firefighter's Axe",
         'GPU-Pickaxe', 'Gold-Bronze Pickaxe', 'Gold-Tipped FireAxe',
         'Golden Meat Cleaver', 'Improved Saw-Axe', 'Improvised Saw-Axe',
@@ -645,6 +654,7 @@ const PICKAXE_SPRITES = {
     'Titan/Ancient Golden Axe': 'ancientaxe.webp',
     'Titan/Light-blade Pickaxe': 'lightaxe.webp',
     // Universal
+    'Universal/Baguette of Sporklin': 'baguette.webp',
     'Universal/Barbell': 'barbell_empty.webp',
     'Universal/Battle-Axe': 'axe.webp',
     'Universal/Crude Rocket-Axe': 'cruderocket.webp',

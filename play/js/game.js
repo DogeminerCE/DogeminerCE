@@ -2362,10 +2362,12 @@ class DogeMinerGame {
             pickaxeImg.src = pickaxe.idleSprite;
 
             // Apply per-sprite scale/position adjustments
-            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right');
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette');
             const spritePath = pickaxe.idleSprite || '';
             if (spritePath.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
+            } else if (spritePath.includes('baguette')) {
+                pickaxeImg.classList.add('pickaxe-scale-baguette');
             }
             // Large weapons that need upscaling + repositioning
             const largeWeaponPatterns = [
