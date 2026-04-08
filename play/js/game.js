@@ -1852,7 +1852,7 @@ class DogeMinerGame {
         }
         if (desc) desc.textContent = pickaxe.description;
         if (dpcContainer) dpcContainer.style.display = '';
-        if (dpcValue) dpcValue.textContent = pickaxe.baseDPC;
+        if (dpcValue) dpcValue.textContent = this.formatNumber(pickaxe.baseDPC);
 
         // Stats
         if (statsContainer && this.pickaxeFactory) {
@@ -2160,7 +2160,7 @@ class DogeMinerGame {
                 <div class="item-card-description">${pickaxe.description}</div>
                 <div class="item-card-stat">
                     <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
-                    <span>${pickaxe.baseDPC}</span>
+                    <span>${this.formatNumber(pickaxe.baseDPC)}</span>
                 </div>
                 ${statsHtml}
             `;
@@ -2233,7 +2233,7 @@ class DogeMinerGame {
             const dpc = typeof item.baseDPC === 'number' ? item.baseDPC : null;
             if (dpc !== null) {
                 lines.push(
-                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.webp" alt="DPC" class="quickstat-dogecoin-icon"><strong>${dpc}</strong></span>`
+                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.webp" alt="DPC" class="quickstat-dogecoin-icon"><strong>${this.formatNumber(dpc)}</strong></span>`
                 );
             }
         }
@@ -2908,7 +2908,7 @@ class DogeMinerGame {
         // Create +amount text
         const text = document.createElement('div');
         text.className = 'dogecoin-text';
-        text.textContent = isCrit ? 'CRIT! +' + amount : '+' + amount;
+        text.textContent = isCrit ? 'CRIT! +' + this.formatNumber(amount) : '+' + this.formatNumber(amount);
         text.style.position = 'absolute';
         text.style.left = (startX + 40) + 'px';
         text.style.top = startY + 'px';
