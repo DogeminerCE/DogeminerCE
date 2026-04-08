@@ -491,9 +491,20 @@ class ControllerManager {
     }
 
     _handleX() {
-        // Collect nearest coin pile
-        if (this.game && typeof this.game.collectNearestCoinPile === 'function') {
-            this.game.collectNearestCoinPile();
+        if (!window.game) return;
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        // Priority 1: Collect dogebag
+        const dogebags = rockContainer.querySelectorAll('.dogebag-drop');
+        if (dogebags.length > 0) {
+            dogebags[0].click();
+            return;
+        }
+
+        // Priority 2: Collect nearest coin pile
+        if (typeof window.game.collectNearestCoinPile === 'function') {
+            window.game.collectNearestCoinPile();
         }
     }
 
@@ -1007,17 +1018,17 @@ class ControllerManager {
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
 
-        // Tag any existing coin piles
-        rockContainer.querySelectorAll('.coin-pile').forEach(pile => {
+        // Tag any existing coin piles and dogebags
+        rockContainer.querySelectorAll('.coin-pile, .dogebag-drop').forEach(pile => {
             this._addCoinPileIcon(pile);
         });
 
-        // Watch for new coin piles being added
+        // Watch for new coin piles or dogebags being added
         this._coinPileObserver = new MutationObserver((mutations) => {
             if (!this.controllerMode || !this.showIndicators) return;
             for (const mutation of mutations) {
                 for (const node of mutation.addedNodes) {
-                    if (node.nodeType === 1 && node.classList.contains('coin-pile')) {
+                    if (node.nodeType === 1 && (node.classList.contains('coin-pile') || node.classList.contains('dogebag-drop'))) {
                         this._addCoinPileIcon(node);
                     }
                 }
