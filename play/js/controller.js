@@ -295,10 +295,8 @@ class ControllerManager {
             return;
         }
 
-        // A Button — Mine or confirm
         if (justPressed(GP.A)) {
             this._handleA();
-        }
         }
 
         // B Button — Back / Close
