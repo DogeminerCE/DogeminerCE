@@ -978,11 +978,8 @@ class ControllerManager {
         // Pickaxe button prompt
         this._addPrompt('pickaxe-btn', 'Y', '', 'prompt-pickaxe');
         
-        // Fortunes button prompt (Menu Button)
-        this._addPrompt('fortune-btn', 'MENU', '', 'prompt-fortunes');
-
-        // Save prompt on settings (Y Button)
-        this._addPrompt('settings-tab-btn', 'Y', 'Save', 'prompt-save');
+        // Mystery Box button prompt (Menu Button)
+        this._addPrompt('mystery-box-btn', 'MENU', '', 'prompt-mysterybox');
     }
 
     _addPrompt(containerId, button, label, promptId, position = 'bottom') {
