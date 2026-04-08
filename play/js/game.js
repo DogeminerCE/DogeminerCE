@@ -1200,6 +1200,11 @@ class DogeMinerGame {
      * Base 10% chance, scaled by luck.
      */
     rollDogebagDrop() {
+        // Guarantee the player's first dogebag drops within their very first 4 rock breaks
+        if (!this.hasSeenDogebagIntro && this.rocksBroken >= 4) {
+            return true;
+        }
+
         const baseChance = 0.05; // 5% base
         // Scale logarithmically to prevent infinite 100% drops
         const luckMultiplier = 1 + Math.log2(1 + this.playerStats.luck / 50);
