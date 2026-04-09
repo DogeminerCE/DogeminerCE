@@ -520,6 +520,9 @@ class ControllerManager {
     }
 
     _handleMenuButton() {
+        // Only allow opening if mystery box is obtained
+        if (!window.game || !window.game.mysteryBoxObtained) return;
+
         // Toggle mystery box modal
         const mysteryBoxModal = document.getElementById('mystery-box-modal');
         if (mysteryBoxModal && mysteryBoxModal.classList.contains('active')) {
