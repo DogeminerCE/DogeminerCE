@@ -24,7 +24,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="App" StartPage="index.html">
+    <Application Id="App" StartPage="play/index.html">
       <uap:VisualElements DisplayName="Dogeminer: Community Edition" 
                           Description="Dogeminer: Community Edition"
                           BackgroundColor="#ffffff" 

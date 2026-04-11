@@ -24,12 +24,18 @@ New-Item -ItemType Directory -Path $stagingDir | Out-Null
 New-Item -ItemType Directory -Path "$stagingDir\Assets" | Out-Null
 
 # 3. Copy Game Files
-Write-Host "Copying game files..."
-Copy-Item -Path "play\*" -Destination $stagingDir -Recurse
-# If there are root assets needed:
+Write-Host "Copying core files..."
+# Copy the play directory itself to preserve its internal paths
+Copy-Item -Path "play" -Destination $stagingDir -Recurse
+# Copy root assets (like shibe icons used in game)
 if (Test-Path "assets") {
     Copy-Item -Path "assets" -Destination "$stagingDir\assets" -Recurse
 }
+# Copy root files for reference, but AppxManifest points to play/index.html
+if (Test-Path "index.html") { Copy-Item -Path "index.html" -Destination $stagingDir }
+if (Test-Path "styles.css") { Copy-Item -Path "styles.css" -Destination $stagingDir }
+if (Test-Path "favicon.ico") { Copy-Item -Path "favicon.ico" -Destination $stagingDir }
+if (Test-Path "favicon_io") { Copy-Item -Path "favicon_io" -Destination $stagingDir -Recurse }
 
 # 4. Copy Packaging Files
 Write-Host "Copying packaging files..."
