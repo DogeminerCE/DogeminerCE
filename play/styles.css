@@ -938,7 +938,7 @@ body {
     position: relative;
     text-align: center;
     overflow: visible !important;
-    padding: 0 0 50px 0 !important;
+    padding: 0 0 20px 0 !important;
     box-shadow: none !important;
 }
 
@@ -952,12 +952,9 @@ body {
     align-items: center;
 }
 
-.mbox-scroll-body::after {
-    content: '';
-    display: block;
-    min-height: 90px;
-    width: 100%;
-    flex-shrink: 0;
+/* No spacer needed for mystery box layout */
+.mystery-box-modal-content .mbox-scroll-body::after {
+    display: none;
 }
 
 #mystery-box-modal.switcher-modal {
@@ -1077,7 +1074,7 @@ body {
     font-family: 'DogeSans', sans-serif;
     font-size: 14px;
     color: #c8960e;
-    margin: 6px 0 44px;
+    margin: 6px 0 10px;
     font-weight: bold;
 }
 
