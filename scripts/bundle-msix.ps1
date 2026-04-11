@@ -49,17 +49,16 @@ $manifestContent = $manifestContent -replace 'Version="[^"]+"', "Version=""$vers
 Set-Content -Path $manifestPath -Value $manifestContent
 
 # 6. Create Package (MakeAppx.exe)
-# Note: In GitHub Actions (windows-latest), MakeAppx is usually in the PATH.
-# Locally, we try to find it in common Windows SDK locations.
 $makeAppx = "MakeAppx.exe"
 if (!(Get-Command $makeAppx -ErrorAction SilentlyContinue)) {
-    $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "MakeAppx.exe" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+    # Search for x64 version specifically to avoid picking ARM64/x86 by mistake
+    $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "MakeAppx.exe" -Recurse | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1 -ExpandProperty FullName
     if ($sdkPath) { $makeAppx = $sdkPath }
 }
 
 $outMsix = "dogeminerce_$version.msix"
 Write-Host "Creating package: $outMsix"
-& $makeAppx pack /d $stagingDir /p $outMsix /o
+& "$makeAppx" pack /d $stagingDir /p $outMsix /o
 
 # 7. Sign Package (Optional)
 $pfx = "packaging\windows\DogeMinerCE_Test.pfx"
@@ -67,10 +66,10 @@ if (Test-Path $pfx) {
     Write-Host "Signing package with $pfx..."
     $signTool = "SignTool.exe"
     if (!(Get-Command $signTool -ErrorAction SilentlyContinue)) {
-        $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "SignTool.exe" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+        $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "SignTool.exe" -Recurse | Where-Object { $_.FullName -like "*\x64\*" }| Select-Object -First 1 -ExpandProperty FullName
         if ($sdkPath) { $signTool = $sdkPath }
     }
-    & $signTool sign /fd SHA256 /a /f $pfx /p dogeminer $outMsix
+    & "$signTool" sign /fd SHA256 /a /f $pfx /p dogeminer $outMsix
 } else {
     Write-Host "No PFX found at $pfx. Package is unsigned (Store only)."
 }
