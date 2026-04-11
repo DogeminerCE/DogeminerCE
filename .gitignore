@@ -87,5 +87,4 @@ skills-lock.json
 dist_msix/
 *.msix
 packaging/windows/*.pfx
-packaging/windows/Assets/*.png
-package-lock.json
+packaging/windows/Assets/*.png
