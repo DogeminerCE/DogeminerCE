@@ -8,8 +8,9 @@ $indexContent = Get-Content -Path "play/index.html" -Raw
 if ($indexContent -match "v(\d+\.\d+(\.\d+)?)") {
     $rawVersion = $Matches[1]
     # MSIX requires 4 parts, e.g. 0.55.0.0
-    $parts = $rawVersion.Split('.')
-    while ($parts.Count -lt 4) { $parts += "0" }
+    # Also, it DISALLOWS leading zeros (e.g., 055 must be 55)
+    $parts = $rawVersion.Split('.') | ForEach-Object { [int]$_ }
+    while ($parts.Count -lt 4) { $parts += 0 }
     $version = $parts -join "."
 } else {
     $version = "1.0.0.0" # Fallback
@@ -43,10 +44,11 @@ Copy-Item -Path "packaging\windows\Assets\*" -Destination "$stagingDir\Assets"
 $manifestPath = "$stagingDir\AppxManifest.xml"
 Copy-Item -Path "packaging\windows\AppxManifest.xml" -Destination $manifestPath
 
-# 5. Injection: Update Version in Manifest
+# 5. Injection: Update Version in Identity tag only
 $manifestContent = Get-Content -Path $manifestPath -Raw
-$manifestContent = $manifestContent -replace 'Version="[^"]+"', "Version=""$version"""
-Set-Content -Path $manifestPath -Value $manifestContent
+# Target the Identity tag's version specifically
+$manifestContent = $manifestContent -replace '(?i)(<Identity\s+[^>]*?Version=")([^"]*)(")', "`${1}$version`${3}"
+Set-Content -Path $manifestPath -Value $manifestContent -Encoding UTF8
 
 # 6. Create Package (MakeAppx.exe)
 $makeAppx = "MakeAppx.exe"
