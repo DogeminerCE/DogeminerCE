@@ -53,7 +53,7 @@ Set-Content -Path $manifestPath -Value $manifestContent -Encoding UTF8
 # 6. WebView2 Modern Runner Setup
 Write-Host "Setting up modern Chromium runner (WebView2)..."
 $wv2Temp = "$stagingDir\wv2_sdk"
-$nugetPackage = "$stagingDir\webview2.nupkg"
+$nugetPackage = "$stagingDir\webview2.zip"
 if (!(Test-Path $wv2Temp)) {
     Write-Host "Downloading WebView2 SDK from NuGet..."
     Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2" -OutFile $nugetPackage
