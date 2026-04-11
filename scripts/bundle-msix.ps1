@@ -61,9 +61,14 @@ if (!(Test-Path $wv2Temp)) {
 }
 
 # Copy required DLLs for runtime
-$dllPathCore = "$wv2Temp\lib\net45\Microsoft.Web.WebView2.Core.dll"
-$dllPathWF = "$wv2Temp\lib\net45\Microsoft.Web.WebView2.WinForms.dll"
-$dllPathLoader = "$wv2Temp\build\native\x64\WebView2Loader.dll"
+# Note: Newer versions of WebView2 use net462 instead of net45
+$dllPathCore = Get-ChildItem -Path "$wv2Temp\lib" -Filter "Microsoft.Web.WebView2.Core.dll" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+$dllPathWF = Get-ChildItem -Path "$wv2Temp\lib" -Filter "Microsoft.Web.WebView2.WinForms.dll" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+$dllPathLoader = Get-ChildItem -Path "$wv2Temp\build\native\x64" -Filter "WebView2Loader.dll" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+
+if (!$dllPathCore -or !$dllPathWF -or !$dllPathLoader) {
+    throw "Could not find required WebView2 DLLs in extracted SDK"
+}
 
 Copy-Item $dllPathCore -Destination $stagingDir
 Copy-Item $dllPathWF -Destination $stagingDir
@@ -72,7 +77,7 @@ Copy-Item $dllPathLoader -Destination $stagingDir
 # Compile the Launcher
 Write-Host "Compiling DogeMinerCE.exe..."
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-$references = "/reference:""$dllPathCore"",""$dllPathWF"",""System.Windows.Forms.dll"",""System.Drawing.dll"",""System.dll"""
+$references = "/reference:""$stagingDir\Microsoft.Web.WebView2.Core.dll"",""$stagingDir\Microsoft.Web.WebView2.WinForms.dll"",""System.Windows.Forms.dll"",""System.Drawing.dll"",""System.dll"""
 & $csc /target:winexe /out:"$stagingDir\DogeMinerCE.exe" $references "scripts\DogeLauncher.cs" /nologo
 
 if (!(Test-Path "$stagingDir\DogeMinerCE.exe")) {
