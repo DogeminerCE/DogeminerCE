@@ -80,8 +80,18 @@ Copy-Item $dllPathLoader -Destination $stagingDir
 # Compile the Launcher
 Write-Host "Compiling DogeMinerCE.exe..."
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-$references = "/reference:""$stagingDir\Microsoft.Web.WebView2.Core.dll"",""$stagingDir\Microsoft.Web.WebView2.WinForms.dll"",""System.Windows.Forms.dll"",""System.Drawing.dll"",""System.dll"""
-& $csc /target:winexe /out:"$stagingDir\DogeMinerCE.exe" $references "scripts\DogeLauncher.cs" /nologo
+$cscArgs = @(
+    "/target:winexe",
+    "/out:$stagingDir\DogeMinerCE.exe",
+    "/nologo",
+    "/reference:$stagingDir\Microsoft.Web.WebView2.Core.dll",
+    "/reference:$stagingDir\Microsoft.Web.WebView2.WinForms.dll",
+    "/reference:System.Windows.Forms.dll",
+    "/reference:System.Drawing.dll",
+    "/reference:System.dll",
+    "scripts\DogeLauncher.cs"
+)
+& $csc $cscArgs
 
 if (!(Test-Path "$stagingDir\DogeMinerCE.exe")) {
     throw "Failed to compile DogeMinerCE.exe"
