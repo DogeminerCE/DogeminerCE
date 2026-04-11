@@ -24,7 +24,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="App" StartPage="play/index.html">
+    <Application Id="App" Executable="DogeMinerCE.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements DisplayName="Dogeminer: Community Edition" 
                           Description="Dogeminer: Community Edition"
                           BackgroundColor="#ffffff" 
@@ -38,5 +38,6 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>

@@ -82,3 +82,10 @@ skills-lock.json
 .agents\skills
 .trae
 .agents
+
+# Windows / Store Packaging
+dist_msix/
+*.msix
+packaging/windows/*.pfx
+packaging/windows/Assets/*.png
+package-lock.json

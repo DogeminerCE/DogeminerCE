@@ -29,7 +29,9 @@
     "url": "https://github.com/DogeMinerCE/DogeMinerCE/issues"
   },
   "homepage": "https://github.com/DogeMinerCE/DogeMinerCE#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "sharp": "^0.33.2"
+  },
   "dependencies": {},
   "engines": {
     "node": ">=14.0.0"

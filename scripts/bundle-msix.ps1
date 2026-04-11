@@ -50,7 +50,36 @@ $manifestContent = Get-Content -Path $manifestPath -Raw
 $manifestContent = $manifestContent -replace '(?i)(<Identity\s+[^>]*?Version=")([^"]*)(")', "`${1}$version`${3}"
 Set-Content -Path $manifestPath -Value $manifestContent -Encoding UTF8
 
-# 6. Create Package (MakeAppx.exe)
+# 6. WebView2 Modern Runner Setup
+Write-Host "Setting up modern Chromium runner (WebView2)..."
+$wv2Temp = "$stagingDir\wv2_sdk"
+$nugetPackage = "$stagingDir\webview2.nupkg"
+if (!(Test-Path $wv2Temp)) {
+    Write-Host "Downloading WebView2 SDK from NuGet..."
+    Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2" -OutFile $nugetPackage
+    Expand-Archive -Path $nugetPackage -DestinationPath $wv2Temp -Force
+}
+
+# Copy required DLLs for runtime
+$dllPathCore = "$wv2Temp\lib\net45\Microsoft.Web.WebView2.Core.dll"
+$dllPathWF = "$wv2Temp\lib\net45\Microsoft.Web.WebView2.WinForms.dll"
+$dllPathLoader = "$wv2Temp\build\native\x64\WebView2Loader.dll"
+
+Copy-Item $dllPathCore -Destination $stagingDir
+Copy-Item $dllPathWF -Destination $stagingDir
+Copy-Item $dllPathLoader -Destination $stagingDir
+
+# Compile the Launcher
+Write-Host "Compiling DogeMinerCE.exe..."
+$csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+$references = "/reference:""$dllPathCore"",""$dllPathWF"",""System.Windows.Forms.dll"",""System.Drawing.dll"",""System.dll"""
+& $csc /target:winexe /out:"$stagingDir\DogeMinerCE.exe" $references "scripts\DogeLauncher.cs" /nologo
+
+if (!(Test-Path "$stagingDir\DogeMinerCE.exe")) {
+    throw "Failed to compile DogeMinerCE.exe"
+}
+
+# 7. Create Package (MakeAppx.exe)
 $makeAppx = "MakeAppx.exe"
 if (!(Get-Command $makeAppx -ErrorAction SilentlyContinue)) {
     # Search for x64 version specifically to avoid picking ARM64/x86 by mistake
@@ -62,7 +91,7 @@ $outMsix = "dogeminerce_$version.msix"
 Write-Host "Creating package: $outMsix"
 & "$makeAppx" pack /d $stagingDir /p $outMsix /o
 
-# 7. Sign Package (Optional)
+# 8. Sign Package (Optional)
 $pfx = "packaging\windows\DogeMinerCE_Test.pfx"
 if (Test-Path $pfx) {
     Write-Host "Signing package with $pfx..."
@@ -77,5 +106,5 @@ if (Test-Path $pfx) {
 }
 
 Write-Host "--------------------------------------------------------"
-Write-Host "Success! MSIX created at $outMsix"
+Write-Host "Success! WebView2 MSIX created at $outMsix"
 Write-Host "--------------------------------------------------------"
