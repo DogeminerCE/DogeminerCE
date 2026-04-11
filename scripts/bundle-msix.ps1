@@ -22,13 +22,15 @@ Write-Host "Building DogeminerCE MSIX v$version..."
 $stagingDir = "dist_msix"
 if (Test-Path $stagingDir) { Remove-Item -Recurse -Force $stagingDir }
 New-Item -ItemType Directory -Path $stagingDir | Out-Null
-New-Item -ItemType Directory -Path "$stagingDir\Assets" | Out-Null
+New-Item -ItemType Directory -Path "$stagingDir\StoreAssets" | Out-Null
 
 # 3. Copy Game Files
 Write-Host "Copying core files..."
 # Copy the play directory itself to preserve its internal paths
 Copy-Item -Path "play" -Destination $stagingDir -Recurse
-# Copy root assets (like shibe icons used in game)
+# Copy root assets (sounds, platform sprites, cutscene video, radial FX)
+# These are referenced via ../assets/ from play/index.html
+# No casing collision now since store logos are in StoreAssets/
 if (Test-Path "assets") {
     Copy-Item -Path "assets" -Destination "$stagingDir\assets" -Recurse
 }
@@ -40,7 +42,7 @@ if (Test-Path "favicon_io") { Copy-Item -Path "favicon_io" -Destination $staging
 
 # 4. Copy Packaging Files
 Write-Host "Copying packaging files..."
-Copy-Item -Path "packaging\windows\Assets\*" -Destination "$stagingDir\Assets"
+Copy-Item -Path "packaging\windows\Assets\*" -Destination "$stagingDir\StoreAssets"
 $manifestPath = "$stagingDir\AppxManifest.xml"
 Copy-Item -Path "packaging\windows\AppxManifest.xml" -Destination $manifestPath
 
@@ -48,17 +50,18 @@ Copy-Item -Path "packaging\windows\AppxManifest.xml" -Destination $manifestPath
 $manifestContent = Get-Content -Path $manifestPath -Raw
 # Target the Identity tag's version specifically
 $manifestContent = $manifestContent -replace '(?i)(<Identity\s+[^>]*?Version=")([^"]*)(")', "`${1}$version`${3}"
-Set-Content -Path $manifestPath -Value $manifestContent -Encoding UTF8
+# MSIX requires UTF8 WITHOUT BOM. Set-Content adds BOM.
+[IO.File]::WriteAllText($manifestPath, $manifestContent, (New-Object System.Text.UTF8Encoding($false)))
 
 # 6. WebView2 Modern Runner Setup
 Write-Host "Setting up modern Chromium runner (WebView2)..."
-$wv2Temp = "$stagingDir\wv2_sdk"
-$nugetPackage = "$stagingDir\webview2.zip"
-if (!(Test-Path $wv2Temp)) {
-    Write-Host "Downloading WebView2 SDK from NuGet..."
-    Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2" -OutFile $nugetPackage
-    Expand-Archive -Path $nugetPackage -DestinationPath $wv2Temp -Force
-}
+$wv2Temp = Join-Path $env:TEMP "DogeMinerWV2SDK"
+$nugetPackage = Join-Path $env:TEMP "webview2.zip"
+if (Test-Path $wv2Temp) { Remove-Item -Recurse -Force $wv2Temp }
+
+Write-Host "Downloading WebView2 SDK from NuGet..."
+Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2" -OutFile $nugetPackage
+Expand-Archive -Path $nugetPackage -DestinationPath $wv2Temp -Force
 
 # Copy required DLLs for runtime
 # Note: Newer versions of WebView2 use net462 instead of net45
@@ -86,6 +89,11 @@ if (!(Test-Path "$stagingDir\DogeMinerCE.exe")) {
 
 # 7. Create Package (MakeAppx.exe)
 $makeAppx = "MakeAppx.exe"
+# 7. Final Payload Sanitization (Remove problematic characters like [] () ' from filenames)
+Write-Host "Sanitizing staging area filenames..."
+node scripts/sanitize-msix-payload.js "$stagingDir"
+if ($LASTEXITCODE -ne 0) { Write-Error "Node sanitization failed"; exit 1 }
+
 if (!(Get-Command $makeAppx -ErrorAction SilentlyContinue)) {
     # Search for x64 version specifically to avoid picking ARM64/x86 by mistake
     $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "MakeAppx.exe" -Recurse | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1 -ExpandProperty FullName
@@ -95,6 +103,7 @@ if (!(Get-Command $makeAppx -ErrorAction SilentlyContinue)) {
 $outMsix = "dogeminerce_$version.msix"
 Write-Host "Creating package: $outMsix"
 & "$makeAppx" pack /d $stagingDir /p $outMsix /o
+if ($LASTEXITCODE -ne 0) { Write-Error "MakeAppx failed with exit code $LASTEXITCODE"; exit 1 }
 
 # 8. Sign Package (Optional)
 $pfx = "packaging\windows\DogeMinerCE_Test.pfx"

@@ -52,14 +52,26 @@ namespace DogeMinerCE
                 
                 await webView.EnsureCoreWebView2Async(env);
 
-                // Navigation: Load the local game file
+                // Navigation: Map the package directory as a virtual host.
+                // This serves local files over a proper HTTP-like scheme, which:
+                //   1. Allows fetch() to work (required for pickaxe/fortune template loading)
+                //   2. Correctly resolves ../assets/ parent-directory references
+                //   3. Avoids file:// CORS restrictions that block all JS fetch calls
                 string appPath = AppDomain.CurrentDomain.BaseDirectory;
                 string indexPath = Path.Combine(appPath, "play", "index.html");
 
                 if (File.Exists(indexPath))
                 {
-                    // Use file:// scheme for local files in WebView2
-                    webView.Source = new Uri(indexPath);
+                    webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                        "dogeminerce.local",
+                        appPath,
+                        CoreWebView2HostResourceAccessKind.Allow
+                    );
+
+                    // Scale the game UI to fill the window better by default
+                    webView.ZoomFactor = 1.25;
+
+                    webView.Source = new Uri("https://dogeminerce.local/play/index.html");
                 }
                 else
                 {
