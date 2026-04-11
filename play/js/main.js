@@ -437,6 +437,12 @@ function toggleForceMobileUI(enabled) {
     if (mobile) mobile.checked = enabled;
 }
 
+function toggleDisableController(disabled) {
+    if (window.controllerManager) {
+        window.controllerManager.setDisabledByUser(disabled);
+    }
+}
+
 // Restore force mobile UI setting on load
 (function () {
     if (localStorage.getItem('forceMobileUI') === '1') {

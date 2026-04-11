@@ -173,6 +173,9 @@ class ControllerManager {
         // Bind the loop
         this._pollLoop = this._pollLoop.bind(this);
 
+        // Disabled-by-user flag (persisted via localStorage)
+        this._disabledByUser = localStorage.getItem('controllerDisabled') === 'true';
+
         // Listen for gamepad events
         window.addEventListener('gamepadconnected', (e) => this._onConnect(e));
         window.addEventListener('gamepaddisconnected', (e) => this._onDisconnect(e));
@@ -180,8 +183,12 @@ class ControllerManager {
         // If running on Xbox, activate immediately
         if (isXboxBrowser()) {
             disableXboxVirtualCursor();
-            this._hideXboxGoogleSignIn();
+            this._hideXboxOnlyElements();
             this._activateControllerMode();
+        } else {
+            // Restore checkbox state on non-Xbox
+            const cb = document.getElementById('disable-controller');
+            if (cb) cb.checked = this._disabledByUser;
         }
 
         // Start polling even before a connection event — some browsers don't
@@ -244,6 +251,9 @@ class ControllerManager {
     _pollLoop() {
         this._animFrame = requestAnimationFrame(this._pollLoop);
 
+        // If user disabled controller input, skip everything
+        if (this._disabledByUser) return;
+
         const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
         let gp = null;
 
@@ -292,6 +302,16 @@ class ControllerManager {
         };
 
         // ── Handle input ─────────────────────────────────────────────────
+
+        // If a cutscene is playing, A skips it
+        if (this.game && this.game.isCutscenePlaying) {
+            if (justPressed(GP.A)) {
+                this.game.closeCutscene();
+            }
+            this.prevButtons = buttons;
+            this.prevAxes = axes;
+            return;
+        }
 
         // If the in-game dialog is open, route all input there
         if (this._dialogOpen) {
@@ -650,6 +670,17 @@ class ControllerManager {
             return;
         }
 
+        if (this.focusContext === 'inventories') {
+            const items = this._getFocusableItems();
+            if (items.length === 0) return;
+            // Left/right only — matches horizontal layout of Pickaxe/Fortune buttons
+            if (moveX > 0) this.focusIndex++;
+            if (moveX < 0) this.focusIndex--;
+            this.focusIndex = Math.max(0, Math.min(this.focusIndex, items.length - 1));
+            this._updateFocus();
+            return;
+        }
+
         if (this.focusContext === 'modal') {
             const items = this._getModalFocusables();
             if (items.length === 0) return;
@@ -837,10 +868,10 @@ class ControllerManager {
                 }
             }
         }
-        // Mystery Box modal
+        // Mystery Box modal — only target action buttons, not structural ones
         const mysteryBoxModal = document.getElementById('mystery-box-modal');
         if (mysteryBoxModal && mysteryBoxModal.classList.contains('active')) {
-            return Array.from(mysteryBoxModal.querySelectorAll('button')).filter(b => b.offsetParent !== null);
+            return Array.from(mysteryBoxModal.querySelectorAll('.mbox-action-btn')).filter(b => b.offsetParent !== null);
         }
         return [];
     }
@@ -954,6 +985,14 @@ class ControllerManager {
             return;
         }
 
+        // If it's a setting-item with a <select>, cycle to the next option
+        const selectEl = el.querySelector('select');
+        if (selectEl) {
+            selectEl.selectedIndex = (selectEl.selectedIndex + 1) % selectEl.options.length;
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            return;
+        }
+
         // If it's a button (setting-btn or google-signin-btn), click it
         if (el.classList.contains('setting-btn') || el.classList.contains('google-signin-btn') || el.tagName === 'BUTTON') {
             el.click();
@@ -966,7 +1005,7 @@ class ControllerManager {
 
     // ── Xbox-specific UI ─────────────────────────────────────────────────
 
-    _hideXboxGoogleSignIn() {
+    _hideXboxOnlyElements() {
         // On Xbox browsers, hide the Google sign-in section since it would be
         // clunky to sign in with Google on a console platform.
         const signInSection = document.getElementById('sign-in-section');
@@ -977,6 +1016,29 @@ class ControllerManager {
             notice.className = 'cloud-info';
             notice.textContent = 'Cloud save via Google is not available on Xbox. Use local save instead.';
             signInSection.parentNode.appendChild(notice);
+        }
+
+        // Hide the supporter / Ko-Fi section (not relevant on Xbox)
+        const supporterSection = document.getElementById('supporter-settings-section');
+        if (supporterSection) supporterSection.style.display = 'none';
+
+        const supporterBadge = document.getElementById('supporter-stat-display');
+        if (supporterBadge) supporterBadge.style.display = 'none';
+
+        // Hide the "Disable Controller" setting (nonsensical on Xbox)
+        const controllerDisableSetting = document.getElementById('controller-disable-setting');
+        if (controllerDisableSetting) controllerDisableSetting.style.display = 'none';
+    }
+
+    // ── Disable Controller Setting ───────────────────────────────────────
+
+    setDisabledByUser(disabled) {
+        this._disabledByUser = disabled;
+        localStorage.setItem('controllerDisabled', disabled ? 'true' : 'false');
+        if (disabled) {
+            this._deactivateControllerMode();
+        } else if (this.isActive) {
+            this._activateControllerMode();
         }
     }
 

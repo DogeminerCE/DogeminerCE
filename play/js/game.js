@@ -349,6 +349,12 @@ class DogeMinerGame {
         this.cutsceneSkipButton.classList.add('hidden');
         this.cutsceneSkipTimeout = setTimeout(() => {
             this.cutsceneSkipButton.classList.remove('hidden');
+            // Show controller A-button indicator if in controller mode
+            if (document.body.classList.contains('controller-mode')) {
+                this.cutsceneSkipButton.innerHTML = '<img src="assets/Xbox%20Series/XboxSeriesX_A.webp" alt="A" style="height:20px;vertical-align:middle;margin-right:4px;"> SKIP';
+            } else {
+                this.cutsceneSkipButton.textContent = 'SKIP';
+            }
             console.log('[Cutscene] Skip button shown');
         }, 5000);
 
@@ -388,6 +394,12 @@ class DogeMinerGame {
         // Force close mobile menu again just in case
         if (window.uiManager && typeof uiManager.closeMobileMenu === 'function') {
             uiManager.closeMobileMenu();
+        }
+
+        // Clear any in-progress helper placement so the rocket doesn't stay on
+        // the cursor and get placed again on the new planet (controller bug fix)
+        if (typeof this.clearPlacementState === 'function') {
+            this.clearPlacementState();
         }
 
         // After moon launch cutscene, switch to moon
