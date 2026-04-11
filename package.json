@@ -6,7 +6,8 @@
   "scripts": {
     "start": "python -m http.server 8000",
     "serve": "python -m http.server 8000",
-    "dev": "python -m http.server 8000"
+    "dev": "python -m http.server 8000",
+    "build:windows": "powershell -ExecutionPolicy Bypass -File scripts/bundle-msix.ps1"
   },
   "keywords": [
     "clicker",

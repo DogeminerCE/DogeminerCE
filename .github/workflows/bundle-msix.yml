@@ -1,0 +1,47 @@
+name: Bundle Windows MSIX
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Pack MSIX
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Windows Store Assets
+        run: node scripts/generate-windows-assets.js
+
+      - name: Create Temporary Signing Certificate
+        shell: pwsh
+        run: ./scripts/create-test-cert.ps1
+
+      - name: Build and Sign MSIX Package
+        shell: pwsh
+        run: ./scripts/bundle-msix.ps1
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: DogeminerCE-Standalone-MSIX
+          path: |
+            *.msix
+            packaging/windows/*.pfx
+          if-no-files-found: error
+          retention-days: 7

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         IgnorableNamespaces="uap rescap">
+  
+  <Identity Name="Babylion122Studios.208720446D82C" 
+            Publisher="CN=2077DAC8-096F-4B93-861E-82E55C3D1D51" 
+            Version="0.55.0.0" />
+
+  <Properties>
+    <DisplayName>Dogeminer: Community Edition</DisplayName>
+    <PublisherDisplayName>Babylion122 Studios</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>The ultimate browser-based clicker game, now on Windows.</Description>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.19041.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="App" StartPage="index.html">
+      <uap:VisualElements DisplayName="Dogeminer: Community Edition" 
+                          Description="Dogeminer: Community Edition"
+                          BackgroundColor="#ffffff" 
+                          Square150x150Logo="Assets\Square150x150Logo.png" 
+                          Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
