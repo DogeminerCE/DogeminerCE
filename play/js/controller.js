@@ -494,6 +494,7 @@ class ControllerManager {
         // Close any open modal first
         const pickaxeModal = document.getElementById('pickaxe-modal');
         const fortuneModal = document.getElementById('fortune-modal');
+        const supporterModal = document.getElementById('supporter-modal');
 
         if (pickaxeModal && pickaxeModal.classList.contains('active')) {
             if (window.game) window.game.closePickaxeModal();
@@ -503,6 +504,12 @@ class ControllerManager {
         }
         if (fortuneModal && fortuneModal.classList.contains('active')) {
             if (window.game) window.game.closeFortuneModal();
+            this.focusContext = 'mining';
+            this._updateFocus();
+            return;
+        }
+        if (supporterModal && supporterModal.classList.contains('active')) {
+            if (window.closeSupporterModal) window.closeSupporterModal();
             this.focusContext = 'mining';
             this._updateFocus();
             return;
@@ -850,6 +857,11 @@ class ControllerManager {
         const fortuneModal = document.getElementById('fortune-modal');
         if (fortuneModal && fortuneModal.classList.contains('active')) {
             return Array.from(fortuneModal.querySelectorAll('.switcher-card, .item-card'));
+        }
+        // Supporter modal
+        const supporterModal = document.getElementById('supporter-modal');
+        if (supporterModal && supporterModal.classList.contains('active')) {
+            return Array.from(supporterModal.querySelectorAll('button, a')).filter(b => b.offsetParent !== null);
         }
         // Dogebag modal — focus the OPEN button or the EQUIP/LOOT action buttons
         const dogebagModal = document.getElementById('dogebag-modal');
