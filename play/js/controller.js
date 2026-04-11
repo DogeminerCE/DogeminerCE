@@ -436,8 +436,12 @@ class ControllerManager {
             const items = this._getFocusableItems();
             if (items[this.focusIndex]) {
                 items[this.focusIndex].click();
-                // We don't reset focusContext here because opening the modal will
-                // naturally take focus, or the button click handler will do it.
+                // After clicking, the modal should now be open — switch to modal focus
+                setTimeout(() => {
+                    this.focusContext = 'modal';
+                    this.focusIndex = 0;
+                    this._updateFocus();
+                }, 50);
             }
         } else {
             // On non-interactive tabs (achievements), A still mines
@@ -499,6 +503,12 @@ class ControllerManager {
         const dogebags = rockContainer.querySelectorAll('.dogebag-drop');
         if (dogebags.length > 0) {
             dogebags[0].click();
+            // Dogebag click opens a modal — switch to modal focus
+            setTimeout(() => {
+                this.focusContext = 'modal';
+                this.focusIndex = 0;
+                this._updateFocus();
+            }, 100);
             return;
         }
 
@@ -810,6 +820,28 @@ class ControllerManager {
         if (fortuneModal && fortuneModal.classList.contains('active')) {
             return Array.from(fortuneModal.querySelectorAll('.switcher-card, .item-card'));
         }
+        // Dogebag modal — focus the OPEN button or the EQUIP/LOOT action buttons
+        const dogebagModal = document.getElementById('dogebag-modal');
+        if (dogebagModal && dogebagModal.classList.contains('active')) {
+            const prompt = document.getElementById('dogebag-state-prompt');
+            if (prompt && prompt.style.display !== 'none') {
+                // State 1: The "OPEN" button
+                return Array.from(prompt.querySelectorAll('button')).filter(b => b.offsetParent !== null);
+            }
+            const reveal = document.getElementById('dogebag-state-reveal');
+            if (reveal && reveal.style.display !== 'none') {
+                // State 2: The EQUIP/LOOT action buttons
+                const actions = document.getElementById('dogebag-actions');
+                if (actions) {
+                    return Array.from(actions.querySelectorAll('button')).filter(b => b.offsetParent !== null);
+                }
+            }
+        }
+        // Mystery Box modal
+        const mysteryBoxModal = document.getElementById('mystery-box-modal');
+        if (mysteryBoxModal && mysteryBoxModal.classList.contains('active')) {
+            return Array.from(mysteryBoxModal.querySelectorAll('button')).filter(b => b.offsetParent !== null);
+        }
         return [];
     }
 
@@ -901,6 +933,12 @@ class ControllerManager {
         const el = items[this.focusIndex];
         if (!el) return;
         el.click();
+        // After clicking, the modal content may change (e.g. dogebag OPEN → reveal).
+        // Refresh focus to pick up newly visible buttons.
+        setTimeout(() => {
+            this.focusIndex = 0;
+            this._updateFocus();
+        }, 100);
     }
 
     _toggleFocusedSetting() {
