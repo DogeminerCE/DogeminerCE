@@ -96,7 +96,7 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Node sanitization failed"; exit 1 }
 
 if (!(Get-Command $makeAppx -ErrorAction SilentlyContinue)) {
     # Search for x64 version specifically to avoid picking ARM64/x86 by mistake
-    $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "MakeAppx.exe" -Recurse | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1 -ExpandProperty FullName
+    $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "MakeAppx.exe" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*\x64\*" } | Select-Object -First 1 -ExpandProperty FullName
     if ($sdkPath) { $makeAppx = $sdkPath }
 }
 
@@ -111,7 +111,7 @@ if (Test-Path $pfx) {
     Write-Host "Signing package with $pfx..."
     $signTool = "SignTool.exe"
     if (!(Get-Command $signTool -ErrorAction SilentlyContinue)) {
-        $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "SignTool.exe" -Recurse | Where-Object { $_.FullName -like "*\x64\*" }| Select-Object -First 1 -ExpandProperty FullName
+        $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Filter "SignTool.exe" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like "*\x64\*" }| Select-Object -First 1 -ExpandProperty FullName
         if ($sdkPath) { $signTool = $sdkPath }
     }
     & "$signTool" sign /fd SHA256 /a /f $pfx /p dogeminer $outMsix
