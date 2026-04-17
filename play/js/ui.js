@@ -106,6 +106,11 @@ class UIManager {
 
         // Planet tab switching with loading transition
         window.switchPlanet = (planetName) => {
+            // Cancel helper placement if switching planets to drop helper back in its native unplaced state
+            if (this.game && typeof this.game.finishHelperPlacement === 'function') {
+                this.game.finishHelperPlacement();
+            }
+
             // Don't allow switching if already on this planet or if transition is in progress
             if (this.game.currentLevel === planetName || this.game.isTransitioning) return;
 

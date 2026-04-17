@@ -624,6 +624,11 @@ class DogeMinerGame {
     calculateClickDamage() {
         const equipped = this.getEquippedPickaxe();
         let baseDPC = equipped ? equipped.baseDPC : 1;
+
+        if (baseDPC === 0) {
+            return { damage: 0, isCrit: false };
+        }
+
         let damage = baseDPC * this.playerStats.dpcMultiplier;
 
         // Apply critical hit

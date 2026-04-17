@@ -350,6 +350,7 @@ class SaveManager {
         // Migrate old .png/.jpg sprite paths to .webp (post-WebP conversion)
         this._migrateSpritePaths(this.game.pickaxeInventory);
         this._migrateSpritePaths(this.game.fortuneInventory);
+        this._patchCorruptedFortunes(this.game.fortuneInventory);
         if (this.game.latestObtainedFortune) {
             this._migrateSpritePaths([this.game.latestObtainedFortune]);
         }
@@ -849,6 +850,26 @@ class SaveManager {
                 }
             }
         }
+    }
+
+    /**
+     * Patches previously saved fortunes that had internal corrupted ASCII due to file encoding issues
+     */
+    _patchCorruptedFortunes(inventory) {
+        if (!Array.isArray(inventory)) return;
+        inventory.forEach(item => {
+            if (!item || !item.name) return;
+            // Gunther patch
+            if (item.name.includes('GAnther') || item.name.includes('Gunther')) {
+                item.name = 'Fortune of Günther';
+                item.templateId = 'fortune_of_g_nther';
+            } 
+            // the D patch
+            else if (item.name.includes('A?') || item.name.includes('of the D')) {
+                item.name = 'Fortune of the Đ';
+                item.templateId = 'fortune_of_the_';
+            }
+        });
     }
 
     validateSaveData(saveData) {
