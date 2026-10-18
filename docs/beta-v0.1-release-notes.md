@@ -1,6 +1,6 @@
 # Alpha v0.055 → Beta v0.1
 
-Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85c026d8b5c69c6ad9c4ca3d163f570`), which displays `v0.055 (ALPHA)`. Release build: `beta-v0.1-r2`.
+Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85c026d8b5c69c6ad9c4ca3d163f570`), which displays `v0.055 (ALPHA)`. Release build: `beta-v0.1-r3`.
 
 ## Mining, rewards and balance
 
@@ -119,6 +119,7 @@ Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85
 - Another Mobile & Controller polish pass! Larger Phone targets, tidier dropdowns and narrow tabs, Supporter access, more landscape drawer space, and dialogs that properly take input from the panel behind them. Phone settings now include helper placement and controller options; mobile sign-out updates immediately, and Xbox-only controls stay hidden.
 - Controller navigation now reaches both upgrade currencies and the third SearchDoge slot, follows Phone shop cards, opens a closed drawer and skips worlds whose routes are still locked.
 - Restored missing sound effects across Dogebags, auto-pickup, Mystery Boxes, Dogediamonds, Easter eggs, Rick and SunDoge fusion! D.I.A. driving, lightning and reward sounds now use the matching DM2 cues. Buy Max respects audio settings, and sound volume/pitch no longer leaks between effects.
+- Fixed the split white backing on Dogebag and Mystery Box rewards! It now covers both panels, the gap and the planet tabs. The third Searchdoge slot now uses the proper lock icon and matches the other Dogediamond upgrade buttons.
 
 ## Coverage and review
 

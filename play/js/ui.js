@@ -1268,9 +1268,9 @@ class UIManager {
                 const canAfford = (this.game.dogediamonds || 0) >= 1;
                 section.innerHTML = `
                     <div class="searchdoge-slot-locked">
-                        <div class="slot-locked-title">🔒 3rd Searchdoge Slot</div>
+                        <div class="slot-locked-title"><span class="helper-lock-icon" aria-hidden="true"></span>3rd Searchdoge Slot</div>
                         <div class="slot-locked-sub">Unlock a third Searchdoge to find more Helper Upgrades.</div>
-                        <button class="searchdoge-unlock-btn${canAfford ? '' : ' disabled'}"
+                        <button class="searchdoge-unlock-btn helper-upgrade-diamond-btn${canAfford ? '' : ' disabled'}"
                                 onclick="window.game.unlockSearchdogeSlot3()" ${canAfford ? '' : 'disabled'}>
                             <img src="assets/general/diamond.webp" alt="Dogediamond">
                             <span class="unlock-amount">1</span>
@@ -2049,9 +2049,9 @@ class UIManager {
                 html += `
                     <div class="mobile-upgrade-section" data-section-index="2">
                         <div class="searchdoge-slot-locked">
-                            <div class="slot-locked-title">🔒 3rd Searchdoge Slot</div>
+                            <div class="slot-locked-title"><span class="helper-lock-icon" aria-hidden="true"></span>3rd Searchdoge Slot</div>
                             <div class="slot-locked-sub">Unlock a third Searchdoge to find more Helper Upgrades.</div>
-                            <button class="searchdoge-unlock-btn${canAffordSlot ? '' : ' disabled'}"
+                            <button class="searchdoge-unlock-btn helper-upgrade-diamond-btn${canAffordSlot ? '' : ' disabled'}"
                                     onclick="window.game.unlockSearchdogeSlot3()" ${canAffordSlot ? '' : 'disabled'}>
                                 <img src="assets/general/diamond.webp" alt="Dogediamond">
                                 <span class="unlock-amount">1</span>

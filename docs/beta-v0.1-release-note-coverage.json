@@ -5,7 +5,7 @@
     "commit": "557693f5b85c026d8b5c69c6ad9c4ca3d163f570",
     "label": "v0.055 (ALPHA)"
   },
-  "build": "beta-v0.1-r2",
+  "build": "beta-v0.1-r3",
   "implementedEntries": 101,
   "coverage": {
     "M19": [

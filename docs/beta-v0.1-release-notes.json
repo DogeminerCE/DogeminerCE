@@ -6,7 +6,7 @@
     "commit": "557693f5b85c026d8b5c69c6ad9c4ca3d163f570",
     "label": "v0.055 (ALPHA)"
   },
-  "build": "beta-v0.1-r2",
+  "build": "beta-v0.1-r3",
   "posts": [
     {
       "title": "Beta v0.1 — Mining, rewards and balance",
@@ -597,6 +597,10 @@
         {
           "ids": [],
           "text": "Restored missing sound effects across Dogebags, auto-pickup, Mystery Boxes, Dogediamonds, Easter eggs, Rick and SunDoge fusion! D.I.A. driving, lightning and reward sounds now use the matching DM2 cues. Buy Max respects audio settings, and sound volume/pitch no longer leaks between effects."
+        },
+        {
+          "ids": [],
+          "text": "Fixed the split white backing on Dogebag and Mystery Box rewards! It now covers both panels, the gap and the planet tabs. The third Searchdoge slot now uses the proper lock icon and matches the other Dogediamond upgrade buttons."
         }
       ]
     }

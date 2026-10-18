@@ -36,6 +36,11 @@
         const sx = origin.width / root.offsetWidth || 1, sy = origin.height / root.offsetHeight || 1;
         const frame = mode.includes('frame');
         const width = bounds.width / sx, height = bounds.height / sy;
+        const backdrop = root.querySelector('.dogebag-backdrop');
+        if (backdrop) Object.assign(backdrop.style, {
+            left: `${(bounds.left - origin.left) / sx}px`, top: `${(bounds.top - origin.top) / sy}px`,
+            width: `${width}px`, height: `${height}px`
+        });
         const style = content.style;
         style.setProperty('position', 'absolute', 'important');
         style.setProperty('margin', '0', 'important');

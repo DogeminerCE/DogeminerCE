@@ -40,15 +40,14 @@
         const modal=document.getElementById('dogebag-modal');if(!modal)return;
         if(!view.backdrops)modal.querySelectorAll?.('.dogebag-backdrop').forEach(node=>node.remove());
         view.backdrops ||= [];
-        const root=modal.getBoundingClientRect(),ratio=root.width/(modal.offsetWidth||root.width)||1;
-        for(const panelId of ['left-panel','right-panel']){
-            const panel=document.getElementById(panelId);if(!panel)continue;
-            let backdrop=view.backdrops.find(node=>node.dataset.panel===panelId);
-            if(!backdrop){backdrop=make('div','dogebag-backdrop');backdrop.dataset.panel=panelId;modal.prepend(backdrop);view.backdrops.push(backdrop);view.nodes.push(backdrop);}
-            const rect=panel.getBoundingClientRect();
-            backdrop.hidden=rect.width===0||rect.height===0;
-            Object.assign(backdrop.style,{left:(rect.left-root.left)/ratio+'px',top:(rect.top-root.top)/ratio+'px',width:rect.width/ratio+'px',height:rect.height/ratio+'px',borderRadius:getComputedStyle(panel).borderRadius});
+        if(!view.backdrops.length){
+            const backdrop=make('div','dogebag-backdrop');
+            backdrop.setAttribute('aria-hidden','true');
+            modal.prepend(backdrop);view.backdrops.push(backdrop);view.nodes.push(backdrop);
         }
+        // The shared presenter covers the whole panel area, including the gap
+        // and planet tabs, and follows resize/scroll/layout changes with the card.
+        window.PopupPresentation?.refresh();
     };
     proto.countDogebagCurrency = function (view,slot,amount) {
         cancelWorldFrame(slot.countFrame);
