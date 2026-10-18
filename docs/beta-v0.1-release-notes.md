@@ -1,6 +1,6 @@
 # Alpha v0.055 → Beta v0.1
 
-Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85c026d8b5c69c6ad9c4ca3d163f570`), which displays `v0.055 (ALPHA)`. Release build: `beta-v0.1-r4`.
+Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85c026d8b5c69c6ad9c4ca3d163f570`), which displays `v0.055 (ALPHA)`. Release build: `beta-v0.1-r5`.
 
 ## Mining, rewards and balance
 
