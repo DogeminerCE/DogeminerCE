@@ -1,7 +1,9 @@
 // Ctrl+\ scenarios for the sequential DM2 parity checkpoints.
 (function () {
     'use strict';
-    const active = () => window.CEParityTesting?.active === true && !window.CEParityTesting.error;
+    const active = () => ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
+        && window.CEParityTesting?.active === true && !window.CEParityTesting.error;
+    if (!active()) return;
     const PLANETS = ['earth', 'moon', 'mars', 'jupiter', 'titan'];
     const LAST_SOURCE = 'parity:last-offline-source';
     const FEATURES = [['moon-goal', 'First Moon goal'], ['first-bonus', 'First Bonus Coin'],
@@ -1620,7 +1622,7 @@
                 travel._renderStep(); travel._finishTyping?.();
                 lastResult = 'Production D.I.A. preview. Canceling or reloading before completion grants nothing.';
             }
-            if (typeof debugMode !== 'undefined' && debugMode) window.toggleDebugMode();
+            if (document.getElementById('debug-console')) window.toggleDebugMode();
         } else if (name === 'coin-hover') {
             g.createCoinPile(100, g.getCoinPileSprite(20), 20);
             lastResult = 'Hover the rock coin to see the shared lift, wobble, pointer lean and settle. Click to collect normally.';
@@ -1963,6 +1965,7 @@
         banner.dataset.checkpoint = String(window.CEParityTesting.checkpoint);
         document.documentElement.appendChild(banner);
         updateTestBanner();
+        if (!document.getElementById('debug-console')) window.toggleDebugMode();
         const signIn = document.getElementById('sign-in-section');
         if (signIn) signIn.textContent = 'Cloud saving is disabled in the checkpoint sandbox.';
     }

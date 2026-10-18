@@ -8,10 +8,10 @@
     <title>Dogeminer:CE</title>
     <script>
         // A missing sandbox bootstrap must stop boot before any player-save access.
-        window.CEParityTesting = { active: /^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),
+        window.CEParityTesting = { active: ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) && /^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),
             error: 'Checkpoint test storage could not be loaded. Please refresh.' };
     </script>
-    <script src="js/parity-test-storage.js?v=69"></script>
+    <script src="js/parity-test-storage.js?v=70"></script>
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.webp">
@@ -19,7 +19,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.webp">
     <link rel="manifest" href="../favicon_io/site.webmanifest">
 
-    <link rel="stylesheet" href="styles.css?v=153">
+    <link rel="stylesheet" href="styles.css?v=154">
     <style>
         @font-face {
             font-family: 'DogeSans';
@@ -1155,6 +1155,12 @@
                 }
             ];
 
+            if (window.CEParityTesting?.active && !window.CEParityTesting.error) {
+                const style = document.createElement('link');
+                style.rel = 'stylesheet'; style.href = '../tests/browser/checkpoint-tools.css?v=1';
+                document.head.appendChild(style);
+            }
+
             const gameScripts = [
                 'js/audio.js?v=11',
                 'js/balance-data.js?v=2',
@@ -1189,7 +1195,7 @@
                 'js/field-encounters.js?v=4',
                 'js/rick-visitor.js?v=7',
                 'js/rock-replacement.js?v=1',
-                'js/release-notes.js?v=9',
+                'js/release-notes.js?v=10',
                 'js/world-discovery.js?v=5',
                 'js/late-progression.js?v=5',
                 'js/seasonal-runtime.js?v=2',
@@ -1222,8 +1228,9 @@
                 'js/cloud-save.js?v=4',
                 'js/time-travel.js?v=27',
                 'js/button-motion.js?v=2',
-                'js/parity-testing.js?v=69',
-                'js/main.js?v=41'
+                ...(window.CEParityTesting?.active && !window.CEParityTesting.error
+                    ? ['../tests/browser/checkpoint-tools.js?v=1', '../tests/browser/checkpoint-scenarios.js?v=1'] : []),
+                'js/main.js?v=42'
             ];
 
             function appendScript(src) {

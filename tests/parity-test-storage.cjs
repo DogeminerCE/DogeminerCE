@@ -8,10 +8,10 @@ function storage(map = new Map()) {
         getItem(key) { return map.get(String(key)) ?? null; }, setItem(key, value) { map.set(String(key), String(value)); },
         removeItem(key) { map.delete(String(key)); }, clear() { map.clear(); } };
 }
-function page({ test = true, checkpoint = 1, session = new Map(), locked = false } = {}) {
+function page({ test = true, checkpoint = 1, session = new Map(), locked = false, hostname = 'localhost' } = {}) {
     const normal = new Map([['dogeminer_ce_save', 'real-player-save'], ['music', 'on']]);
     const original = storage(normal), opened = [], played = [];
-    const window = { location: { search: test ? `?parityTest=checkpoint-${checkpoint}` : '', href: 'http://localhost:8011/play/' },
+    const window = { location: { hostname, search: test ? `?parityTest=checkpoint-${checkpoint}` : '', href: 'http://localhost:8011/play/' },
         sessionStorage: storage(session), open(...args) { opened.push(args); } };
     Object.defineProperty(window, 'localStorage', { configurable: !locked, get: () => original });
     function Media() { this.muted = false; }
@@ -24,11 +24,15 @@ const normal = page({ test: false });
 assert.equal(normal.window.CEParityTesting.active, false);
 assert.equal(normal.window.localStorage, normal.original);
 assert.deepEqual([...normal.normal], [['dogeminer_ce_save', 'real-player-save'], ['music', 'on']]);
-normal.window.CEParityTesting.openSandbox();
-assert.equal(normal.opened[0][0], 'http://localhost:8011/play/?parityTest=checkpoint-69');
-assert.deepEqual(normal.opened[0].slice(1), ['_blank', 'noopener']);
-normal.window.CEParityTesting.openSandbox(1);
-assert.equal(normal.opened[1][0], 'http://localhost:8011/play/?parityTest=checkpoint-1');
+assert.equal(normal.window.CEParityTesting.openSandbox, undefined);
+for (const hostname of ['dogeminerce.com', 'www.dogeminerce.com', 'dogeminerce.local', 'localhost.example.com', '192.168.1.10', '']) {
+    const remote = page({ hostname });
+    assert.equal(remote.window.CEParityTesting.active, false, hostname);
+    assert.equal(remote.window.CEParityTesting.openSandbox, undefined, hostname);
+    assert.equal(remote.window.localStorage, remote.original, hostname);
+    assert.equal(remote.session.size, 0, hostname);
+}
+for (const hostname of ['localhost', '127.0.0.1', '[::1]']) assert.equal(page({ hostname }).window.CEParityTesting.active, true);
 
 const session = new Map([['unrelated-session-key', 'keep']]);
 const sandbox = page({ session });
@@ -125,14 +129,23 @@ assert.equal(eleventh.window.localStorage.getItem('dogeminer_ce_save'),'checkpoi
 const fallback=fs.readFileSync(path.resolve(__dirname,'../play/index.html'),'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 const landingFallback=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8').match(/<script>(window\.CEParityTesting=[\s\S]*?)<\/script>/)[1];
 for(let checkpoint=1;checkpoint<=69;checkpoint++){
- const context={window:{},location:{search:'?parityTest=checkpoint-'+checkpoint},URLSearchParams};
+ const context={window:{},location:{hostname:'localhost',search:'?parityTest=checkpoint-'+checkpoint},URLSearchParams};
  vm.runInNewContext(landingFallback,context);assert.equal(context.window.CEParityTesting.active,true,'Landing must fail closed for checkpoint '+checkpoint);
  assert.match(context.window.CEParityTesting.error,/could not be loaded/);
 }
 for(const checkpoint of [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69]){
- const context={window:{},location:{search:'?parityTest=checkpoint-'+checkpoint},URLSearchParams};
+ const context={window:{},location:{hostname:'localhost',search:'?parityTest=checkpoint-'+checkpoint},URLSearchParams};
  vm.runInNewContext(fallback,context);assert.equal(context.window.CEParityTesting.active,true);
  assert.match(context.window.CEParityTesting.error,/could not be loaded/);
+}
+for (const source of [fallback, landingFallback]) for (const hostname of ['dogeminerce.com', 'www.dogeminerce.com', 'dogeminerce.local', 'localhost.example.com']) {
+ const context={window:{},location:{hostname,search:'?parityTest=checkpoint-69'},URLSearchParams};
+ vm.runInNewContext(source,context);assert.equal(context.window.CEParityTesting.active,false,hostname);
+}
+for (const name of ['checkpoint-tools.js','checkpoint-scenarios.js']) {
+ const window={location:{hostname:'dogeminerce.com'},CEParityTesting:{active:true}};
+ vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'browser/'+name),'utf8'),{window});
+ assert.equal(window.toggleDebugMode,undefined);assert.equal(window.ParityCheckpointTests,undefined);
 }
 
 const thirteenth=page({checkpoint:13,session});

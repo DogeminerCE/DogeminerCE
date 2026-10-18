@@ -9909,31 +9909,6 @@ body.controller-mode #click-overlay, body.controller-mode #main-rock, body.contr
 
 .upgrade-tab-count { transform-origin:75% 25%; }
 
-/* Developer checkpoint controls live outside the scaled game canvas. */
-#debug-console button { border:1px solid #b99a59; border-radius:4px; padding:6px 8px; margin:3px 2px; color:#fff4d8; background:linear-gradient(#51472f 0 50%,#403923 50% 100%); font:11px/1.25 monospace; cursor:pointer; text-shadow:none; }
-#debug-console button:hover { filter:brightness(1.12); }
-#debug-console button:focus-visible,#debug-console select:focus-visible { outline:2px solid #ffe09c; outline-offset:2px; }
-#debug-console h3 { margin:0 0 8px; font-size:13px; color:#ffe09c; }
-#debug-console p { margin:6px 0; line-height:1.4; font-size:11px; }
-#debug-console label { display:block; font-size:11px; margin:9px 0 5px; }
-#debug-console select { background:#29261f; color:#fff4d8; border:1px solid #b99a59; border-radius:4px; padding:4px; font:11px monospace; }
-#debug-console .legacy-debug-tools { margin-top:12px; border-top:1px solid #77623a; padding-top:10px; }
-#debug-console summary { cursor:pointer; margin-bottom:5px; }
-#debug-console .debug-close { display:block; width:100%; margin:10px 0 0; }
-#debug-console .parity-checkpoint-tools select,#debug-console input[type=search]{max-width:100%;width:100%;box-sizing:border-box;}
-#debug-console input[type=search]{background:#29261f;color:#fff4d8;border:1px solid #b99a59;border-radius:4px;padding:7px;font:12px monospace;}
-#debug-console .parity-checkpoint-tools details{border-top:1px solid #77623a;padding-top:9px;margin-top:9px;}
-#debug-console .parity-checkpoint-tools summary{font-weight:bold;line-height:1.4;}
-#debug-console .parity-checkpoint-tools input[type=checkbox]{vertical-align:middle;}
-#parity-tools-launcher{position:fixed;right:8px;bottom:8px;z-index:22001;padding:9px 10px;border:1px solid #b99a59;border-radius:6px;background:#403923;color:#fff4d8;font:12px sans-serif;cursor:pointer;min-height:38px;}
-#parity-tools-launcher:focus-visible{outline:2px solid #ffe09c;outline-offset:2px;}
-.parity-test-result { padding-top:8px; border-top:1px solid #77623a; color:#e0f4d3; }
-.parity-test-stats { padding:7px; margin:6px 0; background:#0004; color:#eee2c6; font:10px/1.5 monospace; white-space:pre-wrap; }
-#parity-test-banner { position:fixed; top:5px; width:max-content; left:50%; transform:translateX(-50%); z-index:12000; max-width:calc(100vw - 24px); box-sizing:border-box; border:1px solid #bc9c56; border-radius:5px; padding:5px 9px; background:#25231fe8; color:#ffe09c; font:10px/1.35 monospace; text-align:center; pointer-events:none; }
-@media(max-width:768px) {
- #parity-test-banner[data-checkpoint="20"] { top:auto; bottom:90px; }
-}
-
 /* Stories share the existing planet-colored DM2 popup frame. */
 .story-popup-panel { width:min(560px,100%); }
 .story-popup-panel .beta-balance-title { font-size:clamp(26px,4vw,36px); }
@@ -10040,13 +10015,6 @@ body.controller-mode #click-overlay, body.controller-mode #main-rock, body.contr
 #pickaxe-modal .switcher-grid-container,#fortune-modal .switcher-grid-container,.inventory-item-tile{touch-action:pan-y;}
 #mobile-panel-tabs, #mobile-menu-toggle {touch-action:none;}
 
-/* Checkpoint-only visual comparison. */
-#parity-frame-demo {position:absolute;left:18px;top:225px;width:156px;height:57px;pointer-events:none;z-index:31;font:12px 'DogeSans',sans-serif;color:#8b4513;}
-#parity-frame-demo img {width:26px;height:26px;animation:parity-frame-travel 1500ms linear infinite alternate;}
-#parity-frame-demo span {position:absolute;left:0;top:33px;white-space:nowrap;}
-@keyframes parity-frame-travel {from{transform:translateX(0) rotate(0);}to{transform:translateX(120px) rotate(360deg);}}
-@media(prefers-reduced-motion:reduce){#parity-frame-demo img{animation:none;}}
-
 /* One placement/transition owner for dialogs; backgrounds retain their own shape. */
 .popup-managed.popup-exiting {
     display:flex !important; visibility:visible !important; pointer-events:none !important;
@@ -10059,11 +10027,6 @@ body.controller-mode #click-overlay, body.controller-mode #main-rock, body.contr
 
 /* Coin pickup/hops own their transform only while active. */
 .helper-sprite.helper-loot-motion { animation:none!important; transition:none!important; }
-/* The private phone previews expose the desktop field without changing the
-   normal grouped mobile helper bar. Removed whenever a preview is replaced. */
-.parity-helper-field-preview .helper-sprite.placed-helper,
-.parity-helper-field-preview .helper-name-tooltip { display:block!important; }
-
 .auto-loot-prize { position:fixed; z-index:2500; width:54px; height:54px; transform:translate(-50%,-50%); pointer-events:none; }
 .auto-loot-prize img { width:100%; height:100%; object-fit:contain; }
 .auto-loot-prize.auto-loot-item img { filter:drop-shadow(1px 0 0 var(--loot-color)) drop-shadow(-1px 0 0 var(--loot-color)) drop-shadow(0 1px 0 var(--loot-color)) drop-shadow(0 -1px 0 var(--loot-color)); }

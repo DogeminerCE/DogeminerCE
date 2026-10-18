@@ -3,7 +3,8 @@
 (function () {
     'use strict';
     const selected = new URLSearchParams(window.location.search).get('parityTest');
-    const requested = /^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(selected || '');
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+    const requested = local && /^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(selected || '');
     const checkpoint = requested ? Number(selected.slice(11)) : 69;
     const prefix = `ce-parity-checkpoint-${checkpoint}:`;
     function openSandbox(target = 69) {
@@ -12,7 +13,7 @@
         window.open(url.href, '_blank', 'noopener');
     }
     if (!requested) {
-        window.CEParityTesting = Object.freeze({ active: false, openSandbox });
+        window.CEParityTesting = Object.freeze({ active: false });
         return;
     }
     try {

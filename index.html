@@ -408,8 +408,8 @@
         #landing-save-review .landing-save-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:18px;}
         #landing-save-review button{padding:10px 16px;border:1px solid #b58a29;border-radius:6px;background:#ffdf73;color:#61451e;font:inherit;cursor:pointer;}
     </style>
-    <script>window.CEParityTesting={active:/^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),error:'Checkpoint test storage could not be loaded. Please refresh.'};</script>
-    <script src="play/js/parity-test-storage.js?v=69"></script>
+    <script>window.CEParityTesting={active:['localhost','127.0.0.1','[::1]'].includes(location.hostname)&&/^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),error:'Checkpoint test storage could not be loaded. Please refresh.'};</script>
+    <script src="play/js/parity-test-storage.js?v=70"></script>
     <script defer src="play/js/balance-data.js?v=2"></script>
     <script defer src="play/js/balance.js?v=4"></script>
     <script defer src="play/js/beta-migration.js?v=1"></script>
