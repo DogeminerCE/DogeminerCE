@@ -49,7 +49,7 @@ class AudioManager {
         // Load swipe sound for tab switching - paths adjusted for play/ directory serving
         this.soundEffects.swipe = new Howl({
             src: ['../assets/SoundsSrc/main/swipe3.wav'],
-            volume: 0.5
+            volume: 0.3
         });
 
         // Load ching sound for purchasing
@@ -102,7 +102,7 @@ class AudioManager {
         // Inventory close (swipe)
         this.soundEffects.inventoryClose = new Howl({
             src: ['../assets/SoundsSrc/main/swipe_fast_low.wav'],
-            volume: 0.5
+            volume: 0.3
         });
 
         // DM2 PopupBox default exit sound (source gain 0.3).
@@ -120,7 +120,7 @@ class AudioManager {
         // Dogebag appears from rock
         this.soundEffects.woof = new Howl({
             src: ['../assets/SoundsSrc/main/woof.mp3'],
-            volume: 0.6
+            volume: 0.5
         });
 
         // Rock damage stage sounds (escalating intensity)
@@ -221,7 +221,7 @@ class AudioManager {
         // Equip pickaxe from inventory
         this.soundEffects.pickup = new Howl({
             src: ['../assets/SoundsSrc/main/pickup_1.wav'],
-            volume: 0.5
+            volume: 1
         });
 
         // Click on dogebag in world
@@ -236,30 +236,49 @@ class AudioManager {
         // Dogebag modal opens — item collect fanfare
         this.soundEffects.collectItem = new Howl({
             src: ['../assets/SoundsSrc/main/collect_item_1.wav'],
-            volume: 0.6
+            volume: 0.5
         });
 
         // Receive a pickaxe or fortune from a dogebag
         this.soundEffects.receivePickaxe = new Howl({
             src: ['../assets/SoundsSrc/main/receive_pickaxe.mp3'],
-            volume: 0.6
+            volume: 0.5
         });
 
         this.soundEffects.notification_soft3 = new Howl({
-            src: ['../assets/SoundsSrc/main/notification_soft3.wav'], volume: 0.6
+            src: ['../assets/SoundsSrc/main/notification_soft3.wav'], volume: 0.5
         });
 
         // Special story popup (DM2's Mystery Box evolution).
         this.soundEffects.short_sparkle = new Howl({
             src: ['../assets/SoundsSrc/main/short_sparkle.wav'],
-            volume: 0.6
+            volume: 0.5
         });
+
+        // Source names stay available alongside CE's semantic names.
+        for (const [name,file,volume] of [
+            ['diamond1','diamond1.mp3',.2], ['select2','select2.wav',.5],
+            ['friendlytwinkle','friendlytwinkle.mp3',.5], ['radio_start','radio_start.wav',.2],
+            ['swipe2','swipe2.wav',.5]
+        ]) this.soundEffects[name] = new Howl({src:['../assets/SoundsSrc/main/'+file],volume});
+        const aliases = {pop1:'inventoryOpen',swipe3:'swipe',pickup_1:'pickup',pickaxe:'pick',
+            grab_helper:'grabHelper',dropHelper:'grabHelper','check.wav':'check',receiveItem:'receivePickaxe',
+            get_coins:'getCoins',coins_small:'coinsSmall',collect_item_1:'collectItem',
+            receive_pickaxe:'receivePickaxe',receive_stash:'receiveStash',
+            coin_appear:'coinAppear',coin_loop:'coinLoop',hit_hard:'hitHard',hit_ground:'hitGround',
+            rockhit_smallest:'rockhitSmallest',rockhit_small:'rockhitSmall',rockhit_medium:'rockhitMedium',rockhit_large:'rockhitLarge'};
+        for (const [name,target] of Object.entries(aliases)) this.soundEffects[name] = this.soundEffects[target];
 
         // Fortune-specific loot sound
         this.soundEffects.longSparkle = new Howl({
             src: ['../assets/SoundsSrc/main/long_sparkle.wav'],
-            volume: 0.6
+            volume: 0.5
         });
+        this.soundEffects.long_sparkle = this.soundEffects.longSparkle;
+        this._effectVolumes = new WeakMap();
+        for (const effect of Object.values(this.soundEffects)) for (const voice of Array.isArray(effect)?effect:[effect])
+            this._effectVolumes.set(voice, voice.volume?.() ?? .5);
+        this.applyAudioPolicy();
     }
 
     setupSettingsListeners() {
@@ -321,7 +340,7 @@ class AudioManager {
     }
 
     isMiningSound(name) {
-        return ['pick','pew','lasersword','hitHard','hitGround'].includes(name) || /^rockhit/.test(name);
+        return ['pick','pickaxe','pew','lasersword','hitHard','hitGround','hit_hard','hit_ground'].includes(name) || /^rockhit/.test(name);
     }
 
     applyMediaPolicy(media, cinematic = false) {
@@ -540,18 +559,17 @@ class AudioManager {
 
     // Play a sound effect
     playSound(soundName, options = {}) {
-        if (!this.soundEnabled || this._audioSuspended || this.isBackgroundMuted() || (this.rockSoundsEnabled === false && this.isMiningSound(soundName))) return;
-
-        const sound = this.soundEffects[soundName];
-        if (sound) {
-            // If it's an array (like pick sounds), pick a random one
-            if (Array.isArray(sound)) {
-                const randomIndex = Math.floor(Math.random() * sound.length);
-                sound[randomIndex].play();
-            } else {
-                sound.play();
-            }
-        }
+        if (!this.soundEnabled || this._audioSuspended || this.isBackgroundMuted() || (this.rockSoundsEnabled === false && this.isMiningSound(soundName))) return false;
+        if (typeof options === 'number') options = {volume:options};
+        const effect = this.soundEffects[soundName];
+        const voice = Array.isArray(effect) ? effect[Math.floor(Math.random()*effect.length)] : effect;
+        if (!voice) return false;
+        const id = voice.play();
+        const base = Number.isFinite(options.volume) ? Math.max(0,Math.min(1,options.volume)) : this._effectVolumes?.get(voice) ?? .5;
+        voice.volume?.(base * (this.soundVolume ?? 1), id);
+        // Buy-Max pitch belongs only to that voice, never the next purchase.
+        voice.rate?.(Number.isFinite(options.rate) && options.rate>0 ? options.rate : 1, id);
+        return id;
     }
 
     // Stop a specific sound effect

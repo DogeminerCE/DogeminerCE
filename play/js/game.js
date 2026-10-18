@@ -2331,7 +2331,8 @@ class DogeMinerGame {
             });
             card.addEventListener('click', () => {
                 const restoreFocus = document.activeElement === card;
-                if (kind === 'pickaxe') this.equipPickaxe(item.instanceId);
+                if (kind === 'pickaxe') this.equipPickaxe(item.instanceId, {volume:.3});
+                else this.playSound('select2', {volume:.3});
                 const current = [...grid.querySelectorAll('.inventory-item-tile')].find(tile => tile._inventoryItem === item);
                 if (current) {
                     if (restoreFocus) current.focus({ preventScroll: true });
@@ -2605,7 +2606,7 @@ class DogeMinerGame {
     /**
      * Equips a pickaxe by instanceId
      */
-    equipPickaxe(instanceId) {
+    equipPickaxe(instanceId, { sound = true, volume = 1 } = {}) {
         const pickaxe = this.pickaxeInventory.find(p => p.instanceId === instanceId);
         if (!pickaxe) return;
 
@@ -2644,7 +2645,7 @@ class DogeMinerGame {
             }
         }
 
-        this.playSound('pickup');
+        if (sound) this.playSound('pickup', {volume});
 
         // Update pickaxe button preview
         const btnPreview = document.getElementById('pickaxe-btn-preview');
@@ -6327,8 +6328,6 @@ class DogeMinerGame {
         const x = validPos.x;
         const y = validPos.y;
 
-        this.playSound('dropHelper');
-
         // Create placed Rick sprite
         const sprite = document.createElement('img');
         sprite.id = 'placed-rick-helper';
@@ -6504,6 +6503,7 @@ class DogeMinerGame {
             sprite.style.cursor = 'grab';
             const leftPanel = document.getElementById('left-panel');
             if (leftPanel && this.placedRick?.active) {
+                this.playSound('grabHelper',{volume:.1});
                 if (pendingPosition) position(pendingPosition.x, pendingPosition.y);
                 const valid = this.findNearestValidSpot ? this.findNearestValidSpot(this.placedRick.x, this.placedRick.y, 60) : this.placedRick;
                 position(Math.max(15, Math.min(leftPanel.offsetWidth - 70, valid.x)), Math.max(60, Math.min(leftPanel.offsetHeight - 70, valid.y)));
@@ -6583,7 +6583,8 @@ class DogeMinerGame {
         // Rick jumps in animation
         if (rick.sprite) {
             (rick.rig || rick.sprite).classList.add('rick-jumping-in');
-            this.playSound('pop1');
+            this.playSound('short_sparkle', {volume:.3});
+            this.playSound('swipe_fast_low', {volume:.25});
 
             setTimeout(() => {
                 (rick.rig || rick.sprite).remove();
@@ -6819,10 +6820,10 @@ class DogeMinerGame {
         }, duration);
     }
 
-    playSound(soundFile) {
+    playSound(soundFile, options) {
         // Use audio manager if available
         if (window.audioManager) {
-            audioManager.playSound(soundFile);
+            return window.audioManager.playSound(soundFile, options);
         }
     }
 

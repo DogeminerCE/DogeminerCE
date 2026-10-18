@@ -83,6 +83,7 @@
         else { clearInterval(job.node._fullPulse); job.node._lootHover?.detach(); job.node.getAnimations?.({subtree:true}).forEach(a => a.cancel()); job.node.remove(); }
         this.updateInventoryUnread(); this.updateUI(true);
         if (reward.type === 'fortune') { this.setLatestObtainedFortune(reward.item); if (reward.item.name === 'Mystery Box') this.initMysteryBox(); }
+        this.playSound?.('grabBag');
         this.presentAutomaticReward(reward, rect);
         return true;
     };
@@ -101,7 +102,8 @@
         later(() => {
             if (reward.item) {
                 // A later bag may already have equipped its newer pickaxe.
-                if (reward.type === 'pickaxe') this.equipPickaxe(this.equippedPickaxeId);
+                if (reward.type === 'pickaxe') this.equipPickaxe(this.equippedPickaxeId, {sound:false});
+                this.playSound?.(reward.type==='pickaxe'?'receivePickaxe':'select2', {volume:reward.type==='pickaxe'?.2:.5});
                 image.animate([{scale:1},{scale:1.12},{scale:1}],{duration:500,easing:'ease-out'});
                 later(() => {
                     const target = document.getElementById(reward.type === 'pickaxe' ? 'pickaxe-btn' : 'fortune-btn')?.getBoundingClientRect();
@@ -111,10 +113,12 @@
                     flight.onfinish = end; later(end,1100);
                 },750);
             } else {
+                if (reward.type==='coins') this.playSound?.('receiveStash');
+                later(()=>this.playSound?.(reward.type==='coins'?'getCoins':'diamond1', {volume:reward.type==='coins'?.5:.2}),150);
                 const origin = { clientX:rect.left+rect.width/2, clientY:rect.top+rect.height/2 };
                 if (reward.type === 'coins') { this.pendingCoinDisplayAmount = Math.max(0,(this.pendingCoinDisplayAmount || 0)-reward.amount); this.createFloatingCoin(reward.amount,origin); }
                 else { this.pendingDiamondDisplayAmount = Math.max(0,(this.pendingDiamondDisplayAmount || 0)-reward.amount); this.createFloatingDiamond(reward.amount,origin); }
-                end();
+                later(end,750);
             }
         },600);
     };

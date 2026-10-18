@@ -132,14 +132,14 @@
         const stage=document.getElementById('dogebag-burst-stage'),image=document.getElementById('dogebag-burst-bag'),M=window.LootMotion;
         image.getAnimations().forEach(animation=>animation.cancel());
         M.sample(image,750,t=>({transform:'translateX('+M.shake(t,15)+'px)'}));
-        later(view,()=>{if(valid(this,view))M.sample(stage,500,t=>{const u=M.quadInOut(t)*2,k=u<1?1-(1-u)*(1-u):(2-u)*(2-u);return{transform:'translateX(-50%) translateY('+(-30*k)+'px)'};});},900);
+        later(view,()=>{if(valid(this,view)){this.playSound('longSparkle',{volume:.75});M.sample(stage,500,t=>{const u=M.quadInOut(t)*2,k=u<1?1-(1-u)*(1-u):(2-u)*(2-u);return{transform:'translateX(-50%) translateY('+(-30*k)+'px)'};});}},900);
         later(view,()=>{
             if(!valid(this,view))return;
             image.src='assets/general/mysterybox_big_open.webp';
             const rays=document.createElement('div');rays.className='mystery-loot-rays';stage.prepend(rays);view.nodes.push(rays);
             M.sample(rays,250,t=>({transform:'scale('+(3*t)+')',opacity:.35*t}));
         },1150);
-        view.rewards.forEach((reward,index)=>later(view,()=>{if(valid(this,view)){this.playSound(reward.type==='pickaxe'?'receivePickaxe':'collectItem');this.flyDogebagReceipt(view,index);}},index===0?1400:2050));
+        view.rewards.forEach((reward,index)=>later(view,()=>{if(valid(this,view)){this.playSound(reward.type==='pickaxe'?'receivePickaxe':'select2',{volume:reward.type==='pickaxe'?.2:.5});this.flyDogebagReceipt(view,index);}},index===0?1400:2050));
         later(view,()=>{
             if(!valid(this,view))return;
             const from=stage.getBoundingClientRect();document.getElementById('dogebag-modal').classList.add('mystery-review');

@@ -54,6 +54,7 @@
         pick.addEventListener('load',size,{once:true});if(pick.complete)size();
         rick.sprite.parentElement.append(pick);rick.pick=pick;rick.sprite.src='assets/general/rm/rickdoge_smol.png';
         rick.sprite.classList.remove('place-bounce');pose(rick,window.DogeMinerTools.reduced());
+        this.playSound?.('short_sparkle', {volume:.3});
         return true;
     };
     proto.isRickVisitExpired=function(rick=this.placedRick,now=Date.now()){
@@ -101,7 +102,7 @@
             if(rick.move&&!rick.held){
                 const move=rick.move;move.elapsed+=Math.min(100,dt);const p=Math.min(1,move.elapsed/120),t=(1-Math.cos(Math.PI*p))/2;
                 rick.x=move.from.x+(move.to.x-move.from.x)*t;rick.y=move.from.y+(move.to.y-move.from.y)*t;
-                if(p===1){rick.move=null;this.updateDPS();}
+                if(p===1){rick.move=null;this.updateDPS();this.playSound?.('pop1',{volume:.25});}
             }
             pose(rick,window.DogeMinerTools.reduced());
             for(const [node,x,y]of[[rick.timerBadge,rick.x+30,rick.y-20],[rick.tooltip,rick.x+30,rick.y-42],[rick.zoneEl,rick.x+30,rick.y+30]]){node.style.left=x+'px';node.style.top=y+'px';}

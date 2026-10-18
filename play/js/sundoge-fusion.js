@@ -39,7 +39,7 @@
         this.syncToolRig();
         this.renderPickaxeGrid?.(); this.updateStatsSidebar?.('pickaxe');
         const preview = document.getElementById('pickaxe-btn-preview'); if (preview) preview.src = item.idleSprite;
-        this.playSound?.('receiveItem');
+        this.playSound?.('receivePickaxe', {volume:.3});
         return item;
     };
     function create(game, captured) {
@@ -61,14 +61,14 @@
         if (!state) {
             const captured = pair(this);
             if (captured) {
-                if (this.equippedPickaxeId !== captured.older.instanceId) this.equipPickaxe(captured.older.instanceId);
+                if (this.equippedPickaxeId !== captured.older.instanceId) this.equipPickaxe(captured.older.instanceId, {sound:false});
                 state = this._sunDogeFusion = create(this, captured);
             } else if (this.sundogeDiscoveryPending && tools.id(this.getEquippedPickaxe()) === 'staffascended' && !this._toolToast) {
                 this.showToolDiscovery?.('Fusion Successful', 'sundogeFusionDiscovered', 'SunDoge');
             }
         }
         if (!state) return;
-        if (!state.committed && this.equippedPickaxeId !== state.pair.older.instanceId) this.equipPickaxe(state.pair.older.instanceId);
+        if (!state.committed && this.equippedPickaxeId !== state.pair.older.instanceId) this.equipPickaxe(state.pair.older.instanceId, {sound:false});
         state.element.hidden = false;
         state.elapsed += Math.max(0, Math.min(100, elapsed)) * 1.8;
         if (state.elapsed >= 2550 && !state.committed) {

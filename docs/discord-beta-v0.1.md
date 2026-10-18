@@ -69,6 +69,7 @@ Fixed broken item images, fallback paths, and PNG color-profile checksums
 Fixed older Alpha saves getting stuck behind an absurdly strong rock
 Fixed the Easter egg count and completed golden-egg display
 Fixed Windows Beta packages using a lower version number than Alpha
+Fixed missing and mismatched sounds for loot, Mystery Boxes, Dogediamonds, Easter eggs, Rick, fusion, and D.I.A. scenes
 
 **Coming after v0.1 :soon:**
 Hats / Clothing will arrive in a future update, so the Hats tab is hidden for now. Pickaxe Trees are on hold while I come up with a better design.

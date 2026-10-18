@@ -92,7 +92,7 @@ class UIManager {
 
             // Play sound
             if (window.audioManager) {
-                audioManager.playSound('swipe');
+                audioManager.playSound('swipe',{volume:.15});
             }
 
             // Update shop content if switching to shop
@@ -1109,7 +1109,7 @@ class UIManager {
 
         // Only play sound if switching to a different tab
         if (!isTabAlreadyActive && window.audioManager) {
-            audioManager.playSound('swipe');
+            audioManager.playSound('swipe',{volume:.15});
         }
 
         // Update shop content if switching to shop
@@ -1843,7 +1843,7 @@ class UIManager {
 
         // Play sound
         if (window.audioManager) {
-            audioManager.playSound('swipe');
+            audioManager.playSound('swipe',{volume:.15});
         }
     }
 

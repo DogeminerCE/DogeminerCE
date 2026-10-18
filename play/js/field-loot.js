@@ -131,7 +131,7 @@
         if (consumed) { node.dataset.collected = 'true'; node.style.pointerEvents = 'none'; node._lootHover?.detach(); }
         const rect = node?.getBoundingClientRect();
         this.createFloatingDiamond(amount, rect ? { clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 } : null);
-        this.playSound('longSparkle'); this.updateUI();
+        this.playSound('diamond1', {volume:.2}); this.updateUI();
         if (node && !consumed) this.updateDiamondStack(node,this.diamondStacks[this.currentLevel]);
         if (consumed) { node.style.animation = 'coinPileCollect .3s ease-out forwards'; setTimeout(() => dispose(node), 300); }
         if (before.dogediamondsEverObtained === 0) this.showDiamondIntro();

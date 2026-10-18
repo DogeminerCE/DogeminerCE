@@ -5,11 +5,7 @@
     const cancelWorldFrame=id=>window.DogeMinerFrameClock?window.DogeMinerFrameClock.cancel(id):cancelAnimationFrame(id);
     const proto = DogeMinerGame.prototype;
     const config = Object.freeze({ holdMs:500, chargeDelayMs:160, holdSlop:14, pickRise:8, pickRiseTouch:12, lingerMs:1600, maxPerGesture:100, burstMs:600 });
-    const sound = (name, volume, rate=1) => {
-        const audio=window.audioManager, clip=audio?.soundEffects?.[name==='pop1'?'inventoryOpen':name];
-        if(!audio?.soundEnabled || !clip?.play)return;
-        const id=clip.play(); if(volume!==undefined)clip.volume?.(volume,id);clip.rate?.(rate,id);
-    };
+    const sound = (name, volume, rate=1) => window.audioManager?.playSound?.(name,{volume,rate});
     const label = count => count >= 2 ? `BUY ${count} (MAX)` : 'BUY MAX';
     const burstPlan = count => { const steps = Math.max(1,Math.min(count,Math.round(config.burstMs/45))); return { steps, interval:steps>1?config.burstMs/(steps-1):0 }; };
     proto.canBulkBuyHelper = function (type) {

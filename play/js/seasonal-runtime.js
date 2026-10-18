@@ -120,7 +120,7 @@
         if(!egg||egg.id!==id||egg.epoch!==this._seasonalEpoch||rules.active(this)!=='easter'||before.easter.found.includes(id)||before.easter.count>=9)return false;
         this.seasonal={...before,easter:{...before.easter,found:[...before.easter.found,id],count:before.easter.count+1}};
         if(window.saveManager?.commitStoryProgress?.()!==true){this.seasonal=before;this.updateDPS?.();return false;}
-        this.clearHiddenEgg();this.updateDPS();this.renderSeasonal();this.playSound?.('longSparkle');
+        this.clearHiddenEgg();this.updateDPS();this.renderSeasonal();this.playSound?.('friendlytwinkle');
         this.showNotification('Easter egg found! +1% event DPS.');return true;
     };
     const ordinaryCharacter=proto._getCharacterSprite;

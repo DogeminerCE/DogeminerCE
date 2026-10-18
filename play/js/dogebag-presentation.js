@@ -287,6 +287,7 @@
         if(view.kind==='mystery'){this.animateMysteryBoxOpening(view);return;}
         const stage = document.getElementById('dogebag-burst-stage');
         stage.animate?.([{opacity:0,translate:'-100px 0'},{opacity:1,translate:'0 0'}],{duration:450,easing:'cubic-bezier(.18,.9,.25,1.15)'});
+        delay(view,()=>{if(validView(this,view))this.playSound('collectItem',{volume:.5});},450);
         let offset = 0, wave = 0, lastFlight = 0;
         const emit = () => {
             if (!validView(this,view)) return;
@@ -301,6 +302,8 @@
                 delay(view,() => this.flyDogebagReceipt(view,index), (i-offset)*35);
                 lastFlight = Math.max(lastFlight,performance.now()+(i-offset)*35+340);
             }
+            if(view.rewards.slice(offset,end).some(reward=>reward.item))this.playSound('pickup',{volume:1});
+            else if(wave%2===0)this.playSound('coinsSmall');
             offset=end;wave++;
             if (offset<view.rewards.length) delay(view,emit,110);
             else delay(view,() => this.finishDogebagBurst(view),Math.max(0,lastFlight-performance.now())+500);
@@ -395,10 +398,11 @@
         document.getElementById('dogebag-burst-stage').classList.add('finished');
         document.getElementById('dogebag-modal').classList.toggle('mystery-review',view.kind==='mystery');
         const first=view.rewards.findIndex(reward=>reward.item);
-        this.showDogebagReward(Math.max(0,first));
+        this.showDogebagReward(Math.max(0,first), {sound:false});
     };
-    proto.showDogebagReward = function (index) {
+    proto.showDogebagReward = function (index, {sound=true} = {}) {
         const view=this._dogebagReveal;if(!view?.opened||!view.rewards[index])return;
+        if(sound)this.playSound('select2');
         view.selected=index;
         const reward=view.rewards[index],reveal=document.getElementById('dogebag-state-reveal');
         if(!reveal)return;
@@ -438,14 +442,14 @@
         slot?.button.classList.toggle('reviewed', slot.indices.every(index => view.reviewed.has(index)));
         // Currency is already shown as totals in the tray; review each item card.
         const next=view.rewards.findIndex((reward,index)=>reward.item&&!view.reviewed.has(index));
-        if(next<0)this.closeDogebagModal();else this.showDogebagReward(next);
+        if(next<0)this.closeDogebagModal();else this.showDogebagReward(next, {sound:false});
     };
-    proto.dogebagLoot = function () {if(this._dogebagReveal?.ready){this.playSound('collectItem');this.advanceDogebagReward();}};
+    proto.dogebagLoot = function () {const view=this._dogebagReveal;if(view?.ready){if(view.rewards[view.selected]?.item)this.playSound('pickup',{volume:1});this.advanceDogebagReward();}};
     proto.dogebagEquip = function () {
         const view=this._dogebagReveal,reward=view?.rewards[view.selected];
         if(!view?.ready||reward?.type!=='pickaxe')return;
         this.equipPickaxe(reward.item.instanceId);window.saveManager?.saveGame(false);
-        this.playSound('receivePickaxe');this.advanceDogebagReward();
+        this.advanceDogebagReward();
     };
     proto.flyDogebagItemToInventory = function (slot,view) {
         const reward=view.rewards[slot.indices[0]];if(!reward.item||!motion())return;
@@ -476,8 +480,9 @@
         if(view.epoch===(this._currencyFlightEpoch||0)){
             for(const slot of view.slots || [])this.flyDogebagItemToInventory(slot,view);
             const event=anchor?{clientX:anchor.left+anchor.width/2,clientY:anchor.top+anchor.height/2}:null;
-            if(view.coins>0){this.pendingCoinDisplayAmount=Math.max(0,this.pendingCoinDisplayAmount-view.coins);this.createFloatingCoin(view.coins,event);}
+            if(view.coins>0){this.playSound('getCoins');this.pendingCoinDisplayAmount=Math.max(0,this.pendingCoinDisplayAmount-view.coins);this.createFloatingCoin(view.coins,event);}
             if(view.diamonds>0){
+                this.playSound('diamond1',{volume:.2});
                 this.pendingDiamondDisplayAmount=Math.max(0,this.pendingDiamondDisplayAmount-view.diamonds);this.createFloatingDiamond(view.diamonds,event);
                 if(view.firstDiamonds)setTimeout(()=>{if(view.epoch===(this._currencyFlightEpoch||0)&&!this._dogebagReveal&&!this.isBetaReportOpen&&!this.isCutscenePlaying)this.showDiamondIntro();},900);
             }

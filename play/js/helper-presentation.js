@@ -442,6 +442,7 @@
             this.dropHeldHelper(item,position);
         }
         window.GameCursor?.refresh(this);
+        if (!cancel) this.playSound('grabHelper', {volume:.1});
         this.updateDPS();this.updateUI(true);
         if(!cancel&&drag.moved)window.saveManager?.saveGame(false);
     };

@@ -12,6 +12,7 @@
         let index=tiles.indexOf(focused);if(index<0)index=Math.max(0,tiles.findIndex(tile=>tile.classList.contains('equipped')));
         const tile=tiles[Math.max(0,Math.min(tiles.length-1,index+(direction==='left'?1:-1)))];
         tile.focus({preventScroll:true});tile.scrollIntoView({block:'nearest',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+        if(tile!==focused)game.playSound?.('swipe',{volume:.2});
         game._showInventoryTooltip(tile);return true;
     }
     function install(game,ui){

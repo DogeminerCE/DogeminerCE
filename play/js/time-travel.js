@@ -551,7 +551,7 @@ class TimeTravelManager {
                 <img src="${this._getRigSprite()}" alt="Time Machine">
             </div>`;
         this._playSound('carStart');
-        this._after(700, () => this._playLoop('carLoop'));
+        this._after(1000, () => this._playLoop('carLoop'));
 
         const speech = document.getElementById('cs-car-speech');
         const say = (txt) => {
@@ -585,8 +585,8 @@ class TimeTravelManager {
                     frame++;
                 }, 70);
             }
-            this._playSound('tireBurn');
-            this._playSound('warp');
+            this._playSound('lightningLate', .3);
+            this._after(450, () => this._playSound('lightningBig'));
         });
 
         this._after(4550, () => {
@@ -606,12 +606,15 @@ class TimeTravelManager {
     }
 
     _animateMissionLightning(bolt, late, done) {
+        if (late) this._after(300, () => this._playSound('lightningLate', .25));
+        else this._playSound('lightningSmall');
         const timing = TimeTravelManager.lightningFrames(late);
         bolt.style.opacity = '0';
         for (const {at, frame} of timing.frames) this._after(at, () => {
             bolt.style.opacity = '1'; bolt.src = `assets/general/missions/lightning/ln${frame}.webp`;
         });
         this._after(timing.darkAt, () => { bolt.style.opacity = '0'; });
+        if (!late) this._after(timing.end - 5*1000/18, () => this._playSound('lightningBig'));
         this._after(timing.end, done);
     }
 
@@ -671,7 +674,6 @@ class TimeTravelManager {
 
         // Short pause after the first dialogue, then the time machine ZAPS into 1930 in a crackle of electricity.
         this._after(timing.catelandEntry, () => {
-            this._playSound('warp');
             const car = document.getElementById('cs-car');
             const bolt = document.getElementById('cs-zap-bolt');
             const zapFlash = document.createElement('div');
@@ -679,7 +681,7 @@ class TimeTravelManager {
             if (!car || !bolt) return;
             const effect = car.cloneNode(false); effect.removeAttribute('id'); effect.className = 'cs-car cs-arrival-effect';
             effect.style.height = car.offsetHeight + 'px'; effect.append(bolt, zapFlash); stage.append(effect);
-            this._animateMissionLightning(bolt, false, () => { car.classList.remove('cs-car-hidden'); effect.remove(); });
+            this._animateMissionLightning(bolt, false, () => { this._playSound('warp');car.classList.remove('cs-car-hidden'); effect.remove(); });
         });
 
         // Remaining dialogue beats trade lines, then the choice appears.
@@ -780,10 +782,10 @@ class TimeTravelManager {
         });
 
         // Floor it: tire burn, then charge with a dust trail
-        this._playSound('tireBurn');
+        this._playSound('burnDrive');
         this._after(350, () => {
             if (car) car.classList.add('cs-car-charge');
-            this._playLoop('carLoop');
+            // The source burn-and-drive clip already contains the engine.
             // Kick up dust puffs behind the car while it charges
             this._dustInterval = this._every(120, () => {
                 if (!car || !car.parentNode) return;
@@ -815,7 +817,7 @@ class TimeTravelManager {
         const kImg = document.getElementById('cs-kitler-img');
         this._after(TimeTravelManager.MISSION_TIMING.cower - TimeTravelManager.MISSION_TIMING.exitStart, () => { if (kImg) kImg.src = 'assets/general/missions/cat cowering.webp'; });
         if (kitler) kitler.classList.add('cs-kitler-shake');
-        this._playSound('lightningBig');
+        // Lightning audio follows the same short/late phase as the bolt.
 
         // Lightning bolt frames over Kitler + a full-screen electric flicker
         const bolt = document.createElement('img');
@@ -825,7 +827,7 @@ class TimeTravelManager {
         flicker.className = 'cs-electric-flicker';
         overlay.appendChild(flicker);
 
-        this._animateMissionLightning(bolt, true, () => this._whiteOutToRewards());
+        this._animateMissionLightning(bolt, true, () => { this._playSound('brake');this._playSound('warpExit');this._whiteOutToRewards(); });
         stage.classList.add('cs-shake');
     }
 
@@ -838,7 +840,6 @@ class TimeTravelManager {
             white.className = 'cs-whiteout';
             overlay.appendChild(white);
         }
-        this._playSound('complete');
         this._after(TimeTravelManager.MISSION_TIMING.whiteFade + TimeTravelManager.MISSION_TIMING.rewardHold, () => { this._teardownCutscene(); this._showRewards(); });
     }
 
@@ -868,6 +869,7 @@ class TimeTravelManager {
     _teardownCutscene() {
         this._clearTimers();
         this._stopAllLoops();
+        for (const sound of Object.values(this._sounds)) { sound.pause();sound.currentTime=0; }
         const overlay = document.getElementById('mission-cutscene');
         if (overlay) overlay.remove();
     }
@@ -887,6 +889,7 @@ class TimeTravelManager {
         // Guard: the whiteout timer and a skip click can race — only present once.
         if (this._rewardsShown) return;
         this._rewardsShown = true;
+        this._playSound('complete');
         // Build the rewards now (so the cards show real data), then present them one by one.
         const rewards = this._buildRewards();
         this._presentReward(0, rewards, this._payoutContext);
@@ -940,6 +943,7 @@ class TimeTravelManager {
     _attachOkListener(index, rewards, quote) {
         const btn = document.getElementById('mp-ok');
         if (!btn) return;
+        this.game.playSound('select2');
         const wasFocused = document.activeElement === btn;
         const newBtn = btn.cloneNode(true);
         newBtn.disabled = false;
@@ -947,7 +951,8 @@ class TimeTravelManager {
         if (wasFocused) newBtn.focus({ preventScroll: true });
         newBtn.addEventListener('click', () => {
             newBtn.disabled = true;
-            this.game.playSound('check');
+            const type = rewards[index].type;
+            this.game.playSound(type==='diamonds'?'diamond1':'pickup', {volume:type==='diamonds'?.2:1});
             this._presentReward(index + 1, rewards, quote);
         }, { once: true });
     }
@@ -959,15 +964,16 @@ class TimeTravelManager {
         // 1) Super Fortune (combined), only if there were combinable fortunes
         this._newSuperFortune = this._makeSuperFortune();
         if (this._newSuperFortune) {
-            rewards.push({ html: this._fortuneCardHTML(this._newSuperFortune, 'mp-super') });
+            rewards.push({ type:'fortune', html: this._fortuneCardHTML(this._newSuperFortune, 'mp-super') });
         }
 
         // 2) Chosen D.I.A. Badge (built as a real fortune)
         this._newBadge = this._makeBadgeFortune(this._chosenBadge, p.badgeStat);
-        rewards.push({ html: this._fortuneCardHTML(this._newBadge, 'mp-badge') });
+        rewards.push({ type:'fortune', html: this._fortuneCardHTML(this._newBadge, 'mp-badge') });
 
         // 3) Dogediamonds (with spinning sunburst)
         rewards.push({
+            type:'diamonds',
             html: `<div class="mp-burst"></div>
                 <img src="assets/general/icons/diamonds_stack.webp" class="mp-diamond-img" alt="Dogediamonds">
                 <div class="mp-diamond-label">DOGEDIAMONDS</div>
@@ -1207,7 +1213,7 @@ class TimeTravelManager {
         g.isMouseDown = false; g.isSpaceDown = false;
         if (g.swingTimeout) clearTimeout(g.swingTimeout);
         g.swingTimeout = null; g._currentIdleSpritePath = null;
-        g.equipPickaxe?.('timeline_paw');
+        g.equipPickaxe?.('timeline_paw', {sound:false});
         const mboxBtn = document.getElementById('mystery-box-btn');
         if (mboxBtn) mboxBtn.style.display = 'none';
         const fortunePreviewImg = document.getElementById('fortune-btn-preview');
@@ -1284,7 +1290,8 @@ class TimeTravelManager {
             pickaxe.style.visibility = 'visible';
             pickaxe.style.opacity = '0';
         }
-        this._playSound('warp');
+        this._playSound('lightningBig');
+        const enterTimer=setTimeout(()=>{if(epoch===this.game._storyEpoch&&timeline===this.game.timelineNumber)this._playSound('warp');},500);
 
         const bolt = document.createElement('img');
         bolt.className = 'cs-zap-bolt';
@@ -1301,7 +1308,7 @@ class TimeTravelManager {
 
         let frame = 1;
         let zapInterval;
-        const cleanup = () => { clearInterval(zapInterval); bolt.remove(); zapFlash.remove(); };
+        const cleanup = () => { clearInterval(zapInterval);clearTimeout(enterTimer);bolt.remove();zapFlash.remove(); };
         this.game._storyArrivalCancel = cleanup;
         zapInterval = setInterval(() => {
             if (epoch !== this.game._storyEpoch || timeline !== this.game.timelineNumber) { cleanup(); return; }
@@ -1328,18 +1335,25 @@ class TimeTravelManager {
             tireBurn: '../assets/SoundsSrc/missions/tireburn.wav',
             brake: '../assets/SoundsSrc/missions/brake.wav',
             warp: '../assets/SoundsSrc/missions/ln_enter.wav',
+            warpExit: '../assets/SoundsSrc/missions/ln_exit.wav',
+            lightningSmall: '../assets/SoundsSrc/missions/ln_small.wav',
+            lightningLate: '../assets/SoundsSrc/missions/ln_short-late.mp3',
+            burnDrive: '../assets/SoundsSrc/missions/burn_and_drive.mp3',
             lightningBig: '../assets/SoundsSrc/missions/ln_big.mp3',
             complete: '../assets/SoundsSrc/missions/mission_complete.wav',
             missionLoop: '../assets/SoundsSrc/missions/test_mission_loop_cool.wav'
         };
+        if (!paths[key]) return null;
         if (!this._sounds[key]) this._sounds[key] = new Audio(paths[key]);
+        const volumes={radio:.2,carStart:.35,carLoop:.1,burnDrive:.3,brake:.3,warpExit:.4,missionLoop:.1};
+        this._sounds[key].volume=(volumes[key]??.5)*(window.audioManager?.soundVolume??1);
         window.audioManager?.applyMediaPolicy?.(this._sounds[key]);
         return this._sounds[key];
     }
 
-    _playSound(key) {
+    _playSound(key, volume) {
         if (this.game.soundEnabled === false || window.audioManager?.isBackgroundMuted?.()) return;
-        try { const a = this._audio(key); a.currentTime = 0; a.play().catch(() => {}); } catch (e) {}
+        try { const a = this._audio(key);if(!a)return;if(Number.isFinite(volume))a.volume=volume*(window.audioManager?.soundVolume??1);a.currentTime = 0; a.play().catch(() => {}); } catch (e) {}
     }
 
     _playLoop(key) {
@@ -1348,9 +1362,6 @@ class TimeTravelManager {
             const a = this._audio(key);
             a.loop = true;
             a.currentTime = 0;
-            if (key === 'missionLoop') {
-                a.volume = 0.25;
-            }
             a.play().catch(() => {});
             if (!this._activeLoops.includes(key)) this._activeLoops.push(key);
         } catch (e) {}
