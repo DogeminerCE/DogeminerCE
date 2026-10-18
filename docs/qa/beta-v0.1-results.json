@@ -1,0 +1,391 @@
+{
+  "build": "beta-v0.1",
+  "date": "2026-10-18",
+  "unitSuites": 81,
+  "unitResults": [
+    {
+      "suite": "audio-preferences.cjs",
+      "passed": true
+    },
+    {
+      "suite": "beta-gameplay.cjs",
+      "passed": true
+    },
+    {
+      "suite": "beta-migration.cjs",
+      "passed": true
+    },
+    {
+      "suite": "beta-report-lifecycle.cjs",
+      "passed": true
+    },
+    {
+      "suite": "bonus-coin-selection.cjs",
+      "passed": true
+    },
+    {
+      "suite": "bonus-coin.cjs",
+      "passed": true
+    },
+    {
+      "suite": "bonus-hud.cjs",
+      "passed": true
+    },
+    {
+      "suite": "bulk-shop-presentation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "bulk-shop.cjs",
+      "passed": true
+    },
+    {
+      "suite": "button-motion.cjs",
+      "passed": true
+    },
+    {
+      "suite": "cate-thief.cjs",
+      "passed": true
+    },
+    {
+      "suite": "cloud-reconciliation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "coin-counter-flight.cjs",
+      "passed": true
+    },
+    {
+      "suite": "controller-cursor.cjs",
+      "passed": true
+    },
+    {
+      "suite": "diamond-counter-flight.cjs",
+      "passed": true
+    },
+    {
+      "suite": "diamond-discovery.cjs",
+      "passed": true
+    },
+    {
+      "suite": "dm2-balance.cjs",
+      "passed": true
+    },
+    {
+      "suite": "dm2-import.cjs",
+      "passed": true
+    },
+    {
+      "suite": "dogebag-batch.cjs",
+      "passed": true
+    },
+    {
+      "suite": "drill-mining.cjs",
+      "passed": true
+    },
+    {
+      "suite": "dual-wield.cjs",
+      "passed": true
+    },
+    {
+      "suite": "early-stories.cjs",
+      "passed": true
+    },
+    {
+      "suite": "egg-counter.cjs",
+      "passed": true
+    },
+    {
+      "suite": "event-notifications.cjs",
+      "passed": true
+    },
+    {
+      "suite": "field-chatter.cjs",
+      "passed": true
+    },
+    {
+      "suite": "field-diamonds.cjs",
+      "passed": true
+    },
+    {
+      "suite": "field-loot.cjs",
+      "passed": true
+    },
+    {
+      "suite": "fortune-consolidation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "frame-clock.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-animation-profiles.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-hover.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-loot.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-motion.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-names.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-presentation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-shop-details.cjs",
+      "passed": true
+    },
+    {
+      "suite": "helper-upgrades.cjs",
+      "passed": true
+    },
+    {
+      "suite": "inventory-stats.cjs",
+      "passed": true
+    },
+    {
+      "suite": "kofi-webhook.cjs",
+      "passed": true
+    },
+    {
+      "suite": "landing-save.cjs",
+      "passed": true
+    },
+    {
+      "suite": "late-discovery.cjs",
+      "passed": true
+    },
+    {
+      "suite": "late-progression.cjs",
+      "passed": true
+    },
+    {
+      "suite": "layout-and-secrets.cjs",
+      "passed": true
+    },
+    {
+      "suite": "loot-automation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "loot-receipts.cjs",
+      "passed": true
+    },
+    {
+      "suite": "mining-input-boundaries.cjs",
+      "passed": true
+    },
+    {
+      "suite": "mining-records.cjs",
+      "passed": true
+    },
+    {
+      "suite": "mission-timing.cjs",
+      "passed": true
+    },
+    {
+      "suite": "mobile-gestures.cjs",
+      "passed": true
+    },
+    {
+      "suite": "moon-launch.cjs",
+      "passed": true
+    },
+    {
+      "suite": "motion-notice.cjs",
+      "passed": true
+    },
+    {
+      "suite": "mystery-evolution.cjs",
+      "passed": true
+    },
+    {
+      "suite": "newsdoge.cjs",
+      "passed": true
+    },
+    {
+      "suite": "number-format.cjs",
+      "passed": true
+    },
+    {
+      "suite": "offline-earnings.cjs",
+      "passed": true
+    },
+    {
+      "suite": "parity-test-storage.cjs",
+      "passed": true
+    },
+    {
+      "suite": "passive-income.cjs",
+      "passed": true
+    },
+    {
+      "suite": "performance-settings.cjs",
+      "passed": true
+    },
+    {
+      "suite": "planet-backgrounds.cjs",
+      "passed": true
+    },
+    {
+      "suite": "prestige-payout.cjs",
+      "passed": true
+    },
+    {
+      "suite": "release-notes.cjs",
+      "passed": true
+    },
+    {
+      "suite": "rick-aura.cjs",
+      "passed": true
+    },
+    {
+      "suite": "rick-visitor.cjs",
+      "passed": true
+    },
+    {
+      "suite": "rock-replacement.cjs",
+      "passed": true
+    },
+    {
+      "suite": "royalties.cjs",
+      "passed": true
+    },
+    {
+      "suite": "searchdoge.cjs",
+      "passed": true
+    },
+    {
+      "suite": "seasonal.cjs",
+      "passed": true
+    },
+    {
+      "suite": "source-hover-inactive.cjs",
+      "passed": true
+    },
+    {
+      "suite": "story-history.cjs",
+      "passed": true
+    },
+    {
+      "suite": "story-queue.cjs",
+      "passed": true
+    },
+    {
+      "suite": "sundoge-fusion.cjs",
+      "passed": true
+    },
+    {
+      "suite": "template-load-failures.cjs",
+      "passed": true
+    },
+    {
+      "suite": "timeline-history.cjs",
+      "passed": true
+    },
+    {
+      "suite": "timeline-stories.cjs",
+      "passed": true
+    },
+    {
+      "suite": "tool-audio.cjs",
+      "passed": true
+    },
+    {
+      "suite": "tool-profiles.cjs",
+      "passed": true
+    },
+    {
+      "suite": "upgrade-count.cjs",
+      "passed": true
+    },
+    {
+      "suite": "upgrade-presentation.cjs",
+      "passed": true
+    },
+    {
+      "suite": "visible-balance.cjs",
+      "passed": true
+    },
+    {
+      "suite": "welcome-back.cjs",
+      "passed": true
+    },
+    {
+      "suite": "world-discovery.cjs",
+      "passed": true
+    }
+  ],
+  "featurePreviews": 117,
+  "previewRenderCases": 234,
+  "functionalBrowserCases": 191,
+  "browserSuites": {
+    "releaseScope": {
+      "cases": 28,
+      "errors": []
+    },
+    "settings": {
+      "cases": 27,
+      "errors": []
+    },
+    "virtualCursor": {
+      "cases": 2,
+      "errors": []
+    },
+    "mission": {
+      "cases": 9,
+      "errors": []
+    },
+    "touch": {
+      "cases": 5,
+      "errors": []
+    },
+    "recovery": {
+      "cases": 8,
+      "errors": []
+    },
+    "rewards": {
+      "cases": 12,
+      "errors": []
+    },
+    "worldGeometry": {
+      "cases": 100,
+      "errors": []
+    }
+  },
+  "catalog": {
+    "pickaxes": 89,
+    "fortunes": 125,
+    "assets": 561,
+    "failures": [],
+    "loadErrors": [],
+    "errors": []
+  },
+  "imageFilesVerified": 3006,
+  "pngChecksumRepairs": 32,
+  "noImageDataChanged": true,
+  "sourceAuditPreserved": true,
+  "priorCheckpointRecordsPreserved": 68,
+  "ordinaryUserStorageChanged": false,
+  "authenticatedCloudWrites": 0,
+  "livePaymentsProcessed": 0,
+  "physicalHardwareCertified": false,
+  "titanVideo": "Deferred upstream",
+  "pickaxeTrees": "Removed; design on hold",
+  "hats": "Hidden until after v0.1",
+  "koFiFunction": "Source tested locally; secret rotation/configuration required before separate deployment",
+  "ordinaryGameplayGuestCases": 4,
+  "windowsPackageVersion": "1.0.0.0"
+}

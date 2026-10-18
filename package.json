@@ -1,13 +1,16 @@
 {
   "name": "dogeminer-community-edition",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A modern, browser-based clicker game rebuilt from scratch using JavaScript and HTML",
   "main": "index.html",
   "scripts": {
     "start": "python -m http.server 8000",
     "serve": "python -m http.server 8000",
     "dev": "python -m http.server 8000",
-    "build:windows": "powershell -ExecutionPolicy Bypass -File scripts/bundle-msix.ps1"
+    "build:windows": "powershell -ExecutionPolicy Bypass -File scripts/bundle-msix.ps1",
+    "test": "node scripts/test.cjs",
+    "check": "node scripts/check-release.cjs",
+    "test:browser": "node tests/browser/run.cjs"
   },
   "keywords": [
     "clicker",
@@ -30,10 +33,11 @@
   },
   "homepage": "https://github.com/DogeMinerCE/DogeMinerCE#readme",
   "devDependencies": {
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "playwright": "1.56.1"
   },
   "dependencies": {},
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20"
   }
 }

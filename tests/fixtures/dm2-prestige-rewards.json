@@ -1,0 +1,1263 @@
+{
+  "sourceVersion": "2.15.0",
+  "bundleSha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "sourceFunctions": {
+    "coins": "_Q(15)",
+    "pickaxes": "DQ()",
+    "badge": "IQ()"
+  },
+  "coins": [
+    {
+      "coins": 0,
+      "diamonds": 1
+    },
+    {
+      "coins": 1,
+      "diamonds": 1
+    },
+    {
+      "coins": 999999,
+      "diamonds": 1
+    },
+    {
+      "coins": 1000000,
+      "diamonds": 1
+    },
+    {
+      "coins": 1000001,
+      "diamonds": 2
+    },
+    {
+      "coins": 10000000,
+      "diamonds": 3
+    },
+    {
+      "coins": 100000000,
+      "diamonds": 7
+    },
+    {
+      "coins": 1000000000,
+      "diamonds": 16
+    },
+    {
+      "coins": 10000000000,
+      "diamonds": 40
+    },
+    {
+      "coins": 100000000000,
+      "diamonds": 60
+    },
+    {
+      "coins": 1000000000000,
+      "diamonds": 60
+    },
+    {
+      "coins": 40000000000000000,
+      "diamonds": 60
+    },
+    {
+      "coins": 1e+30,
+      "diamonds": 60
+    }
+  ],
+  "pickaxes": [
+    {
+      "count": 0,
+      "diamonds": 0
+    },
+    {
+      "count": 1,
+      "diamonds": 1
+    },
+    {
+      "count": 2,
+      "diamonds": 1
+    },
+    {
+      "count": 3,
+      "diamonds": 2
+    },
+    {
+      "count": 7,
+      "diamonds": 4
+    },
+    {
+      "count": 8,
+      "diamonds": 4
+    },
+    {
+      "count": 9,
+      "diamonds": 5
+    },
+    {
+      "count": 15,
+      "diamonds": 8
+    },
+    {
+      "count": 100,
+      "diamonds": 50
+    }
+  ],
+  "badges": [
+    {
+      "timeline": 1,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 1,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 2,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 600
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 600
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 2,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 3,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 652
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 652
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 3,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 9,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 8508
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 8508
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 9,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 10,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 13985
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 13985
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 10,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 11,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 30886
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 30886
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 11,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 20,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 42489
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 42489
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 20,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    },
+    {
+      "timeline": 100,
+      "helpers": [],
+      "stat": 1
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 1
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1000,
+          "planet": 1
+        }
+      ],
+      "stat": 165693
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 574,
+          "planet": 1
+        }
+      ],
+      "stat": 230
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 576,
+          "planet": 1
+        }
+      ],
+      "stat": 165693
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 1,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 1,
+          "planet": 1
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 2
+        }
+      ],
+      "stat": 2
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 3
+        }
+      ],
+      "stat": 3
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 4
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 10,
+          "planet": 5
+        }
+      ],
+      "stat": 4
+    },
+    {
+      "timeline": 100,
+      "helpers": [
+        {
+          "type": "type1",
+          "count": 3,
+          "planet": 1
+        },
+        {
+          "type": "type2",
+          "count": 7,
+          "planet": 1
+        },
+        {
+          "type": "type3",
+          "count": 11,
+          "planet": 2
+        },
+        {
+          "type": "type4",
+          "count": 8,
+          "planet": 3
+        },
+        {
+          "type": "type5",
+          "count": 13,
+          "planet": 4
+        },
+        {
+          "type": "type6",
+          "count": 4,
+          "planet": 5
+        }
+      ],
+      "stat": 18
+    }
+  ]
+}

@@ -1,0 +1,433 @@
+planet,helper,ce_type,level,kind,upgrade,dogediamonds,dogecoins,dps_before,dps_after,purchased
+Earth,Mining Shibe,miningShibe,1,finite,Euphoria,1,1000,0.2,0.7,True
+Earth,Mining Shibe,miningShibe,2,finite,Golden Pickaxes,1,3500,0.7,1,True
+Earth,Mining Shibe,miningShibe,3,finite,Salary Raise,1,32500,1,2,True
+Earth,Mining Shibe,miningShibe,4,finite,Rapper Shibes,1,4500000,2,5,True
+Earth,Mining Shibe,miningShibe,5,finite,Space Shibes,2,25000000,5,19,True
+Earth,Mining Shibe,miningShibe,6,finite,Golden Helmet Upgrade,3,55000000,19,35,True
+Earth,Mining Shibe,miningShibe,7,finite,Diamond Helmet Upgrade,3,55000000,35,69,True
+Earth,Mining Shibe,miningShibe,8,finite,Reallyhardium Coating,5,250000000,69,130,True
+Earth,Mining Shibe,miningShibe,9,repeatable,Reallyhardium Coating II,7,265000000,130,142,True
+Earth,Mining Shibe,miningShibe,10,repeatable,Reallyhardium Coating III,9,530000000,142,283,True
+Earth,Mining Shibe,miningShibe,11,repeatable,Reallyhardium Coating IV,11,795000000,283,425,True
+Earth,Mining Shibe,miningShibe,12,repeatable,Reallyhardium Coating V,13,1060000000,425,566,True
+Earth,Mining Shibe,miningShibe,13,repeatable,Reallyhardium Coating VI,15,1325000000,566,708,True
+Earth,Mining Shibe,miningShibe,14,repeatable,Reallyhardium Coating VII,17,1590000000,708,849,True
+Earth,Mining Shibe,miningShibe,15,repeatable,Reallyhardium Coating VIII,19,1855000000,849,991,True
+Earth,Mining Shibe,miningShibe,16,repeatable,Reallyhardium Coating IX,21,2120000000,991,1132,True
+Earth,Mining Shibe,miningShibe,17,repeatable,Reallyhardium Coating X,23,2385000000,1132,1274,True
+Earth,Mining Shibe,miningShibe,18,repeatable,Reallyhardium Coating XI,25,2650000000,1274,1415,True
+Earth,Doge Kennels,dogeKennels,1,finite,More Axes,1,1100,2,3.2,True
+Earth,Doge Kennels,dogeKennels,2,finite,Paint Job,1,4000,3.2,4.3,True
+Earth,Doge Kennels,dogeKennels,3,finite,Micro-Rockets,1,42000,4.3,5,True
+Earth,Doge Kennels,dogeKennels,4,finite,Release the Doge,1,125000,5,7,True
+Earth,Doge Kennels,dogeKennels,5,finite,Jet Packs,1,3000000,7,11,True
+Earth,Doge Kennels,dogeKennels,6,finite,Safety First,3,30000000,11,20,True
+Earth,Doge Kennels,dogeKennels,7,finite,Golden Improvement,4,80000000,20,33,True
+Earth,Doge Kennels,dogeKennels,8,finite,Diamond Improvement,5,151000000,33,61,True
+Earth,Doge Kennels,dogeKennels,9,finite,Reallyhardium-coating,7,320000000,61,150,True
+Earth,Doge Kennels,dogeKennels,10,repeatable,Reallyhardium-coating II,10,339200000,150,165,True
+Earth,Doge Kennels,dogeKennels,11,repeatable,Reallyhardium-coating III,13,678400000,165,329,True
+Earth,Doge Kennels,dogeKennels,12,repeatable,Reallyhardium-coating IV,16,1017600000,329,494,True
+Earth,Doge Kennels,dogeKennels,13,repeatable,Reallyhardium-coating V,19,1356800000,494,658,True
+Earth,Doge Kennels,dogeKennels,14,repeatable,Reallyhardium-coating VI,22,1696000000,658,823,True
+Earth,Doge Kennels,dogeKennels,15,repeatable,Reallyhardium-coating VII,25,2035200000,823,987,True
+Earth,Doge Kennels,dogeKennels,16,repeatable,Reallyhardium-coating VIII,28,2374400000,987,1152,True
+Earth,Doge Kennels,dogeKennels,17,repeatable,Reallyhardium-coating IX,31,2713600000,1152,1316,True
+Earth,Doge Kennels,dogeKennels,18,repeatable,Reallyhardium-coating X,34,3052800000,1316,1481,True
+Earth,Doge Kennels,dogeKennels,19,repeatable,Reallyhardium-coating XI,37,3392000000,1481,1645,True
+Earth,Streamer Kittens,streamerKittens,1,finite,High Quality Pussy-cat,1,4200,4,7,True
+Earth,Streamer Kittens,streamerKittens,2,finite,More Kittens,1,99000,7,9,True
+Earth,Streamer Kittens,streamerKittens,3,finite,High-Speed Interwebs,1,392000,9,12,True
+Earth,Streamer Kittens,streamerKittens,4,finite,Intelligence,1,3250000,12,18,True
+Earth,Streamer Kittens,streamerKittens,5,finite,Stock Kittens,2,6500000,18,21,True
+Earth,Streamer Kittens,streamerKittens,6,finite,Catstronaut,3,82000000,21,23,True
+Earth,Streamer Kittens,streamerKittens,7,finite,Goldened Helmets,4,169000000,23,45,True
+Earth,Streamer Kittens,streamerKittens,8,finite,Diamond Helmets,5,290000000,45,70,True
+Earth,Streamer Kittens,streamerKittens,9,finite,Reallyhardium Catstronauts,7,399000000,70,169,True
+Earth,Streamer Kittens,streamerKittens,10,repeatable,Reallyhardium Catstronauts II,10,422940000,169,184,True
+Earth,Streamer Kittens,streamerKittens,11,repeatable,Reallyhardium Catstronauts III,13,845880000,184,369,True
+Earth,Streamer Kittens,streamerKittens,12,repeatable,Reallyhardium Catstronauts IV,16,1268820000,369,553,True
+Earth,Streamer Kittens,streamerKittens,13,repeatable,Reallyhardium Catstronauts V,19,1691760000,553,738,True
+Earth,Streamer Kittens,streamerKittens,14,repeatable,Reallyhardium Catstronauts VI,22,2114700000,738,922,True
+Earth,Streamer Kittens,streamerKittens,15,repeatable,Reallyhardium Catstronauts VII,25,2537640000,922,1107,True
+Earth,Streamer Kittens,streamerKittens,16,repeatable,Reallyhardium Catstronauts VIII,28,2960580000,1107,1291,True
+Earth,Streamer Kittens,streamerKittens,17,repeatable,Reallyhardium Catstronauts IX,31,3383520000,1291,1476,True
+Earth,Streamer Kittens,streamerKittens,18,repeatable,Reallyhardium Catstronauts X,34,3806460000,1476,1660,True
+Earth,Streamer Kittens,streamerKittens,19,repeatable,Reallyhardium Catstronauts XI,37,4229400000,1660,1845,True
+Earth,Space Rocket,spaceRocket,1,finite,Blue-Flame,1,52000,9,11,True
+Earth,Space Rocket,spaceRocket,2,finite,Warp Drive,2,1500000,11,14,True
+Earth,Space Rocket,spaceRocket,3,finite,Hull Upgrade,3,500000000,14,23,True
+Earth,Space Rocket,spaceRocket,4,finite,Olie Upgrade,4,600000000,23,28,True
+Earth,Space Rocket,spaceRocket,5,finite,Space Helmets,5,1000000000,28,48,True
+Earth,Space Rocket,spaceRocket,6,finite,Golden Helmet,5,1300000000,48,79,True
+Earth,Space Rocket,spaceRocket,7,finite,Diamond helmet,6,1600000000,79,159,True
+Earth,Space Rocket,spaceRocket,8,finite,Reallyhardium Helmet,7,300000000,159,215,True
+Earth,Space Rocket,spaceRocket,9,repeatable,Reallyhardium Helmet II,10,318000000,215,233,True
+Earth,Space Rocket,spaceRocket,10,repeatable,Reallyhardium Helmet III,13,636000000,233,466,True
+Earth,Space Rocket,spaceRocket,11,repeatable,Reallyhardium Helmet IV,16,954000000,466,698,True
+Earth,Space Rocket,spaceRocket,12,repeatable,Reallyhardium Helmet V,19,1272000000,698,931,True
+Earth,Space Rocket,spaceRocket,13,repeatable,Reallyhardium Helmet VI,22,1590000000,931,1164,True
+Earth,Space Rocket,spaceRocket,14,repeatable,Reallyhardium Helmet VII,25,1908000000,1164,1397,True
+Earth,Space Rocket,spaceRocket,15,repeatable,Reallyhardium Helmet VIII,28,2226000000,1397,1629,True
+Earth,Space Rocket,spaceRocket,16,repeatable,Reallyhardium Helmet IX,31,2544000000,1629,1862,True
+Earth,Space Rocket,spaceRocket,17,repeatable,Reallyhardium Helmet X,34,2862000000,1862,2095,True
+Earth,Space Rocket,spaceRocket,18,repeatable,Reallyhardium Helmet XI,37,3180000000,2095,2328,True
+Earth,Time Machine Mining Rig,timeMachineRig,1,finite,Roads?,3,24200000,66,88,True
+Earth,Time Machine Mining Rig,timeMachineRig,2,finite,Bling Bling,3,72000000,88,122,True
+Earth,Time Machine Mining Rig,timeMachineRig,3,finite,Diamond Bling,6,240000000,122,178,True
+Earth,Time Machine Mining Rig,timeMachineRig,4,finite,Hyper-Bling,8,800000000,178,300,True
+Earth,Time Machine Mining Rig,timeMachineRig,5,repeatable,Hyper-Bling II,11,848000000,300,323,True
+Earth,Time Machine Mining Rig,timeMachineRig,6,repeatable,Hyper-Bling III,14,1696000000,323,646,True
+Earth,Time Machine Mining Rig,timeMachineRig,7,repeatable,Hyper-Bling IV,17,2544000000,646,969,True
+Earth,Time Machine Mining Rig,timeMachineRig,8,repeatable,Hyper-Bling V,20,3392000000,969,1292,True
+Earth,Time Machine Mining Rig,timeMachineRig,9,repeatable,Hyper-Bling VI,23,4240000000,1292,1615,True
+Earth,Time Machine Mining Rig,timeMachineRig,10,repeatable,Hyper-Bling VII,26,5088000000,1615,1938,True
+Earth,Time Machine Mining Rig,timeMachineRig,11,repeatable,Hyper-Bling VIII,29,5936000000,1938,2261,True
+Earth,Time Machine Mining Rig,timeMachineRig,12,repeatable,Hyper-Bling IX,32,6784000000,2261,2584,True
+Earth,Time Machine Mining Rig,timeMachineRig,13,repeatable,Hyper-Bling X,35,7632000000,2584,2907,True
+Earth,Time Machine Mining Rig,timeMachineRig,14,repeatable,Hyper-Bling XI,38,8480000000,2907,3230,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,1,finite,Delivery Service,15,20000000000,999,1950,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,2,finite,Hire a crew,30,45000000000,1950,3456,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,3,finite,Upside Doge,40,75000000000,3456,4210,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,4,finite,The Upside of Gold,50,150000000000,4210,5420,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,5,finite,The Cost of Diamonds,60,300000000000,5420,6900,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,6,finite,Hype Me Up,99,2222000000000,6900,15000,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,7,repeatable,Hype Me Up II,125,2355320000000,15000,15849,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,8,repeatable,Hype Me Up III,151,4710640000000,15849,31698,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,9,repeatable,Hype Me Up IV,177,7065960000000,31698,47547,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,10,repeatable,Hype Me Up V,203,9421280000000,47547,63396,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,11,repeatable,Hype Me Up VI,229,11776600000000,63396,79245,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,12,repeatable,Hype Me Up VII,255,14131920000000,79245,95094,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,13,repeatable,Hype Me Up VIII,281,16487240000000,95094,110943,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,14,repeatable,Hype Me Up IX,307,18842560000000,110943,126792,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,15,repeatable,Hype Me Up X,333,21197880000000,126792,142641,True
+Earth,Infinite Dogebility Drive,infiniteDogebility,16,repeatable,Hype Me Up XI,359,23553200000000,142641,158490,True
+Moon,Moon Base,moonBase,1,finite,Excavator Assistance,1,60000,12,15,True
+Moon,Moon Base,moonBase,2,finite,More Axes v2,1,315000,15,17,True
+Moon,Moon Base,moonBase,3,finite,Gold-Coated Base,3,2250000,17,29,True
+Moon,Moon Base,moonBase,4,finite,Diamond-coated Base,5,65000000,29,90,True
+Moon,Moon Base,moonBase,5,finite,Reallyhardium Coat,7,300000000,90,260,True
+Moon,Moon Base,moonBase,6,repeatable,Reallyhardium Coat II,10,318000000,260,280,True
+Moon,Moon Base,moonBase,7,repeatable,Reallyhardium Coat III,13,636000000,280,560,True
+Moon,Moon Base,moonBase,8,repeatable,Reallyhardium Coat IV,16,954000000,560,840,True
+Moon,Moon Base,moonBase,9,repeatable,Reallyhardium Coat V,19,1272000000,840,1120,True
+Moon,Moon Base,moonBase,10,repeatable,Reallyhardium Coat VI,22,1590000000,1120,1400,True
+Moon,Moon Base,moonBase,11,repeatable,Reallyhardium Coat VII,25,1908000000,1400,1680,True
+Moon,Moon Base,moonBase,12,repeatable,Reallyhardium Coat VIII,28,2226000000,1680,1960,True
+Moon,Moon Base,moonBase,13,repeatable,Reallyhardium Coat IX,31,2544000000,1960,2240,True
+Moon,Moon Base,moonBase,14,repeatable,Reallyhardium Coat X,34,2862000000,2240,2520,True
+Moon,Moon Base,moonBase,15,repeatable,Reallyhardium Coat XI,37,3180000000,2520,2800,True
+Moon,Moon Shibe,moonShibe,1,finite,Suit Up,1,54000,9,13,True
+Moon,Moon Shibe,moonShibe,2,finite,Head-Mounted Pickaxes,2,290000,13,15,True
+Moon,Moon Shibe,moonShibe,3,finite,Gold-Suit Up,3,2000000,15,19,True
+Moon,Moon Shibe,moonShibe,4,finite,Diamond-Suit Up,4,24000000,19,49,True
+Moon,Moon Shibe,moonShibe,5,finite,Hyper-Suit Up,6,210000000,49,230,True
+Moon,Moon Shibe,moonShibe,6,repeatable,Hyper-Suit Up II,9,222600000,230,248,True
+Moon,Moon Shibe,moonShibe,7,repeatable,Hyper-Suit Up III,12,445200000,248,495,True
+Moon,Moon Shibe,moonShibe,8,repeatable,Hyper-Suit Up IV,15,667800000,495,743,True
+Moon,Moon Shibe,moonShibe,9,repeatable,Hyper-Suit Up V,18,890400000,743,990,True
+Moon,Moon Shibe,moonShibe,10,repeatable,Hyper-Suit Up VI,21,1113000000,990,1238,True
+Moon,Moon Shibe,moonShibe,11,repeatable,Hyper-Suit Up VII,24,1335600000,1238,1485,True
+Moon,Moon Shibe,moonShibe,12,repeatable,Hyper-Suit Up VIII,27,1558200000,1485,1733,True
+Moon,Moon Shibe,moonShibe,13,repeatable,Hyper-Suit Up IX,30,1780800000,1733,1980,True
+Moon,Moon Shibe,moonShibe,14,repeatable,Hyper-Suit Up X,33,2003400000,1980,2228,True
+Moon,Moon Shibe,moonShibe,15,repeatable,Hyper-Suit Up XI,36,2226000000,2228,2475,True
+Moon,Doge Car,dogeCar,1,finite,Shade Miner,1,64500,12,15,True
+Moon,Doge Car,dogeCar,2,finite,Tank,1,400000,15,20,True
+Moon,Doge Car,dogeCar,3,finite,Roof Miner,2,5000000,20,24,True
+Moon,Doge Car,dogeCar,4,finite,Gold Miner,3,30000000,24,75,True
+Moon,Doge Car,dogeCar,5,finite,Diamond Miner,5,99000000,75,159,True
+Moon,Doge Car,dogeCar,6,finite,Reallyhardium Miner,7,250000000,159,255,True
+Moon,Doge Car,dogeCar,7,repeatable,Reallyhardium Miner II,10,265000000,255,275,True
+Moon,Doge Car,dogeCar,8,repeatable,Reallyhardium Miner III,13,530000000,275,550,True
+Moon,Doge Car,dogeCar,9,repeatable,Reallyhardium Miner IV,16,795000000,550,824,True
+Moon,Doge Car,dogeCar,10,repeatable,Reallyhardium Miner V,19,1060000000,824,1099,True
+Moon,Doge Car,dogeCar,11,repeatable,Reallyhardium Miner VI,22,1325000000,1099,1374,True
+Moon,Doge Car,dogeCar,12,repeatable,Reallyhardium Miner VII,25,1590000000,1374,1649,True
+Moon,Doge Car,dogeCar,13,repeatable,Reallyhardium Miner VIII,28,1855000000,1649,1923,True
+Moon,Doge Car,dogeCar,14,repeatable,Reallyhardium Miner IX,31,2120000000,1923,2198,True
+Moon,Doge Car,dogeCar,15,repeatable,Reallyhardium Miner X,34,2385000000,2198,2473,True
+Moon,Doge Car,dogeCar,16,repeatable,Reallyhardium Miner XI,37,2650000000,2473,2748,True
+Moon,Lander Shibe,landerShibe,1,finite,Candy-Lander Shibe,1,550000,20,24,True
+Moon,Lander Shibe,landerShibe,2,finite,Double-Lander Shibe,1,4000000,24,26,True
+Moon,Lander Shibe,landerShibe,3,finite,Triple-Lander Shibe,3,75000000,26,35,True
+Moon,Lander Shibe,landerShibe,4,finite,Diamonds for the Lander,5,175000000,35,105,True
+Moon,Lander Shibe,landerShibe,5,finite,Really Hardened Lander,7,340000000,105,268,True
+Moon,Lander Shibe,landerShibe,6,repeatable,Really Hardened Lander II,10,360400000,268,288,True
+Moon,Lander Shibe,landerShibe,7,repeatable,Really Hardened Lander III,13,720800000,288,577,True
+Moon,Lander Shibe,landerShibe,8,repeatable,Really Hardened Lander IV,16,1081200000,577,865,True
+Moon,Lander Shibe,landerShibe,9,repeatable,Really Hardened Lander V,19,1441600000,865,1154,True
+Moon,Lander Shibe,landerShibe,10,repeatable,Really Hardened Lander VI,22,1802000000,1154,1442,True
+Moon,Lander Shibe,landerShibe,11,repeatable,Really Hardened Lander VII,25,2162400000,1442,1730,True
+Moon,Lander Shibe,landerShibe,12,repeatable,Really Hardened Lander VIII,28,2522800000,1730,2019,True
+Moon,Lander Shibe,landerShibe,13,repeatable,Really Hardened Lander IX,31,2883200000,2019,2307,True
+Moon,Lander Shibe,landerShibe,14,repeatable,Really Hardened Lander X,34,3243600000,2307,2596,True
+Moon,Lander Shibe,landerShibe,15,repeatable,Really Hardened Lander XI,37,3604000000,2596,2884,True
+Moon,Mars Rocket,marsRocket,1,finite,Golden Rocket Plating,3,22500000,50,90,True
+Moon,Mars Rocket,marsRocket,2,finite,Diamond Rocket Plating,5,85000000,90,150,True
+Moon,Mars Rocket,marsRocket,3,finite,Reallyhardium Rocket Plating,7,355000000,150,275,True
+Moon,Mars Rocket,marsRocket,4,repeatable,Reallyhardium Rocket Plating II,10,376300000,275,296,True
+Moon,Mars Rocket,marsRocket,5,repeatable,Reallyhardium Rocket Plating III,13,752600000,296,592,True
+Moon,Mars Rocket,marsRocket,6,repeatable,Reallyhardium Rocket Plating IV,16,1128900000,592,887,True
+Moon,Mars Rocket,marsRocket,7,repeatable,Reallyhardium Rocket Plating V,19,1505200000,887,1183,True
+Moon,Mars Rocket,marsRocket,8,repeatable,Reallyhardium Rocket Plating VI,22,1881500000,1183,1479,True
+Moon,Mars Rocket,marsRocket,9,repeatable,Reallyhardium Rocket Plating VII,25,2257800000,1479,1775,True
+Moon,Mars Rocket,marsRocket,10,repeatable,Reallyhardium Rocket Plating VIII,28,2634100000,1775,2070,True
+Moon,Mars Rocket,marsRocket,11,repeatable,Reallyhardium Rocket Plating IX,31,3010400000,2070,2366,True
+Moon,Mars Rocket,marsRocket,12,repeatable,Reallyhardium Rocket Plating X,34,3386700000,2366,2662,True
+Moon,Mars Rocket,marsRocket,13,repeatable,Reallyhardium Rocket Plating XI,37,3763000000,2662,2958,True
+Moon,Doge Gate,dogeGate,1,finite,Golden Gate,5,6900000000,155,575,True
+Moon,Doge Gate,dogeGate,2,finite,Diamond Gate,8,9900000000,575,1875,True
+Moon,Doge Gate,dogeGate,3,finite,Really Hard Gate,13,30000000000,1875,3575,True
+Moon,Doge Gate,dogeGate,4,repeatable,Really Hard Gate II,17,31800000000,3575,3767,True
+Moon,Doge Gate,dogeGate,5,repeatable,Really Hard Gate III,21,63600000000,3767,7534,True
+Moon,Doge Gate,dogeGate,6,repeatable,Really Hard Gate IV,25,95400000000,7534,11300,True
+Moon,Doge Gate,dogeGate,7,repeatable,Really Hard Gate V,29,127200000000,11300,15067,True
+Moon,Doge Gate,dogeGate,8,repeatable,Really Hard Gate VI,33,159000000000,15067,18834,True
+Moon,Doge Gate,dogeGate,9,repeatable,Really Hard Gate VII,37,190800000000,18834,22601,True
+Moon,Doge Gate,dogeGate,10,repeatable,Really Hard Gate VIII,41,222600000000,22601,26367,True
+Moon,Doge Gate,dogeGate,11,repeatable,Really Hard Gate IX,45,254400000000,26367,30134,True
+Moon,Doge Gate,dogeGate,12,repeatable,Really Hard Gate X,49,286200000000,30134,33901,True
+Moon,Doge Gate,dogeGate,13,repeatable,Really Hard Gate XI,53,318000000000,33901,37668,True
+Mars,Mars Base,marsBase,1,finite,Double Mars Bases,1,750000,23,31,True
+Mars,Mars Base,marsBase,2,finite,Quad Mars Base,2,6000000,31,38,True
+Mars,Mars Base,marsBase,3,finite,Heckin-Ton of Bases,4,400000000,38,47,True
+Mars,Mars Base,marsBase,4,finite,Spray It With Gold,6,800000000,47,99,True
+Mars,Mars Base,marsBase,5,finite,Apply To Outside Only,10,1600000000,99,280,True
+Mars,Mars Base,marsBase,6,finite,Don't Spill Any,10,2100000000,280,520,True
+Mars,Mars Base,marsBase,7,repeatable,Don't Spill Any II,14,2226000000,520,556,True
+Mars,Mars Base,marsBase,8,repeatable,Don't Spill Any III,18,4452000000,556,1112,True
+Mars,Mars Base,marsBase,9,repeatable,Don't Spill Any IV,22,6678000000,1112,1668,True
+Mars,Mars Base,marsBase,10,repeatable,Don't Spill Any V,26,8904000000,1668,2224,True
+Mars,Mars Base,marsBase,11,repeatable,Don't Spill Any VI,30,11130000000,2224,2780,True
+Mars,Mars Base,marsBase,12,repeatable,Don't Spill Any VII,34,13356000000,2780,3336,True
+Mars,Mars Base,marsBase,13,repeatable,Don't Spill Any VIII,38,15582000000,3336,3892,True
+Mars,Mars Base,marsBase,14,repeatable,Don't Spill Any IX,42,17808000000,3892,4448,True
+Mars,Mars Base,marsBase,15,repeatable,Don't Spill Any X,46,20034000000,4448,5004,True
+Mars,Mars Base,marsBase,16,repeatable,Don't Spill Any XI,50,22260000000,5004,5560,True
+Mars,Party Shibe,partyShibe,1,finite,Proper Raving,1,610000,26,35,True
+Mars,Party Shibe,partyShibe,2,finite,Dual-Wielding Ravers,2,1250000,35,40,True
+Mars,Party Shibe,partyShibe,3,finite,Sugar Baby,3,38000000,40,78,True
+Mars,Party Shibe,partyShibe,4,finite,Shiny Shibe,5,99000000,78,139,True
+Mars,Party Shibe,partyShibe,5,finite,Shinier Shibe,7,320000000,139,199,True
+Mars,Party Shibe,partyShibe,6,finite,Shiniest Shibe,9,900000000,199,428,True
+Mars,Party Shibe,partyShibe,7,repeatable,Shiniest Shibe II,12,954000000,428,458,True
+Mars,Party Shibe,partyShibe,8,repeatable,Shiniest Shibe III,15,1908000000,458,917,True
+Mars,Party Shibe,partyShibe,9,repeatable,Shiniest Shibe IV,18,2862000000,917,1375,True
+Mars,Party Shibe,partyShibe,10,repeatable,Shiniest Shibe V,21,3816000000,1375,1834,True
+Mars,Party Shibe,partyShibe,11,repeatable,Shiniest Shibe VI,24,4770000000,1834,2292,True
+Mars,Party Shibe,partyShibe,12,repeatable,Shiniest Shibe VII,27,5724000000,2292,2750,True
+Mars,Party Shibe,partyShibe,13,repeatable,Shiniest Shibe VIII,30,6678000000,2750,3209,True
+Mars,Party Shibe,partyShibe,14,repeatable,Shiniest Shibe IX,33,7632000000,3209,3667,True
+Mars,Party Shibe,partyShibe,15,repeatable,Shiniest Shibe X,36,8586000000,3667,4126,True
+Mars,Party Shibe,partyShibe,16,repeatable,Shiniest Shibe XI,39,9540000000,4126,4584,True
+Mars,CuriousiDoge,curiosiDoge,1,finite,Party Mode,1,620000,30,38,True
+Mars,CuriousiDoge,curiosiDoge,2,finite,Party Hydra,2,2250000,38,48,True
+Mars,CuriousiDoge,curiosiDoge,3,finite,Rocket Mode,4,49900000,48,59,True
+Mars,CuriousiDoge,curiosiDoge,4,repeatable,Rocket Mode II,7,68862000,59,62,True
+Mars,CuriousiDoge,curiosiDoge,5,repeatable,Rocket Mode III,11,137724000,62,123,True
+Mars,CuriousiDoge,curiosiDoge,6,repeatable,Rocket Mode IV,14,206586000,123,185,True
+Mars,CuriousiDoge,curiosiDoge,7,repeatable,Rocket Mode V,17,275448000,185,246,True
+Mars,CuriousiDoge,curiosiDoge,8,repeatable,Rocket Mode VI,20,344310000,246,308,True
+Mars,CuriousiDoge,curiosiDoge,9,repeatable,Rocket Mode VII,23,413172000,308,370,True
+Mars,CuriousiDoge,curiosiDoge,10,repeatable,Rocket Mode VIII,26,482034000,370,431,True
+Mars,CuriousiDoge,curiosiDoge,11,repeatable,Rocket Mode IX,29,550896000,431,493,True
+Mars,CuriousiDoge,curiosiDoge,12,repeatable,Rocket Mode X,32,619758000,493,554,True
+Mars,CuriousiDoge,curiosiDoge,13,repeatable,Rocket Mode XI,35,688620000,554,616,True
+Mars,DJ Kittenz,djKittenz,1,finite,D.I.S.C.O.,1,1450000,45,57,True
+Mars,DJ Kittenz,djKittenz,2,finite,Swag Upgrade,3,37500000,57,75,True
+Mars,DJ Kittenz,djKittenz,3,finite,Wash-Oops,4,120000000,75,99,True
+Mars,DJ Kittenz,djKittenz,4,finite,Golden Hits,5,290000000,99,133,True
+Mars,DJ Kittenz,djKittenz,5,finite,Diamond Hits?,7,525000000,133,200,True
+Mars,DJ Kittenz,djKittenz,6,finite,Really Hard Hits,9,900000000,200,440,True
+Mars,DJ Kittenz,djKittenz,7,repeatable,Really Hard Hits II,12,954000000,440,471,True
+Mars,DJ Kittenz,djKittenz,8,repeatable,Really Hard Hits III,15,1908000000,471,942,True
+Mars,DJ Kittenz,djKittenz,9,repeatable,Really Hard Hits IV,18,2862000000,942,1413,True
+Mars,DJ Kittenz,djKittenz,10,repeatable,Really Hard Hits V,21,3816000000,1413,1884,True
+Mars,DJ Kittenz,djKittenz,11,repeatable,Really Hard Hits VI,24,4770000000,1884,2355,True
+Mars,DJ Kittenz,djKittenz,12,repeatable,Really Hard Hits VII,27,5724000000,2355,2826,True
+Mars,DJ Kittenz,djKittenz,13,repeatable,Really Hard Hits VIII,30,6678000000,2826,3297,True
+Mars,DJ Kittenz,djKittenz,14,repeatable,Really Hard Hits IX,33,7632000000,3297,3768,True
+Mars,DJ Kittenz,djKittenz,15,repeatable,Really Hard Hits X,36,8586000000,3768,4239,True
+Mars,DJ Kittenz,djKittenz,16,repeatable,Really Hard Hits XI,39,9540000000,4239,4710,True
+Mars,Space Bass,spaceBass,1,finite,Golden Bass,4,265000000,70,122,True
+Mars,Space Bass,spaceBass,2,finite,Diamond Bass,7,565000000,122,229,True
+Mars,Space Bass,spaceBass,3,finite,Really Hard Vibrations,9,1000000000,229,450,True
+Mars,Space Bass,spaceBass,4,repeatable,Really Hard Vibrations II,12,1060000000,450,482,True
+Mars,Space Bass,spaceBass,5,repeatable,Really Hard Vibrations III,15,2120000000,482,963,True
+Mars,Space Bass,spaceBass,6,repeatable,Really Hard Vibrations IV,18,3180000000,963,1445,True
+Mars,Space Bass,spaceBass,7,repeatable,Really Hard Vibrations V,21,4240000000,1445,1926,True
+Mars,Space Bass,spaceBass,8,repeatable,Really Hard Vibrations VI,24,5300000000,1926,2408,True
+Mars,Space Bass,spaceBass,9,repeatable,Really Hard Vibrations VII,27,6360000000,2408,2889,True
+Mars,Space Bass,spaceBass,10,repeatable,Really Hard Vibrations VIII,30,7420000000,2889,3371,True
+Mars,Space Bass,spaceBass,11,repeatable,Really Hard Vibrations IX,33,8480000000,3371,3852,True
+Mars,Space Bass,spaceBass,12,repeatable,Really Hard Vibrations X,36,9540000000,3852,4334,True
+Mars,Space Bass,spaceBass,13,repeatable,Really Hard Vibrations XI,39,10600000000,4334,4815,True
+Mars,Jupiter Rocket,jupiterRocket,1,finite,Golden Rocket Plating,4,125000000,100,200,True
+Mars,Jupiter Rocket,jupiterRocket,2,finite,Diamond Rocket Plating,6,240000000,200,298,True
+Mars,Jupiter Rocket,jupiterRocket,3,finite,Reallyhardium Rocket Plating,9,1500000000,298,498,True
+Mars,Jupiter Rocket,jupiterRocket,4,repeatable,Reallyhardium Rocket Plating II,12,1590000000,498,532,True
+Mars,Jupiter Rocket,jupiterRocket,5,repeatable,Reallyhardium Rocket Plating III,15,3180000000,532,1064,True
+Mars,Jupiter Rocket,jupiterRocket,6,repeatable,Reallyhardium Rocket Plating IV,18,4770000000,1064,1596,True
+Mars,Jupiter Rocket,jupiterRocket,7,repeatable,Reallyhardium Rocket Plating V,21,6360000000,1596,2128,True
+Mars,Jupiter Rocket,jupiterRocket,8,repeatable,Reallyhardium Rocket Plating VI,24,7950000000,2128,2660,True
+Mars,Jupiter Rocket,jupiterRocket,9,repeatable,Reallyhardium Rocket Plating VII,27,9540000000,2660,3191,True
+Mars,Jupiter Rocket,jupiterRocket,10,repeatable,Reallyhardium Rocket Plating VIII,30,11130000000,3191,3723,True
+Mars,Jupiter Rocket,jupiterRocket,11,repeatable,Reallyhardium Rocket Plating IX,33,12720000000,3723,4255,True
+Mars,Jupiter Rocket,jupiterRocket,12,repeatable,Reallyhardium Rocket Plating X,36,14310000000,4255,4787,True
+Mars,Jupiter Rocket,jupiterRocket,13,repeatable,Reallyhardium Rocket Plating XI,39,15900000000,4787,5319,True
+Jupiter,Cloud Base,cloudBase,1,finite,Sensor Package,2,30000000,45,139,True
+Jupiter,Cloud Base,cloudBase,2,finite,AI Package,3,100000000,139,169,True
+Jupiter,Cloud Base,cloudBase,3,finite,What Else But Gold,4,285000000,169,310,True
+Jupiter,Cloud Base,cloudBase,4,finite,Are Those Real Diamonds,6,780000000,310,446,True
+Jupiter,Cloud Base,cloudBase,5,finite,Reallyhardium Package,9,1500000000,446,1333,True
+Jupiter,Cloud Base,cloudBase,6,repeatable,Reallyhardium Package II,12,1590000000,1333,1409,True
+Jupiter,Cloud Base,cloudBase,7,repeatable,Reallyhardium Package III,15,3180000000,1409,2817,True
+Jupiter,Cloud Base,cloudBase,8,repeatable,Reallyhardium Package IV,18,4770000000,2817,4226,True
+Jupiter,Cloud Base,cloudBase,9,repeatable,Reallyhardium Package V,21,6360000000,4226,5635,True
+Jupiter,Cloud Base,cloudBase,10,repeatable,Reallyhardium Package VI,24,7950000000,5635,7043,True
+Jupiter,Cloud Base,cloudBase,11,repeatable,Reallyhardium Package VII,27,9540000000,7043,8452,True
+Jupiter,Cloud Base,cloudBase,12,repeatable,Reallyhardium Package VIII,30,11130000000,8452,9861,True
+Jupiter,Cloud Base,cloudBase,13,repeatable,Reallyhardium Package IX,33,12720000000,9861,11269,True
+Jupiter,Cloud Base,cloudBase,14,repeatable,Reallyhardium Package X,36,14310000000,11269,12678,True
+Jupiter,Cloud Base,cloudBase,15,repeatable,Reallyhardium Package XI,39,15900000000,12678,14086,True
+Jupiter,Super Shibe,superShibe,1,finite,Cloud Juice,3,35000000,50,79,True
+Jupiter,Super Shibe,superShibe,2,finite,Helmet Factor Two,4,77000000,79,140,True
+Jupiter,Super Shibe,superShibe,3,finite,We Can Do Better,6,180000000,140,209,True
+Jupiter,Super Shibe,superShibe,4,finite,The Best Protection,8,850000000,209,1000,True
+Jupiter,Super Shibe,superShibe,5,repeatable,The Best Protection II,11,901000000,1000,1058,True
+Jupiter,Super Shibe,superShibe,6,repeatable,The Best Protection III,14,1802000000,1058,2116,True
+Jupiter,Super Shibe,superShibe,7,repeatable,The Best Protection IV,17,2703000000,2116,3174,True
+Jupiter,Super Shibe,superShibe,8,repeatable,The Best Protection V,20,3604000000,3174,4232,True
+Jupiter,Super Shibe,superShibe,9,repeatable,The Best Protection VI,23,4505000000,4232,5290,True
+Jupiter,Super Shibe,superShibe,10,repeatable,The Best Protection VII,26,5406000000,5290,6348,True
+Jupiter,Super Shibe,superShibe,11,repeatable,The Best Protection VIII,29,6307000000,6348,7406,True
+Jupiter,Super Shibe,superShibe,12,repeatable,The Best Protection IX,32,7208000000,7406,8464,True
+Jupiter,Super Shibe,superShibe,13,repeatable,The Best Protection X,35,8109000000,8464,9522,True
+Jupiter,Super Shibe,superShibe,14,repeatable,The Best Protection XI,38,9010000000,9522,10580,True
+Jupiter,Doge Air Ship,dogeAirShip,1,finite,Rockets Beats Balloons,5,160000000,80,140,True
+Jupiter,Doge Air Ship,dogeAirShip,2,finite,Golden Rockets,6,220000000,140,180,True
+Jupiter,Doge Air Ship,dogeAirShip,3,finite,Diamond Rockets,7,350000000,180,230,True
+Jupiter,Doge Air Ship,dogeAirShip,4,finite,Reallyhardiumated Rockets,10,950000000,230,1150,True
+Jupiter,Doge Air Ship,dogeAirShip,5,repeatable,Reallyhardiumated Rockets II,14,1007000000,1150,1218,True
+Jupiter,Doge Air Ship,dogeAirShip,6,repeatable,Reallyhardiumated Rockets III,18,2014000000,1218,2435,True
+Jupiter,Doge Air Ship,dogeAirShip,7,repeatable,Reallyhardiumated Rockets IV,22,3021000000,2435,3653,True
+Jupiter,Doge Air Ship,dogeAirShip,8,repeatable,Reallyhardiumated Rockets V,26,4028000000,3653,4870,True
+Jupiter,Doge Air Ship,dogeAirShip,9,repeatable,Reallyhardiumated Rockets VI,30,5035000000,4870,6088,True
+Jupiter,Doge Air Ship,dogeAirShip,10,repeatable,Reallyhardiumated Rockets VII,34,6042000000,6088,7305,True
+Jupiter,Doge Air Ship,dogeAirShip,11,repeatable,Reallyhardiumated Rockets VIII,38,7049000000,7305,8523,True
+Jupiter,Doge Air Ship,dogeAirShip,12,repeatable,Reallyhardiumated Rockets IX,42,8056000000,8523,9740,True
+Jupiter,Doge Air Ship,dogeAirShip,13,repeatable,Reallyhardiumated Rockets X,46,9063000000,9740,10958,True
+Jupiter,Doge Air Ship,dogeAirShip,14,repeatable,Reallyhardiumated Rockets XI,50,10070000000,10958,12175,True
+Jupiter,Flying Doggo,flyingDoggo,1,finite,Doggo Bling,3,65000000,120,140,True
+Jupiter,Flying Doggo,flyingDoggo,2,finite,Gotta Go Fast,4,100000000,140,165,True
+Jupiter,Flying Doggo,flyingDoggo,3,finite,Gotta Go Faster,5,280000000,165,260,True
+Jupiter,Flying Doggo,flyingDoggo,4,finite,Gotta Go Really Fast,7,510000000,260,485,True
+Jupiter,Flying Doggo,flyingDoggo,5,finite,Is This Legal?,9,1000000000,485,1200,True
+Jupiter,Flying Doggo,flyingDoggo,6,repeatable,Is This Legal? II,12,1060000000,1200,1269,True
+Jupiter,Flying Doggo,flyingDoggo,7,repeatable,Is This Legal? III,15,2120000000,1269,2538,True
+Jupiter,Flying Doggo,flyingDoggo,8,repeatable,Is This Legal? IV,18,3180000000,2538,3807,True
+Jupiter,Flying Doggo,flyingDoggo,9,repeatable,Is This Legal? V,21,4240000000,3807,5076,True
+Jupiter,Flying Doggo,flyingDoggo,10,repeatable,Is This Legal? VI,24,5300000000,5076,6345,True
+Jupiter,Flying Doggo,flyingDoggo,11,repeatable,Is This Legal? VII,27,6360000000,6345,7614,True
+Jupiter,Flying Doggo,flyingDoggo,12,repeatable,Is This Legal? VIII,30,7420000000,7614,8883,True
+Jupiter,Flying Doggo,flyingDoggo,13,repeatable,Is This Legal? IX,33,8480000000,8883,10152,True
+Jupiter,Flying Doggo,flyingDoggo,14,repeatable,Is This Legal? X,36,9540000000,10152,11421,True
+Jupiter,Flying Doggo,flyingDoggo,15,repeatable,Is This Legal? XI,39,10600000000,11421,12690,True
+Jupiter,TARDogeIS,tardogeis,1,finite,Rockets Equals Wow,5,195000000,150,192,True
+Jupiter,TARDogeIS,tardogeis,2,finite,"Better, Faster Rockets",6,300000000,192,300,True
+Jupiter,TARDogeIS,tardogeis,3,finite,Hard Rock Ets,7,480000000,300,499,True
+Jupiter,TARDogeIS,tardogeis,4,finite,These Rockets Go To 11,10,1150000000,499,1399,True
+Jupiter,TARDogeIS,tardogeis,5,repeatable,These Rockets Go To 11 II,14,1219000000,1399,1479,True
+Jupiter,TARDogeIS,tardogeis,6,repeatable,These Rockets Go To 11 III,18,2438000000,1479,2958,True
+Jupiter,TARDogeIS,tardogeis,7,repeatable,These Rockets Go To 11 IV,22,3657000000,2958,4437,True
+Jupiter,TARDogeIS,tardogeis,8,repeatable,These Rockets Go To 11 V,26,4876000000,4437,5916,True
+Jupiter,TARDogeIS,tardogeis,9,repeatable,These Rockets Go To 11 VI,30,6095000000,5916,7395,True
+Jupiter,TARDogeIS,tardogeis,10,repeatable,These Rockets Go To 11 VII,34,7314000000,7395,8874,True
+Jupiter,TARDogeIS,tardogeis,11,repeatable,These Rockets Go To 11 VIII,38,8533000000,8874,10353,True
+Jupiter,TARDogeIS,tardogeis,12,repeatable,These Rockets Go To 11 IX,42,9752000000,10353,11832,True
+Jupiter,TARDogeIS,tardogeis,13,repeatable,These Rockets Go To 11 X,46,10971000000,11832,13311,True
+Jupiter,TARDogeIS,tardogeis,14,repeatable,These Rockets Go To 11 XI,50,12190000000,13311,14790,True
+Jupiter,DogeStar,dogeStar,1,finite,That's Gold Jerry!,6,7500000000,420,920,True
+Jupiter,DogeStar,dogeStar,2,finite,Are Those Diamonds Jerry?!,10,12500000000,920,2770,True
+Jupiter,DogeStar,dogeStar,3,finite,What IS that Jerry?,13,20000000000,2770,4820,True
+Jupiter,DogeStar,dogeStar,4,repeatable,What IS that Jerry? II,17,21200000000,4820,5074,True
+Jupiter,DogeStar,dogeStar,5,repeatable,What IS that Jerry? III,21,42400000000,5074,10148,True
+Jupiter,DogeStar,dogeStar,6,repeatable,What IS that Jerry? IV,25,63600000000,10148,15222,True
+Jupiter,DogeStar,dogeStar,7,repeatable,What IS that Jerry? V,29,84800000000,15222,20296,True
+Jupiter,DogeStar,dogeStar,8,repeatable,What IS that Jerry? VI,33,106000000000,20296,25370,True
+Jupiter,DogeStar,dogeStar,9,repeatable,What IS that Jerry? VII,37,127200000000,25370,30444,True
+Jupiter,DogeStar,dogeStar,10,repeatable,What IS that Jerry? VIII,41,148400000000,30444,35518,True
+Jupiter,DogeStar,dogeStar,11,repeatable,What IS that Jerry? IX,45,169600000000,35518,40592,True
+Jupiter,DogeStar,dogeStar,12,repeatable,What IS that Jerry? X,49,190800000000,40592,45666,True
+Jupiter,DogeStar,dogeStar,13,repeatable,What IS that Jerry? XI,53,212000000000,45666,50740,True
+Titan,Titan Base,titanBase,1,finite,Golden Plates,4,1000000000,165,400,True
+Titan,Titan Base,titanBase,2,finite,Diamond Plates,7,2000000000,400,700,True
+Titan,Titan Base,titanBase,3,finite,Reallyhardium Plates,9,4000000000,700,1800,True
+Titan,Titan Base,titanBase,4,repeatable,Reallyhardium Plates II,12,4240000000,1800,1899,True
+Titan,Titan Base,titanBase,5,repeatable,Reallyhardium Plates III,15,8480000000,1899,3798,True
+Titan,Titan Base,titanBase,6,repeatable,Reallyhardium Plates IV,18,12720000000,3798,5697,True
+Titan,Titan Base,titanBase,7,repeatable,Reallyhardium Plates V,21,16960000000,5697,7596,True
+Titan,Titan Base,titanBase,8,repeatable,Reallyhardium Plates VI,24,21200000000,7596,9495,True
+Titan,Titan Base,titanBase,9,repeatable,Reallyhardium Plates VII,27,25440000000,9495,11394,True
+Titan,Titan Base,titanBase,10,repeatable,Reallyhardium Plates VIII,30,29680000000,11394,13293,True
+Titan,Titan Base,titanBase,11,repeatable,Reallyhardium Plates IX,33,33920000000,13293,15192,True
+Titan,Titan Base,titanBase,12,repeatable,Reallyhardium Plates X,36,38160000000,15192,17091,True
+Titan,Titan Base,titanBase,13,repeatable,Reallyhardium Plates XI,39,42400000000,17091,18990,True
+Titan,Robo Shibe,roboShibe,1,finite,Deeper Learning,4,195000000,195,352,True
+Titan,Robo Shibe,roboShibe,2,finite,Superintelligence,4,295000000,352,502,True
+Titan,Robo Shibe,roboShibe,3,finite,Super-gold,5,620000000,502,895,True
+Titan,Robo Shibe,roboShibe,4,finite,Super Hard,7,1337000000,895,1337,True
+Titan,Robo Shibe,roboShibe,5,finite,Super Duper,10,2337000000,1337,3337,True
+Titan,Robo Shibe,roboShibe,6,repeatable,Super Duper II,14,2477220000,3337,3514,True
+Titan,Robo Shibe,roboShibe,7,repeatable,Super Duper III,18,4954440000,3514,7028,True
+Titan,Robo Shibe,roboShibe,8,repeatable,Super Duper IV,22,7431660000,7028,10542,True
+Titan,Robo Shibe,roboShibe,9,repeatable,Super Duper V,26,9908880000,10542,14055,True
+Titan,Robo Shibe,roboShibe,10,repeatable,Super Duper VI,30,12386100000,14055,17569,True
+Titan,Robo Shibe,roboShibe,11,repeatable,Super Duper VII,34,14863320000,17569,21083,True
+Titan,Robo Shibe,roboShibe,12,repeatable,Super Duper VIII,38,17340540000,21083,24597,True
+Titan,Robo Shibe,roboShibe,13,repeatable,Super Duper IX,42,19817760000,24597,28111,True
+Titan,Robo Shibe,roboShibe,14,repeatable,Super Duper X,46,22294980000,28111,31625,True
+Titan,Robo Shibe,roboShibe,15,repeatable,Super Duper XI,50,24772200000,31625,35138,True
+Titan,Heavy Doge Walker,heavyDogeWalker,1,finite,Advanced Hover Tech,4,7200000000,400,850,True
+Titan,Heavy Doge Walker,heavyDogeWalker,2,finite,Advanced Diamond Tech,7,20100000000,850,1700,True
+Titan,Heavy Doge Walker,heavyDogeWalker,3,finite,Reallyhardium Advantages,12,39000000000,1700,3500,True
+Titan,Heavy Doge Walker,heavyDogeWalker,4,repeatable,Reallyhardium Advantages II,16,41340000000,3500,3687,True
+Titan,Heavy Doge Walker,heavyDogeWalker,5,repeatable,Reallyhardium Advantages III,20,82680000000,3687,7374,True
+Titan,Heavy Doge Walker,heavyDogeWalker,6,repeatable,Reallyhardium Advantages IV,24,124020000000,7374,11061,True
+Titan,Heavy Doge Walker,heavyDogeWalker,7,repeatable,Reallyhardium Advantages V,28,165360000000,11061,14748,True
+Titan,Heavy Doge Walker,heavyDogeWalker,8,repeatable,Reallyhardium Advantages VI,32,206700000000,14748,18435,True
+Titan,Heavy Doge Walker,heavyDogeWalker,9,repeatable,Reallyhardium Advantages VII,36,248040000000,18435,22122,True
+Titan,Heavy Doge Walker,heavyDogeWalker,10,repeatable,Reallyhardium Advantages VIII,40,289380000000,22122,25809,True
+Titan,Heavy Doge Walker,heavyDogeWalker,11,repeatable,Reallyhardium Advantages IX,44,330720000000,25809,29496,True
+Titan,Heavy Doge Walker,heavyDogeWalker,12,repeatable,Reallyhardium Advantages X,48,372060000000,29496,33183,True
+Titan,Heavy Doge Walker,heavyDogeWalker,13,repeatable,Reallyhardium Advantages XI,52,413400000000,33183,36870,True
+Titan,Coin Seeker 5000,coinSeeker5000,1,finite,Golden Backpack,4,6400000000,498,900,True
+Titan,Coin Seeker 5000,coinSeeker5000,2,finite,Needs More Gold,5,23500000000,900,1800,True
+Titan,Coin Seeker 5000,coinSeeker5000,3,finite,Switch To Diamond,7,34000000000,1800,3420,True
+Titan,Coin Seeker 5000,coinSeeker5000,4,finite,I Want To Be,11,6400000000,3420,4400,True
+Titan,Coin Seeker 5000,coinSeeker5000,5,repeatable,I Want To Be II,15,6784000000,4400,4631,True
+Titan,Coin Seeker 5000,coinSeeker5000,6,repeatable,I Want To Be III,19,13568000000,4631,9262,True
+Titan,Coin Seeker 5000,coinSeeker5000,7,repeatable,I Want To Be IV,23,20352000000,9262,13893,True
+Titan,Coin Seeker 5000,coinSeeker5000,8,repeatable,I Want To Be V,27,27136000000,13893,18524,True
+Titan,Coin Seeker 5000,coinSeeker5000,9,repeatable,I Want To Be VI,31,33920000000,18524,23155,True
+Titan,Coin Seeker 5000,coinSeeker5000,10,repeatable,I Want To Be VII,35,40704000000,23155,27786,True
+Titan,Coin Seeker 5000,coinSeeker5000,11,repeatable,I Want To Be VIII,39,47488000000,27786,32417,True
+Titan,Coin Seeker 5000,coinSeeker5000,12,repeatable,I Want To Be IX,43,54272000000,32417,37048,True
+Titan,Coin Seeker 5000,coinSeeker5000,13,repeatable,I Want To Be X,47,61056000000,37048,41679,True
+Titan,Coin Seeker 5000,coinSeeker5000,14,repeatable,I Want To Be XI,51,67840000000,41679,46310,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,1,finite,Freakin Lazorz,4,9000000000,620,1100,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,2,finite,Rocketrex,5,17000000000,1100,1850,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,3,finite,More Rocket,6,20000000000,1850,2950,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,4,finite,Clever Girl,12,50000000000,2950,3650,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,5,repeatable,Clever Girl II,16,53000000000,3650,3845,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,6,repeatable,Clever Girl III,20,106000000000,3845,7689,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,7,repeatable,Clever Girl IV,24,159000000000,7689,11534,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,8,repeatable,Clever Girl V,28,212000000000,11534,15378,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,9,repeatable,Clever Girl VI,32,265000000000,15378,19223,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,10,repeatable,Clever Girl VII,36,318000000000,19223,23067,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,11,repeatable,Clever Girl VIII,40,371000000000,23067,26912,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,12,repeatable,Clever Girl IX,44,424000000000,26912,30756,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,13,repeatable,Clever Girl X,48,477000000000,30756,34601,True
+Titan,Time Travel Ð-Rex,timeTravelDRex,14,repeatable,Clever Girl XI,52,530000000000,34601,38445,True

@@ -1,215 +1,89 @@
 // DogeMiner: Community Edition - Notifications System
 class NotificationManager {
     constructor(game) {
-        this.game = game;
-        this.notifications = [];
-        this.maxNotifications = 5;
-        this.defaultDuration = 3000;
-        
+        this.game=game;this.notifications=[];this.maxNotifications=5;
+        this.defaultDuration=4500;this.pending=[];this.paused=false;
         this.setupNotificationContainer();
     }
-    
+
     setupNotificationContainer() {
-        // Ensure notifications container exists
-        let container = document.getElementById('notifications');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'notifications';
-            container.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 1000;
-                pointer-events: none;
-            `;
-            document.body.appendChild(container);
-        }
-    }
-    
-    show(message, type = 'info', duration = this.defaultDuration) {
-        // Check if notifications are enabled
-        if (this.game && this.game.notificationsEnabled === false) {
-            return null;
-        }
-        
-        const notification = this.createNotification(message, type, duration);
-        this.addNotification(notification);
-        return notification;
-    }
-    
-    createNotification(message, type, duration) {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        
-        // Set notification content
-        notification.innerHTML = `
-            <div class="notification-content">
-                <div class="notification-icon">${this.getIcon(type)}</div>
-                <div class="notification-message">${message}</div>
-                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-            </div>
-        `;
-        
-        // Apply styles
-        this.applyNotificationStyles(notification, type);
-        
-        // Set duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.removeNotification(notification);
-            }, duration);
-        }
-        
-        return notification;
-    }
-    
-    applyNotificationStyles(notification, type) {
-        const baseStyles = {
-            background: 'rgba(0, 0, 0, 0.9)',
-            border: '2px solid #ffd700',
-            borderRadius: '10px',
-            padding: '15px 20px',
-            marginBottom: '10px',
-            color: '#ffd700',
-            fontWeight: '600',
-            transform: 'translateX(100%)',
-            transition: 'transform 0.3s ease',
-            boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
-            maxWidth: '300px',
-            wordWrap: 'break-word'
+        let container=document.getElementById('notifications');
+        if(!container){container=document.createElement('div');container.id='notifications';document.body.append(container);}
+        container.setAttribute('aria-label','Game notifications');
+        this.layout=()=>{
+            const mobile=this.game?.isMobileDevice?.(),width=Math.min(mobile?230.16:328.8,innerWidth-24);
+            const panels=['left-panel','right-panel'].map(id=>document.getElementById(id)).filter(n=>n?.getClientRects().length).map(n=>n.getBoundingClientRect());
+            const right=panels.length?Math.max(...panels.map(r=>r.right)):innerWidth,bottom=panels.length?Math.max(...panels.map(r=>r.bottom)):innerHeight;
+            Object.assign(container.style,{width:width+'px',right:(mobile?(innerWidth-width)/2:Math.max(12,innerWidth-right+6))+'px',top:mobile?'18px':'auto',bottom:mobile?'auto':Math.max(12,innerHeight-bottom+6)+'px'});
         };
-        
-        // Type-specific styles
-        const typeStyles = {
-            success: {
-                borderColor: '#4CAF50',
-                color: '#4CAF50',
-                boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)'
-            },
-            error: {
-                borderColor: '#f44336',
-                color: '#f44336',
-                boxShadow: '0 0 20px rgba(244, 67, 54, 0.3)'
-            },
-            warning: {
-                borderColor: '#ff9800',
-                color: '#ff9800',
-                boxShadow: '0 0 20px rgba(255, 152, 0, 0.3)'
-            },
-            info: {
-                borderColor: '#2196F3',
-                color: '#2196F3',
-                boxShadow: '0 0 20px rgba(33, 150, 243, 0.3)'
-            }
-        };
-        
-        // Apply base styles
-        Object.assign(notification.style, baseStyles);
-        
-        // Apply type-specific styles
-        if (typeStyles[type]) {
-            Object.assign(notification.style, typeStyles[type]);
+        window.addEventListener('resize',this.layout);this.layout();
+    }
+
+    show(message,type='info',duration) {
+        const data=typeof message==='object'&&message!==null?{...message}:{info:String(message??''),type,duration};
+        if(this.game?.notificationsEnabled===false&&!data.system)return null;
+        if(this.paused&&!data.system){this.pending.push(data);return null;}
+        const existing=data.id&&this.notifications.find(n=>!n._isRemoving&&n.dataset.notificationId===data.id);
+        if(existing&&data.system)return existing;
+        if(existing)this.removeNotification(existing,'replace');
+        const node=this.createNotification(data,data.type||type,data.duration??duration);
+        this.addNotification(node);return node;
+    }
+
+    showEvent(data){return this.show(data);}
+
+    createNotification(message,type='info',duration) {
+        const data=typeof message==='object'&&message!==null?{...message}:{info:String(message??'')};
+        type=['info','quest','achievement','success','error','warning','coin','level','shop'].includes(data.type||type)?data.type||type:'info';
+        const node=document.createElement('section');node.className='notification';
+        node.dataset.type=type;if(data.id)node.dataset.notificationId=String(data.id);
+        node.setAttribute('role','status');node.setAttribute('aria-live','polite');
+        node._notificationData=data;
+        const text=(tag,className,value)=>{const el=document.createElement(tag);el.className=className;
+            // Source color tags are parsed as text, never inserted as HTML.
+            let color='';for(const part of String(value??'').split(/(<\/?[a-zA-Z]+>)/)){
+                const tag=part.match(/^<(\/?)([a-zA-Z]+)>$/);
+                if(tag){color=tag[1]?'':({green:'green',equip:'green',blue:'blue',itemsand:'sand',redStroke:'red',red:'red',orange:'sand'}[tag[2]]||'');continue;}
+                const span=document.createElement('span');span.textContent=part;if(color)span.className='notification-text-'+color;el.append(span);
+            }return el;};
+        if(data.title)node.append(text('strong','notification-title',data.title));
+        const action=document.createElement('button');action.type='button';action.className='notification-content';
+        action.setAttribute('aria-label',String(data.actionLabel||data.info||data.title||'Dismiss notification').replace(/<[^>]*>/g,''));
+        if(data.info)action.append(text('span','notification-info',data.info));
+        if(data.details)action.append(text('span','notification-details',data.details));
+        if(typeof data.icon==='string'&&/^(?:\.\.\/)?assets\//.test(data.icon)){
+            const icon=document.createElement('img');icon.className='notification-icon';icon.src=data.icon;icon.alt='';action.append(icon);node.classList.add('notification-with-icon');
         }
-        
-        // Add content styles
-        const content = notification.querySelector('.notification-content');
-        content.style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        `;
-        
-        const icon = notification.querySelector('.notification-icon');
-        icon.style.cssText = `
-            font-size: 20px;
-            flex-shrink: 0;
-        `;
-        
-        const message = notification.querySelector('.notification-message');
-        message.style.cssText = `
-            flex: 1;
-            font-size: 14px;
-        `;
-        
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.style.cssText = `
-            background: none;
-            border: none;
-            color: inherit;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 0;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s ease;
-        `;
-        
-        closeBtn.addEventListener('mouseenter', () => {
-            closeBtn.style.background = 'rgba(255, 255, 255, 0.1)';
-        });
-        
-        closeBtn.addEventListener('mouseleave', () => {
-            closeBtn.style.background = 'none';
-        });
+        action.addEventListener('click',()=>this.removeNotification(node,'activate'));
+        action.addEventListener('keydown',event=>{if([' ','Enter'].includes(event.key))event.stopPropagation();});
+        node.append(action);
+        node._notificationDuration=data.stay?0:Number.isFinite(Number(data.closetimer??data.duration??duration))&&Number(data.closetimer??data.duration??duration)>0?Number(data.closetimer??data.duration??duration):this.defaultDuration;
+        return node;
     }
-    
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✗',
-            warning: '⚠',
-            info: 'ℹ',
-            coin: '🪙',
-            achievement: '🏆',
-            level: '🚀',
-            shop: '🛒'
-        };
-        
-        return icons[type] || icons.info;
+
+    addNotification(node) {
+        const container=document.getElementById('notifications');if(!container)return;
+        const active=this.notifications.filter(n=>!n._isRemoving&&!n._notificationData.system);
+        if(active.length>=this.maxNotifications)this.removeNotification(active[0],'overflow');
+        container.append(node);this.notifications.push(node);
+        if(node._notificationDuration>0)node._expiry=setTimeout(()=>this.removeNotification(node,'timeout'),node._notificationDuration);
+        if(!node._notificationData.silent)window.audioManager?.playSound('biblip');
     }
-    
-    addNotification(notification) {
-        const container = document.getElementById('notifications');
-        
-        // Remove oldest notification if at max capacity
-        if (this.notifications.length >= this.maxNotifications) {
-            const oldest = this.notifications.shift();
-            this.removeNotification(oldest);
+
+    removeNotification(node,reason='close') {
+        if(!node||node._isRemoving)return;
+        node._isRemoving=true;clearTimeout(node._expiry);
+        const data=node._notificationData||{};
+        try{if(reason==='activate')data.onClick?.();}
+        finally{
+            try{data.onEnd?.(reason);}finally{
+                node.classList.add('slide-out');
+                node.querySelectorAll('button').forEach(button=>button.disabled=true);
+                node._removeTimer=setTimeout(()=>{node.remove();this.notifications=this.notifications.filter(n=>n!==node);},700);
+            }
         }
-        
-        // Add to container and array
-        container.appendChild(notification);
-        this.notifications.push(notification);
-        
-        // Animate in
-        requestAnimationFrame(() => {
-            notification.style.transform = 'translateX(0)';
-        });
     }
-    
-    removeNotification(notification) {
-        if (!notification || !notification.parentElement) return;
-        
-        // Animate out
-        notification.style.transform = 'translateX(100%)';
-        
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-            
-            // Remove from array
-            const index = this.notifications.indexOf(notification);
-            if (index > -1) {
-                this.notifications.splice(index, 1);
-            }
-        }, 300);
-    }
-    
+
     // Convenience methods for different notification types
     showSuccess(message, duration) {
         return this.show(message, 'success', duration);
@@ -319,39 +193,18 @@ class NotificationManager {
         }, 1500);
     }
     
-    // Clear all notifications
     clearAll() {
-        this.notifications.forEach(notification => {
-            this.removeNotification(notification);
-        });
-        this.notifications = [];
-    }
-    
-    // Pause/resume notifications
-    pause() {
-        this.paused = true;
-    }
-    
-    resume() {
-        this.paused = false;
-    }
-    
-    // Queue notifications when paused
-    queue(message, type, duration) {
-        if (this.paused) {
-            this.queue.push({ message, type, duration });
-        } else {
-            this.show(message, type, duration);
+        this.pending=[];
+        for(const node of [...this.notifications]){
+            this.removeNotification(node,'clear');clearTimeout(node._removeTimer);node.remove();
         }
+        this.notifications=[];
     }
-    
-    // Process queued notifications
-    processQueue() {
-        if (this.paused || !this.queue || this.queue.length === 0) return;
-        
-        const queued = this.queue.shift();
-        this.show(queued.message, queued.type, queued.duration);
-    }
+    pause(){this.paused=true;}
+    resume(){this.paused=false;this.processQueue();}
+    queue(message,type,duration){if(this.paused)this.pending.push({info:message,type,duration});else return this.show(message,type,duration);}
+    processQueue(){if(this.paused)return;const pending=this.pending.splice(0);for(const item of pending)this.show(item);}
+
 }
 
 // Add CSS animations if not already present

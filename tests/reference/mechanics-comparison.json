@@ -1,0 +1,496 @@
+{
+  "source": "https://dogeminer2.com/assets/play-B7Micxas.js",
+  "version": "2.15.0",
+  "note": "20,000 seeded samples per stochastic fixture; rock figures are exact deterministic formulas.",
+  "mystery": [
+    {
+      "level": 1,
+      "timeline": 3,
+      "mystery": 121110,
+      "DPS": 100
+    },
+    {
+      "level": 1,
+      "timeline": 3,
+      "mystery": 121111,
+      "DPS": 100
+    },
+    {
+      "level": 1,
+      "timeline": 3,
+      "mystery": 420133768,
+      "DPS": 100
+    },
+    {
+      "level": 1,
+      "timeline": 3,
+      "mystery": 420133769,
+      "DPS": 100
+    },
+    {
+      "level": 2,
+      "timeline": 3,
+      "mystery": 121110,
+      "DPS": 100
+    },
+    {
+      "level": 2,
+      "timeline": 3,
+      "mystery": 121111,
+      "DPS": 1360
+    },
+    {
+      "level": 2,
+      "timeline": 3,
+      "mystery": 420133768,
+      "DPS": 1360
+    },
+    {
+      "level": 2,
+      "timeline": 3,
+      "mystery": 420133769,
+      "DPS": 21007
+    }
+  ],
+  "weakStatRolls": [
+    {
+      "wow": 0,
+      "timeline": 1,
+      "DM2_luck_4_to_9": {
+        "min": 4,
+        "max": 10,
+        "mean": 6.98
+      }
+    },
+    {
+      "wow": 0,
+      "timeline": 5,
+      "DM2_luck_4_to_9": {
+        "min": 4,
+        "max": 10,
+        "mean": 6.98
+      }
+    },
+    {
+      "wow": 100,
+      "timeline": 1,
+      "DM2_luck_4_to_9": {
+        "min": 14,
+        "max": 20,
+        "mean": 16.98
+      }
+    },
+    {
+      "wow": 100,
+      "timeline": 5,
+      "DM2_luck_4_to_9": {
+        "min": 32,
+        "max": 38,
+        "mean": 34.98
+      }
+    },
+    {
+      "wow": 1000,
+      "timeline": 1,
+      "DM2_luck_4_to_9": {
+        "min": 19,
+        "max": 25,
+        "mean": 21.98
+      }
+    },
+    {
+      "wow": 1000,
+      "timeline": 5,
+      "DM2_luck_4_to_9": {
+        "min": 44,
+        "max": 50,
+        "mean": 46.98
+      }
+    },
+    {
+      "wow": 10000,
+      "timeline": 1,
+      "DM2_luck_4_to_9": {
+        "min": 23,
+        "max": 29,
+        "mean": 25.98
+      }
+    },
+    {
+      "wow": 10000,
+      "timeline": 5,
+      "DM2_luck_4_to_9": {
+        "min": 55,
+        "max": 61,
+        "mean": 57.98
+      }
+    }
+  ],
+  "pickaxes": [
+    {
+      "max": 1,
+      "level": 1,
+      "tier": 1,
+      "wow": 0,
+      "timeline": 1,
+      "early": true,
+      "id": 2,
+      "quality": 0,
+      "DM2": {
+        "min": 3,
+        "max": 3,
+        "mean": 3
+      }
+    },
+    {
+      "max": 1,
+      "level": 1,
+      "tier": 1,
+      "wow": 0,
+      "timeline": 1,
+      "early": true,
+      "id": "diamondsword",
+      "quality": 3,
+      "DM2": {
+        "min": 3,
+        "max": 3,
+        "mean": 3
+      }
+    },
+    {
+      "max": 100,
+      "level": 1,
+      "tier": 1,
+      "wow": 0,
+      "timeline": 1,
+      "id": 2,
+      "quality": 0,
+      "DM2": {
+        "min": 114,
+        "max": 130,
+        "mean": 122.18
+      }
+    },
+    {
+      "max": 100,
+      "level": 1,
+      "tier": 1,
+      "wow": 0,
+      "timeline": 1,
+      "id": "diamondsword",
+      "quality": 3,
+      "DM2": {
+        "min": 118,
+        "max": 133,
+        "mean": 125.45
+      }
+    },
+    {
+      "max": 1000,
+      "level": 2,
+      "tier": 2,
+      "wow": 100,
+      "timeline": 1,
+      "id": 2,
+      "quality": 0,
+      "DM2": {
+        "min": 1104,
+        "max": 1120,
+        "mean": 1112.18
+      }
+    },
+    {
+      "max": 1000,
+      "level": 2,
+      "tier": 2,
+      "wow": 100,
+      "timeline": 1,
+      "id": "diamondsword",
+      "quality": 3,
+      "DM2": {
+        "min": 1135,
+        "max": 1150,
+        "mean": 1142.45
+      }
+    },
+    {
+      "max": 10000,
+      "level": 3,
+      "tier": 3,
+      "wow": 1000,
+      "timeline": 5,
+      "id": 2,
+      "quality": 0,
+      "DM2": {
+        "min": 11013,
+        "max": 11029,
+        "mean": 11020.91
+      }
+    },
+    {
+      "max": 10000,
+      "level": 3,
+      "tier": 3,
+      "wow": 1000,
+      "timeline": 5,
+      "id": "diamondsword",
+      "quality": 3,
+      "DM2": {
+        "min": 11314,
+        "max": 11329,
+        "mean": 11321.45
+      }
+    }
+  ],
+  "rockHP": [
+    {
+      "planet": "earth",
+      "rockLevel": 1,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 2760,
+      "CE": 667,
+      "ratioCEtoDM2": 0.2417
+    },
+    {
+      "planet": "earth",
+      "rockLevel": 10,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 6508,
+      "CE": 667,
+      "ratioCEtoDM2": 0.1025
+    },
+    {
+      "planet": "earth",
+      "rockLevel": 50,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 294545,
+      "CE": 94231,
+      "ratioCEtoDM2": 0.3199
+    },
+    {
+      "planet": "moon",
+      "rockLevel": 1,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 5700,
+      "CE": 667,
+      "ratioCEtoDM2": 0.117
+    },
+    {
+      "planet": "moon",
+      "rockLevel": 10,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 13441,
+      "CE": 3725,
+      "ratioCEtoDM2": 0.2771
+    },
+    {
+      "planet": "moon",
+      "rockLevel": 50,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 608299,
+      "CE": 28025969,
+      "ratioCEtoDM2": 46.0727
+    },
+    {
+      "planet": "mars",
+      "rockLevel": 1,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 157700,
+      "CE": 1500,
+      "ratioCEtoDM2": 0.0095
+    },
+    {
+      "planet": "mars",
+      "rockLevel": 10,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 371849,
+      "CE": 30991,
+      "ratioCEtoDM2": 0.0833
+    },
+    {
+      "planet": "mars",
+      "rockLevel": 50,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 16829580,
+      "CE": 21695267399,
+      "ratioCEtoDM2": 1289.1152
+    },
+    {
+      "planet": "jupiter",
+      "rockLevel": 1,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 452700,
+      "CE": 5000,
+      "ratioCEtoDM2": 0.011
+    },
+    {
+      "planet": "jupiter",
+      "rockLevel": 10,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 1067443,
+      "CE": 343597,
+      "ratioCEtoDM2": 0.3219
+    },
+    {
+      "planet": "jupiter",
+      "rockLevel": 50,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 48311672,
+      "CE": 50216813883093,
+      "ratioCEtoDM2": 1039434.4018
+    },
+    {
+      "planet": "titan",
+      "rockLevel": 1,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 2502700,
+      "CE": 25000,
+      "ratioCEtoDM2": 0.01
+    },
+    {
+      "planet": "titan",
+      "rockLevel": 10,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 5901236,
+      "CE": 6345788,
+      "ratioCEtoDM2": 1.0753
+    },
+    {
+      "planet": "titan",
+      "rockLevel": 50,
+      "dpc": 100,
+      "planetDPS": 1000,
+      "DM2": 267085535,
+      "CE": 308570710445764860,
+      "ratioCEtoDM2": 1155325429.5324
+    }
+  ],
+  "CE_statMeans": [
+    {
+      "wow": 0,
+      "percentMean": 13
+    },
+    {
+      "wow": 100,
+      "percentMean": 35.49
+    },
+    {
+      "wow": 1000,
+      "percentMean": 56.28
+    },
+    {
+      "wow": 10000,
+      "percentMean": 77.79
+    }
+  ],
+  "CE_fortuneMeans": [
+    {
+      "luck": 0,
+      "lootFind": 0,
+      "percentMean": 13
+    },
+    {
+      "luck": 100,
+      "lootFind": 0,
+      "percentMean": 33.6
+    },
+    {
+      "luck": 1000,
+      "lootFind": 0,
+      "percentMean": 70.1
+    },
+    {
+      "luck": 10000,
+      "lootFind": 0,
+      "percentMean": 112.46
+    }
+  ],
+  "CE_pickaxes": [
+    {
+      "max": 1,
+      "rarityScale": 1,
+      "CE": {
+        "min": 2,
+        "max": 4,
+        "mean": 3
+      }
+    },
+    {
+      "max": 1,
+      "rarityScale": 1.5,
+      "CE": {
+        "min": 3,
+        "max": 6,
+        "mean": 4.33
+      }
+    },
+    {
+      "max": 100,
+      "rarityScale": 1,
+      "CE": {
+        "min": 113,
+        "max": 120,
+        "mean": 116.52
+      }
+    },
+    {
+      "max": 100,
+      "rarityScale": 1.5,
+      "CE": {
+        "min": 169,
+        "max": 180,
+        "mean": 174.53
+      }
+    },
+    {
+      "max": 1000,
+      "rarityScale": 1,
+      "CE": {
+        "min": 1088,
+        "max": 1126,
+        "mean": 1106.84
+      }
+    },
+    {
+      "max": 1000,
+      "rarityScale": 1.5,
+      "CE": {
+        "min": 1632,
+        "max": 1689,
+        "mean": 1660.01
+      }
+    },
+    {
+      "max": 10000,
+      "rarityScale": 1,
+      "CE": {
+        "min": 10675,
+        "max": 10989,
+        "mean": 10830.68
+      }
+    },
+    {
+      "max": 10000,
+      "rarityScale": 1.5,
+      "CE": {
+        "min": 16012,
+        "max": 16483,
+        "mean": 16245.77
+      }
+    }
+  ]
+}

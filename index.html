@@ -397,7 +397,28 @@
                 margin-bottom: 5px;
             }
         }
+
+        .landing-import-button{display:block;margin:14px auto 0;padding:10px 18px;border:1px solid #e7bf4c;border-radius:7px;background:#292313de;color:#ffe49a;font:inherit;cursor:pointer;}
+        #landing-import-status{max-width:360px;margin:10px auto;color:#ffe3a1;font-size:14px;}
+        #landing-save-review{width:min(560px,92vw);max-height:88vh;padding:24px;border:2px solid #c99b32;border-radius:12px;background:#fff0c2;color:#5b421e;font:16px/1.5 sans-serif;}
+        #landing-save-review::backdrop{background:#000a;}
+        #landing-save-title{margin:0 0 12px;font-size:22px;}
+        #landing-save-summary{white-space:pre-line;font-weight:bold;}
+        #landing-save-notes{max-height:35vh;overflow-y:auto;padding-left:22px;font-size:14px;}
+        #landing-save-review .landing-save-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:18px;}
+        #landing-save-review button{padding:10px 16px;border:1px solid #b58a29;border-radius:6px;background:#ffdf73;color:#61451e;font:inherit;cursor:pointer;}
     </style>
+    <script>window.CEParityTesting={active:/^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),error:'Checkpoint test storage could not be loaded. Please refresh.'};</script>
+    <script src="play/js/parity-test-storage.js?v=69"></script>
+    <script defer src="play/js/balance-data.js?v=2"></script>
+    <script defer src="play/js/balance.js?v=4"></script>
+    <script defer src="play/js/beta-migration.js?v=1"></script>
+    <script defer src="play/js/lz-string.js?v=1"></script>
+    <script defer src="play/js/dm2-import-data.js?v=1"></script>
+    <script defer src="play/js/seasonal.js?v=2"></script>
+    <script defer src="play/js/layout.js?v=3"></script>
+    <script defer src="play/js/dm2-import.js?v=5"></script>
+    <script defer src="play/js/landing-save.js?v=1"></script>
 </head>
 
 <body>
@@ -431,7 +452,10 @@
 
         <div class="landing-content">
             <div style="text-align: center;">
-                <a href="#" onclick="redirectToGame(); return false;" class="play-button">START</a>
+                <a id="start-game" href="play/" onclick="redirectToGame(); return false;" class="play-button">START</a>
+                <button id="landing-import" class="landing-import-button" type="button">Import CE / DM2 Save</button>
+                <input id="landing-import-file" type="file" accept=".json,.doge,.txt" hidden>
+                <p id="landing-import-status" role="status"></p>
                 <div class="discord-section">
                     <a href="https://discord.gg/7wHMAQwMtr" target="_blank" rel="noopener" class="discord-button">
                         <img src="assets/discord-title.webp" alt="Discord" class="discord-image">
@@ -504,6 +528,14 @@
         </div>
     </div>
 
+    <dialog id="landing-save-review" aria-labelledby="landing-save-title">
+        <form method="dialog">
+            <h2 id="landing-save-title">Import Save</h2>
+            <p id="landing-save-summary"></p>
+            <ul id="landing-save-notes" tabindex="0"></ul>
+            <div class="landing-save-actions"><button value="cancel">Cancel</button><button id="landing-save-confirm" type="button">Import and play</button></div>
+        </form>
+    </dialog>
     <script>
         // Background rotation system
         class BackgroundRotator {
@@ -551,7 +583,7 @@
 
         // Redirect function for the play button
         function redirectToGame() {
-            window.location.href = 'https://dogeminerce.com/play/';
+            window.location.href = window.DogeMinerLandingSave?.gameUrl().href || new URL('play/',window.location.href).href;
         }
 
         // Initialize background rotation when page loads

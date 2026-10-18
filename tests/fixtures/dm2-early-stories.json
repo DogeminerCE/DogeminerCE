@@ -1,0 +1,879 @@
+{
+  "source": "DM2 web 2.15.0 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "stories": [
+    {
+      "id": "tothemoon",
+      "title": "TO THE MOON!",
+      "body": "You need a <red>SPACE ROCKET</red> to go to <blue>THE MOON</blue>. It costs <orange>50,000</orange> <green>ĐOGECOINS</green>.",
+      "image": "story/to_the_moon",
+      "type": "info",
+      "followups": [
+        {
+          "kind": "hint",
+          "delay": 2500
+        },
+        {
+          "kind": "rocketFlash"
+        }
+      ]
+    },
+    {
+      "id": "newtimeline",
+      "title": "MISSION SUCCESSFUL",
+      "body": "Well done! You are back in the present. Your <blue>TIME MACHINE</blue> was stolen on the way back. You are also missing all pickaxes. However, with this super fortune from the future, finding even better gear will be <green>easy-peasy!</green>",
+      "image": "story/to_the_moon",
+      "type": "info",
+      "followups": [
+        {
+          "kind": "delay",
+          "delay": 16000
+        },
+        {
+          "kind": "news",
+          "id": "upgfast2k",
+          "title": "FASTER!",
+          "info": "Your experience is showing",
+          "details": "SearchDoges now sniff out upgrades <green>MUCH fast!</green>!"
+        }
+      ]
+    },
+    {
+      "id": "newtimeline3",
+      "title": "WELL WHAT NOW?",
+      "body": "History keeps repeating itself! Much confuse. Maybe try something different if you go back again? <i>PS. There are new options for turning off news and story-popups!</i>",
+      "image": "story/to_the_moon",
+      "type": "info",
+      "followups": []
+    },
+    {
+      "id": "newtimeline4",
+      "title": "UHH OKAY",
+      "body": "Welcome back... again. You know what just happened. You know exactly what you did. On the bright side, you are getting some serious juice into these fortunes!",
+      "image": "story/to_the_moon",
+      "type": "info",
+      "followups": []
+    },
+    {
+      "id": "newtimeline5",
+      "title": "YOU KNOW THE DRILL",
+      "body": "You know the drill. That is all. May you one day break this paradoxical curse. Godspeed.",
+      "image": "story/to_the_moon",
+      "type": "info",
+      "followups": []
+    },
+    {
+      "id": "bonus",
+      "title": "SUCH BONUS",
+      "body": "Some objects may increase <green>INCOME</green>. A <orange>BONUSCOIN</orange> temporarily increases <green>INCOME</green> by <green>50%</green> for <dark>60 seconds</dark>.",
+      "image": "general/bonuscoin",
+      "type": "info",
+      "followups": []
+    }
+  ],
+  "gates": [
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": true
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "tothemoon",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline3",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline4",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "newtimeline5",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 0,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 3,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 4,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 5,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 10,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 2,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 1,
+        "offered": true
+      },
+      "eligible": true
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 0,
+        "onmission": true,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 2,
+        "kennels": 1,
+        "onmission": false,
+        "claims": 1,
+        "offered": false
+      },
+      "eligible": false
+    },
+    {
+      "id": "bonus",
+      "input": {
+        "level": 1,
+        "timeline": 1,
+        "kennels": 0,
+        "onmission": false,
+        "claims": 2,
+        "offered": true
+      },
+      "eligible": false
+    }
+  ],
+  "flashConfig": {
+    "enabled": true,
+    "delayMs": 800,
+    "flashes": 3,
+    "strength": 0.5,
+    "upMs": 190,
+    "downMs": 180,
+    "gapMs": 150,
+    "upEase": "sine.inOut",
+    "downEase": "sine.inOut"
+  }
+}

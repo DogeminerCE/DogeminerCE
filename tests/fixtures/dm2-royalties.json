@@ -1,0 +1,210 @@
+{
+  "source": "DM2 2.15 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "routines": [
+    "hitsong criterion",
+    "hitsong callback/hitsng marker",
+    "QK"
+  ],
+  "eligibility": [
+    {
+      "input": {
+        "level": 3,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8201,
+        "focus": true
+      },
+      "eligible": true
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 4,
+        "seconds": 730,
+        "locationMs": 8201,
+        "focus": true
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 5,
+        "seconds": 729,
+        "locationMs": 8201,
+        "focus": true
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8200,
+        "focus": true
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8201,
+        "focus": false
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 2,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8201,
+        "focus": true
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 4,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8201,
+        "focus": true
+      },
+      "eligible": false
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 6,
+        "seconds": 800,
+        "locationMs": 9000,
+        "focus": true
+      },
+      "eligible": true
+    },
+    {
+      "input": {
+        "level": 3,
+        "djs": 5,
+        "seconds": 730,
+        "locationMs": 8199,
+        "focus": true
+      },
+      "eligible": false
+    }
+  ],
+  "rewards": [
+    {
+      "timeline": 1,
+      "extraBefore": 11,
+      "extraAfter": 811,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    },
+    {
+      "timeline": 2,
+      "extraBefore": 11,
+      "extraAfter": 1111,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    },
+    {
+      "timeline": 3,
+      "extraBefore": 11,
+      "extraAfter": 1411,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    },
+    {
+      "timeline": 10,
+      "extraBefore": 11,
+      "extraAfter": 3511,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    },
+    {
+      "timeline": 100,
+      "extraBefore": 11,
+      "extraAfter": 30511,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    },
+    {
+      "timeline": 100000,
+      "extraBefore": 11,
+      "extraAfter": 30000511,
+      "seen": [
+        "hitsng"
+      ],
+      "recalculations": 1,
+      "saves": 1
+    }
+  ],
+  "incomes": [
+    {
+      "input": {
+        "timeline": 1,
+        "base": 100,
+        "aura": 40,
+        "helperMultiplier": 2.4,
+        "bonus": 1.7,
+        "totalMultiplier": 1.15,
+        "flatPickaxe": 8,
+        "flatFortune": 13,
+        "mysteryStat": 0,
+        "royalty": 800
+      },
+      "output": 1601.03
+    },
+    {
+      "input": {
+        "timeline": 2,
+        "base": 450,
+        "aura": 0,
+        "helperMultiplier": 1.2,
+        "bonus": 1,
+        "totalMultiplier": 1.05,
+        "flatPickaxe": 10,
+        "flatFortune": 20,
+        "mysteryStat": 121111,
+        "royalty": 1100
+      },
+      "output": 2635.5
+    },
+    {
+      "input": {
+        "timeline": 3,
+        "base": 0,
+        "aura": 0,
+        "helperMultiplier": 2,
+        "bonus": 2.5,
+        "totalMultiplier": 1.5,
+        "flatPickaxe": 0,
+        "flatFortune": 0,
+        "mysteryStat": 0,
+        "royalty": 1400
+      },
+      "output": 2100
+    }
+  ]
+}

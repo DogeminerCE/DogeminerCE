@@ -1,0 +1,26 @@
+**:beetle: Bugfixes!**
+Fixed Rick creating duplicate copies and leaving pieces behind
+Fixed Rick's held pickaxe alignment
+Fixed Rick's buff timer being exploitable by clicking out of the game
+Fixed capped Dogebags looking like only around 20 rewards by showing the full 99-bag item and coin breakdown
+Fixed rewards being claimable again through reloads or stale callbacks
+Fixed old helpers and effects lingering after time travel
+Fixed protected Fortune stacks losing earned totals
+Fixed cloud saves replacing newer earned progress or suppressing supporter perks
+Fixed damaged imports replacing existing progress
+Fixed landing imports being applied again after reload
+Fixed saved helper placement, groups, and regenerating rocks restoring incorrectly
+Fixed inventory swipes equipping items or triggering mining
+Fixed mobile cloud controls staying stale after sign-out
+Fixed missing Phone controller and placement settings
+Fixed Xbox-only controls reappearing when Phone settings are rebuilt
+Fixed broken item images, fallback paths, and PNG color-profile checksums
+Fixed older Alpha saves getting stuck behind an absurdly strong rock
+Fixed the Easter egg count and completed golden-egg display
+Fixed Windows Beta packages using a lower version number than Alpha
+
+**Coming after v0.1 :soon:**
+Hats / Clothing will arrive in a future update, so the Hats tab is hidden for now. Pickaxe Trees are on hold while I come up with a better design.
+
+*And, as always,*
+pls report big bad bugs in #⭐》ce-discussion thank you!

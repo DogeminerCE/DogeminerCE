@@ -1,0 +1,5 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),fixture=require('./fixtures/dm2-mining-feedback.json');
+const ctx={window:{},document:{},console};vm.createContext(ctx);vm.runInContext(fs.readFileSync('play/js/game.js','utf8'),ctx);const Game=vm.runInContext('DogeMinerGame',ctx),g=Object.create(Game.prototype);
+for(const row of fixture.visibleBalanceCases){g.dogecoins=row.coins;g.pendingCoinDisplayAmount=row.pending;g.offlineEarningsReport=null;assert.equal(g.getVisibleDogecoinBalance(),row.visible);}
+Object.assign(g,{dogecoins:2000,pendingCoinDisplayAmount:0,offlineEarningsReport:{amount:750,acknowledged:false}});assert.equal(g.getVisibleDogecoinBalance(),1250);g.offlineEarningsReport.acknowledged=true;g.pendingCoinDisplayAmount=750;assert.equal(g.getVisibleDogecoinBalance(),1250);g.pendingCoinDisplayAmount=0;assert.equal(g.getVisibleDogecoinBalance(),2000);g.dogecoins-=100;assert.equal(g.getVisibleDogecoinBalance(),1900);
+console.log('PASS: six executed source visible-wallet cases, clamping, offline report/flight handoff and spending.');

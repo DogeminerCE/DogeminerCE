@@ -1,0 +1,16 @@
+**:pick: Pickaxes, Fortunes & Mining Overhaul!**
+A HUGE balance pass brings mining, item rolls, helpers, critical hits, and loot progression much closer to Dogeminer 2!
+Removed the old per-hit damage cap so strong pickaxes can actually hit hard. Your best critical hit is saved and gets its own feedback!
+Added compatible dual wielding, hold-to-mine drills, SunDoge staff fusion, and matching tool movement, layering, and sounds. Bare Paw still does exactly 1 damage :)
+
+**MYSTERY BOX FIXES & EVOLUTION! :question:**
+Restored the missing Fortunes, repeats, reward cycle, and cooldown behavior. The Mystery Box can now evolve once you reach the right milestone!
+
+**Your helpers have been busy!**
+SearchDoge now finds and saves actual upgrade offers. Upgrade cards show the correct boosted DPS, and helpers visibly change equipment when their upgrade is applied.
+Helpers can collect loose coins, and eligible helpers will seek out piles! Hold a buy button for BUY MAX.
+After time travel, Auto-Pickup Loot can collect new drops and equip new pickaxes. Away mining also earns 30% of permanent DPS for up to 24 hours!
+
+**HOLIDAY EVENTS! :christmas_tree: :jack_o_lantern: :egg:**
+Easter, Halloween, and Christmas now have their scenes, decorations, and event drops, including 10 seasonal pickaxe types and 21 protected Fortune types!
+Hunt nine Easter eggs across the five planets, Settings, both inventories, and Upgrades to unlock the golden-egg reward. The proper egg icons are back too!

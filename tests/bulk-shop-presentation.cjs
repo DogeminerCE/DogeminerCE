@@ -1,0 +1,9 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),fixture=require('./fixtures/dm2-shop-details.json');
+const context={Math,Map,Set,document:{addEventListener(){}},DogeMinerGame:class{},setTimeout(){},clearTimeout(){},clearInterval(){}};context.DogeMinerGame.prototype.resetFieldLootPresentation=function(){};context.window=context;context.addEventListener=()=>{};vm.createContext(context);vm.runInContext(fs.readFileSync('play/js/bulk-shop.js','utf8'),context);const api=context.DogeMinerBulkShop,near=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} differs from source ${b}`);
+assert.deepEqual(JSON.parse(JSON.stringify(api.particleColors)),fixture.particleColors);
+for(const row of fixture.springs){const value={x:row.kind==='open'?0:1,v:row.kind==='open'?2:0};for(let i=0;i<Math.round(.6/row.dt);i++){api.spring(value,row.kind==='open'?1:0,420,row.kind==='open'?17:fixture.retractDamping,row.dt);const sample=row.samples.find(s=>s.i===i);if(sample){near(value.x,sample.x);near(value.v,sample.v);}}}
+for(const row of fixture.frames){const result=api.bodyFrame(row.input);for(const key of ['sx','sy','cx','cy'])near(result[key],row.output[key]);}
+for(const row of fixture.chevrons){const actual=api.chevrons(row.input);assert.equal(actual.length,row.paths.length);actual.forEach((cue,i)=>{const path=row.paths[i];near(cue.x,path.points[1][0]);near(cue.y,path.points[1][1]+2.5);near(cue.opacity,path.opacity);});}
+for(const t of [0,.05,.1,.2]){const frame=api.bodyFrame({open:1,velocity:0,fireAge:t});near(frame.sx,1+.35*t/.2);near(frame.opacity,1-t/.2);}
+assert.equal(api.chevrons({reduced:true}).length,0);assert.equal(api.chevrons({stale:true}).length,0);
+console.log('PASS: executed source spring trajectories at 30/60/100/144Hz, 8 body frames, 12 animated chevron cases, purchase expand/fade and reduced/stale cues.');

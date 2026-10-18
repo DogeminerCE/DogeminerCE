@@ -6,6 +6,9 @@ class DogeMinerGame {
         this.totalClicks = 0;
         this.dps = 0;
         this.highestDps = 0;
+        this.records = { highestcrit: 0 };
+        this.balanceVersion = window.DogeMinerBalance?.VERSION || 'dm2-beta-1';
+        this.betaMigrationReport = null;
         this.currentLevel = 'earth';
         this.helpers = [];
         this.moonHelpers = [];
@@ -66,7 +69,14 @@ class DogeMinerGame {
         // Settings
         this.soundEnabled = true;
         this.musicEnabled = true;
+        this.rockSoundsEnabled = true;
+        this.backgroundAudioEnabled = true;
+        this.lessEffects = false;
+        this.limitFps = false;
         this.notificationsEnabled = true;
+        this.hintsEnabled = true;
+        this.storiesEnabled = true;
+        this.newsEnabled = true;
         this.autoSaveEnabled = true;
 
         // Cutscenes
@@ -97,6 +107,8 @@ class DogeMinerGame {
         this.clickEffects = [];
         this.particles = [];
         this.activeEffectCount = 0;
+        this.pendingCoinDisplayAmount = 0;
+        this.pendingDiamondDisplayAmount = 0;
         this.activeParticleCount = 0;
         this.maxEffects = 20; // Limit concurrent effects
         this.maxParticles = 50; // Limit concurrent particles
@@ -106,19 +118,13 @@ class DogeMinerGame {
         this.helperSpriteBeingPlaced = null;
         this.placedHelpers = [];
         this.helpersOnCursor = []; // Array to hold multiple helpers being placed
+        this.selectedHelperIds = new Set(); // Set of currently selected helper IDs (desktop marquee)
         this.helperUpgradeLevels = {}; // Tracks upgrade level per helper type (e.g., { miningShibe: 3 })
+        this.helperUpgradeOffers = {}; // Three fixed Searchdoge slots per planet.
 
         // Background rotation
-        this.backgrounds = [
-            'backgrounds/bg1.webp',
-            'backgrounds/bg3.webp',
-            'backgrounds/bg4.webp',
-            'backgrounds/bg5.webp',
-            'backgrounds/bg6.webp',
-            'backgrounds/bg7.webp',
-            'backgrounds/bg9.webp',
-            'backgrounds/bg-new.webp'
-        ];
+        this.backgrounds = this.getPlanetBackgrounds(this.currentLevel);
+        this._backgroundPlanet = this.currentLevel;
         this.currentBackgroundIndex = 0;
         this.backgroundRotationInterval = null;
 
@@ -129,25 +135,25 @@ class DogeMinerGame {
         this.levels = {
             earth: {
                 name: 'Earth',
-                background: 'assets/backgrounds/bg/bg1.webp',
+                background: 'assets/backgrounds/bg1.webp',
                 rock: 'assets/general/rocks/earth.webp',
                 character: 'assets/general/character/standard.webp'
             },
             moon: {
                 name: 'Moon',
-                background: 'assets/backgrounds/bg/bgmoon01.webp',
+                background: 'assets/backgrounds/bgmoon01.webp',
                 rock: 'assets/general/rocks/moon.webp',
                 character: 'assets/general/character/spacehelmet.webp'
             },
             mars: {
                 name: 'Mars',
-                background: 'assets/backgrounds/bg/bgmars01.webp',
+                background: 'assets/backgrounds/bg101.webp',
                 rock: 'assets/general/rocks/mars.webp',
                 character: 'assets/general/character/party.webp'
             },
             jupiter: {
                 name: 'Jupiter',
-                background: 'assets/backgrounds/bg/bgmars01.webp',
+                background: 'assets/backgrounds/bgjup01.webp',
                 rock: 'assets/general/rocks/jupiter.webp',
                 character: 'assets/general/character/spacehelmet.webp'
             },
@@ -168,21 +174,25 @@ class DogeMinerGame {
 
         // Planet-specific rock health tracking map
         this.planetRockData = {
-            earth: { rocksBroken: 0, currentHP: null, maxHP: null },
-            moon: { rocksBroken: 0, currentHP: null, maxHP: null },
-            mars: { rocksBroken: 0, currentHP: null, maxHP: null },
-            jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
-            titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+            earth: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+            moon: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+            mars: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+            jupiter: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+            titan: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null }
         };
 
         // Active rock health system (HP-based) for the current planet
         this.rocksBroken = 0; // Initialize global before setting base HP
+        this.rockLevel = 1;
         this.rockBaseHP = this.getPlanetRockBaseHP('earth');
         this.rockMaxHP = this.rockBaseHP;
         this.rockCurrentHP = this.rockBaseHP;
         this.lastDamageThresholdPercent = 100; // Tracks 75%, 50%, 25% for coin pile expulsion
         this.isRockRegenerating = false;
         this.lastCritHit = false; // For UI feedback
+        this._helperRockElapsed = 0;
+        this.lastPickaxeDropTime = 0;
+        this.prizesSinceLastPickaxe = 0;
 
         // Pickaxe & Fortune System
         this.pickaxeFactory = null; // Initialized async in main.js
@@ -210,9 +220,11 @@ class DogeMinerGame {
 
         // Fortune system
         this.fortuneInventory = []; // Array of fortune instances
+        this.inventoryUnread = { pickaxe: 0, fortune: 0 };
         this.ownedFortunes = []; // Legacy compat
         this.latestObtainedFortune = null; // { name, sprite } for fortune button preview
         this.moonDogebagCount = 0; // Tracks how many Moon Dogebags have been opened
+        this.mysteryBoxEvolutionPending = false;
         this.mysteryBoxObtained = false; // Whether the Mystery Box has been granted
         this.mysteryBoxOpenCount = 0; // Total times opened
         this.mysteryBoxTimerRemaining = 0; // ms remaining on cooldown
@@ -221,12 +233,18 @@ class DogeMinerGame {
 
         // Bonus Coin system — a coin that periodically appears on the mining area.
         // Clicking it grants a temporary boost to BOTH total DPS and DPC. The coin
-        // "levels up" (smaller sprite, bigger boost) as the player unlocks new planets.
-        this.bonusCoinLevel = 1;        // Highest tier unlocked (1=Earth ... 6=Reallyhardium)
+        // Reached planets expand a weighted pool; timeline 2 adds the best tier.
+        this.bonusCoinLevel = 1;        // Highest eligible tier, for unlock notifications
+        this.bonusCoinMaxPlanetLevel = 1; // Highest reached planet in this timeline
         this.bonusCoinSeenLevel = 0;    // Highest tier the player has been notified about
         this.bonusCoinBuffMultiplier = 1;   // Active buff multiplier (1 = no buff)
         this.bonusCoinBuffEndTime = 0;      // Date.now() when the active buff expires
-        this._bonusCoinSpawnTimeout = null; // pending spawn timer
+        this.bonusCoinBuffTier = 0;         // Claimed tier, independent of later unlocks
+        this.bonusCoinClaimCount = 0;       // Lifetime claims (not reset by prestige)
+        this.bonusCoinEarlyOffered = false;
+        this._bonusCoinSpawnChance = 0.22;  // Runtime odds, as in DM2's n0
+        this._bonusCoinSpawnInterval = null;
+        this._bonusCoinEarlyCheckMs = 0;
         this._bonusCoinDespawnTimeout = null; // on-screen lifetime timer
         this._bonusCoinBuffInterval = null; // countdown/expiry ticker
         this._bonusCoinEl = null;           // the on-screen clickable coin element
@@ -237,6 +255,12 @@ class DogeMinerGame {
         this.dogediamonds = 0;              // current spendable balance
         this.dogediamondsEverObtained = 0;  // lifetime total (drives the first-find popup + counter visibility)
         this.searchdogeSlot3Unlocked = false; // 3rd upgrade ("Searchdoge") slot, unlocked for 1 Dogediamond
+
+        // Time Travel / D.I.A. mission (prestige). Each completed mission advances the timeline.
+        this.timelineNumber = 1;
+        this.lateProgression = window.DogeMinerLateProgression?.fresh(1);
+        this.diaMissionSeenOnce = false; // first mission can't be skipped (story moment)
+        this.hasReachedJupiterEver = false; // sticky planet progress for the Dogetalkie unlock
 
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
@@ -250,11 +274,18 @@ class DogeMinerGame {
             luck: 0,
             lootFind: 0,
             wow: 0,
-            critChance: 0.05, // 5% base
+            critChance: 0,
             dpcMultiplier: 1,
             helperDpsMultiplier: 1,
+            totalDpsMultiplier: 1,
+            flatHelperDps: 0,
+            pickaxeFlatDps: 0,
+            fortuneFlatDps: 0,
+            mysteryBonus: 0,
             rocketCostReduction: 0
         };
+        this.rockMaxHP = this.getRockHP(this.rockBaseHP, 0);
+        this.rockCurrentHP = this.rockMaxHP;
 
         // Rock progression
         this.rocksBroken = 0;
@@ -264,6 +295,8 @@ class DogeMinerGame {
         // Rick Doge system
         this.rickInterval = null;
         this.rickVisible = false;
+        this.placedRick = null;
+        this.isDraggingRick = false;
 
         // DPS interval for performance
         this.dpsInterval = null;
@@ -297,160 +330,199 @@ class DogeMinerGame {
 
         // Cutscene DOM bindings
         this.setupCutsceneSystem();
+
+        // Marquee selection for PC/Desktop (disabled on Mobile)
+        this.initMarqueeSelection();
+        this.initializeHelperPresentation?.();
     }
 
-    setupCutsceneSystem() {
-        this.cutsceneOverlay = document.getElementById('cutscene-overlay');
-        this.cutsceneVideo = document.getElementById('cutscene-video');
-        this.cutsceneSkipButton = document.getElementById('cutscene-skip');
-
-        if (!this.cutsceneOverlay || !this.cutsceneVideo || !this.cutsceneSkipButton) {
-            console.warn('Cutscene elements not found in DOM. Creating fallback overlay.');
-            this.cutsceneOverlay = document.createElement('div');
-            this.cutsceneOverlay.id = 'cutscene-overlay';
-            this.cutsceneOverlay.className = 'cutscene-overlay';
-
-            this.cutsceneVideo = document.createElement('video');
-            this.cutsceneVideo.id = 'cutscene-video';
-            this.cutsceneVideo.className = 'cutscene-video';
-            this.cutsceneVideo.setAttribute('playsinline', '');
-
-            this.cutsceneSkipButton = document.createElement('button');
-            this.cutsceneSkipButton.id = 'cutscene-skip';
-            this.cutsceneSkipButton.className = 'cutscene-skip hidden';
-            this.cutsceneSkipButton.textContent = 'SKIP';
-
-            this.cutsceneOverlay.appendChild(this.cutsceneVideo);
-            this.cutsceneOverlay.appendChild(this.cutsceneSkipButton);
-            document.body.appendChild(this.cutsceneOverlay);
+    showPendingBetaMigrationReport() {
+        const report = this.betaMigrationReport;
+        if (!this._bootComplete) return false;
+        const wasPlaying = this.isBetaReportOpen ? this._betaReportResumePlaying : this.isPlaying;
+        const resume = () => {
+            this.isBetaReportOpen = false;
+            this._shownBetaMigrationReport = null;
+            this.isPlaying = wasPlaying;
+            if (this._introAfterBetaReport) {
+                this._introAfterBetaReport = false;
+                setTimeout(() => this.playDogeIntro(this.currentLevel !== 'earth'), 0);
+            }
+        };
+        if (!report || report.acknowledged) {
+            if (this.isBetaReportOpen) {
+                window.BetaBalanceReport?.close();
+                resume();
+            }
+            return false;
         }
-
-        this.cutsceneSkipButton.addEventListener('click', () => {
-            this.closeCutscene();
-        });
-
-        this.cutsceneVideo.addEventListener('ended', () => {
-            this.closeCutscene();
-        });
-    }
-
-    playMoonLaunchCutscene() {
-        if (this.hasPlayedMoonLaunch || this.isCutscenePlaying) return;
-        if (!this.cutsceneOverlay || !this.cutsceneVideo) return;
-
-        this.isCutscenePlaying = true;
-        this.hasPlayedMoonLaunch = true;
+        if (this.isBetaReportOpen && this._shownBetaMigrationReport === report) return true;
+        if (!window.BetaBalanceReport) throw new Error('The Beta balance report could not be loaded.');
+        this._betaReportResumePlaying = wasPlaying;
+        this._shownBetaMigrationReport = report;
+        this.isBetaReportOpen = true;
+        this.isPlaying = false;
         this.isMouseDown = false;
         this.isSpaceDown = false;
-
-        console.log('[Cutscene] Starting Moon Launch cutscene');
-        console.log('[Cutscene] Audio manager available:', !!window.audioManager);
-        if (window.audioManager) {
-            audioManager.suspendAllAudio();
-        }
-
-        // Close mobile menu if open
-        if (window.uiManager && typeof uiManager.closeMobileMenu === 'function') {
-            uiManager.closeMobileMenu();
-        }
-
-        this.cutsceneVideo.src = '../assets/The Moon Launch.mp4';
-        this.cutsceneVideo.currentTime = 0;
-        this.cutsceneVideo.pause();
-        console.log('[Cutscene] Overlay active');
-        this.cutsceneOverlay.classList.add('active');
-        document.body.classList.add('cutscene-active');
-
-        if (this.cutsceneSkipTimeout) {
-            clearTimeout(this.cutsceneSkipTimeout);
-            this.cutsceneSkipTimeout = null;
-        }
-        this.cutsceneSkipButton.classList.add('hidden');
-        this.cutsceneSkipTimeout = setTimeout(() => {
-            this.cutsceneSkipButton.classList.remove('hidden');
-            // Show controller A-button indicator if in controller mode
-            if (document.body.classList.contains('controller-mode')) {
-                this.cutsceneSkipButton.innerHTML = '<img src="assets/Xbox%20Series/XboxSeriesX_A.webp" alt="A" style="height:20px;vertical-align:middle;margin-right:4px;"> SKIP';
-            } else {
-                this.cutsceneSkipButton.textContent = 'SKIP';
-            }
-            console.log('[Cutscene] Skip button shown');
-        }, 5000);
-
-        const playPromise = this.cutsceneVideo.play();
-        if (playPromise && typeof playPromise.catch === 'function') {
-            playPromise.catch(() => {
-                console.warn('Cutscene playback was blocked, showing skip button immediately.');
-                this.cutsceneSkipButton.classList.remove('hidden');
+        this._helperRockElapsed = 0;
+        try {
+            window.BetaBalanceReport.show(report, {
+                planet: this.currentLevel,
+                onAcknowledge: () => {
+                    if (this.betaMigrationReport !== report) return false;
+                    if (window.saveManager?.acknowledgeBetaMigration() !== true) return false;
+                    resume();
+                    return true;
+                }
             });
+        } catch (error) {
+            this.isBetaReportOpen = false;
+            this.isPlaying = wasPlaying;
+            throw error;
+        }
+        return true;
+    }
+
+    isMobileDevice() {
+        return window.innerWidth <= 768 || document.body.classList.contains('force-mobile') || ('ontouchstart' in window && navigator.maxTouchPoints > 1 && window.innerWidth <= 1024);
+    }
+
+    clearHelperSelection() {
+        if (this.selectedHelperIds) {
+            this.selectedHelperIds.clear();
+            this.updateHelperSelectionStyles();
         }
     }
 
-    closeCutscene() {
-        if (!this.isCutscenePlaying) return;
-        this.isCutscenePlaying = false;
-        console.log('[Cutscene] Closing Moon Launch cutscene');
+    updateHelperSelectionStyles() {
+        const allSprites = document.querySelectorAll('#helper-container .helper-sprite');
+        allSprites.forEach(sprite => {
+            const idAttr = sprite.getAttribute('data-helper-id');
+            if (!idAttr) return;
+            const numId = Number(idAttr);
+            if (this.selectedHelperIds && (this.selectedHelperIds.has(idAttr) || (numId && this.selectedHelperIds.has(numId)))) {
+                sprite.classList.add('helper-selected');
+            } else {
+                sprite.classList.remove('helper-selected');
+            }
+        });
+    }
 
-        if (this.cutsceneVideo) {
-            this.cutsceneVideo.pause();
-            this.cutsceneVideo.currentTime = 0;
-        }
-        if (this.cutsceneOverlay) {
-            this.cutsceneOverlay.classList.remove('active');
-        }
-        document.body.classList.remove('cutscene-active');
+    initMarqueeSelection() {
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
 
-        if (this.cutsceneSkipTimeout) {
-            clearTimeout(this.cutsceneSkipTimeout);
-            this.cutsceneSkipTimeout = null;
-        }
-        this.cutsceneSkipButton?.classList.add('hidden');
+        let isMarqueeActive = false;
+        let marqueeStartPos = { x: 0, y: 0 };
+        let marqueeBox = null;
+        let hasMovedThreshold = false;
 
-        if (window.audioManager) {
-            audioManager.resumeAudio();
-        }
+        leftPanel.addEventListener('mousedown', (e) => {
+            // Disabled completely on mobile devices
+            if (this.isMobileDevice()) return;
 
-        // Force close mobile menu again just in case
-        if (window.uiManager && typeof uiManager.closeMobileMenu === 'function') {
-            uiManager.closeMobileMenu();
-        }
+            // Ignore right clicks or active placement mode
+            if (this.isPlacingHelpers || e.button !== 0) return;
 
-        // Clear any in-progress helper placement so the rocket doesn't stay on
-        // the cursor and get placed again on the new planet (controller bug fix)
-        if (typeof this.clearPlacementState === 'function') {
-            this.clearPlacementState();
-        }
+            const target = e.target;
+            // Ignore clicks on existing helpers, buttons, dialogs, rock, etc.
+            if (target.closest('.helper-sprite, #main-character, #character-shadow, #rock-container, #pickaxe-container, #news-container, .switcher-modal, #topright-hud, .dialog, button, a')) {
+                return;
+            }
 
-        // After moon launch cutscene, switch to moon
-        if (this.hasPlayedMoonLaunch && this.currentLevel !== 'moon') {
-            console.log('[Cutscene] Switching to moon after cutscene');
+            const panelRect = leftPanel.getBoundingClientRect();
+            marqueeStartPos = {
+                x: e.clientX - panelRect.left,
+                y: e.clientY - panelRect.top
+            };
 
-            // Add moon to unlocked levels
-            this.unlockedLevels.add('moon');
+            isMarqueeActive = true;
+            hasMovedThreshold = false;
 
-            // Use a timeout to ensure UI is updated before planet switch
-            setTimeout(() => {
-                // Find and click the moon tab
-                const moonTab = document.querySelector('.planet-tab[onclick*="moon"]');
-                if (moonTab) {
-                    moonTab.click();
-                } else {
-                    // Fallback if moon tab can't be found: call switchPlanet directly
-                    if (window.switchPlanet) {
-                        window.switchPlanet('moon');
+            if (!e.shiftKey) {
+                this.clearHelperSelection();
+            }
+
+            const handleMouseMove = (moveEvt) => {
+                if (!isMarqueeActive) return;
+
+                const currentX = moveEvt.clientX - panelRect.left;
+                const currentY = moveEvt.clientY - panelRect.top;
+                const dx = currentX - marqueeStartPos.x;
+                const dy = currentY - marqueeStartPos.y;
+
+                if (!hasMovedThreshold && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+                    hasMovedThreshold = true;
+                    if (!marqueeBox) {
+                        marqueeBox = document.createElement('div');
+                        marqueeBox.className = 'marquee-select-box';
+                        const container = document.getElementById('helper-container') || leftPanel;
+                        container.appendChild(marqueeBox);
                     }
                 }
 
-                // Refresh mobile planet tabs to show Moon as unlocked
-                if (window.uiManager && typeof uiManager.updateMobilePlanetTabs === 'function') {
-                    uiManager.updateMobilePlanetTabs();
-                    uiManager.updateMobilePlanetDisplay();
-                }
-            }, 500);
-        }
+                if (!hasMovedThreshold || !marqueeBox) return;
 
-        this.updateUI();
+                const left = Math.min(marqueeStartPos.x, currentX);
+                const top = Math.min(marqueeStartPos.y, currentY);
+                const width = Math.abs(dx);
+                const height = Math.abs(dy);
+
+                marqueeBox.style.left = left + 'px';
+                marqueeBox.style.top = top + 'px';
+                marqueeBox.style.width = width + 'px';
+                marqueeBox.style.height = height + 'px';
+
+                const boxRect = marqueeBox.getBoundingClientRect();
+
+                const sprites = document.querySelectorAll('#helper-container .helper-sprite:not(.attached-to-mouse)');
+                sprites.forEach(sprite => {
+                    const idAttr = sprite.getAttribute('data-helper-id');
+                    if (!idAttr) return;
+                    const spriteRect = sprite.getBoundingClientRect();
+
+                    const intersects = !(
+                        spriteRect.right < boxRect.left ||
+                        spriteRect.left > boxRect.right ||
+                        spriteRect.bottom < boxRect.top ||
+                        spriteRect.top > boxRect.bottom
+                    );
+
+                    const numId = Number(idAttr);
+                    const helperId = numId || idAttr;
+
+                    if (intersects) {
+                        this.selectedHelperIds.add(helperId);
+                        if (numId) this.selectedHelperIds.add(idAttr);
+                    } else if (!moveEvt.shiftKey) {
+                        this.selectedHelperIds.delete(helperId);
+                        if (numId) this.selectedHelperIds.delete(idAttr);
+                    }
+                });
+
+                this.updateHelperSelectionStyles();
+            };
+
+            const handleMouseUp = () => {
+                isMarqueeActive = false;
+                if (marqueeBox) {
+                    marqueeBox.remove();
+                    marqueeBox = null;
+                }
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            };
+
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        });
     }
+
+    setupCutsceneSystem() { window.DogeMinerMoonLaunch.setup(this); }
+
+    playMoonLaunchCutscene() { return window.DogeMinerMoonLaunch.open(this); }
+
+    closeCutscene() { return window.DogeMinerMoonLaunch.requestSkip(this); }
 
     addGlobalMouseTracking() {
         // Track mouse position globally for cursor sprite positioning
@@ -481,6 +553,7 @@ class DogeMinerGame {
         const dogeContainer = document.getElementById('character-container');
 
         const handleMiningMouseDown = (e) => {
+            if (!this.canUseMiningInput(e)) return;
             this.isMouseDown = true;
             this.processClick(e);
         };
@@ -526,7 +599,7 @@ class DogeMinerGame {
 
         // Keyboard events with click rate limiting
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && !e.repeat) {
+            if (e.code === 'Space' && !e.repeat && this.canUseMiningInput(e)) {
                 e.preventDefault();
                 this.isSpaceDown = true;
                 this.processClick();
@@ -534,68 +607,78 @@ class DogeMinerGame {
         });
 
         document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
+            if (e.code === 'Space' && this.isSpaceDown) {
                 e.preventDefault();
                 this.isSpaceDown = false;
                 this.endSwing();
             }
         });
 
+        window.addEventListener('blur', () => this.releaseMiningInput());
+        document.addEventListener('visibilitychange', () => { if (document.hidden) this.releaseMiningInput(); });
+
         // Auto-save is now handled by SaveManager
     }
 
-    handleRockClick(event = null) {
-        if (!this.isPlaying || this.isIntroPlaying || this.isCutscenePlaying || this.isTransitioning) return;
-        if (this.isRockRegenerating) return;
+    releaseMiningInput() {
+        this.isMouseDown = false; this.isSpaceDown = false;
+        this.releaseDrill?.(); this.endSwing();
+    }
+
+    canUseMiningInput(event = null) {
+        if (!this.isPlaying || this.isIntroPlaying || this.isCutscenePlaying || this.isTransitioning || this.isBetaReportOpen || this.isOfflineReportOpen || this.isStoryOpen || this.isUpdateNotesOpen || this._dogebagReveal || this.isMysteryBoxOpen || this._sunDogeFusion || document.hidden || document.hasFocus?.() === false) return false;
+        const control = 'input,textarea,select,button,a,[contenteditable="true"],[role="textbox"],[role="button"]';
+        if ((event?.target || document.activeElement)?.closest?.(control)) return false;
+        return !document.querySelector?.('.modal.active,.switcher-modal.active,.dialog-overlay.active,.dia-mission-modal.active,.dia-warning-modal.active,#controller-dialog.active,#mission-passed,#mission-cutscene');
+    }
+
+    handleRockClick(event = null, hitOptions = {}) {
+        if (!this.canUseMiningInput(event)) return;
+        if (this.isRockRegenerating) { this.playToolGround?.(); return; }
 
         this.totalClicks++;
+        this.rollMiningChatter?.(Math.random, hitOptions.textChance ?? .2);
+        this.clearStartingHint?.();
 
-        this.swingPickaxe();
-        this.bounceDoge();
+        const doubleAttack = this.rollDualAttack?.() === true;
+        this.prepareToolAttack?.(doubleAttack);
+        this._lastToolDouble = doubleAttack;
+        if (!hitOptions.drill) { this.swingPickaxe(); this.bounceDoge(); }
 
         // Calculate damage with crit chance
         const { damage, isCrit } = this.calculateClickDamage();
         this.lastCritHit = isCrit;
 
         // Coins earned = damage dealt (DPC acts as both damage AND income)
-        const coinsPerHit = damage;
+        const coinsPerHit = Math.min(damage * (hitOptions.strength ?? 1) * (doubleAttack ? 2 : 1), Math.max(0, this.rockCurrentHP));
+        const isRecordCrit = this.recordCriticalHit(coinsPerHit, isCrit);
         this.dogecoins += coinsPerHit;
         this.totalMined += coinsPerHit;
 
-        if (this.activeEffectCount < this.maxEffects) {
-            this.createFloatingCoin(coinsPerHit, event, isCrit);
+        if (coinsPerHit > 0 && this.activeEffectCount < this.maxEffects) {
+            this.createFloatingCoin(coinsPerHit, event, isCrit, isRecordCrit);
             this.createClickEffect(event);
         }
         if (this.activeParticleCount < this.maxParticles) {
             this.createParticleEffect(event);
         }
 
-        // Rock health system — deal damage to rock
-        // Cap rock damage per hit to 15% of max HP to prevent one-shotting
-        const maxRockDamage = Math.max(1, Math.floor(this.rockMaxHP * 0.15));
-        const rockDamage = Math.min(damage, maxRockDamage);
-        this.rockCurrentHP = Math.max(0, this.rockCurrentHP - rockDamage);
-        this.updateRockSprite();
-        this.checkCoinPileExpulsion();
-        this.updateRockHealthDisplay();
+        this.applyRockDamage(coinsPerHit);
 
         // Swap to active sprite on click
         this.showActivePickaxeSprite();
 
-        if (this.rockCurrentHP <= 0) {
-            this.regenerateRock();
-        }
-
         this.updateUI();
 
+        if (this.playToolHit) { this.playToolHit(isCrit, hitOptions); return; }
         // Context-sensitive hit sound
         if (this.rockCurrentHP <= 0 && !this.isRockRegenerating) {
             // Rock already dead — bonk sound
             this.playSound('hitGround');
-        } else if (isCrit) {
+        } else if (isCrit && hitOptions.critSound !== false) {
             // Critical hit
             this.playSound('hitHard');
-        } else {
+        } else if (hitOptions.hitSound !== false) {
             // Check equipped pickaxe for custom hit sounds
             const equipped = this.getEquippedPickaxe();
             const pickaxeName = equipped ? equipped.name : '';
@@ -611,17 +694,18 @@ class DogeMinerGame {
 
     processClick(event = null) {
         const now = Date.now();
-        if (this.isIntroPlaying || this.isCutscenePlaying || this.isTransitioning) {
+        if (!this.canUseMiningInput(event)) {
             return;
         }
 
+        if (this.isDrillEquipped?.()) { this.pressDrill?.(event); return; }
         this.clickTimes = this.clickTimes.filter(time => now - time < 1000);
 
         if (this.clickTimes.length >= this.maxCPS) {
             return;
         }
 
-        if (now - this.lastClickTime < 66) {
+        if (now - this.lastClickTime < 70) {
             return;
         }
 
@@ -630,6 +714,23 @@ class DogeMinerGame {
 
         this.handleRockClick(event);
         this.startSwing();
+    }
+
+    restoreMiningRecords(records) {
+        this.records = records && typeof records === 'object' && !Array.isArray(records) ? { ...records } : {};
+        if (!Number.isFinite(this.records.highestcrit) || this.records.highestcrit < 0) this.records.highestcrit = 0;
+    }
+
+    getMiningRecordsForSave() {
+        this.restoreMiningRecords(this.records);
+        return { ...this.records };
+    }
+
+    recordCriticalHit(amount, isCrit) {
+        if (!this.records) this.restoreMiningRecords(null);
+        const record = isCrit && Number.isFinite(amount) && amount > this.records.highestcrit;
+        if (record) this.records.highestcrit = amount;
+        return !!record;
     }
 
     getClickPower() {
@@ -648,45 +749,47 @@ class DogeMinerGame {
             return { damage: 0, isCrit: false };
         }
 
-        let damage = baseDPC * this.playerStats.dpcMultiplier;
+        // Timeline-start Paw: "Under no circumstances can the Paw be more than 1."
+        // No multipliers, buffs, or crits apply while digging with bare paws.
+        if (equipped && equipped.isPaw) {
+            return { damage: 1, isCrit: false };
+        }
+
+        let damage = baseDPC * this.playerStats.dpcMultiplier * (this.isSupporter ? 1.05 : 1)
+            * (this.bonusCoinBuffMultiplier || 1);
 
         // Apply critical hit
-        const isCrit = Math.random() < this.playerStats.critChance;
+        const chance = this.playerStats.critChance || 0;
+        const isCrit = chance > 0 && Math.random() <= chance;
         if (isCrit) {
-            damage *= 2.5;
+            let criticalMultiplier = 2.5;
+            if (chance >= 1) {
+                if (chance >= 3) {
+                    if (Math.random() <= chance - 3) criticalMultiplier = 4;
+                } else if (chance >= 2) {
+                    if (Math.random() <= chance - 2) criticalMultiplier = 3.5;
+                } else if (Math.random() <= chance - 1) {
+                    criticalMultiplier = 3;
+                }
+            }
+            damage = Math.ceil(damage * criticalMultiplier);
         }
-
-        damage = Math.max(1, Math.floor(damage));
-
-        // Apply the Bonus Coin buff AFTER flooring so low-DPC pickaxes still benefit
-        // visibly (e.g. a 1-DPC pickaxe would otherwise lose a +50% buff to rounding).
-        // Rounded, with a guaranteed minimum of +1 while a buff is active.
-        if (this.bonusCoinBuffMultiplier > 1) {
-            damage = Math.max(damage + 1, Math.round(damage * this.bonusCoinBuffMultiplier));
-        }
-
-        return { damage, isCrit };
+        return { damage: Math.max(1, damage), isCrit };
     }
 
     /**
      * Calculates rock HP based on rocks broken (scaling difficulty)
      */
-    getRockHP(baseHP, rocksBroken) {
-        let growthFactor = 1.15; // Earth default: 15% growth per rock broken
-        switch (this.currentLevel) {
-            case 'moon': growthFactor = 1.25; break;
-            case 'mars': growthFactor = 1.40; break;
-            case 'jupiter': growthFactor = 1.60; break;
-            case 'titan': growthFactor = 1.85; break;
-        }
-        const finalHp = Math.floor(baseHP * Math.pow(growthFactor, rocksBroken));
-        
-        // Prevent exploit where players with high DPC return to early planets to instantly farm rocks.
-        // Rocks must ALWAYS require at least ~10 clicks (by 15% damage cap) relative to current max DPC.
-        // 10 clicks * 15% maxHP = 150%. Therefore minHP roughly equals maxPickaxeDPC * 6.67
-        const minHP = Math.floor(this.maxPickaxeDPC * 6.67);
-
-        return Math.max(finalHp, minHP);
+    getRockHP(baseHP, difficultySteps, planet = this.currentLevel) {
+        const equippedDPC = Math.max(0, Number(this.getEquippedPickaxe()?.baseDPC) || 0);
+        const localDPS = this.getPlanetMiningDPS(planet);
+        const base = Math.max(1, Number(baseHP) || this.getPlanetRockBaseHP(planet));
+        const steps = Math.max(0, Math.floor(Number(difficultySteps) || 0));
+        const hp = (base + Math.ceil(2.5 * localDPS + Math.ceil(2 * equippedDPC))) * Math.pow(1.1, steps);
+        // Finite storage prevents a damaged/corrupt difficulty value from making rocks immortal.
+        let maximum = Math.min(Number.MAX_VALUE, Math.ceil(hp));
+        if (this.getRockType(steps + 1) === 9) maximum = Math.min(Number.MAX_VALUE, Math.round(maximum + maximum / 7));
+        return Math.max(1, maximum);
     }
 
     /**
@@ -694,12 +797,67 @@ class DogeMinerGame {
      */
     getPlanetRockBaseHP(planet) {
         switch (planet) {
-            case 'earth': return 100;
-            case 'moon': return 500;
-            case 'mars': return 1500;
-            case 'jupiter': return 5000;
-            case 'titan': return 25000;
-            default: return 100;
+            case 'earth': return 60;
+            case 'moon': return 3000;
+            case 'mars': return 155000;
+            case 'jupiter': return 450000;
+            case 'titan': return 2500000;
+            default: return 60;
+        }
+    }
+
+    getBalancedRockMigration(planet, saved = {}) {
+        const rocksBroken = Math.max(0, Math.floor(Number(saved.rocksBroken) || 0));
+        const oldLevel = Math.max(1, Math.floor(Number(saved.rockLevel) || rocksBroken + 1));
+        const base = this.getPlanetRockBaseHP(planet);
+        const firstHP = this.getRockHP(base, 0, planet);
+        const pickaxe = this.getEquippedPickaxe();
+        const clickDPC = pickaxe?.isPaw ? 1 : Math.max(0, (Number(pickaxe?.baseDPC) || 0)
+            * (this.playerStats.dpcMultiplier || 1) * (this.isSupporter ? 1.05 : 1));
+        const helperDamagePerSecond = this.getPlanetMiningDPS(planet) * 5 / (this.timelineNumber > 1 ? 3 : 2);
+        // A one-time rescue gives a migrated player a rock no worse than the base rock
+        // or roughly one minute of modest active mining. Lifetime breaks stay intact.
+        const targetHP = Math.max(firstHP, (clickDPC * 5 + helperDamagePerSecond) * 60);
+        const affordableLevel = Math.max(1, Math.floor(Math.log(targetHP / firstHP) / Math.log(1.1)) + 1);
+        let rockLevel = Math.min(oldLevel, affordableLevel);
+        let maxHP = this.getRockHP(base, rockLevel - 1, planet);
+        while (rockLevel > 1 && maxHP > targetHP) {
+            rockLevel--;
+            maxHP = this.getRockHP(base, rockLevel - 1, planet);
+        }
+        const oldMax = Number(saved.maxHP);
+        const oldCurrent = Number(saved.currentHP);
+        const fraction = Number.isFinite(oldMax) && oldMax > 0 && Number.isFinite(oldCurrent) && oldCurrent > 0
+            ? Math.max(0, Math.min(1, oldCurrent / oldMax)) : 1;
+        return {
+            rocksBroken, rockLevel, maxHP, currentHP: Math.max(1, Math.ceil(maxHP * fraction)),
+            reason: rockLevel < oldLevel ? 'Excessive Alpha rock difficulty reduced; lifetime breaks preserved.'
+                : 'Rock durability recalculated for your Beta mining power.'
+        };
+    }
+
+    applyRockDamage(amount) {
+        if (this.isRockRegenerating || !Number.isFinite(amount) || amount <= 0) return;
+        this.rockCurrentHP = Math.max(0, this.rockCurrentHP - amount);
+        this.updateRockSprite();
+        this.updateRockHealthDisplay();
+        if (this.rockCurrentHP <= 0) this.regenerateRock();
+        else this.checkCoinPileExpulsion();
+    }
+
+    advanceHelperRockMining(elapsedMs) {
+        if (!this.isPlaying || this.isIntroPlaying || this.isTransitioning || this.isCutscenePlaying
+            || this.isBetaReportOpen || this.isStoryOpen || this.isRockRegenerating) {
+            this._helperRockElapsed = 0;
+            return;
+        }
+        // Match DM2's 200ms mining ticks; do not convert background-tab time into a loot burst.
+        this._helperRockElapsed = (this._helperRockElapsed || 0) + Math.max(0, Math.min(1000, elapsedMs));
+        const ticks = Math.min(5, Math.floor(this._helperRockElapsed / 200));
+        this._helperRockElapsed %= 200;
+        for (let i = 0; i < ticks && !this.isRockRegenerating; i++) {
+            this.applyRockDamage(this.getPlanetMiningDPS(this.currentLevel) / (this.timelineNumber > 1 ? 3 : 2));
+            this.playHelperRockHit?.();
         }
     }
 
@@ -872,6 +1030,7 @@ class DogeMinerGame {
      * Creates a smoke effect over the rock when it changes damage state
      */
     createRockSmokeEffect() {
+        if (this.lessEffects) return;
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
 
@@ -906,26 +1065,29 @@ class DogeMinerGame {
      * Regenerates the rock after it's been destroyed
      */
     regenerateRock() {
+        if (this.isRockRegenerating) return;
+        const planet = this.currentLevel;
+        const epoch = this._rockStateEpoch || 0;
+        const brokenLevel = this.rockLevel || 1;
         this.isRockRegenerating = true;
         this.rocksBroken++;
-
-        // 0% threshold: dogebag chance + coin piles
-        if (this.rollDogebagDrop()) {
-            this.createDogebag();
-        }
-        // 0% threshold: rare Dogediamond lucky drop
-        if (this.rollDiamondDrop()) {
-            this.createDiamondLoot();
-        }
-        // 90% chance to expel coin piles when rock breaks
-        if (Math.random() < 0.9) {
-            this.expelCoinPiles();
-        }
-
+        this.rockLevel = brokenLevel + 1;
+        this.rollRockThresholdLoot(5, this.rockLevel);
+        const next = {
+            rocksBroken: this.rocksBroken, rockLevel: this.rockLevel,
+            maxHP: this.getRockHP(this.getPlanetRockBaseHP(planet), this.rockLevel - 1, planet)
+        };
+        next.currentHP = next.maxHP;
+        this.planetRockData[planet] = next;
         setTimeout(() => {
-            // Scale next rock's HP based on rocks broken
-            this.rockMaxHP = this.getRockHP(this.rockBaseHP, this.rocksBroken);
-            this.rockCurrentHP = this.rockMaxHP;
+            // Saves may replace the record. Imports and timeline resets invalidate the callback.
+            const current = this.planetRockData[planet];
+            if ((this._rockStateEpoch || 0) !== epoch || current?.rockLevel !== next.rockLevel) return;
+            current.maxHP = this.getRockHP(this.getPlanetRockBaseHP(planet), current.rockLevel - 1, planet);
+            current.currentHP = current.maxHP;
+            if (this.currentLevel !== planet) return;
+            this.rockMaxHP = current.maxHP;
+            this.rockCurrentHP = current.currentHP;
             this.lastDamageThresholdPercent = 100;
             this.isRockRegenerating = false;
             this.updateRockSprite();
@@ -933,36 +1095,67 @@ class DogeMinerGame {
         }, 500);
     }
 
-    /**
-     * Checks if coin piles should be expelled at damage thresholds (percentage-based).
-     * Per the plan: 90%/75% = coins only; 50%/25%/0% = dogebag chance + coins.
-     */
     checkCoinPileExpulsion() {
-        const healthPercent = this.getRockHealthPercent();
-        const thresholds = [90, 75, 50, 25];
+        const percent = this.rockMaxHP > 0 ? this.rockCurrentHP / this.rockMaxHP * 100 : 0;
+        const threshold = percent < 25 ? 25 : percent < 51 ? 51 : percent < 75 ? 75 : percent < 90 ? 90 : 100;
+        if (threshold >= (this.lastDamageThresholdPercent ?? 100) || threshold === 100) return;
+        this.lastDamageThresholdPercent = threshold;
+        this.rollRockThresholdLoot({90: 1, 75: 2, 51: 3, 25: 4}[threshold]);
+    }
 
-        for (const threshold of thresholds) {
-            // Check if we just crossed this threshold
-            if (this.lastDamageThresholdPercent > threshold && healthPercent <= threshold) {
-                this.lastDamageThresholdPercent = threshold;
+    getRockType(level = this.rockLevel || 1) {
+        const span = window.DogeMinerBalanceData?.maxRockLevel || 10;
+        const types = window.DogeMinerBalanceData?.rockTypeCount || 36;
+        const value = Math.max(1, Math.floor(level));
+        return Math.floor((value - 1) / span) >= types ? value - types * span : (value % span) || span;
+    }
 
-                if (threshold >= 75) {
-                    // 90% and 75% thresholds: coins only
-                    if (Math.random() < 0.35) {
-                        this.expelCoinPiles();
-                    }
-                } else {
-                    // 50% and 25% thresholds: chance for dogebag + coins
-                    if (this.rollDogebagDrop()) {
-                        this.createDogebag();
-                    }
-                    if (Math.random() < 0.35) {
-                        this.expelCoinPiles();
-                    }
-                }
-                break; // Only trigger once per threshold crossing
-            }
+    getTotalRockBreaks() {
+        return ['earth', 'moon', 'mars', 'jupiter', 'titan'].reduce((sum, planet) => sum
+            + (planet === this.currentLevel ? this.rocksBroken || 0 : this.planetRockData?.[planet]?.rocksBroken || 0), 0);
+    }
+
+    rollRockThresholdLoot(stage, level = this.rockLevel || 1) {
+        const totalBroken = this.getTotalRockBreaks();
+        if (stage === 5 && this.timelineNumber === 1) {
+            if (totalBroken === 2) { this.createDogebag(); return; }
+            if (totalBroken === 1 || totalBroken === 3 || totalBroken === 4) { this.expelBalancedCoinPile(0); return; }
+            if (totalBroken === 20 && this.dogediamondsEverObtained === 0) { this.createDiamondLoot(); return; }
         }
+        if (stage === 5 && this.getRockType(level) === 10) {
+            this.createDogebag(); this.expelBalancedCoinPile(0);
+            if (Math.random() < 0.35) this.expelBalancedCoinPile(0);
+            return;
+        }
+        const rates = [[20,20,15,15,1],[-1,-1,5,10,4],[-1,-1,-1,0,6],[-1,-1,-1,-1,10],[-1,-1,-1,-1,1],[20,20,20,20,7]];
+        const luck = 1 + Math.max(0, this.playerStats.luck || 0) / 100;
+        const loot = 1 + Math.max(0, this.playerStats.lootFind || 0) / 100;
+        const type = this.getRockType(level), tier = Math.floor((level - 1) / 10);
+        const weights = rates.map((row, index) => {
+            const rate = row[stage - 1];
+            if (rate < 0) return index === 3 && stage === 4 && (luck >= 4 || loot >= 4) ? Math.round(loot) : 0;
+            if (index === 3) return rate * loot + luck;
+            if (index === 5) return Math.max(0, (rate - tier - 2 * type) * (2 - loot));
+            return rate;
+        });
+        let roll = Math.random() * weights.reduce((sum, value) => sum + Math.max(0, value), 0);
+        for (let index = 0; index < weights.length; index++) {
+            if (weights[index] <= 0) continue;
+            roll -= weights[index];
+            if (roll >= 0) continue;
+            if (index <= 2) this.expelBalancedCoinPile(index);
+            else if (index === 3) this.createDogebag();
+            else if (index === 4) this.createDiamondLoot();
+            return;
+        }
+    }
+
+    expelBalancedCoinPile(size) {
+        const maximum = this.rockMaxHP || this.getRockHP(this.getPlanetRockBaseHP(this.currentLevel), (this.rockLevel || 1) - 1);
+        const offset = {earth: 1, moon: 500, mars: 5000, jupiter: 25000, titan: 1}[this.currentLevel] || 1;
+        const amount = Math.ceil([0.04, 0.09, 0.16][size] * maximum + [3, 4, 10][size] * Math.random()) + offset;
+        const sprite = ['assets/general/icons/small_stack_1.webp', 'assets/general/icons/medium_stack_1.webp', 'assets/general/icons/large_stack_1.webp'][size];
+        this.createCoinPile(amount, sprite, [20, 35, 80][size]);
     }
 
     /**
@@ -1069,34 +1262,6 @@ class DogeMinerGame {
         img.draggable = false;
         pile.appendChild(img);
 
-        // Final position: below the rock, spread horizontally
-        let finalOffsetX;
-
-        if (total > 1) {
-            // Segment the horizontal space based on the index so multiple piles don't spawn on top of each other
-            const sectionWidth = 240 / total;
-            const startX = -120 + (index * sectionWidth);
-            finalOffsetX = startX + (Math.random() * sectionWidth);
-        } else {
-            // X offset: -120 to 120 (spread out left/right)
-            finalOffsetX = (Math.random() - 0.5) * 240;
-        }
-
-        // Y offset: always positive (below rock), range 80 to 160
-        let finalOffsetY = 80 + Math.random() * 80;
-
-        // Prevent spawning in the direct center where the health percentage text is
-        // Push them downwards if they land in the central column where the text is.
-        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
-            finalOffsetY = 150 + Math.random() * 40; // Push them down safely below the text
-        }
-
-        // Start at center (0,0), animate to final position
-        pile.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
-        pile.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
-        pile.style.left = '50%';
-        pile.style.top = '50%';
-
         // Store the amount on the element
         pile.dataset.amount = amount;
 
@@ -1108,27 +1273,12 @@ class DogeMinerGame {
 
         // Add to DOM
         rockContainer.appendChild(pile);
+        if (window.innerWidth > 768) pile._lootHover = window.LootMotion?.hover(pile, img);
 
-        // Animate from center outward
-        pile.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
+        this.spawnFieldCoin(pile);
 
-        // Wait 8 seconds, then start warning animation for 5 seconds, then despawn
-        setTimeout(() => {
-            if (pile.parentNode) {
-                pile.style.animation = 'coinPileWarning 5s linear forwards';
-
-                setTimeout(() => {
-                    if (pile.parentNode) {
-                        pile.style.animation = 'coinPileFade 0.5s ease-out forwards';
-                        setTimeout(() => {
-                            if (pile.parentNode) {
-                                pile.parentNode.removeChild(pile);
-                            }
-                        }, 500);
-                    }
-                }, 5000);
-            }
-        }, 8000);
+        this.scheduleCoinExpiry?.(pile);
+        return pile;
     }
 
     /**
@@ -1140,6 +1290,7 @@ class DogeMinerGame {
         // Mark as collected to prevent any further interaction
         pile.dataset.collected = "true";
         pile.style.pointerEvents = 'none';
+        pile._lootHover?.detach();
 
         // Add coins
         this.dogecoins += amount;
@@ -1152,21 +1303,12 @@ class DogeMinerGame {
             this.playSound('getCoins');
         }
 
-        // Show floating text
+        // Show curved floating coin + text animation into total Dogecoin balance
         const rect = pile.getBoundingClientRect();
-        const floatingCoins = document.getElementById('floating-coins');
-        if (floatingCoins) {
-            const text = document.createElement('div');
-            text.className = 'coin-pile-collected';
-            text.textContent = '+' + this.formatNumber(amount);
-            text.style.left = (rect.left + rect.width / 2 - floatingCoins.getBoundingClientRect().left) + 'px';
-            text.style.top = (rect.top - floatingCoins.getBoundingClientRect().top) + 'px';
-            floatingCoins.appendChild(text);
-
-            setTimeout(() => {
-                if (text.parentNode) text.parentNode.removeChild(text);
-            }, 1000);
-        }
+        this.createFloatingCoin(amount, {
+            clientX: rect.left + rect.width / 2,
+            clientY: rect.top + rect.height / 2
+        }, false);
 
         // Remove pile with animation
         pile.style.animation = 'coinPileCollect 0.3s ease-out forwards';
@@ -1320,28 +1462,21 @@ class DogeMinerGame {
         const isFirstEver = this.dogediamondsEverObtained === 0;
         this.dogediamonds += 1;
         this.dogediamondsEverObtained += 1;
+        // Persist the actual claim immediately, even while its HUD animation is in flight.
+        if (window.saveManager) window.saveManager.saveGame(false);
 
         this.playSound('longSparkle');
 
-        // Floating "+1" with a diamond
+        // Show curved floating diamond animation into Dogediamond counter
         const rect = el.getBoundingClientRect();
-        const floatingCoins = document.getElementById('floating-coins');
-        if (floatingCoins) {
-            const fc = floatingCoins.getBoundingClientRect();
-            const text = document.createElement('div');
-            text.className = 'coin-pile-collected diamond-collected';
-            text.innerHTML = `+1 <img src="assets/general/diamond.webp" alt="" class="diamond-inline-icon">`;
-            text.style.left = (rect.left + rect.width / 2 - fc.left) + 'px';
-            text.style.top = (rect.top - fc.top) + 'px';
-            floatingCoins.appendChild(text);
-            setTimeout(() => { if (text.parentNode) text.parentNode.removeChild(text); }, 1200);
-        }
+        this.createFloatingDiamond(1, {
+            clientX: rect.left + rect.width / 2,
+            clientY: rect.top + rect.height / 2
+        });
+        this.updateUI();
 
         el.style.animation = 'coinPileCollect 0.3s ease-out forwards';
         setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
-
-        this.updateDiamondCounter();
-        this.updateUI();
 
         if (isFirstEver) {
             this.showDiamondIntro();
@@ -1358,7 +1493,8 @@ class DogeMinerGame {
         const unlocked = this.dogediamondsEverObtained > 0;
         counter.style.display = unlocked ? 'flex' : 'none';
         const amountEl = document.getElementById('diamond-amount');
-        if (amountEl) amountEl.textContent = this.formatNumber(Math.floor(this.dogediamonds));
+        const visibleBalance = Math.max(0, this.dogediamonds - (this.pendingDiamondDisplayAmount || 0));
+        if (amountEl) amountEl.textContent = this.formatCounterAmount(visibleBalance);
     }
 
     /** Opens the first-find Dogediamonds explainer popup. */
@@ -1382,6 +1518,7 @@ class DogeMinerGame {
             return;
         }
         this.dogediamonds -= 1;
+        this.flashDiamondAmount('red');
         this.searchdogeSlot3Unlocked = true;
         this.playSound('longSparkle');
         this.showNotification('3rd Searchdoge slot unlocked!');
@@ -1418,81 +1555,52 @@ class DogeMinerGame {
      * Determines what's inside a dogebag: pickaxe, fortune, or coins.
      * Then creates the dogebag element on the ground.
      */
-    generateDogebagContents() {
-        // Track Moon Dogebag openings for the Mystery Box guarantee
-        if (this.currentLevel === 'moon') {
-            this.moonDogebagCount = (this.moonDogebagCount || 0) + 1;
-
-            // Mystery Box: guaranteed within the first 5 Moon Dogebags (if not yet obtained)
-            if (!this.mysteryBoxObtained && this.moonDogebagCount <= 5 && this.fortuneFactory && this.fortuneFactory.loaded) {
-                const mysteryTemplate = Object.values(this.fortuneFactory.templates).find(
-                    t => t.name === 'Mystery Box'
-                );
-                if (mysteryTemplate) {
-                    // Roll it on the last qualifying bag, or randomly within the window
-                    const bagsLeft = 5 - this.moonDogebagCount;
-                    const rollChance = bagsLeft === 0 ? 1 : 1 / (bagsLeft + 1);
-                    if (Math.random() < rollChance) {
-                        this.mysteryBoxObtained = true;
-                        if (typeof this.initMysteryBox === 'function') {
-                            this.initMysteryBox();
-                        }
-                        const stats = this.fortuneFactory._rollStats(
-                            mysteryTemplate.statTemplates,
-                            this.playerStats.luck,
-                            this.playerStats.lootFind
-                        );
-                        const fortune = {
-                            instanceId: `fortune_mysterybox_${Date.now()}`,
-                            templateId: mysteryTemplate.id,
-                            name: mysteryTemplate.name,
-                            rarity: mysteryTemplate.rarity,
-                            description: mysteryTemplate.description,
-                            stats,
-                            sprite: mysteryTemplate.sprite
-                        };
-                        return { type: 'fortune', item: fortune };
-                    }
-                }
+    generateDogebagContents(options = {}) {
+        const balance = window.DogeMinerBalance;
+        const context = balance.getRollContext(this);
+        const pool = balance.getNaturalLootPool(this, {planet: options.planet || this.currentLevel,
+            ...(options.dropType === undefined ? {} : {dropType: options.dropType})});
+        if (this.currentLevel === 'moon' && !this.mysteryBoxObtained) {
+            const template = Object.values(this.fortuneFactory?.templates || {}).find(item => item.name === 'Mystery Box');
+            if (template) {
+                this.prizesSinceLastPickaxe++;
+                return {type: 'fortune', item: this.fortuneFactory.generateFromTemplate(template.id, {...context, dropType: 3})};
             }
         }
-
-        // 60% pickaxe, 20% fortune, 20% coins
-        const roll = Math.random();
-
-        if (roll < 0.60 && this.pickaxeFactory && this.pickaxeFactory.loaded) {
-            // Roll a pickaxe
-            const templateId = this.pickaxeFactory.rollTemplate(
-                this.currentLevel,
-                this.playerStats.lootFind
-            );
-            if (templateId) {
-                const pickaxe = this.pickaxeFactory.generatePickaxe(
-                    templateId,
-                    this.maxPickaxeDPC,
-                    this.playerStats.wow
-                );
-                return { type: 'pickaxe', item: pickaxe };
-            }
+        const cooldown = this.timelineNumber > 2 ? 12000 : this.timelineNumber === 2 ? 25000 : 45000;
+        const pickAllowed = !this.lastPickaxeDropTime || Date.now() - this.lastPickaxeDropTime > cooldown;
+        const loot = Math.max(1, (1 + (this.playerStats.lootFind || 0) / 100) / 3);
+        const luck = Math.max(1, (1 + (this.playerStats.luck || 0) / 100) / 6);
+        const candidates = pool.candidates.filter(entry => entry.kind !== 'pickaxe' || pickAllowed).map(entry => ({
+            ...entry, weight: entry.weight * loot + luck * (entry.kind === 'pickaxe' && this.prizesSinceLastPickaxe > 3 && entry.quality < 4 ? 3 : 1)
+        }));
+        const entryCount = pool.candidates.length + (pool.weights.coins >= 0 ? 1 : 0) + (pool.weights.diamonds >= 0 ? 1 : 0);
+        if (pool.weights.coins >= 0) candidates.push({kind: 'coins', weight: pool.weights.coins + Math.round(3 * entryCount) + 2});
+        if (pool.weights.diamonds >= 0) candidates.push({kind: 'diamonds', weight: pool.weights.diamonds});
+        let roll = Math.random() * candidates.reduce((sum, entry) => sum + Math.max(0, entry.weight), 0);
+        let prize;
+        for (const entry of candidates) {
+            if (entry.weight <= 0) continue;
+            roll -= entry.weight;
+            if (roll < 0) { prize = entry; break; }
         }
-
-        if (roll < 0.80 && this.fortuneFactory && this.fortuneFactory.loaded) {
-            // Roll a fortune — Mystery Box excluded from normal drops
-            const fortune = this.fortuneFactory.generateFortune(
-                this.playerStats.lootFind,
-                this.playerStats.luck,
-                this.currentLevel,
-                ['mysterybox'] // Exclude Mystery Box from normal drop pool
-            );
-            if (fortune) {
-                return { type: 'fortune', item: fortune };
+        const rollContext = {...context, dropType: pool.dropType};
+        if (prize?.kind === 'pickaxe') {
+            const item = this.pickaxeFactory.generatePickaxe(prize.templateId, this.maxPickaxeDPC, this.playerStats.wow, rollContext);
+            if (item) {
+                this.lastPickaxeDropTime = Date.now();
+                this.prizesSinceLastPickaxe = 0;
+                return {type: 'pickaxe', item};
             }
+        } else if (prize?.kind === 'fortune') {
+            const item = this.fortuneFactory.generateFromTemplate(prize.templateId, rollContext);
+            if (item) { this.prizesSinceLastPickaxe++; return {type: 'fortune', item}; }
+        } else if (prize?.kind === 'diamonds') {
+            this.prizesSinceLastPickaxe++;
+            return {type: 'diamonds', amount: 1 + Math.round((balance.planetIndex(pool.planet || this.currentLevel) + 1) / 2.5)};
         }
-
-        // Coins: 1.5x to 2.0x standard drop
-        const coinMultiplier = 1.5 + Math.random() * 0.5;
-        const coinAmount = Math.floor(this.calculateCoinDrop() * coinMultiplier);
-        return { type: 'coins', amount: coinAmount };
+        this.prizesSinceLastPickaxe++;
+        return {type: 'coins', amount: Math.max(1, Math.round(this.rockMaxHP * (0.5 + Math.random())))};
     }
 
     /**
@@ -1502,8 +1610,9 @@ class DogeMinerGame {
         const rockContainer = document.getElementById('rock-container');
         if (!rockContainer) return;
 
-        // Generate contents now (stored on the element)
-        const contents = this.generateDogebagContents();
+        // Freeze the bag's planet and quality, then roll against current ownership
+        // when opened. Unopened bags cannot reserve duplicate natural items.
+        const pool = window.DogeMinerBalance?.getNaturalLootPool(this, {planet: this.currentLevel});
 
         // Planet-specific bag info
         const bagInfo = this.getDogebagInfo();
@@ -1538,8 +1647,7 @@ class DogeMinerGame {
         bag.style.left = '50%';
         bag.style.top = '50%';
 
-        // Store contents and bag info on element
-        bag._dogebagContents = contents;
+        bag._dogebagRollOptions = {planet: this.currentLevel, dropType: pool?.dropType || 0};
         bag._dogebagInfo = bagInfo;
 
         // Click handler
@@ -1554,15 +1662,7 @@ class DogeMinerGame {
         // Show happy Doge sprite for 1 second
         this._showHappyDoge();
 
-        // Auto-despawn after 15 seconds if not clicked
-        setTimeout(() => {
-            if (bag.parentNode) {
-                bag.style.animation = 'coinPileFade 0.5s ease-out forwards';
-                setTimeout(() => {
-                    if (bag.parentNode) bag.parentNode.removeChild(bag);
-                }, 500);
-            }
-        }, 15000);
+
     }
 
     /**
@@ -1678,269 +1778,21 @@ class DogeMinerGame {
         return `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    /**
-     * Opens the Mystery Box Modal, rendering either Not Ready or Ready.
-     */
-    openMysteryBoxModal() {
-        this.playSound('inventoryOpen');
-        const modal = document.getElementById('mystery-box-modal');
-        const content = document.getElementById('mystery-box-modal-body');
-        if (!modal || !content) return;
-
-        const isReady = this.mysteryBoxTimerRemaining <= 0;
-        const opensTo2x = 10 - (this.mysteryBoxOpenCount % 10);
-        const is2xNow = isReady && (this.isSupporter || opensTo2x === 10 || opensTo2x === 0);
-        const syncDelay = isReady ? `-${(Date.now() % 1800) / 1000}s` : '0s';
-
-        let html = `
-            <div class="mbox-scroll-body">
-                <h2 class="mbox-header">Mystery Box</h2>
-                <p class="mbox-subtitle">${isReady && is2xNow ? 'Open for <strong style="color: #ff9800;">2x rewards!</strong>' : '&nbsp;'}</p>
-                
-                <div class="mbox-display">
-                    <div class="mbox-radial"></div>
-                    <img src="assets/general/mysterybox_big.webp" 
-                         style="animation-delay: ${syncDelay};"
-                         class="mbox-icon ${isReady ? 'mbox-icon-ready-shake' : ''}" alt="Mystery Box">
-                </div>
-        `;
-
-        if (!isReady) {
-            html += `
-                <div class="mbox-timer" id="mbox-timer-text">Opens in: ${this._formatMs(this.mysteryBoxTimerRemaining)}</div>
-                <div class="mbox-bonus-info">${this.isSupporter ? '<strong style="color: #ff9800;">Supporter: ALWAYS 2X REWARDS!</strong>' : `Open <strong>${opensTo2x}</strong> more for 2x rewards!`}</div>
-            </div>
-            <button class="mbox-action-btn close-btn" onclick="window.game.closeMysteryBoxModal(false)">CLOSE</button>
-            `;
-        } else {
-            html += `
-                <div class="mbox-status ready" id="mbox-status-text">Open now!</div>
-                <div class="mbox-bonus-info">&nbsp;</div>
-            </div>
-            <button class="mbox-action-btn" onclick="window.game.openMysteryBoxRewards()">OPEN NOW</button>
-            `;
-        }
-
-        content.innerHTML = html;
-        modal.classList.add('active');
+    /** Rolls Mystery Box pools using DM2's alternating reward-kind rules. */
+    _rollMysteryBoxReward(options = {}) {
+        const balance = window.DogeMinerBalance;
+        if (!balance) return null;
+        const prize = balance.rollMysteryPrize(this, options);
+        if (!prize.candidate) return null;
+        const context = { ...balance.getRollContext(this), dropType: prize.dropType };
+        const item = prize.kind === 'pickaxe'
+            ? this.pickaxeFactory.generatePickaxe(prize.candidate.templateId, this.maxPickaxeDPC, this.playerStats.wow, context)
+            : this.fortuneFactory.generateFromTemplate(prize.candidate.templateId, context);
+        if (!item) return null;
+        this.mysteryBoxLastKind = prize.nextPreviousKind;
+        return { type: prize.kind, item };
     }
 
-    /**
-     * Rolls items when OPEN NOW is clicked
-     */
-    openMysteryBoxRewards() {
-        this.mysteryBoxOpenCount++;
-        const is2x = this.isSupporter || (this.mysteryBoxOpenCount % 10 === 0);
-        const numRewards = is2x ? 2 : 1;
-
-        let rewards = [];
-        for (let i = 0; i < numRewards; i++) {
-            const reward = this._rollMysteryBoxReward();
-            if (reward) rewards.push(reward);
-        }
-
-        // Store rewards to be given on Close
-        this._pendingMysteryBoxRewards = rewards;
-
-        // Reset timer to 20 mins (1,200,000 ms)
-        this.mysteryBoxTimerRemaining = 1200000;
-        this.mysteryBoxLastSaveTime = Date.now();
-
-        const btn = document.getElementById('mystery-box-btn');
-        if (btn) btn.classList.remove('mystery-box-ready');
-
-        this.startMysteryBoxTimer();
-
-        if (window.saveManager) window.saveManager.saveGame(false);
-
-        this._renderMysteryBoxRewards(rewards);
-    }
-
-    /**
-     * Rolls a specific reward for the Mystery Box.
-     * 90% Fortune (with doubled rarity chance), 10% Pickaxe.
-     */
-    _rollMysteryBoxReward() {
-        const roll = Math.random();
-
-        if (roll < 0.10 && this.pickaxeFactory && this.pickaxeFactory.loaded) {
-            // Pickaxe Drop
-            // Mystery box can drop from any planet
-            const planets = ['earth', 'moon', 'mars', 'jupiter', 'titan'];
-            const randomPlanet = planets[Math.floor(Math.random() * planets.length)];
-
-            const templateId = this.pickaxeFactory.rollTemplate(randomPlanet, this.playerStats.lootFind);
-            if (templateId) {
-                const pickaxe = this.pickaxeFactory.generatePickaxe(
-                    templateId,
-                    this.maxPickaxeDPC,
-                    this.playerStats.wow
-                );
-                return { type: 'pickaxe', item: pickaxe };
-            }
-        }
-
-        // Fortune drop (Fallback or 90% chance)
-        if (this.fortuneFactory && this.fortuneFactory.loaded) {
-            // Provide a boosted LootFind (simulated) to double effective rarity drop chances
-            // The formula is baseThreshold / (1 + (LootFind / 100)). 
-            // Doubling the denominator (LootFind/100 -> (LootFind+100)/100) halves the threshold.
-            const boostedLootFind = this.playerStats.lootFind + 100;
-
-            const fortune = this.fortuneFactory.generateFortune(
-                boostedLootFind,
-                this.playerStats.luck,
-                this.currentLevel,
-                ['mysterybox']
-            );
-            return { type: 'fortune', item: fortune };
-        }
-
-        return null; // Should not happen if loaded
-    }
-
-    /**
-     * Shows what was inside the Mystery Box
-     */
-    _renderMysteryBoxRewards(rewards) {
-        // Play sounds
-        const hasPickaxe = rewards.some(r => r.type === 'pickaxe');
-        if (hasPickaxe) this.playSound('receivePickaxe');
-        else this.playSound('collectItem');
-
-        const content = document.getElementById('mystery-box-modal-body');
-        if (!content) return;
-
-        let html = `
-            <!-- Open Box Backdrop -->
-            <div class="mbox-display" style="position: absolute; top: 120px; left: 0; right: 0; margin: auto; z-index: 0; opacity: 0.5; pointer-events: none;">
-                <div class="mbox-radial"></div>
-                <img src="assets/general/mysterybox_big_open.webp" class="mbox-icon" alt="Mystery Box">
-            </div>
-            
-            <div class="mbox-scroll-body" style="position: relative; z-index: 2;">
-                <h2 class="mbox-header">Mystery Box</h2>
-                <p class="mbox-subtitle" style="color: #c8960e; font-weight: bold; font-size: 16px;">You found:</p>
-                <div class="mbox-rewards">
-        `;
-
-        rewards.forEach(reward => {
-            const item = reward.item;
-
-            // Build stats html
-            let statsHtml = '';
-            if (reward.type === 'pickaxe' && this.pickaxeFactory) {
-                statsHtml += `<div class="mbox-reward-dpc">&#x2B08; ${this.formatNumber(item.baseDPC)}</div>`;
-                item.stats.forEach(stat => {
-                    const isCore = stat.isCore ? 'stat-core' : 'stat-cosmetic';
-                    statsHtml += `<div class="mbox-reward-stat ${isCore}">${this.pickaxeFactory.formatStatForDisplay(stat)}</div>`;
-                });
-            } else if (reward.type === 'fortune' && this.fortuneFactory) {
-                item.stats.forEach(stat => {
-                    const isCore = stat.isCore ? 'stat-core' : 'stat-cosmetic';
-                    statsHtml += `<div class="mbox-reward-stat ${isCore}">${this.fortuneFactory.formatStatForDisplay(stat)}</div>`;
-                });
-            }
-
-            const imgClass = `rarity-${item.rarity}`;
-            const sprite = (reward.type === 'pickaxe') ? item.idleSprite : (item.sprite || 'assets/general/dogecoin_70x70.webp');
-
-            html += `
-                <div class="mbox-reward-card rarity-${item.rarity}">
-                    <div class="mbox-reward-icon-wrap">
-                        <img src="${sprite}" class="${imgClass}" alt="${item.name}">
-                        <div class="mbox-reward-icon-label">${item.name}</div>
-                    </div>
-                    <div class="mbox-reward-details">
-                        <div class="mbox-reward-rarity" style="color: var(--rarity-${item.rarity}-color, #555)">${item.rarity} ${reward.type}</div>
-                        <div class="mbox-reward-name">${item.name}</div>
-                        <div class="mbox-reward-desc">${item.description}</div>
-                        ${statsHtml}
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `
-                </div>
-            </div>
-        `;
-
-        if (hasPickaxe) {
-            html += `
-                <div style="display: flex; gap: 15px;">
-                    <button class="mbox-action-btn" onclick="window.game.mysteryBoxEquip()" style="background: linear-gradient(to bottom, #4ade60, #22c55e); border-color: #16a34a;">EQUIP</button>
-                    <button class="mbox-action-btn" onclick="window.game.closeMysteryBoxModal(true)">LOOT</button>
-                </div>
-            `;
-        } else {
-            html += `
-                <button class="mbox-action-btn" onclick="window.game.closeMysteryBoxModal(true)">GRAB</button>
-            `;
-        }
-
-        content.innerHTML = html;
-    }
-
-    /**
-     * Handles EQUIP action from mystery box modal (equips the pickaxe)
-     */
-    mysteryBoxEquip() {
-        if (!this._pendingMysteryBoxRewards) return;
-
-        // Find the pickaxe
-        const pickaxeReward = this._pendingMysteryBoxRewards.find(r => r.type === 'pickaxe');
-
-        // Process all rewards properly first
-        this.closeMysteryBoxModal(true);
-
-        // Equip immediately
-        if (pickaxeReward) {
-            this.equipPickaxe(pickaxeReward.item.instanceId);
-            this.showNotification('Pickaxe Equipped!');
-        }
-    }
-
-    /**
-     * Closes the Mystery Box modal and conditionally grants pending rewards.
-     * @param {boolean} processRewards - If true, adds pending items to inventory.
-     */
-    closeMysteryBoxModal(processRewards = false) {
-        if (!processRewards) {
-            this.playSound('inventoryClose');
-        }
-
-        const modal = document.getElementById('mystery-box-modal');
-        if (modal) {
-            modal.classList.remove('active');
-        }
-
-        if (processRewards && this._pendingMysteryBoxRewards) {
-            let requiresStatsUpdate = false;
-
-            this._pendingMysteryBoxRewards.forEach(reward => {
-                if (reward.type === 'fortune') {
-                    this.fortuneInventory.push(reward.item); // Add to end (newest)
-                    this.setLatestObtainedFortune(reward.item); // Built-in method that updates the button preview
-                    requiresStatsUpdate = true;
-                } else if (reward.type === 'pickaxe') {
-                    this.addPickaxeToInventory(reward.item); // Built-in method that tracks maxDPC
-                }
-            });
-
-            this._pendingMysteryBoxRewards = null;
-
-            if (requiresStatsUpdate) {
-                this.recalculatePlayerStats();
-                this.updateStatsSidebar('fortune');
-            }
-            if (window.saveManager) window.saveManager.saveGame(true);
-        }
-    }
-
-    /**
-     * Opens the dogebag modal (State 1: prompt OR State 2: reveal directly)
-     */
     openDogebagModal(bagElement) {
         this._currentDogebag = bagElement;
         this.playSound('grabBag');
@@ -2015,7 +1867,9 @@ class DogeMinerGame {
         prompt.style.display = 'none';
         reveal.style.display = '';
 
-        const contents = this._currentDogebag?._dogebagContents;
+        const bag = this._currentDogebag;
+        if (bag && !bag._dogebagContents) bag._dogebagContents = this.generateDogebagContents(bag._dogebagRollOptions);
+        const contents = bag?._dogebagContents;
         if (!contents) {
             this.closeDogebagModal();
             return;
@@ -2026,6 +1880,15 @@ class DogeMinerGame {
             this._renderDogebagPickaxe(contents.item);
         } else if (contents.type === 'fortune') {
             this._renderDogebagFortune(contents.item);
+        } else if (contents.type === 'diamonds') {
+            this._renderDogebagCoins(contents.amount);
+            const icon = document.getElementById('dogebag-item-icon');
+            const name = document.getElementById('dogebag-item-name');
+            const description = document.getElementById('dogebag-item-description');
+            if (icon) icon.src = 'assets/general/diamond.webp';
+            if (name) name.textContent = `${this.formatNumber(contents.amount)} Dogediamonds`;
+            if (description) description.textContent = 'Rare Dogediamonds for your next adventure!';
+            this._dogebagPendingItem = {type: 'diamonds', amount: contents.amount};
         } else {
             this._renderDogebagCoins(contents.amount);
         }
@@ -2104,7 +1967,8 @@ class DogeMinerGame {
             statsContainer.innerHTML = '';
             fortune.stats.forEach(stat => {
                 const line = document.createElement('div');
-                line.className = `dogebag-stat-line ${stat.isCore ? 'stat-core' : 'stat-cosmetic'}`;
+                line.className = `dogebag-stat-line ${this._inventoryStatClass(stat)}`;
+                line.style.color = window.DogeMinerBalance.getAttributeMetadata(stat).color;
                 line.textContent = this.fortuneFactory.formatStatForDisplay(stat);
                 statsContainer.appendChild(line);
             });
@@ -2163,6 +2027,7 @@ class DogeMinerGame {
         this.addPickaxeToInventory(pending.item);
         this.equipPickaxe(pending.item.instanceId);
         this.playSound('receivePickaxe');
+        if (window.saveManager) window.saveManager.saveGame(false);
         this.closeDogebagModal();
     }
 
@@ -2178,7 +2043,12 @@ class DogeMinerGame {
             this.showNotification(`${pending.item.name} added to inventory!`);
             this.playSound('receivePickaxe');
         } else if (pending.type === 'fortune') {
-            this.fortuneInventory.push(pending.item);
+            this.addFortuneToInventory(pending.item);
+            if (pending.item.name === 'Mystery Box') {
+                this.noteMysteryBoxFound?.();
+                this.mysteryBoxObtained = true;
+                this.initMysteryBox();
+            }
             this.setLatestObtainedFortune(pending.item);
             this.recalculatePlayerStats();
             this.showNotification(`${pending.item.name} fortune acquired!`);
@@ -2186,11 +2056,22 @@ class DogeMinerGame {
         } else if (pending.type === 'coins') {
             this.dogecoins += pending.amount;
             this.totalMined += pending.amount;
+            this.flashDogecoinAmount('green');
             this.showNotification(`+${this.formatNumber(pending.amount)} Dogecoins!`);
             this.updateUI();
             this.playSound('receiveStash');
+        } else if (pending.type === 'diamonds') {
+            const first = this.dogediamondsEverObtained === 0;
+            this.dogediamonds += pending.amount;
+            this.dogediamondsEverObtained += pending.amount;
+            const rect = document.getElementById('dogebag-item-icon')?.getBoundingClientRect();
+            this.createFloatingDiamond(pending.amount, rect ? {clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2} : null);
+            this.updateUI();
+            this.playSound('longSparkle');
+            if (first) setTimeout(() => this.showDiamondIntro(), 300);
         }
 
+        window.saveManager?.saveGame(false);
         this.closeDogebagModal();
     }
 
@@ -2243,8 +2124,12 @@ class DogeMinerGame {
      * Opens the pickaxe selection modal
      */
     openPickaxeModal() {
+        this.releaseMiningInput();
         const modal = document.getElementById('pickaxe-modal');
         if (modal) {
+            this.markInventoryRead('pickaxe');
+            const subtitle = modal.querySelector('.modal-subtitle');
+            if (subtitle) subtitle.textContent = this._inventoryTouchMode() ? 'TAP TO EQUIP' : 'CLICK TO EQUIP';
             modal.classList.add('active');
             this._bindInventoryToolbar('pickaxe');
             this.updateStatsSidebar('pickaxe');
@@ -2257,6 +2142,7 @@ class DogeMinerGame {
      * Closes the pickaxe selection modal
      */
     closePickaxeModal() {
+        this._hideInventoryTooltip();
         const modal = document.getElementById('pickaxe-modal');
         if (modal) {
             modal.classList.remove('active');
@@ -2268,8 +2154,10 @@ class DogeMinerGame {
      * Opens the fortune selection modal
      */
     openFortuneModal() {
+        this.releaseMiningInput();
         const modal = document.getElementById('fortune-modal');
         if (modal) {
+            this.markInventoryRead('fortune');
             modal.classList.add('active');
             this._bindInventoryToolbar('fortune');
             this.updateStatsSidebar('fortune');
@@ -2282,6 +2170,7 @@ class DogeMinerGame {
      * Closes the fortune selection modal
      */
     closeFortuneModal() {
+        this._hideInventoryTooltip();
         const modal = document.getElementById('fortune-modal');
         if (modal) {
             modal.classList.remove('active');
@@ -2292,175 +2181,343 @@ class DogeMinerGame {
     /**
      * Refreshes the custom user stats sidebar inside grids dynamically
      */
+    getOtherItemStatTotals() {
+        const covered = new Set(['click', 'luck', 'loot', 'wow', 'crit', 'income', 'dps', 'persec', 'dpsp',
+            'mystery', 'rockets', 'dpcmultiplier', 'flathelperdps', 'helperdpsmult']);
+        const totals = new Map();
+        const add = (item, kind) => {
+            for (const stat of item?.stats || []) {
+                const key = window.DogeMinerBalance.statKey(stat, kind);
+                if (covered.has(key) || !Number.isFinite(Number(stat.value))) continue;
+                const percent = String(stat.indicator || '').includes('%');
+                const id = `${key}:${percent}`;
+                if (!totals.has(id)) totals.set(id, { key, label: stat.displayName || stat.name || key, value: 0, percent });
+                // Consolidated fortunes already store the sum, not a per-copy roll.
+                totals.get(id).value += String(stat.indicator || '').startsWith('-') ? -Math.abs(Number(stat.value)) : Number(stat.value);
+            }
+        };
+        add(this.getEquippedPickaxe(), 'pickaxe');
+        for (const fortune of this.fortuneInventory || []) add(fortune, 'fortune');
+        return [...totals.values()];
+    }
+
     updateStatsSidebar(inventoryType) {
         const contentContainer = document.getElementById(`${inventoryType}-stats-content`);
         if (!contentContainer) return;
 
         const formatPercent = (val) => `${(val * 100).toFixed(1)}%`;
         const formatMult = (val) => `x${val.toFixed(2)}`;
-        const formatFlat = (val) => `+${val.toFixed(1)}`;
-
-        let html = '';
         const statList = [
-            { label: 'Luck', value: `+${(this.playerStats.luck || 0).toFixed(1)}` },
+            { label: 'Luck', value: `+${(this.playerStats.luck || 0).toFixed(1)}%` },
             { label: 'Loot Find', value: `+${(this.playerStats.lootFind || 0).toFixed(1)}%` },
-            { label: 'Wow', value: `+${(this.playerStats.wow || 0).toFixed(1)}` },
+            { label: 'Wow', value: `+${(this.playerStats.wow || 0).toFixed(1)}%` },
             { label: 'Critical Chance', value: formatPercent(this.playerStats.critChance || 0) },
             { label: 'Base DPC Mult.', value: formatMult(this.playerStats.dpcMultiplier || 1) },
             { label: 'Helper DPS Mult.', value: formatMult(this.playerStats.helperDpsMultiplier || 1) },
+            { label: 'Total DPS Mult.', value: formatMult(this.playerStats.totalDpsMultiplier || 1) },
             { label: 'Flat DPS Bonus', value: `+${Math.floor(this.playerStats.flatHelperDps || 0)}` },
+            { label: 'Mystery Bonus', value: `+${this.formatNumber(this.playerStats.mysteryBonus || 0)}` },
             { label: 'Space Rocket Costs', value: `-${Math.abs((this.playerStats.rocketCostReduction || 0) * 100).toFixed(1)}%` }
         ];
 
-        statList.forEach(stat => {
-            html += `<div class="stat-sidebar-item"><span class="stat-sidebar-label">${stat.label}</span><span class="stat-sidebar-value">${stat.value}</span></div>`;
-        });
+        if (this.getStoryDPS?.() > 0) statList.push({ label: 'Royalty DPS', value: `+${this.formatNumber(this.getStoryDPS())}` });
+        contentContainer.replaceChildren();
+        const row = stat => {
+            const node = document.createElement('div'); node.className = 'stat-sidebar-item';
+            const label = document.createElement('span'); label.className = 'stat-sidebar-label'; label.textContent = stat.label;
+            const value = document.createElement('span'); value.className = 'stat-sidebar-value'; value.textContent = stat.value;
+            node.append(label, value); contentContainer.append(node);
+        };
+        statList.forEach(row);
+        const other = this.getOtherItemStatTotals();
+        if (other.length) {
+            const title = document.createElement('p'); title.className = 'inventory-other-stats-title'; title.textContent = 'OTHER ITEM STATS';
+            const hint = document.createElement('p'); hint.className = 'inventory-other-stats-hint'; hint.textContent = 'Flavor attributes · no mining effect';
+            contentContainer.append(title, hint);
+            other.forEach(stat => row({ label: stat.label,
+                value: `${stat.value < 0 ? '−' : '+'}${this.formatNumber(Math.abs(stat.value))}${stat.percent ? '%' : ''}` }));
+        }
 
-        contentContainer.innerHTML = html;
+        const explained = document.createElement('div');
+        explained.innerHTML = `<details class="inventory-stats-explained">
+            <summary>STATS EXPLAINED</summary>
+            <p>Your equipped pickaxe and all collected fortunes contribute to these totals.</p>
+            <p><strong>Luck</strong> improves general good fortune, including Dogebags and their coin rewards.</p>
+            <p><strong>Loot Find</strong> increases your chance of finding loot.</p>
+            <p><strong>Wow</strong> improves the stats rolled on new loot.</p>
+            <p><strong>Critical Chance</strong> gives a chance to mine a 2.5× hit. Higher totals can strengthen critical hits.</p>
+            <p><strong>DPC / DPS</strong> show your mining and helper bonuses.</p>
+            <p><strong>Mystery Bonus</strong> · ???</p>
+        </details>`;
+        contentContainer.append(...explained.childNodes);
     }
 
     /**
      * Renders the pickaxe cards in the modal grid
      */
     renderPickaxeGrid() {
-        const grid = document.getElementById('pickaxe-grid');
-        if (!grid) return;
-
-        grid.innerHTML = '';
-
-        const filtered = this._getFilteredInventory('pickaxe', this.pickaxeInventory);
-        this._updateInventoryCount('pickaxe', filtered.length, this.pickaxeInventory.length);
-
-        filtered.forEach(pickaxe => {
-            const card = document.createElement('div');
-            card.className = `item-card rarity-${pickaxe.rarity}`;
-            if (this.equippedPickaxeId === pickaxe.instanceId) {
-                card.classList.add('equipped');
-            }
-
-            const quickStatsHtml = this._buildQuickStatsHtml('pickaxe', pickaxe);
-
-            // Build stat lines HTML
-            let statsHtml = '';
-            if (pickaxe.stats && pickaxe.stats.length > 0 && this.pickaxeFactory) {
-                statsHtml = '<div class="item-card-stats-list">';
-                pickaxe.stats.forEach(stat => {
-                    const formatted = this.pickaxeFactory.formatStatForDisplay(stat);
-                    const colorClass = stat.isCore ? 'stat-core' : 'stat-cosmetic';
-                    statsHtml += `<div class="item-card-stat-line ${colorClass}">${formatted}</div>`;
-                });
-                statsHtml += '</div>';
-            }
-
-            card.innerHTML = `
-                <img src="${pickaxe.idleSprite}" alt="${pickaxe.name}" class="item-card-icon">
-                <div class="item-card-name">${pickaxe.name}</div>
-                <div class="item-card-rarity">${pickaxe.rarity}</div>
-                ${quickStatsHtml}
-                <div class="item-card-description">${pickaxe.description}</div>
-                <div class="item-card-stat">
-                    <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
-                    <span>${this.formatNumber(pickaxe.baseDPC)}</span>
-                </div>
-                ${statsHtml}
-            `;
-
-            card.addEventListener('click', () => this.equipPickaxe(pickaxe.instanceId));
-            grid.appendChild(card);
-        });
+        this._renderInventoryGrid('pickaxe', this.pickaxeInventory);
     }
 
-    /**
-     * Renders the fortune cards in the modal grid
-     */
     renderFortuneGrid() {
-        const grid = document.getElementById('fortune-grid');
-        if (!grid) return;
-
-        if (this.fortuneInventory.length === 0) {
-            grid.innerHTML = '<p class="no-items-message">No fortunes available yet!</p>';
-            this._updateInventoryCount('fortune', 0, 0);
-            return;
-        }
-
-        const filtered = this._getFilteredInventory('fortune', this.fortuneInventory);
-        this._updateInventoryCount('fortune', filtered.length, this.fortuneInventory.length);
-
-        grid.innerHTML = '';
-        if (filtered.length === 0) {
-            grid.innerHTML = '<p class="no-items-message">No matching fortunes.</p>';
-            return;
-        }
-
-        filtered.forEach(fortune => {
-            const card = document.createElement('div');
-            card.className = `item-card rarity-${fortune.rarity}`;
-
-            const quickStatsHtml = this._buildQuickStatsHtml('fortune', fortune);
-
-            let statsHtml = '';
-            if (fortune.stats && Array.isArray(fortune.stats)) {
-                statsHtml = '<div class="item-card-stats-list">';
-                fortune.stats.forEach(stat => {
-                    const cssClass = stat.isCore ? 'stat-core' : 'stat-cosmetic';
-                    const formatted = this.fortuneFactory
-                        ? this.fortuneFactory.formatStatForDisplay(stat)
-                        : `${stat.value} ${stat.displayName}`;
-                    statsHtml += `<div class="item-card-stat-line ${cssClass}">${formatted}</div>`;
-                });
-                statsHtml += '</div>';
-            }
-
-            card.innerHTML = `
-                <img src="${fortune.sprite || 'assets/general/dogecoin_70x70.webp'}" alt="${fortune.name}" class="item-card-icon">
-                <div class="item-card-name">${fortune.name}</div>
-                <div class="item-card-rarity">${fortune.rarity}</div>
-                ${quickStatsHtml}
-                <div class="item-card-description">${fortune.description}</div>
-                ${statsHtml}
-            `;
-
-            grid.appendChild(card);
-        });
+        this._renderInventoryGrid('fortune', this.fortuneInventory);
     }
 
-    _buildQuickStatsHtml(kind, item) {
-        if (!item) return '';
+    _renderInventoryGrid(kind, inventory) {
+        const grid = document.getElementById(`${kind}-grid`);
+        if (!grid) return;
+        this._hideInventoryTooltip();
+        grid.replaceChildren();
+        const filtered = this._getFilteredInventory(kind, inventory);
+        this._updateInventoryCount(kind, filtered.length, inventory.length);
+        if (!filtered.length) {
+            const message = document.createElement('p');
+            message.className = 'no-items-message';
+            message.textContent = inventory.length ? `No matching ${kind === 'pickaxe' ? 'pickaxes' : 'fortunes'}.`
+                : `No ${kind === 'pickaxe' ? 'pickaxes' : 'fortunes'} available yet!`;
+            grid.appendChild(message);
+        }
+        filtered.forEach(item => {
+            const card = document.createElement('button');
+            const equipped = kind === 'pickaxe' && this.equippedPickaxeId === item.instanceId;
+            const rarity = this._inventoryRarity(item);
+            card.type = 'button';
+            card.className = `item-card inventory-item-tile inventory-item-${kind} rarity-${rarity}${equipped ? ' equipped' : ''}`;
+            card.dataset.inventoryId = item.instanceId;
+            card._inventoryItem = item;
+            card._inventoryKind = kind;
+            const copies = kind === 'fortune' ? (item.consolidatedCopies || 1) : 1;
+            card.setAttribute('aria-label', `${item.name}${copies > 1 ? `, ${copies} combined copies` : ''}, ${rarity} ${kind}${equipped ? ', equipped' : ''}. ${kind === 'pickaxe' ? 'Equip and view stats' : 'View stats'}.`);
+            if (kind === 'pickaxe') card.setAttribute('aria-pressed', String(equipped));
+            const icon = document.createElement('img');
+            icon.src = kind === 'pickaxe' ? item.idleSprite : item.sprite || 'assets/general/dogecoin_70x70.webp';
+            icon.alt = '';
+            icon.className = 'item-card-icon';
+            const name = document.createElement('span');
+            name.className = 'item-card-name';
+            name.textContent = item.name;
+            card.append(icon, name);
+            if (copies > 1) {
+                const count = document.createElement('span');
+                count.className = 'inventory-copy-count'; count.textContent = `×${this.formatNumber(copies)}`;
+                card.appendChild(count);
+            }
+            if (equipped || item.isProtected || item.isSoulbound || item.shield) {
+                const badge = document.createElement('span');
+                badge.className = 'inventory-item-badge';
+                badge.textContent = equipped ? 'EQUIPPED' : 'PROTECTED';
+                card.appendChild(badge);
+            }
+            card.addEventListener('pointerenter', event => {
+                if (event.pointerType !== 'touch' && !this._inventoryTouchMode()) this._showInventoryTooltip(card);
+            });
+            card.addEventListener('pointermove', event => {
+                if (event.pointerType === 'touch' || this._inventoryTouchMode()) return;
+                const bounds = card.getBoundingClientRect();
+                card.style.setProperty('--item-tilt-x', `${-(event.clientY - bounds.top - bounds.height / 2) / bounds.height * 14}deg`);
+                card.style.setProperty('--item-tilt-y', `${(event.clientX - bounds.left - bounds.width / 2) / bounds.width * 14}deg`);
+            });
+            card.addEventListener('pointerleave', event => {
+                card.style.removeProperty('--item-tilt-x');
+                card.style.removeProperty('--item-tilt-y');
+                if (!this._inventoryTouchMode() && !this._inventoryTooltip?.contains(event.relatedTarget)) {
+                    this._scheduleInventoryTooltipHide(card);
+                }
+            });
+            card.addEventListener('focus', () => this._showInventoryTooltip(card));
+            card.addEventListener('blur', event => {
+                if (this._inventoryTooltip?.contains(event.relatedTarget)) return;
+                this._hideInventoryTooltip(card);
+            });
+            card.addEventListener('click', () => {
+                const restoreFocus = document.activeElement === card;
+                if (kind === 'pickaxe') this.equipPickaxe(item.instanceId);
+                const current = [...grid.querySelectorAll('.inventory-item-tile')].find(tile => tile._inventoryItem === item);
+                if (current) {
+                    if (restoreFocus) current.focus({ preventScroll: true });
+                    this._showInventoryTooltip(current);
+                }
+            });
+            grid.appendChild(card);
+        });
+        // Controller navigation marks cards with a class rather than DOM focus.
+        this._inventoryFocusObservers ||= {};
+        if (!this._inventoryFocusObservers[kind]) {
+            const observer = new MutationObserver(() => {
+                const focused = grid.querySelector('.inventory-item-tile.controller-focus');
+                if (focused && focused !== this._inventoryTooltipCard) this._showInventoryTooltip(focused);
+                else if (!focused && this._inventoryTooltipCard?.classList.contains('controller-focus') === false
+                    && document.body.classList.contains('controller-mode')) this._hideInventoryTooltip();
+            });
+            observer.observe(grid, { subtree: true, attributes: true, attributeFilter: ['class'] });
+            this._inventoryFocusObservers[kind] = observer;
+        }
+    }
 
-        const lines = [];
+    _inventoryRarity(item) {
+        return ['common', 'improved', 'rare', 'epic', 'legendary'].includes(item.rarity) ? item.rarity : 'common';
+    }
 
+    _inventoryTouchMode() {
+        return window.innerWidth <= 768 || window.matchMedia('(hover: none)').matches;
+    }
+
+    _inventoryStatClass(stat) {
+        return `inventory-stat-${window.DogeMinerBalance.getAttributeMetadata(stat).tag.slice(4)}`;
+    }
+
+    _inventoryStatText(kind, stat) {
+        const indicator = stat.indicator || '';
+        const sign = indicator.startsWith('-') ? '-' : indicator.startsWith('+') ? '+' : '';
+        const percent = indicator.includes('%') ? '%' : '';
+        const value = Number.isFinite(stat.value) && Math.abs(stat.value) < 1000 ? String(stat.value) : this.formatNumber(stat.value);
+        return `${sign}${value}${percent} ${stat.displayName || stat.name || ''}`;
+    }
+
+    _showInventoryTooltip(card) {
+        const modal = card.closest('.switcher-modal');
+        if (!modal?.classList.contains('active')) return;
+        this._hideInventoryTooltip();
+        let tooltip = this._inventoryTooltip;
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'inventory-item-tooltip';
+            tooltip.setAttribute('role', 'tooltip');
+            document.body.appendChild(tooltip);
+            this._inventoryTooltip = tooltip;
+            window.addEventListener('resize', () => this._positionInventoryTooltip());
+            document.addEventListener('scroll', () => this._positionInventoryTooltip(), true);
+            document.addEventListener('pointerdown', event => {
+                if (!tooltip.contains(event.target) && !event.target.closest('.inventory-item-tile')) this._hideInventoryTooltip();
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') this._hideInventoryTooltip();
+            });
+            tooltip.addEventListener('focusout', event => {
+                if (event.relatedTarget !== this._inventoryTooltipCard
+                    && !tooltip.contains(event.relatedTarget)) this._hideInventoryTooltip();
+            });
+            tooltip.addEventListener('pointerenter', () => clearTimeout(this._inventoryTooltipHideTimer));
+            tooltip.addEventListener('pointerleave', event => {
+                if (!this._inventoryTouchMode() && !this._inventoryTooltipCard?.contains(event.relatedTarget)) {
+                    this._scheduleInventoryTooltipHide(this._inventoryTooltipCard);
+                }
+            });
+        }
+        const item = card._inventoryItem;
+        const kind = card._inventoryKind;
+        tooltip.setAttribute('role', this._inventoryTouchMode() ? 'dialog' : 'tooltip');
+        tooltip.setAttribute('aria-label', `${item.name} details`);
+        tooltip.className = `inventory-item-tooltip rarity-${this._inventoryRarity(item)}${this._inventoryTouchMode() ? ' touch-details' : ''}`;
+        tooltip.replaceChildren();
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'inventory-tooltip-close';
+        close.setAttribute('aria-label', 'Close item details');
+        close.textContent = '×';
+        close.addEventListener('click', () => {
+            if (this._inventoryTooltipCard?.isConnected) this._inventoryTooltipCard.focus({ preventScroll: true });
+            this._hideInventoryTooltip();
+        });
+        const rarity = document.createElement('div');
+        rarity.className = 'inventory-tooltip-rarity';
+        rarity.textContent = `${this._inventoryRarity(item)} ${kind}`;
+        const name = document.createElement('div');
+        name.className = 'inventory-tooltip-name';
+        name.textContent = item.name;
+        tooltip.append(close, rarity, name);
         if (kind === 'pickaxe') {
-            const dpc = typeof item.baseDPC === 'number' ? item.baseDPC : null;
-            if (dpc !== null) {
-                lines.push(
-                    `<span class="quickstat-dpc"><img src="assets/general/dogecoin_70x70.webp" alt="DPC" class="quickstat-dogecoin-icon"><strong>${this.formatNumber(dpc)}</strong></span>`
-                );
+            const dpc = document.createElement('div');
+            dpc.className = 'inventory-tooltip-dpc';
+            const coin = document.createElement('img');
+            coin.src = 'assets/general/dogecoin_70x70.webp';
+            coin.alt = 'Base Dogecoins per click';
+            const value = document.createElement('span');
+            value.textContent = this.formatNumber(item.baseDPC);
+            dpc.append(coin, value);
+            const delta = item.baseDPC - (this.getEquippedPickaxe()?.baseDPC || 0);
+            if (Number.isFinite(delta)) {
+                const comparison = document.createElement('span');
+                comparison.className = `inventory-dpc-comparison ${delta > 0 ? 'increase' : delta < 0 ? 'decrease' : 'equal'}`;
+                comparison.textContent = delta === 0 ? '±0' : `${delta > 0 ? '▲ +' : '▼ −'}${this.formatNumber(Math.abs(delta))}`;
+                comparison.setAttribute('aria-label', `${delta === 0 ? 'Same base DPC' : `${this.formatNumber(Math.abs(delta))} ${delta > 0 ? 'more' : 'less'} base DPC`} than equipped pickaxe`);
+                dpc.appendChild(comparison);
+            }
+            tooltip.appendChild(dpc);
+        }
+        const description = document.createElement('div');
+        description.className = 'inventory-tooltip-description';
+        description.textContent = item.description || (kind === 'fortune' ? 'A mysterious artifact imbued with some kind of magical power.' : '');
+        tooltip.appendChild(description);
+        if (kind === 'fortune' && item.consolidatedCopies > 1) {
+            const combined = document.createElement('p');
+            combined.className = 'inventory-consolidation-note';
+            combined.textContent = `${this.formatNumber(item.consolidatedCopies)} earned copies combined. All bonuses are included below.`;
+            tooltip.appendChild(combined);
+        }
+        const stats = document.createElement('div');
+        stats.className = 'inventory-tooltip-stats';
+        for (const stat of item.stats || []) {
+            const line = document.createElement('div');
+            line.className = `inventory-tooltip-stat ${kind === 'pickaxe' ? 'inventory-stat-green' : this._inventoryStatClass(stat)}`;
+            line.textContent = `${kind === 'pickaxe' ? 'Equip: ' : ''}${this._inventoryStatText(kind, stat)}`;
+            stats.appendChild(line);
+        }
+        tooltip.appendChild(stats);
+        const hint = document.createElement('div');
+        hint.className = 'inventory-tooltip-hint';
+        hint.textContent = kind === 'fortune' ? 'PASSIVE · No equip needed'
+            : card.classList.contains('equipped') ? 'EQUIPPED' : this._inventoryTouchMode() ? 'TAP TO EQUIP' : 'CLICK TO EQUIP';
+        tooltip.appendChild(hint);
+        tooltip.hidden = false;
+        this._inventoryTooltipCard = card;
+        card.setAttribute('aria-describedby', tooltip.id);
+        this._positionInventoryTooltip();
+    }
+
+    _hideInventoryTooltip(card) {
+        if (card && card !== this._inventoryTooltipCard) return;
+        clearTimeout(this._inventoryTooltipHideTimer);
+        this._inventoryTooltipCard?.removeAttribute('aria-describedby');
+        this._inventoryTooltipCard = null;
+        if (this._inventoryTooltip) this._inventoryTooltip.hidden = true;
+    }
+
+    _scheduleInventoryTooltipHide(card) {
+        clearTimeout(this._inventoryTooltipHideTimer);
+        this._inventoryTooltipHideTimer = setTimeout(() => {
+            if (!card || this._inventoryTooltipCard !== card || document.activeElement === card
+                || card.classList.contains('controller-focus') || this._inventoryTooltip?.contains(document.activeElement)
+                || this._inventoryTooltip?.matches(':hover')) return;
+            this._hideInventoryTooltip(card);
+        }, 120);
+    }
+
+    _positionInventoryTooltip() {
+        const card = this._inventoryTooltipCard;
+        const tooltip = this._inventoryTooltip;
+        if (!card || !tooltip || tooltip.hidden) return;
+        if (!card.isConnected || !card.closest('.switcher-modal.active')) return this._hideInventoryTooltip();
+        tooltip.classList.toggle('touch-details', this._inventoryTouchMode());
+        tooltip.setAttribute('role', this._inventoryTouchMode() ? 'dialog' : 'tooltip');
+        const margin = 10;
+        const bounds = card.getBoundingClientRect();
+        const width = tooltip.offsetWidth;
+        const height = tooltip.offsetHeight;
+        let left = bounds.right + 8;
+        let top = bounds.top;
+        if (this._inventoryTouchMode()) {
+            left = (window.innerWidth - width) / 2;
+            top = window.innerHeight - height - margin;
+        } else if (left + width > window.innerWidth - margin) {
+            left = bounds.left - width - 8;
+            if (left < margin) {
+                left = bounds.left;
+                top = bounds.bottom + 8;
             }
         }
-
-        const rawStats = Array.isArray(item.stats) ? item.stats : [];
-        const core = rawStats.filter(s => s && s.isCore);
-        const maxLines = kind === 'pickaxe' ? 2 : 3;
-
-        for (const stat of core) {
-            if (lines.length >= (kind === 'pickaxe' ? 1 + maxLines : maxLines)) break;
-            let formatted = '';
-            if (kind === 'pickaxe' && this.pickaxeFactory) {
-                formatted = this.pickaxeFactory.formatStatForDisplay(stat);
-            } else if (kind === 'fortune' && this.fortuneFactory) {
-                formatted = this.fortuneFactory.formatStatForDisplay(stat);
-            } else {
-                formatted = `${stat.value} ${stat.displayName || stat.name || ''}`.trim();
-            }
-            if (!formatted) continue;
-            // Compact: strip excessive whitespace
-            lines.push(formatted.replace(/\s+/g, ' '));
-        }
-
-        if (lines.length === 0) return '';
-
-        const html = lines.map(l => `<div class="item-card-quickstat">${l}</div>`).join('');
-        return `<div class="item-card-quickstats">${html}</div>`;
+        tooltip.style.left = `${Math.max(margin, Math.min(left, window.innerWidth - width - margin))}px`;
+        tooltip.style.top = `${Math.max(margin, Math.min(top, window.innerHeight - height - margin))}px`;
     }
 
     _bindInventoryToolbar(kind) {
@@ -2555,6 +2612,7 @@ class DogeMinerGame {
         this.equippedPickaxeId = instanceId;
         this.renderPickaxeGrid();
         this.recalculatePlayerStats();
+        this.updateStatsSidebar('pickaxe');
 
         // Update pickaxe sprite in game
         const pickaxeImg = document.getElementById('pickaxe');
@@ -2562,9 +2620,14 @@ class DogeMinerGame {
             pickaxeImg.src = pickaxe.idleSprite;
 
             // Apply per-sprite scale/position adjustments
-            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette');
-            const spritePath = pickaxe.idleSprite || '';
-            if (spritePath.includes('cleaver')) {
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette', 'pickaxe-paw');
+            const spritePath = (pickaxe.idleSprite || '').split('/').pop().toLowerCase();
+            if (pickaxe.isPaw) {
+                // The bare Paw sits behind Doge and only shows when mining
+                pickaxeImg.classList.remove('pickaxe-intro');
+                pickaxeImg.classList.add('pickaxe-paw');
+                pickaxeImg.style.opacity = '';
+            } else if (spritePath.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
             } else if (spritePath.includes('baguette')) {
                 pickaxeImg.classList.add('pickaxe-scale-baguette');
@@ -2576,7 +2639,7 @@ class DogeMinerGame {
                 'fryingpan', 'bigboot', 'eguitar', 'cod.', 'felps',
                 'barbell', 'poolnoodle', 'record'
             ];
-            if (largeWeaponPatterns.some(p => spritePath.includes(p))) {
+            if (!pickaxe.isPaw && largeWeaponPatterns.some(p => spritePath.includes(p))) {
                 pickaxeImg.classList.add('pickaxe-shift-right');
             }
         }
@@ -2621,9 +2684,54 @@ class DogeMinerGame {
      */
     addPickaxeToInventory(pickaxe) {
         this.pickaxeInventory.push(pickaxe);
+        this.markInventoryUnread('pickaxe');
         // Update maxDPC tracker (skip zeroDPC pickaxes like Staff of SunDoge)
         if (pickaxe.baseDPC > 0 && pickaxe.baseDPC > this.maxPickaxeDPC) {
             this.maxPickaxeDPC = pickaxe.baseDPC;
+        }
+    }
+
+    addFortuneToInventory(fortune, unread = true) {
+        this.fortuneInventory.push(fortune);
+        if (unread) this.markInventoryUnread('fortune');
+    }
+
+    restoreInventoryUnread(saved) {
+        this.inventoryUnread = {};
+        for (const kind of ['pickaxe', 'fortune']) {
+            const value = saved?.[kind];
+            const owned = (this[`${kind}Inventory`] || []).reduce((sum, item) => sum + Math.max(1, Number(item.consolidatedCopies) || 1), 0);
+            this.inventoryUnread[kind] = Number.isFinite(value) ? Math.max(0, Math.min(owned, Math.floor(value))) : 0;
+        }
+        this.updateInventoryUnread();
+    }
+
+    markInventoryUnread(kind) {
+        this.inventoryUnread ||= { pickaxe: 0, fortune: 0 };
+        this.inventoryUnread = { ...this.inventoryUnread, [kind]: Math.min(Number.MAX_SAFE_INTEGER, (this.inventoryUnread[kind] || 0) + 1) };
+        this.updateInventoryUnread();
+    }
+
+    markInventoryRead(kind) {
+        if (!this.inventoryUnread?.[kind]) return;
+        const before = this.inventoryUnread;
+        this.inventoryUnread = { ...before, [kind]: 0 };
+        // A rejected write leaves the badge available to retry on the next visit.
+        if (window.saveManager && !window.saveManager.saveGame(false)) this.inventoryUnread = before;
+        this.updateInventoryUnread();
+    }
+
+    updateInventoryUnread() {
+        for (const kind of ['pickaxe', 'fortune']) {
+            const badge = document.getElementById(`${kind}-unread`);
+            if (!badge) continue;
+            const count = this.inventoryUnread?.[kind] || 0;
+            if (badge._unreadCount === count) continue;
+            badge._unreadCount = count;
+            const text = count > 99 ? '99+' : String(count);
+            if (badge.textContent !== text) badge.textContent = text;
+            badge.hidden = count === 0;
+            document.getElementById(`${kind}-btn`)?.setAttribute('aria-label', `${kind === 'pickaxe' ? 'Pickaxes' : 'Fortunes'}${count ? `, ${count} new ${count === 1 ? 'item' : 'items'}` : ''}`);
         }
     }
 
@@ -2652,7 +2760,7 @@ class DogeMinerGame {
                 console.log('Supporter verified: Injecting Soulbound Badge of Patronage');
                 const badge = this.fortuneFactory.generateSpecialFortune('badge_of_patronage');
                 if (badge) {
-                    this.fortuneInventory.push(badge);
+                    this.addFortuneToInventory(badge, !silent);
                     this.setLatestObtainedFortune(badge);
 
                     if (!silent) {
@@ -2677,6 +2785,7 @@ class DogeMinerGame {
      */
     getPickaxeDPC() {
         const pickaxe = this.getEquippedPickaxe();
+        if (pickaxe?.isPaw) return 1;
         let val = pickaxe ? pickaxe.baseDPC * this.playerStats.dpcMultiplier : 1;
         if (this.isSupporter) {
             val *= 1.05; // 5% increased DPC for supporters
@@ -2688,185 +2797,71 @@ class DogeMinerGame {
      * Recalculates all player stats from equipped pickaxe + all fortunes
      */
     recalculatePlayerStats() {
-        // Reset to base values
         this.playerStats = {
-            luck: 0,
-            lootFind: 0,
-            wow: 0,
-            critChance: 0.05, // 5% base
-            dpcMultiplier: 1,
-            helperDpsMultiplier: 1,
-            flatHelperDps: 0, // Flat DPS bonus from fortunes (added after multiplier)
-            rocketCostReduction: 0
+            luck: 0, lootFind: 0, wow: 0, critChance: 0,
+            dpcMultiplier: 1, helperDpsMultiplier: 1, totalDpsMultiplier: 1,
+            flatHelperDps: 0, pickaxeFlatDps: 0, fortuneFlatDps: 0,
+            mysteryBonus: 0, holidaySpirit: 0, rocketCostReduction: 0
         };
-
-        // Add equipped pickaxe core stats
         const equipped = this.getEquippedPickaxe();
-        if (equipped && equipped.stats) {
-            equipped.stats.forEach(stat => {
-                if (!stat.isCore) return;
-                this._applyStatToPlayer(stat);
-            });
+        for (const stat of equipped?.stats || []) this._applyStatToPlayer(stat, 'pickaxe');
+        for (const fortune of this.fortuneInventory || []) {
+            // Fixed bonuses and earned merged fortunes are read without rewriting their rolls.
+            for (const stat of fortune.stats || []) this._applyStatToPlayer(stat, 'fortune');
         }
-
-        // Retroactive fix: Staff of SunDoge pickaxes with non-zero DPC
-        // AND Retroactive fix: 'criticalchance' stats correctly marked as isCore
-        let needsMaxDpcRecalc = false;
-        this.pickaxeInventory.forEach(p => {
-            if ((p.name === 'Staff of the SunDoge' || p.isStaffOfSundoge) && p.baseDPC !== 0) {
-                console.log(`[Retroactive Fix] Staff of SunDoge "${p.instanceId}" had baseDPC=${p.baseDPC}, forcing to 0`);
-                p.baseDPC = 0;
-                needsMaxDpcRecalc = true;
-            }
-            if (p.stats && Array.isArray(p.stats)) {
-                p.stats.forEach(stat => {
-                    if (stat.name === 'criticalchance' || stat.displayName === 'Critical Chance') {
-                        if (!stat.isCore) {
-                            console.log(`[Retroactive Fix] Marking criticalchance on ${p.name} as isCore=true`);
-                            stat.isCore = true;
-                        }
-                    }
-                });
-            }
-        });
-
-        // Recalculate maxPickaxeDPC from corrected inventory if needed
-        if (needsMaxDpcRecalc) {
-            this.maxPickaxeDPC = 1;
-            this.pickaxeInventory.forEach(p => {
-                if (p.baseDPC > this.maxPickaxeDPC) {
-                    this.maxPickaxeDPC = p.baseDPC;
-                }
-            });
-            console.log(`[Retroactive Fix] Recalculated maxPickaxeDPC = ${this.maxPickaxeDPC}`);
-        }
-
-        // Add all fortune stats (array-based format matching pickaxes)
-        this.fortuneInventory.forEach(fortune => {
-            // Retroactive fix for bad badge_of_patronage stats saved in earlier versions
-            if (fortune.templateId === 'badge_of_patronage') {
-                fortune.stats = [
-                    { name: 'patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
-                    { name: 'lootfind', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
-                    { name: 'luck', displayName: 'Luck', indicator: '+%', isCore: true, value: 15 },
-                    { name: 'wow', displayName: 'Wow', indicator: '+%', isCore: true, value: 15 }
-                ];
-            }
-
-            // Retroactive fix for bad Fortune of Rocket Flight stats
-            if (fortune.templateId === 'fortune_of_rocket_flight' || fortune.name === 'Fortune of Rocket Flight') {
-                if (Array.isArray(fortune.stats)) {
-                    const rocketStat = fortune.stats.find(s => s.name === 'spacerocketcosts' || s.displayName === 'Space Rocket Costs');
-                    if (rocketStat) {
-                        rocketStat.name = 'spacerocketcosts';
-                        rocketStat.displayName = 'Space Rocket Costs';
-                        rocketStat.indicator = '-%';
-                        rocketStat.isCore = true;
-                        rocketStat.value = 5;
-                        rocketStat.fixedValue = 5;
-                    }
-                }
-            }
-
-            // Retroactive fix for Fortune of Diesel typo (Mystery Bonuss)
-            if (fortune.stats && Array.isArray(fortune.stats)) {
-                fortune.stats.forEach(stat => {
-                    if (stat.displayName === 'Mystery Bonuss') {
-                        stat.displayName = 'Mystery Bonus';
-                        stat.name = 'mysterybonus';
-                    }
-                });
-            }
-
-            if (fortune.stats && Array.isArray(fortune.stats)) {
-                fortune.stats.forEach(stat => {
-                    if (!stat.isCore) return;
-                    this._applyStatToPlayer(stat);
-                });
-            }
-        });
-
-        // Staff of Sundoge: apply helper DPS boost
-        if (equipped && equipped.isStaffOfSundoge) {
-            // Find the +10% DPS stat
-            const dpsStat = equipped.stats?.find(s => s.name === 'dps');
-            if (dpsStat) {
-                this.playerStats.helperDpsMultiplier += dpsStat.value;
-            }
-        }
-
-        // Ko-fi Supporter 5% Helper DPS multiplier!
-        if (this.isSupporter) {
-            this.playerStats.helperDpsMultiplier *= 1.05;
-        }
-
-        // Update the actual DPS value and UI display
+        this.playerStats.flatHelperDps = this.playerStats.pickaxeFlatDps + this.playerStats.fortuneFlatDps;
+        this.playerStats.rocketCostReduction = Math.min(0.6, Math.max(0, this.playerStats.rocketCostReduction));
+        if (this.isSupporter) this.playerStats.totalDpsMultiplier *= 1.05;
         this.updateDPS();
         this.updateUI();
     }
 
-    /**
-     * Returns the finalized cost for helpers, including Supporter discount.
-     */
     getHelperCost(baseCost, ownedCount, helperType = null) {
-        let cost = baseCost * Math.pow(1.15, ownedCount);
-        if (this.isSupporter) {
-            cost *= 0.95; // 5% reduced cost
-        }
-
-        if (helperType === 'spaceRocket' && this.playerStats && this.playerStats.rocketCostReduction > 0) {
-            cost *= (1 - this.playerStats.rocketCostReduction);
-        }
-
-        return Math.floor(cost);
+        const isRocket = ['spaceRocket', 'marsRocket', 'jupiterRocket', 'titanRocket'].includes(helperType);
+        const discount = isRocket ? Math.max(0.4, 1 - (this.playerStats.rocketCostReduction || 0)) : 1;
+        const effectiveCount = isRocket && ownedCount > 16
+            ? Math.max(16, Math.floor(ownedCount * 1.15 * discount)) : ownedCount;
+        const cost = baseCost * Math.pow(1.15, effectiveCount) * (this.isSupporter ? 0.95 : 1) * discount;
+        return isRocket ? Math.ceil(cost) : Math.floor(cost);
     }
 
-    /**
-     * Applies a single core stat from a pickaxe to player stats
-     */
-    _applyStatToPlayer(stat) {
-        const statMap = {
-            'luck': 'luck',
-            'lootfind': 'lootFind',
-            'wow': 'wow',
-            'critchance': 'critChance',
-            'criticalchance': 'critChance',
-            'dpcmultiplier': 'dpcMultiplier',
-            'helperdpsmultiplier': 'helperDpsMultiplier',
-            'helperdps': 'helperDpsMultiplier',
-            'rocketcostreduction': 'rocketCostReduction',
-            'spacerocketcosts': 'rocketCostReduction',
-            'dps': 'helperDpsMultiplier',
-            'higherground': 'luck' // Higher Ground maps to luck
-        };
-
-        const playerKey = statMap[stat.name];
-        if (!playerKey) return;
-
-        if (stat.indicator === '+%') {
-            // Percentage stats: value is already in percent (e.g., 15.5 = 15.5%)
-            // Convert to multiplier fraction for stats that use it
-            if (playerKey === 'critChance') {
-                this.playerStats[playerKey] += stat.value / 100;
-            } else if (playerKey === 'dpcMultiplier' || playerKey === 'helperDpsMultiplier') {
-                this.playerStats[playerKey] += stat.value / 100;
-            } else {
-                this.playerStats[playerKey] += stat.value;
-            }
-        } else if (stat.indicator === '+') {
-            // Flat DPS stats should add to flatHelperDps, not the multiplier
-            if (playerKey === 'helperDpsMultiplier') {
-                this.playerStats.flatHelperDps += stat.value;
-            } else {
-                this.playerStats[playerKey] += stat.value;
-            }
-        } else if (stat.indicator === '-%') {
-            // Percentage reduction stats (divide by 100)
-            this.playerStats[playerKey] += stat.value / 100;
-        } else if (stat.indicator === '-') {
-            // Reduction stats are beneficial, so still add
-            this.playerStats[playerKey] += stat.value;
+    _applyStatToPlayer(stat, source = 'fortune') {
+        if (!stat || !Number.isFinite(Number(stat.value))) return;
+        const value = Number(stat.value);
+        const key = String(stat.balanceKey || stat.name || '').toLowerCase().replace(/[^a-z]/g, '');
+        if (['luck', 'wow'].includes(key)) this.playerStats[key] += value;
+        else if (['loot', 'lootfind'].includes(key)) this.playerStats.lootFind += value;
+        else if (['crit', 'critchance', 'criticalchance'].includes(key)) this.playerStats.critChance += value / 100;
+        else if (['spirit','holidayspirit'].includes(key)) this.playerStats.holidaySpirit += value;
+        else if (['mystery', 'mysterybonus', 'mysterybonuss'].includes(key)) this.playerStats.mysteryBonus += value;
+        else if (key === 'dpcmultiplier') this.playerStats.dpcMultiplier += stat.indicator?.includes('%') ? value / 100 : value;
+        else if (['rockets', 'spacerocketcosts', 'rocketcostreduction'].includes(key)) this.playerStats.rocketCostReduction += value / 100;
+        else if (key === 'dpsp' || (source === 'pickaxe' && key === 'dps' && stat.indicator?.includes('%'))) {
+            this.playerStats.totalDpsMultiplier += value / 100;
+        } else if (['income', 'helperdps', 'helperdpsmultiplier', 'helperdpsmult'].includes(key)
+            || (source === 'fortune' && key === 'dps' && stat.indicator?.includes('%'))) {
+            this.playerStats.helperDpsMultiplier += value / 100;
+        } else if (['dps', 'persec', 'flathelperdps'].includes(key)) {
+            this.playerStats[source === 'pickaxe' ? 'pickaxeFlatDps' : 'fortuneFlatDps'] += value;
         }
+        // Higher Ground and other flavor attributes have no DM2 mining consumer.
+    }
+
+    getMysteryDPS() {
+        if (this.currentLevel === 'earth') return 0;
+        const amount = this.playerStats.mysteryBonus || 0;
+        const timeline = Math.max(1, Number(this.timelineNumber) || 1);
+        return amount >= 420133769 ? 6969 * timeline : amount >= 121111 ? 420 * timeline : 0;
+    }
+
+    getBalanceSnapshot() {
+        const equipped = this.getEquippedPickaxe();
+        return {
+            ...this.playerStats,
+            dpc: equipped?.isPaw ? 1 : this.getPickaxeDPC() * (this.bonusCoinBuffMultiplier || 1),
+            dps: this.dps || 0,
+            mysteryDps: this.getMysteryDPS()
+        };
     }
 
     // ========== END PICKAXE & FORTUNE SYSTEM ==========
@@ -2901,7 +2896,9 @@ class DogeMinerGame {
         characterContainer.classList.remove('doge-intro');
         if (pickaxe) pickaxe.classList.remove('pickaxe-intro');
 
+        const introEpoch = this._storyEpoch ||= 1;
         setTimeout(() => {
+            if (introEpoch !== this._storyEpoch) return;
             characterContainer.style.visibility = 'visible';
 
             const restartAnimation = (element, className) => {
@@ -2912,13 +2909,16 @@ class DogeMinerGame {
 
             restartAnimation(characterContainer, 'doge-intro');
             setTimeout(() => {
+                if (introEpoch !== this._storyEpoch) return;
                 characterContainer.classList.remove('doge-intro');
                 characterContainer.style.transform = '';
             }, 2600);
 
-            if (pickaxe) {
+            const equipped = this.getEquippedPickaxe();
+            if (pickaxe && (!equipped || !equipped.isPaw)) {
                 restartAnimation(pickaxe, 'pickaxe-intro');
                 setTimeout(() => {
+                    if (introEpoch !== this._storyEpoch) return;
                     pickaxe.classList.remove('pickaxe-intro');
                 }, 1800);
             }
@@ -2927,6 +2927,7 @@ class DogeMinerGame {
             const squashDuration = 350;
             const startDelay = 500;
             setTimeout(() => {
+                if (introEpoch !== this._storyEpoch) return;
                 this.isIntroPlaying = false;
                 const idleDoge = document.getElementById('main-character');
                 if (idleDoge) {
@@ -2950,7 +2951,7 @@ class DogeMinerGame {
         this._currentSwingDuration = swingTime;
         this._swingStartTime = now;
 
-        pickaxe.style.transition = `transform ${swingTime}ms ease-in`;
+        pickaxe.style.transition = `transform ${swingTime}ms ease-in, opacity 25ms ease-in`;
         pickaxe.classList.remove('pickaxe-intro');
         pickaxe.classList.add('swing-down');
 
@@ -2992,7 +2993,7 @@ class DogeMinerGame {
         if (this.isMouseDown || this.isSpaceDown) return;
 
         // DM2 unpick time: MINIMUM_SWING_TIME * 4 = 136ms
-        pickaxe.style.transition = 'transform 136ms ease-out';
+        pickaxe.style.transition = 'transform 136ms ease-out, opacity 60ms ease-out';
         pickaxe.classList.remove('swing-down');
 
         // Revert to idle sprite
@@ -3006,6 +3007,7 @@ class DogeMinerGame {
     // Rock health system removed - simplified mining
 
     createParticleEffect(event) {
+        if (this.lessEffects) return;
         const container = document.getElementById('particle-container');
         if (!container) return;
 
@@ -3071,87 +3073,317 @@ class DogeMinerGame {
     }
 
 
-    createFloatingCoin(amount, event = null, isCrit = false) {
+    flashDogecoinAmount(type = 'green') {
+        const el = document.getElementById('dogecoin-amount');
+        if (!el) return;
+        const cls = type === 'red' ? 'flash-red' : 'flash-green';
+        el.classList.remove('flash-green', 'flash-red');
+        void el.offsetWidth; // Force CSS reflow to re-trigger animation
+        el.classList.add(cls);
+
+        if (type === 'green') {
+            const statIcon = document.querySelector('.stat-item:first-child .stat-icon');
+            if (statIcon) {
+                statIcon.animate([
+                    { transform: 'scale(1.08)' },
+                    { transform: 'scale(1)' }
+                ], { duration: 250, easing: 'ease-out' });
+            }
+        }
+    }
+
+    createFloatingCoin(amount, event = null, isCrit = false, isRecord = false) {
+        if (this.lessEffects) { this.updateDogecoinCounter(); this.flashDogecoinAmount('green'); return; }
+        isRecord = isCrit && isRecord;
         // Get the floating coins container
         const container = document.getElementById('floating-coins');
         if (!container) return;
 
+        const containerRect = container.getBoundingClientRect();
         let startX, startY;
 
         if (event && event.clientX !== undefined) {
-            // Use mouse position for mouse clicks
-            const containerRect = container.getBoundingClientRect();
+            // Use mouse/touch position
             startX = event.clientX - containerRect.left;
             startY = event.clientY - containerRect.top;
         } else {
-            // Fall back to rock position for keyboard clicks
+            // Fall back to rock position for keyboard/gamepad clicks
             const rock = document.getElementById('main-rock');
+            if (!rock) return;
             const rockRect = rock.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-
             startX = rockRect.left + rockRect.width / 2 - containerRect.left;
             startY = rockRect.top + rockRect.height / 2 - containerRect.top;
         }
 
-        // Create DogeCoin image
-        const coin = document.createElement('img');
-        coin.src = 'assets/general/dogecoin_70x70.webp';
-        coin.className = 'dogecoin-effect';
-        coin.style.position = 'absolute';
-        coin.style.left = startX + 'px';
-        coin.style.top = startY + 'px';
-        coin.style.width = isCrit ? '45px' : '35px';
-        coin.style.height = isCrit ? '45px' : '35px';
-        coin.style.transform = 'translate(-50%, -50%)';
-        coin.style.zIndex = '20';
+        // Target: Total Dogecoin Counter in top stats HUD
+        const targetEl = document.querySelector('.stat-item:first-child .stat-icon') || document.getElementById('dogecoin-amount');
+        let targetX = containerRect.width / 2;
+        let targetY = 50;
+        if (targetEl) {
+            const targetRect = targetEl.getBoundingClientRect();
+            targetX = targetRect.left + targetRect.width / 2 - containerRect.left;
+            targetY = targetRect.top + targetRect.height / 2 - containerRect.top;
+        }
 
-        // Create +amount text
-        const text = document.createElement('div');
-        text.className = 'dogecoin-text';
-        text.textContent = isCrit ? 'CRIT! +' + this.formatNumber(amount) : '+' + this.formatNumber(amount);
-        text.style.position = 'absolute';
-        text.style.left = (startX + 40) + 'px';
-        text.style.top = startY + 'px';
-        text.style.color = isCrit ? 'rgb(255, 140, 0)' : 'rgb(180, 155, 60)';
-        text.style.fontWeight = '900';
-        text.style.fontSize = isCrit ? '26px' : '20px';
-        text.style.fontFamily = 'DogeSans, sans-serif';
-        text.style.textShadow = '2px 2px 0px #ffffff, -2px -2px 0px #ffffff, 2px -2px 0px #ffffff, -2px 2px 0px #ffffff';
-        text.style.transform = 'translate(-50%, -50%)';
-        text.style.zIndex = '21';
+        // Create item containing both coin icon + text
+        const item = document.createElement('div');
+        item.className = 'floating-coin-item' + (isCrit ? ' is-crit' : '') + (isRecord ? ' is-record-crit' : '');
+        item.style.position = 'absolute';
+        item.style.left = '0px';
+        item.style.top = '0px';
+        item.style.willChange = 'transform, opacity';
+        item.style.pointerEvents = 'none';
 
-        // Add to container
-        container.appendChild(coin);
-        container.appendChild(text);
+        const coinImg = document.createElement('img');
+        coinImg.src = window.DogeMinerSeasonal?.active(this)==='xmas' ? 'assets/general/xmasdogecoin_70x70.webp' : 'assets/general/dogecoin_70x70.webp';
+        coinImg.className = 'floating-coin-img';
 
-        // Animate coin
-        const coinAnim = coin.animate([
-            { transform: 'translate(-50%, -50%) scale(1.2)', opacity: 1 },
-            { transform: 'translate(-50%, -150px) scale(0.4)', opacity: 0 }
-        ], {
-            duration: 1500,
-            easing: 'ease-out'
-        });
+        const textSpan = document.createElement('span');
+        textSpan.className = 'floating-coin-text';
+        textSpan.textContent = isCrit ? 'CRIT! +' + this.formatNumber(amount) : '+' + this.formatNumber(amount);
 
-        // Animate text
-        const textAnim = text.animate([
-            { transform: 'translate(-50%, -50%)', opacity: 1 },
-            { transform: 'translate(-50%, -150px)', opacity: 0 }
-        ], {
-            duration: 1500,
-            easing: 'ease-out'
+        // Keep record recoil separate from the existing currency flight.
+        const pop = document.createElement('span');
+        pop.className = 'floating-coin-pop';
+        pop.appendChild(coinImg);
+        pop.appendChild(textSpan);
+        item.appendChild(pop);
+        container.appendChild(item);
+        let recoil;
+        if (isRecord && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+            // DM2's 210ms record pivot/rotation samples (pivot offsets render inverted).
+            const samples = [[0,0,0,0],[.028,4.5,1.8,-.035],[.055,-3,-1.2,.026],[.08,0,0,0],
+                [.11,0,0,0],[.133,2.8,1.1,-.02],[.159,-1.6,-.6,.012],[.21,0,0,0]];
+            recoil = pop.animate(samples.map(([time,x,y,angle]) => ({ offset:time/.21,
+                transform:`rotate(${angle}rad) translate(${-x}px, ${-y}px)` })),
+                { duration:210, easing:'linear' });
+        }
+
+        // Generate curved trajectory keyframes:
+        // Phase 1 (0% -> 22%): Rise straight up ~45px with a springy pop
+        // Phase 2 (22% -> 100%): Curve upward into total Dogecoin counter, travelling under DPS
+        const frames = [];
+        const steps = 28;
+        const spreadX = (Math.random() - 0.5) * 20;
+        const peakX = startX + spreadX;
+        const peakY = startY - 45;
+
+        // Quadratic bezier control point for outward curving flight
+        const curveOffset = (peakX < targetX) ? -35 : 35;
+        const cpX = peakX + (targetX - peakX) * 0.25 + curveOffset;
+        const cpY = Math.min(peakY, targetY + (peakY - targetY) * 0.35);
+
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            let x, y, scale, opacity;
+
+            if (t < 0.22) {
+                const p = t / 0.22;
+                const easeP = Math.sin(p * Math.PI / 2);
+                x = startX + spreadX * easeP;
+                y = startY - 45 * easeP;
+                scale = 0.65 + 0.5 * easeP; // 0.65 -> 1.15
+                opacity = Math.min(1, p * 2.5);
+            } else {
+                const p = (t - 0.22) / 0.78;
+                // Ease-in acceleration into the counter
+                const easeP = p * p * (3 - 2 * p);
+                const u = easeP;
+                const invU = 1 - u;
+                x = invU * invU * peakX + 2 * invU * u * cpX + u * u * targetX;
+                y = invU * invU * peakY + 2 * invU * u * cpY + u * u * targetY;
+                scale = 1.15 - 0.65 * u; // 1.15 -> 0.5
+                opacity = u > 0.85 ? (1 - (u - 0.85) / 0.15) : 1;
+            }
+
+            if (isRecord) scale *= 1.3;
+            frames.push({
+                transform: `translate(calc(${x.toFixed(1)}px - 50%), calc(${y.toFixed(1)}px - 50%)) scale(${scale.toFixed(3)})`,
+                opacity: opacity.toFixed(3)
+            });
+        }
+
+        const anim = item.animate(frames, {
+            duration: 800,
+            easing: 'linear',
+            fill: 'forwards'
         });
 
         this.activeEffectCount++;
+        // Balance is already credited; withhold only its visual display during flight.
+        this.pendingCoinDisplayAmount = (this.pendingCoinDisplayAmount || 0) + amount;
 
-        // Remove after animation — cancel animation to free memory
-        setTimeout(() => {
-            coinAnim.cancel();
-            textAnim.cancel();
-            if (coin.parentNode) coin.parentNode.removeChild(coin);
-            if (text.parentNode) text.parentNode.removeChild(text);
+        const flightEpoch = this._currencyFlightEpoch || 0;
+        let isCleanedUp = false;
+        const cleanup = () => {
+            if (isCleanedUp) return;
+            isCleanedUp = true;
+            try { anim.cancel(); recoil?.cancel(); } catch (e) {}
+            if (item.parentNode) {
+                item.parentNode.removeChild(item);
+            }
+            if ((this._currencyFlightEpoch || 0) !== flightEpoch) return;
             this.activeEffectCount = Math.max(0, this.activeEffectCount - 1);
-        }, 1500);
+            this.pendingCoinDisplayAmount = Math.max(0, (this.pendingCoinDisplayAmount || 0) - amount);
+            this.updateDogecoinCounter();
+            // Flash green as coin absorbs into total dogecoins
+            this.flashDogecoinAmount('green');
+        };
+
+        anim.onfinish = cleanup;
+        setTimeout(cleanup, 900);
+    }
+
+    flashDiamondAmount(type = 'green') {
+        const el = document.getElementById('diamond-amount');
+        if (!el) return;
+        const cls = type === 'red' ? 'flash-red' : 'flash-green';
+        el.classList.remove('flash-green', 'flash-red');
+        void el.offsetWidth; // Force CSS reflow
+        el.classList.add(cls);
+
+        if (type === 'green') {
+            const icon = document.querySelector('.diamond-counter-icon');
+            if (icon) {
+                icon.animate([
+                    { transform: 'scale(1.08)' },
+                    { transform: 'scale(1)' }
+                ], { duration: 250, easing: 'ease-out' });
+            }
+        }
+    }
+
+    createFloatingDiamond(amount = 1, event = null) {
+        if (this.lessEffects) { this.updateDiamondCounter(); this.flashDiamondAmount('green'); return; }
+        // Get the floating coins container
+        const container = document.getElementById('floating-coins');
+        if (!container) return;
+
+        const containerRect = container.getBoundingClientRect();
+        let startX, startY;
+
+        if (event && event.clientX !== undefined) {
+            // Use mouse/touch/element position
+            startX = event.clientX - containerRect.left;
+            startY = event.clientY - containerRect.top;
+        } else if (event && typeof event.x === 'number' && typeof event.y === 'number') {
+            startX = event.x;
+            startY = event.y;
+        } else {
+            // Fall back to rock position
+            const rock = document.getElementById('main-rock');
+            if (!rock) return;
+            const rockRect = rock.getBoundingClientRect();
+            startX = rockRect.left + rockRect.width / 2 - containerRect.left;
+            startY = rockRect.top + rockRect.height / 2 - containerRect.top;
+        }
+
+        // Reveal the first-claim target before measuring its position, keeping the old amount.
+        const counter = document.getElementById('diamond-counter');
+        if (counter && this.dogediamondsEverObtained > 0) counter.style.display = 'flex';
+
+        // Target: Dogediamond Counter in top-right HUD
+        const targetEl = document.querySelector('.diamond-counter-icon') || document.getElementById('diamond-amount') || document.getElementById('diamond-counter');
+        let targetX = containerRect.width - 60;
+        let targetY = 35;
+        if (targetEl) {
+            const targetRect = targetEl.getBoundingClientRect();
+            targetX = targetRect.left + targetRect.width / 2 - containerRect.left;
+            targetY = targetRect.top + targetRect.height / 2 - containerRect.top;
+        }
+
+        // Create item containing diamond icon + text
+        const item = document.createElement('div');
+        item.className = 'floating-coin-item floating-diamond-item';
+        item.style.position = 'absolute';
+        item.style.left = '0px';
+        item.style.top = '0px';
+        item.style.willChange = 'transform, opacity';
+        item.style.pointerEvents = 'none';
+
+        const diamondImg = document.createElement('img');
+        diamondImg.src = 'assets/general/diamond.webp';
+        diamondImg.className = 'floating-diamond-img';
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'floating-diamond-text';
+        textSpan.textContent = '+' + this.formatNumber(amount);
+
+        item.appendChild(diamondImg);
+        item.appendChild(textSpan);
+        container.appendChild(item);
+
+        // Generate curved trajectory keyframes to top-right diamond counter
+        const frames = [];
+        const steps = 28;
+        const spreadX = (Math.random() - 0.5) * 16;
+        const peakX = startX + spreadX;
+        const peakY = startY - 45;
+
+        // Quadratic bezier control point for outward curving flight
+        const curveOffset = (peakX < targetX) ? -30 : 30;
+        const cpX = peakX + (targetX - peakX) * 0.25 + curveOffset;
+        const cpY = Math.min(peakY, targetY + (peakY - targetY) * 0.35);
+
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            let x, y, scale, opacity;
+
+            if (t < 0.22) {
+                const p = t / 0.22;
+                const easeP = Math.sin(p * Math.PI / 2);
+                x = startX + spreadX * easeP;
+                y = startY - 45 * easeP;
+                scale = 0.65 + 0.5 * easeP; // 0.65 -> 1.15
+                opacity = Math.min(1, p * 2.5);
+            } else {
+                const p = (t - 0.22) / 0.78;
+                // Ease-in acceleration into the counter
+                const easeP = p * p * (3 - 2 * p);
+                const u = easeP;
+                const invU = 1 - u;
+                x = invU * invU * peakX + 2 * invU * u * cpX + u * u * targetX;
+                y = invU * invU * peakY + 2 * invU * u * cpY + u * u * targetY;
+                scale = 1.15 - 0.65 * u; // 1.15 -> 0.5
+                opacity = u > 0.85 ? (1 - (u - 0.85) / 0.15) : 1;
+            }
+
+            frames.push({
+                transform: `translate(calc(${x.toFixed(1)}px - 50%), calc(${y.toFixed(1)}px - 50%)) scale(${scale.toFixed(3)})`,
+                opacity: opacity.toFixed(3)
+            });
+        }
+
+        const anim = item.animate(frames, {
+            duration: 800,
+            easing: 'linear',
+            fill: 'forwards'
+        });
+
+        this.activeEffectCount++;
+        this.pendingDiamondDisplayAmount = (this.pendingDiamondDisplayAmount || 0) + amount;
+        this.updateDiamondCounter();
+
+        const flightEpoch = this._currencyFlightEpoch || 0;
+        let isCleanedUp = false;
+        const cleanup = () => {
+            if (isCleanedUp) return;
+            isCleanedUp = true;
+            try { anim.cancel(); } catch (e) {}
+            if (item.parentNode) {
+                item.parentNode.removeChild(item);
+            }
+            if ((this._currencyFlightEpoch || 0) !== flightEpoch) return;
+            this.activeEffectCount = Math.max(0, this.activeEffectCount - 1);
+            this.pendingDiamondDisplayAmount = Math.max(0, (this.pendingDiamondDisplayAmount || 0) - amount);
+            this.updateDiamondCounter();
+            // Flash diamond counter in green on arrival
+            this.flashDiamondAmount('green');
+        };
+
+        anim.onfinish = cleanup;
+        anim.oncancel = cleanup;
+        setTimeout(cleanup, 900);
     }
 
     getHelperCategoryForLevel(level = this.currentLevel) {
@@ -3185,8 +3417,10 @@ class DogeMinerGame {
     }
 
     buyHelper(helperType) {
-        if (this.isCutscenePlaying) return false;
+        if (this.isCutscenePlaying || this.isStoryOpen) return false;
+        if (this.isWorldHelperAvailable?.(helperType) === false) return false;
 
+        if (!this._bulkBuying) {
         console.log('=== buyHelper called ===');
         console.log('Helper type:', helperType);
         console.log('isPlacingHelpers:', this.isPlacingHelpers);
@@ -3194,6 +3428,7 @@ class DogeMinerGame {
         console.log('helpersOnCursor length:', this.helpersOnCursor?.length || 0);
         console.log('Current level:', this.currentLevel);
         console.log('Stack trace:', new Error().stack);
+        }
 
         const helperCategory = this.getHelperCategoryForLevel();
         const helperData = window.shopManager?.shopData?.[helperCategory]?.[helperType];
@@ -3252,25 +3487,27 @@ class DogeMinerGame {
         }
 
         this.dogecoins -= cost;
+        if (!this._bulkBuying) this.flashDogecoinAmount('red');
 
-        if (window.audioManager) {
+        if (window.audioManager && !this._bulkBuying) {
             window.audioManager.playSound('ching');
         }
 
-        helperArray.push({
+        const purchasedHelper = {
             type: helperType,
             helper: helperData,
-            dps: helperData.baseDps
-        });
+            dps: helperData.baseDps,
+            name: this.getHelperName(helperType)
+        };
+        helperArray.push(purchasedHelper);
 
         // Recalculate total DPS with the newly purchased helper counted.
-        this.updateDPS();
+        if (!this._bulkBuying) this.updateDPS();
 
-        this.addHelperToCursor(helperType, helperData);
-        this.updateShopPrices();
-        this.updateUI();
+        this.addHelperToCursor(helperType, helperData, true, purchasedHelper);
+        if (!this._bulkBuying) { this.updateShopPrices(); this.updateUI(); }
 
-        if (window.uiManager) {
+        if (window.uiManager && !this._bulkBuying) {
             const level = this.currentLevel;
             const hasPlayedMoonLaunch = this.hasPlayedMoonLaunch;
 
@@ -3289,7 +3526,7 @@ class DogeMinerGame {
         return true;
     }
 
-    addHelperToCursor(helperType, helper, shouldStartPlacement = true) {
+    addHelperToCursor(helperType, helper, shouldStartPlacement = true, ownedEntry = null) {
         // Check if on mobile - auto-place helpers instead of manual placement
         const isMobile = window.innerWidth <= 768;
 
@@ -3315,6 +3552,7 @@ class DogeMinerGame {
             type: helperType,
             helper: helper,
             dps: helper.baseDps,
+            name: ownedEntry?.name || helper.name || this.getHelperName(helperType),
             randomOffsetX: randomOffsetX,
             randomOffsetY: randomOffsetY
         });
@@ -3336,6 +3574,7 @@ class DogeMinerGame {
         // Instead, we track helper counts and update the grouped helper bar
 
         // The helper is already added to the helpers array in buyHelper()
+        if (this._bulkBuying) return;
         // Just update DPS, UI, and the mobile helper bar
         this.updateDPS();
         this.updateUI();
@@ -3355,6 +3594,12 @@ class DogeMinerGame {
     updateMobileHelperBar() {
         const helperBar = document.getElementById('mobile-helper-bar');
         if (!helperBar) return;
+        if (!this.isMobileDevice()) {
+            if (this.mobileHelperAnimationInterval) clearInterval(this.mobileHelperAnimationInterval);
+            this.mobileHelperAnimationInterval = null;
+            window.DogeMinerFieldPersonality?.clearMobile(this);
+            return;
+        }
 
         // Get current level's helper array and shop data
         const helperArray = this.getHelperArrayForLevel();
@@ -3459,7 +3704,7 @@ class DogeMinerGame {
             // Update sprites for existing items (in case of upgrade)
             if (!isNew) {
                 const icon = item.querySelector('.mobile-helper-icon');
-                if (icon) {
+                if (icon && !icon.classList.contains('helper-upgrade-transforming')) {
                     const upgradeLevel = this.helperUpgradeLevels[helperType] || 0;
                     const spritePaths = this.getHelperSpritePaths(helperType, upgradeLevel);
                     const idleSprite = spritePaths?.idle || helperData.icon;
@@ -3468,11 +3713,8 @@ class DogeMinerGame {
                     icon.dataset.idleSrc = idleSprite;
                     icon.dataset.miningSrc = miningSprite;
                     // Update current src based on mining state
-                    if (icon.dataset.isMining === 'true') {
-                        icon.src = miningSprite;
-                    } else {
-                        icon.src = idleSprite;
-                    }
+                    const currentSprite = icon.dataset.isMining === 'true' ? miningSprite : idleSprite;
+                    if (icon.getAttribute('src') !== currentSprite) icon.src = currentSprite;
                 }
             }
         });
@@ -3489,34 +3731,11 @@ class DogeMinerGame {
         }
 
         // Start animation loop if not already running
-        if (!this.mobileHelperAnimationInterval) {
-            this.startMobileHelperAnimations();
-        }
+        this.startMobileHelperAnimations();
     }
 
     startMobileHelperAnimations() {
-        // Clear existing interval if any
-        if (this.mobileHelperAnimationInterval) {
-            clearInterval(this.mobileHelperAnimationInterval);
-        }
-
-        // Animate helpers every 600ms (mining action)
-        this.mobileHelperAnimationInterval = setInterval(() => {
-            const icons = document.querySelectorAll('.mobile-helper-icon');
-            icons.forEach(icon => {
-                const isMining = icon.dataset.isMining === 'true';
-                const newIsMining = !isMining;
-
-                // Toggle sprite
-                if (newIsMining && icon.dataset.miningSrc) {
-                    icon.src = icon.dataset.miningSrc;
-                } else {
-                    icon.src = icon.dataset.idleSrc;
-                }
-
-                icon.dataset.isMining = newIsMining.toString();
-            });
-        }, 600);
+        window.DogeMinerFieldPersonality?.syncMobile(this);
     }
 
     // Get valid helper categories for current level
@@ -3864,9 +4083,7 @@ class DogeMinerGame {
                 y: placeY,
                 id: Date.now() + Math.random() + index, // Unique ID
                 isMining: false,
-                name: (helperData.type === 'miningShibe')
-                    ? this.getHelperName(helperData.type) // Force nickname for shibes
-                    : (helperData.helper?.name || helperData.name || this.getHelperName(helperData.type)) // Use shop name for others
+                name: helperData.name || this.getHelperName(helperData.type)
             };
 
             // Add to placed helpers array
@@ -3952,61 +4169,54 @@ class DogeMinerGame {
 
         console.log(`Summary: ${matchCount} matches, ${foundCount} sprites found`);
 
-        // Also clear cached upgrades so the upgrade tab refreshes
-        if (window.uiManager) {
-            window.uiManager._cachedUpgrades = null;
-        }
     }
 
     adjustStackForDogeCollision(helperPositions) {
-        // Get Doge's position and size
         const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return { x: 0, y: 0 };
         const panelRect = leftPanel.getBoundingClientRect();
 
-        // Doge is centered in the mining area
-        // Mining area is positioned at calc(50% + 50px) from top and calc(50% - 20px) from left
-        const dogeX = (panelRect.width / 2) - 20; // Center minus 20px offset
-        const dogeY = (panelRect.height / 2) + 50; // Center plus 50px offset
-        const dogeWidth = 120; // Doge width from CSS
-        const dogeHeight = 120; // Approximate height (assuming square-ish)
+        const miningArea = document.getElementById('mining-area');
+        let areaLeft, areaRight, areaTop, areaBottom;
 
-        // Expand Doge's collision area to prevent helpers from being placed too close
-        // Use different buffer sizes for different directions
-        const leftRightBuffer = 40; // Larger buffer for left/right to prevent placement behind Doge
-        const upDownBuffer = 20; // Smaller buffer for up/down to prevent excessive movement
+        if (miningArea) {
+            const mRect = miningArea.getBoundingClientRect();
+            areaLeft = mRect.left - panelRect.left - 15;
+            areaRight = mRect.right - panelRect.left + 15;
+            areaTop = mRect.top - panelRect.top - 15;
+            areaBottom = mRect.bottom - panelRect.top + 15;
+        } else {
+            const dogeX = (panelRect.width / 2) - 20;
+            const dogeY = (panelRect.height / 2) + 50;
+            areaLeft = dogeX - 100;
+            areaRight = dogeX + 100;
+            areaTop = dogeY - 80;
+            areaBottom = dogeY + 80;
+        }
 
-        const dogeLeft = dogeX - dogeWidth / 2 - leftRightBuffer;
-        const dogeRight = dogeX + dogeWidth / 2 + leftRightBuffer;
-        const dogeTop = dogeY - dogeHeight / 2 - upDownBuffer;
-        const dogeBottom = dogeY + dogeHeight / 2 + upDownBuffer;
-
-        // Check if any individual helper collides with Doge's expanded area (including buffer zone)
         let hasCollision = false;
         let minMoveLeft = 0;
         let minMoveRight = 0;
         let minMoveUp = 0;
         let minMoveDown = 0;
 
-        helperPositions.forEach((pos, index) => {
+        helperPositions.forEach((pos) => {
             const helperSize = pos.type === 'miningShibe' ? 30 : 60;
             const helperLeft = pos.x;
             const helperRight = pos.x + helperSize;
             const helperTop = pos.y;
             const helperBottom = pos.y + helperSize;
 
-            // Check if this helper collides with Doge's expanded area (including buffer zone)
-            if (helperRight > dogeLeft && helperLeft < dogeRight &&
-                helperBottom > dogeTop && helperTop < dogeBottom) {
+            if (helperRight > areaLeft && helperLeft < areaRight &&
+                helperBottom > areaTop && helperTop < areaBottom) {
 
                 hasCollision = true;
 
-                // Calculate how much this helper needs to move in each direction
-                const moveLeft = Math.abs(helperRight - dogeLeft) + 30; // 30px buffer for more distance
-                const moveRight = Math.abs(helperLeft - dogeRight) + 30; // 30px buffer for more distance
-                const moveUp = Math.abs(helperBottom - dogeTop) + 10; // 10px buffer (reverted to original)
-                const moveDown = Math.abs(helperTop - dogeBottom) + 10; // 10px buffer (reverted to original)
+                const moveLeft = Math.abs(helperRight - areaLeft) + 15;
+                const moveRight = Math.abs(areaRight - helperLeft) + 15;
+                const moveUp = Math.abs(helperBottom - areaTop) + 15;
+                const moveDown = Math.abs(areaBottom - helperTop) + 15;
 
-                // Track the maximum movement needed in each direction
                 minMoveLeft = Math.max(minMoveLeft, moveLeft);
                 minMoveRight = Math.max(minMoveRight, moveRight);
                 minMoveUp = Math.max(minMoveUp, moveUp);
@@ -4015,82 +4225,62 @@ class DogeMinerGame {
         });
 
         if (hasCollision) {
-            // Find the direction that requires the least movement for the entire stack
             const minMovement = Math.min(minMoveLeft, minMoveRight, minMoveUp, minMoveDown);
-
-            // Apply the adjustment to the entire stack
             if (minMovement === minMoveLeft) {
-                // Move entire stack left
                 return { x: -minMoveLeft, y: 0 };
             } else if (minMovement === minMoveRight) {
-                // Move entire stack right
                 return { x: minMoveRight, y: 0 };
             } else if (minMovement === minMoveUp) {
-                // Move entire stack up
                 return { x: 0, y: -minMoveUp };
             } else {
-                // Move entire stack down
                 return { x: 0, y: minMoveDown };
             }
         }
-        // No collision, no adjustment needed
         return { x: 0, y: 0 };
     }
 
     adjustStackForBoundaries(helperPositions) {
-        // Get the left panel dimensions
         const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
         const panelRect = leftPanel.getBoundingClientRect();
 
-        // Panel boundaries with some padding
-        const panelLeft = 10; // 10px padding from left edge
-        const panelRight = panelRect.width - 10; // 10px padding from right edge
-        const panelTop = 10; // 10px padding from top edge
-        const panelBottom = panelRect.height - 10; // 10px padding from bottom edge
+        const panelLeft = 10;
+        const panelRight = panelRect.width - 10;
+        const panelTop = 10;
+        const panelBottom = panelRect.height - 10;
 
-        // Find the minimum adjustment needed to keep all helpers within bounds
         let minAdjustX = 0;
         let minAdjustY = 0;
-        let maxNegativeAdjustX = 0; // Track the most negative adjustment needed
+        let maxNegativeAdjustX = 0;
+        let maxNegativeAdjustY = 0;
 
-        helperPositions.forEach((pos, index) => {
+        helperPositions.forEach((pos) => {
             const helperSize = pos.type === 'miningShibe' ? 30 : 60;
             const helperLeft = pos.x;
             const helperRight = pos.x + helperSize;
             const helperTop = pos.y;
             const helperBottom = pos.y + helperSize;
 
-            // Check if helper is outside panel boundaries
             if (helperLeft < panelLeft) {
-                // Helper is too far left, need to move right
-                const adjustRight = panelLeft - helperLeft;
-                minAdjustX = Math.max(minAdjustX, adjustRight);
+                minAdjustX = Math.max(minAdjustX, panelLeft - helperLeft);
             }
-
             if (helperRight > panelRight) {
-                // Helper is too far right, need to move left
-                const adjustLeft = helperRight - panelRight;
-                maxNegativeAdjustX = Math.min(maxNegativeAdjustX, -adjustLeft);
+                maxNegativeAdjustX = Math.min(maxNegativeAdjustX, panelRight - helperRight);
             }
-
             if (helperTop < panelTop) {
-                // Helper is too far up, need to move down
-                const adjustDown = panelTop - helperTop;
-                minAdjustY = Math.max(minAdjustY, adjustDown);
+                minAdjustY = Math.max(minAdjustY, panelTop - helperTop);
             }
-
             if (helperBottom > panelBottom) {
-                // Helper is too far down, need to move up
-                const adjustUp = helperBottom - panelBottom;
-                minAdjustY = Math.min(minAdjustY, -adjustUp); // Negative adjustment to move up
+                maxNegativeAdjustY = Math.min(maxNegativeAdjustY, panelBottom - helperBottom);
             }
         });
 
-        // Apply the boundary adjustment to all helpers
         const finalAdjustX = minAdjustX + maxNegativeAdjustX;
-        helperPositions.forEach((pos, index) => {
+        const finalAdjustY = minAdjustY + maxNegativeAdjustY;
+
+        helperPositions.forEach((pos) => {
             pos.x += finalAdjustX;
-            pos.y += minAdjustY;
+            pos.y += finalAdjustY;
         });
     }
 
@@ -4151,6 +4341,72 @@ class DogeMinerGame {
         return { x, y };
     }
 
+    isIndividualPositionValid(x, y, helperSize = 60) {
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return true;
+
+        const margin = 10;
+        if (x < margin || y < margin ||
+            x + helperSize > leftPanel.offsetWidth - margin ||
+            y + helperSize > leftPanel.offsetHeight - margin) {
+            return false;
+        }
+
+        // Top-left HUD / Pickaxes / Fortunes buttons (approx 220px wide, 110px high)
+        if (x < 220 && y < 110) {
+            return false;
+        }
+
+        // Top-right HUD / Timeline / Diamonds (approx 220px wide from right edge, 75px high)
+        if (x + helperSize > leftPanel.offsetWidth - 220 && y < 75) {
+            return false;
+        }
+
+        // Mining Area (Doge & Rock)
+        const miningArea = document.getElementById('mining-area');
+        if (miningArea) {
+            const mRect = miningArea.getBoundingClientRect();
+            const pRect = leftPanel.getBoundingClientRect();
+            const mLeft = mRect.left - pRect.left - 10;
+            const mRight = mRect.right - pRect.left + 10;
+            const mTop = mRect.top - pRect.top - 10;
+            const mBottom = mRect.bottom - pRect.top + 10;
+
+            if (x + helperSize > mLeft && x < mRight &&
+                y + helperSize > mTop && y < mBottom) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    findNearestValidSpot(x, y, helperSize = 60) {
+        if (this.isIndividualPositionValid(x, y, helperSize)) {
+            return { x, y };
+        }
+
+        const maxSearchRadius = 350;
+        const stepSize = 15;
+
+        for (let radius = stepSize; radius <= maxSearchRadius; radius += stepSize) {
+            for (let a = 0; a < 360; a += 30) {
+                const rad = (a * Math.PI) / 180;
+                const testX = x + Math.cos(rad) * radius;
+                const testY = y + Math.sin(rad) * radius;
+
+                if (this.isIndividualPositionValid(testX, testY, helperSize)) {
+                    return { x: testX, y: testY };
+                }
+            }
+        }
+
+        const leftPanel = document.getElementById('left-panel');
+        const pWidth = leftPanel ? leftPanel.offsetWidth : 600;
+        const pHeight = leftPanel ? leftPanel.offsetHeight : 600;
+        return { x: Math.max(20, pWidth - helperSize - 30), y: Math.max(20, pHeight - helperSize - 30) };
+    }
+
     isValidHelperPosition(x, y, helperSize = 60) {
         const margin = 10;
 
@@ -4188,14 +4444,6 @@ class DogeMinerGame {
         return true;
     }
 
-    /**
-     * Find a valid placement spot near the requested position.
-     * Searches in a spiral pattern outward from the original position.
-     * @param {number} x - Requested x position
-     * @param {number} y - Requested y position
-     * @param {number} helperSize - Size of the helper being placed
-     * @returns {{x: number, y: number} | null} Valid position or null if none found
-     */
     findValidPlacementSpot(x, y, helperSize = 60) {
         // First check if original position is valid
         if (this.isValidHelperPosition(x, y, helperSize)) {
@@ -4240,8 +4488,6 @@ class DogeMinerGame {
             }
         }
 
-        // Last resort: just return a position, let it overlap
-        // This ensures the helper is always placed rather than stuck
         console.warn('No valid placement spot found, using default position');
         return { x: 50, y: 450 };
     }
@@ -4324,10 +4570,11 @@ class DogeMinerGame {
     }
 
     getHelperName(helperType) {
-        if (helperType === 'miningShibe') {
+        if (helperType === 'miningShibe' && this.miningShibeNames?.length) {
             return this.getRandomMiningShibeName();
         }
-        return this.helperNames[helperType] || helperType;
+        const personal = window.DogeMinerHelperNames?.allocate(helperType);
+        return personal || this.helperNames?.[helperType] || this.getHelperData(helperType)?.name || helperType;
     }
 
     createHelperSprite(placedHelper) {
@@ -4416,12 +4663,6 @@ class DogeMinerGame {
             || placedHelper.helper?.name
             || this.getHelperName(placedHelper.type);
 
-        // Fix for Mining Shibes that lost their nicknames (retroactive fix)
-        if (placedHelper.type === 'miningShibe' && helperName === 'Mining Shibe') {
-            helperName = this.getHelperName(placedHelper.type);
-            placedHelper.name = helperName; // Persist the new nickname
-        }
-
         nameTooltip.textContent = helperName;
         nameTooltip.dataset.helperId = placedHelper.id;
 
@@ -4484,15 +4725,6 @@ class DogeMinerGame {
 
         document.getElementById('helper-container').appendChild(helperSprite);
 
-        // Add hover events for tooltip visibility
-        helperSprite.addEventListener('mouseenter', () => {
-            nameTooltip.style.opacity = '1';
-        });
-
-        helperSprite.addEventListener('mouseleave', () => {
-            nameTooltip.style.opacity = '0';
-        });
-
         // Add drag-and-drop functionality
         this.addDragAndDropToHelper(helperSprite, placedHelper, nameTooltip);
 
@@ -4511,55 +4743,175 @@ class DogeMinerGame {
 
     addDragAndDropToHelper(helperSprite, placedHelper, nameTooltip) {
         let isDragging = false;
+        let isGroupDragging = false;
         let hasMoved = false;
         let pickedUpHelper = null;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let groupItems = [];
 
-        // Make helper draggable
         helperSprite.style.cursor = 'grab';
 
-        // Helper function to start drag (used by both mouse and touch)
         const startDrag = (e) => {
-            // Prevent drag-and-drop ONLY during helper placement (buy mode)
-            // Don't block during normal drag-and-drop (helpers can be on cursor for dragging)
-            console.log('Drag start - isPlacingHelpers:', this.isPlacingHelpers);
             if (this.isPlacingHelpers) {
                 console.log('BLOCKED: Drag attempt during placement');
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
+                if (e.preventDefault) e.preventDefault();
                 return false;
             }
 
-            e.preventDefault();
+            const isMobile = this.isMobileDevice();
+            const hId = placedHelper.id;
+            const numId = Number(hId);
+            const isAlreadyInGroup = this.selectedHelperIds && this.selectedHelperIds.size > 1 && (this.selectedHelperIds.has(hId) || (numId && this.selectedHelperIds.has(numId)));
+
+            // Group drag ONLY if player has multi-selected 2+ helpers via marquee box
+            if (!isMobile && e.clientX !== undefined && isAlreadyInGroup) {
+                isGroupDragging = true;
+                isDragging = true;
+                hasMoved = false;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                groupItems = [];
+
+                const processed = new Set();
+                this.selectedHelperIds.forEach(id => {
+                    const num = Number(id);
+                    const ph = this.placedHelpers.find(p => p.id === id || p.id === num || String(p.id) === String(id));
+                    if (ph && !processed.has(ph.id)) {
+                        processed.add(ph.id);
+                        const sprite = document.querySelector(`.helper-sprite[data-helper-id="${ph.id}"]`);
+                        const tooltip = document.querySelector(`.helper-name-tooltip[data-helper-id="${ph.id}"]`);
+
+                        let centerOffset = 30;
+                        let verticalOffset = 22;
+                        const t = ph.type;
+                        if (t === 'infiniteDogebility') centerOffset = 35;
+                        else if (t === 'streamerKittens') { centerOffset = 30; verticalOffset = 18; }
+                        else if (t === 'spaceRocket' || t === 'marsRocket') { centerOffset = 30; verticalOffset = 10; }
+                        else if (t === 'miningShibe' || t === 'moonShibe' || t === 'partyShibe' || t === 'roboShibe') centerOffset = 15;
+                        else if (t === 'moonBase' || t === 'landerShibe' || t === 'marsBase' || t === 'cloudBase' || t === 'titanBase' || t === 'altarOfTheSunDoge' || t === 'dogeStar') { centerOffset = 45; verticalOffset = 30; }
+                        else if (t === 'superShibe' || t === 'tardogeis' || t === 'timeTravelDRex') { centerOffset = 36; verticalOffset = 26; }
+                        else if (t === 'dogeCar') { centerOffset = 30; verticalOffset = 28; }
+
+                        groupItems.push({
+                            ph,
+                            sprite,
+                            tooltip,
+                            initialX: ph.x,
+                            initialY: ph.y,
+                            centerOffset,
+                            verticalOffset
+                        });
+                        this.stopHelperMining(ph);
+                    }
+                });
+
+                this.playSound('grabHelper');
+                if (e.preventDefault) e.preventDefault();
+                return;
+            }
+
+            // Single helper pickup: clear selection, zero overlay, exact original behavior
+            if (!isMobile && !e.shiftKey) {
+                this.clearHelperSelection();
+            }
+
+            // Single helper drag
+            if (e.preventDefault) e.preventDefault();
             isDragging = true;
+            isGroupDragging = false;
             hasMoved = false;
             pickedUpHelper = null;
             helperSprite.style.cursor = 'grabbing';
             this.playSound('grabHelper');
 
-            // Stop mining animation
             this.stopHelperMining(placedHelper);
         };
 
-        // Helper function to handle move (used by both mouse and touch)
         const handleMove = (e) => {
+            if (isGroupDragging) {
+                if (!hasMoved) hasMoved = true;
+                const dx = e.clientX - dragStartX;
+                const dy = e.clientY - dragStartY;
+                groupItems.forEach(item => {
+                    const nx = item.initialX + dx;
+                    const ny = item.initialY + dy;
+                    if (item.sprite) {
+                        item.sprite.style.left = nx + 'px';
+                        item.sprite.style.top = ny + 'px';
+                    }
+                    if (item.tooltip) {
+                        item.tooltip.style.left = (nx + item.centerOffset) + 'px';
+                        item.tooltip.style.top = (ny - item.verticalOffset) + 'px';
+                    }
+                });
+                return;
+            }
+
             if (isDragging && !hasMoved) {
-                // First movement - pick up the helper immediately
                 hasMoved = true;
                 pickedUpHelper = this.pickupHelper(placedHelper, helperSprite, nameTooltip, e);
             }
         };
 
-        // Helper function to end drag (used by both mouse and touch)
         const endDrag = (clientX, clientY) => {
+            if (isGroupDragging) {
+                const dx = clientX - dragStartX;
+                const dy = clientY - dragStartY;
+
+                groupItems.forEach(item => {
+                    const rawX = item.initialX + dx;
+                    const rawY = item.initialY + dy;
+                    const helperSize = item.ph.type === 'miningShibe' ? 30 : 60;
+
+                    const validPos = this.findNearestValidSpot(rawX, rawY, helperSize);
+                    const needsEasing = (Math.abs(validPos.x - rawX) > 1 || Math.abs(validPos.y - rawY) > 1);
+
+                    if (needsEasing) {
+                        if (item.sprite) item.sprite.classList.add('ease-relocate');
+                        if (item.tooltip) item.tooltip.classList.add('ease-relocate');
+                    }
+
+                    item.ph.x = validPos.x;
+                    item.ph.y = validPos.y;
+
+                    if (item.sprite) {
+                        item.sprite.style.left = validPos.x + 'px';
+                        item.sprite.style.top = validPos.y + 'px';
+                    }
+
+                    if (item.tooltip) {
+                        item.tooltip.style.left = (validPos.x + item.centerOffset) + 'px';
+                        item.tooltip.style.top = (validPos.y - item.verticalOffset) + 'px';
+                    }
+
+                    if (needsEasing) {
+                        setTimeout(() => {
+                            if (item.sprite) item.sprite.classList.remove('ease-relocate');
+                            if (item.tooltip) item.tooltip.classList.remove('ease-relocate');
+                        }, 380);
+                    }
+
+                    this.startHelperMining(item.ph);
+                });
+
+                this.updateDPS();
+                this.updateUI();
+                if (window.saveManager) window.saveManager.saveGame(false);
+
+                isDragging = false;
+                isGroupDragging = false;
+                hasMoved = false;
+                groupItems = [];
+                return;
+            }
+
             if (isDragging && pickedUpHelper) {
-                // Drop the helper at current position, centered on cursor/touch
                 const leftPanel = document.getElementById('left-panel');
                 const panelRect = leftPanel.getBoundingClientRect();
 
-                // Calculate centered position
                 const helperSize = pickedUpHelper.type === 'miningShibe' ? 30 : 60;
-                const offset = helperSize / 2; // Center the helper on cursor/touch
+                const offset = helperSize / 2;
 
                 const x = clientX - panelRect.left - offset;
                 const y = clientY - panelRect.top - offset;
@@ -4627,6 +4979,13 @@ class DogeMinerGame {
         const helperIndex = this.placedHelpers.findIndex(helper => helper.id === placedHelper.id);
         if (helperIndex !== -1) {
             this.placedHelpers.splice(helperIndex, 1);
+        } else {
+            // Orphaned sprite with no backing data (e.g. ghost left behind by a
+            // timeline reset): delete it outright instead of reviving it onto
+            // the cursor, where dropping it would re-save it
+            helperSprite.remove();
+            if (nameTooltip) nameTooltip.remove();
+            return;
         }
 
         // Remove sprite and tooltip from DOM
@@ -4841,38 +5200,11 @@ class DogeMinerGame {
     }
 
     startHelperAnimation(placedHelper, helperSprite) {
-        let isIdle = true;
-
-        // Use 1fps for time machine rig and dogebility drive (less eye strain)
-        // Use 3fps for all other helpers
-        const isSlowAnimation = placedHelper.type === 'timeMachineRig' || placedHelper.type === 'infiniteDogebility';
-        const animationInterval = isSlowAnimation ? 1000 : 333; // 1fps = 1000ms, 3fps = 333ms
-
-        // Get upgrade-level sprites for this helper type
-        const upgradeLevel = this.helperUpgradeLevels?.[placedHelper.type] || 0;
-        const spritePaths = this.getHelperSpritePaths(placedHelper.type, upgradeLevel);
-        const idleSprite = spritePaths.idle;
-        const miningSprite = spritePaths.mining;
-
-        const intervalId = setInterval(() => {
-            if (isIdle) {
-                helperSprite.src = miningSprite;
-            } else {
-                helperSprite.src = idleSprite;
-            }
-            isIdle = !isIdle;
-        }, animationInterval);
-
-        // Store interval ID for cleanup
-        helperSprite.dataset.animationInterval = intervalId;
+        window.DogeMinerFieldPersonality?.animate(this, placedHelper, helperSprite);
     }
 
     stopHelperAnimation(helperSprite) {
-        const intervalId = helperSprite.dataset.animationInterval;
-        if (intervalId) {
-            clearInterval(parseInt(intervalId));
-            helperSprite.dataset.animationInterval = '';
-        }
+        window.DogeMinerFieldPersonality?.stop(this, helperSprite);
     }
 
     finishHelperPlacement() {
@@ -4943,54 +5275,119 @@ class DogeMinerGame {
 
     // Pickaxe system will be implemented later
 
-    updateDPS() {
-        // Helper function to get DPS for a helper type based on upgrade level
-        const getHelperDPS = (helperType) => {
-            if (!window.shopManager) return 0;
-            const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(helperType);
-            return upgradeInfo ? upgradeInfo.dps : 0;
-        };
+    getRickAuraRadius(width = document.getElementById('left-panel')?.offsetWidth) {
+        return width > 0 ? Math.max(70, Math.min(240, width * 0.18)) : 70;
+    }
 
-        // Calculate Earth helpers DPS using upgrade-based DPS
-        const earthDPS = this.helpers.reduce((total, helper) => {
-            const upgradeDPS = getHelperDPS(helper.type);
-            return total + (upgradeDPS || helper.dps);
-        }, 0);
+    getRickAuraBaseDPS() {
+        const rick = this.placedRick;
+        return rick?.active && !this.isRickVisitExpired?.(rick) && (!rick.planet || rick.planet === this.currentLevel)
+            && rick.sprite?.isConnected !== false ? (this._rickAuraBaseDps || 0) : 0;
+    }
 
-        // Calculate Moon helpers DPS using upgrade-based DPS
-        const moonDPS = this.moonHelpers.reduce((total, helper) => {
-            const upgradeDPS = getHelperDPS(helper.type);
-            return total + (upgradeDPS || helper.dps);
-        }, 0);
-
-        // Calculate Mars helpers DPS using upgrade-based DPS
-        const marsDPS = this.marsHelpers.reduce((total, helper) => {
-            const upgradeDPS = getHelperDPS(helper.type);
-            return total + (upgradeDPS || helper.dps);
-        }, 0);
-
-        // Calculate Jupiter helpers DPS using upgrade-based DPS
-        const jupiterDPS = this.jupiterHelpers.reduce((total, helper) => {
-            const upgradeDPS = getHelperDPS(helper.type);
-            return total + (upgradeDPS || helper.dps);
-        }, 0);
-
-        // Calculate Titan helpers DPS using upgrade-based DPS
-        const titanDPS = this.titanHelpers.reduce((total, helper) => {
-            const upgradeDPS = getHelperDPS(helper.type);
-            return total + (upgradeDPS || helper.dps);
-        }, 0);
-
-        // Keep the unlocked Bonus Coin tier in sync with planet progression.
-        this.refreshBonusCoinLevel();
-
-        const baseDpsTotal = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
-        this.dps = (baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1) + (this.playerStats.flatHelperDps || 0)) * this.bonusCoinBuffMultiplier;
-
-        // Update highest DPS
-        if (this.dps > this.highestDps) {
-            this.highestDps = this.dps;
+    updateRickAura() {
+        const boostedCountsByType = {};
+        const boostedSprites = new Set();
+        const radius = this.getRickAuraRadius();
+        let baseDps = 0;
+        if (this.placedRick?.active && !this.isRickVisitExpired?.(this.placedRick) && (!this.placedRick.planet || this.placedRick.planet === this.currentLevel)
+            && this.placedRick.sprite?.isConnected !== false) {
+            const rx = this.placedRick.x + 30;
+            const ry = this.placedRick.y + 30;
+            const category = { earth: 'helpers', moon: 'moonHelpers', mars: 'marsHelpers', jupiter: 'jupiterHelpers', titan: 'titanHelpers' }[this.currentLevel];
+            const owned = new Map();
+            for (const helper of this[category] || []) owned.set(helper.type, (owned.get(helper.type) || 0) + 1);
+            const held = new Set();
+            for (const item of this._helperDrag?.items || []) {
+                for (const member of this.getHelperGroupMembers?.(item.record) || [item.record]) held.add(member);
+            }
+            const strengths = new Map();
+            const spritesById = new Map(Array.from(document.querySelectorAll('.helper-sprite[data-helper-id]'), sprite => [sprite.dataset.helperId, sprite]));
+            for (const helper of this.placedHelpers || []) {
+                if (helper.destroyed || helper.dragging || held.has(helper)) continue;
+                const count = boostedCountsByType[helper.type] || 0;
+                if (count >= (owned.get(helper.type) || 0)) continue;
+                // CE stores top-left positions; DM2 measures between sprite centers.
+                const size = this.getHelperDisplaySize?.(helper.type) || (helper.type === 'miningShibe' ? 30 : 60);
+                const dx = helper.x + size / 2 - rx;
+                const dy = helper.y + size / 2 - ry;
+                if (dx * dx + dy * dy <= radius * radius) {
+                    if (!strengths.has(helper.type)) strengths.set(helper.type,
+                        window.shopManager?.getCurrentHelperUpgradeInfo(helper.type)?.dps ?? helper.dps ?? helper.helper?.dps ?? 0);
+                    const strength = strengths.get(helper.type);
+                    if (Number.isFinite(strength)) baseDps += strength;
+                    boostedCountsByType[helper.type] = count + 1;
+                    const representative = this.getHelperGroupMembers?.(helper)?.[0] || helper;
+                    const sprite = spritesById.get(String(representative.id));
+                    if (sprite && boostedSprites.size < 40) boostedSprites.add(sprite);
+                }
+            }
+            const zone = this.placedRick.zoneEl;
+            if (zone) { zone.style.width = `${radius * 2}px`; zone.style.height = `${radius * 2}px`; }
         }
+        // Change highlights only when helpers enter or leave the buff radius.
+        for (const sprite of this._rickBoostedSprites || []) {
+            if (!boostedSprites.has(sprite)) sprite.classList.remove('rick-boosted');
+        }
+        for (const sprite of boostedSprites) {
+            if (!this._rickBoostedSprites?.has(sprite)) sprite.classList.add('rick-boosted');
+        }
+        this._rickBoostedSprites = boostedSprites;
+        this._rickBoostedCounts = boostedCountsByType;
+        this._rickAuraBaseDps = Number.isFinite(baseDps) && baseDps > 0 ? baseDps * 2 : 0;
+    }
+
+    updateDPS() {
+        this.updateRickAura();
+        this.refreshBonusCoinLevel();
+        this.dps = this.calculateTotalDPS();
+        if (this.dps > this.highestDps) this.highestDps = this.dps;
+    }
+
+    getOfflineDPS() {
+        return this.calculateTotalDPS({ includeTemporary: false });
+    }
+
+    calculateTotalDPS({ includeTemporary = true, includeRick = true } = {}) {
+        // Resolve each upgrade tier once per helper type, rather than once per
+        // owned instance. Late-game collections can contain thousands of helpers.
+        const ownedByType = new Map();
+        for (const category of ['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']) {
+            for (const helper of this[category] || []) {
+                if (!ownedByType.has(helper.type)) ownedByType.set(helper.type, []);
+                ownedByType.get(helper.type).push(helper);
+            }
+        }
+        let baseDpsTotal = 0;
+        for (const [type, helpers] of ownedByType) {
+            const dps = window.shopManager?.getCurrentHelperUpgradeInfo(type)?.dps;
+            baseDpsTotal += dps != null ? dps * helpers.length
+                : helpers.reduce((total, helper) => total + (helper.dps || 0), 0);
+        }
+        if (includeTemporary && includeRick) baseDpsTotal += this.getRickAuraBaseDPS();
+        const bonus = includeTemporary ? (this.bonusCoinBuffMultiplier || 1) : 1;
+        const helperMultiplier = Number(((this.playerStats.helperDpsMultiplier || 1) * bonus).toFixed(2));
+        const holiday = window.DogeMinerSeasonal?.income(this) || { multiplier:1, flat:0 };
+        return ((baseDpsTotal * helperMultiplier + (this.playerStats.flatHelperDps || 0) + (this.getStoryDPS?.() || 0) + this.getMysteryDPS()) * holiday.multiplier + holiday.flat)
+            * (this.playerStats.totalDpsMultiplier || 1);
+    }
+
+    getPlanetMiningDPS(planet = this.currentLevel) {
+        const category = { earth: 'helpers', moon: 'moonHelpers', mars: 'marsHelpers', jupiter: 'jupiterHelpers', titan: 'titanHelpers' }[planet];
+        const helpers = this[category] || [];
+        const byType = new Map();
+        for (const helper of helpers) {
+            if (!byType.has(helper.type)) byType.set(helper.type, []);
+            byType.get(helper.type).push(helper);
+        }
+        let base = 0;
+        for (const [type, owned] of byType) {
+            const strength = window.shopManager?.getCurrentHelperUpgradeInfo(type)?.dps;
+            base += owned.reduce((total, helper) => total + (strength ?? helper.dps ?? helper.baseDps ?? 0), 0);
+        }
+        if (planet === this.currentLevel) base += this.getRickAuraBaseDPS();
+        const multiplier = Number(((this.playerStats?.helperDpsMultiplier || 1) * (this.bonusCoinBuffMultiplier || 1)).toFixed(2));
+        return base * multiplier + (this.playerStats?.pickaxeFlatDps || 0);
     }
 
     // ===================== BONUS COIN SYSTEM =====================
@@ -5002,34 +5399,45 @@ class DogeMinerGame {
     getBonusCoinTiers() {
         return [
             null, // index 0 unused
-            { level: 1, name: 'Earth Bonus Coin',    sprite: 'level 1.webp',     boost: 0.50, duration: 60,  size: 96, glow: '#ffcc33' },
-            { level: 2, name: 'Moon Bonus Coin',     sprite: 'level 2.webp',     boost: 0.60, duration: 90,  size: 86, glow: '#4aa8ff' },
-            { level: 3, name: 'Mars Bonus Coin',     sprite: 'level 3.webp',     boost: 0.70, duration: 120, size: 76, glow: '#ffb838' },
-            { level: 4, name: 'Jupiter Bonus Coin',  sprite: 'level 4.webp',     boost: 0.80, duration: 120, size: 66, glow: '#3f7bff' },
-            { level: 5, name: 'Titan Bonus Coin',    sprite: 'level 5.webp',     boost: 0.90, duration: 120, size: 58, glow: '#9b59ff' },
-            { level: 6, name: 'Reallyhardium Super Fortune', sprite: 'level 5 alt.webp', boost: 1.00, duration: 180, size: 50, glow: '#cf57ff' }
+            { level: 1, name: 'Golden Bonus',               sprite: 'level 1.webp',     boost: 0.50, duration: 60,  speed: 0.50, weight: 40, size: 96, color: '#ffcc33' },
+            { level: 2, name: 'Moon Coin',                  sprite: 'level 2.webp',     boost: 0.60, duration: 60,  speed: 0.45, weight: 25, size: 86, color: '#4aa8ff' },
+            { level: 3, name: 'Pristine Bonus',             sprite: 'level 3.webp',     boost: 0.70, duration: 75,  speed: 0.40, weight: 15, size: 76, color: '#ffb838' },
+            { level: 4, name: 'Ultra Pristine Bonus',       sprite: 'level 4.webp',     boost: 0.90, duration: 90,  speed: 0.35, weight: 10, size: 66, color: '#3f7bff' },
+            { level: 5, name: 'Hyperultra Pristine Bonus',  sprite: 'level 5.webp',     boost: 1.10, duration: 105, speed: 0.30, weight: 6,  size: 58, color: '#9b59ff' },
+            { level: 6, name: 'Super Ultra Omega Bonus',    sprite: 'level 5 alt.webp', boost: 1.50, duration: 120, speed: 0.25, weight: 4,  size: 50, color: '#cf57ff' }
         ];
     }
 
     getCurrentBonusCoinTier() {
-        return this.getBonusCoinTiers()[this.bonusCoinLevel] || this.getBonusCoinTiers()[1];
+        return this.getUnlockedBonusCoinTiers().at(-1);
     }
 
-    /**
-     * Recomputes the highest Bonus Coin tier the player has unlocked based on
-     * which planet bases they own + the Awakened Altar upgrade. Idempotent;
-     * safe to call frequently. Notifies the player when a new tier is unlocked.
-     */
-    refreshBonusCoinLevel() {
-        let level = 1; // Earth coin is always available
-        if ((this.moonHelpers || []).some(h => h.type === 'moonBase')) level = Math.max(level, 2);
-        if ((this.marsHelpers || []).some(h => h.type === 'marsBase')) level = Math.max(level, 3);
-        if ((this.jupiterHelpers || []).some(h => h.type === 'cloudBase')) level = Math.max(level, 4);
-        if ((this.titanHelpers || []).some(h => h.type === 'titanBase')) level = Math.max(level, 5);
-        // Awakened Altar of the SunDoge (upgrade level >= 1) = the Cybernetic Implant equivalent
-        if ((this.helperUpgradeLevels && this.helperUpgradeLevels.altarOfTheSunDoge || 0) >= 1) level = Math.max(level, 6);
+    getBonusCoinPlanetLevel() {
+        const current = ['earth', 'moon', 'mars', 'jupiter', 'titan'].indexOf(this.currentLevel) + 1;
+        return Math.max(1, Math.min(5, Math.floor(Number(this.bonusCoinMaxPlanetLevel)) || 1), current);
+    }
 
-        if (level > this.bonusCoinLevel) this.bonusCoinLevel = level;
+    getUnlockedBonusCoinTiers() {
+        const tiers = this.getBonusCoinTiers();
+        const pool = tiers.slice(1, this.getBonusCoinPlanetLevel() + 1);
+        if (Math.floor(Number(this.timelineNumber)) >= 2) pool.push(tiers[6]);
+        return pool;
+    }
+
+    selectBonusCoinTier({ random = Math.random } = {}) {
+        const pool = this.getUnlockedBonusCoinTiers();
+        let roll = random() * pool.reduce((sum, tier) => sum + tier.weight, 0);
+        for (const tier of pool) {
+            roll -= tier.weight;
+            if (roll <= 0) return tier;
+        }
+        return pool.at(-1);
+    }
+
+    /** DM2 cb/r0/a0/s0: reached planets, then timeline 2's extra weighted tier. */
+    refreshBonusCoinLevel() {
+        this.bonusCoinMaxPlanetLevel = this.getBonusCoinPlanetLevel();
+        this.bonusCoinLevel = this.getCurrentBonusCoinTier().level;
 
         if (this.bonusCoinSeenLevel === 0) {
             // First sync after load — establish a baseline without notifying.
@@ -5042,77 +5450,153 @@ class DogeMinerGame {
         }
     }
 
-    /** Schedules the next on-screen Bonus Coin appearance (fairly rare). */
+    canRunBonusCoinEvents() {
+        return Boolean(this._bootComplete && this.isPlaying && !document.hidden && !this.isCutscenePlaying
+            && !this.isTransitioning && !this.isIntroPlaying && !this.isBetaReportOpen && !this.isOfflineReportOpen && !this.isStoryOpen);
+    }
+
+    /** DM2 checks every two minutes, independently of claims and field expiry. */
     scheduleBonusCoinSpawn() {
-        if (this._bonusCoinSpawnTimeout) clearTimeout(this._bonusCoinSpawnTimeout);
-        const delay = (150 + Math.random() * 150) * 1000; // 2.5–5 min
-        this._bonusCoinSpawnTimeout = setTimeout(() => this.spawnBonusCoin(), delay);
+        if (this._bonusCoinSpawnInterval != null) clearInterval(this._bonusCoinSpawnInterval);
+        this._bonusCoinNextCheckTime = Date.now() + 120000;
+        this._bonusCoinSpawnInterval = setInterval(() => {
+            this._bonusCoinNextCheckTime = Date.now() + 120000;
+            this.rollForBonusCoin();
+        }, 120000);
+    }
+
+    resetBonusCoinSpawnCycle() {
+        this._bonusCoinSpawnChance = 0.22;
+        this._bonusCoinEarlyCheckMs = 0;
+        if (this._bonusCoinSpawnInterval != null) this.scheduleBonusCoinSpawn();
+    }
+
+    rollForBonusCoin({ random = Math.random } = {}) {
+        if (!this.canRunBonusCoinEvents()) return 'paused';
+        const chance = this._bonusCoinSpawnChance ?? 0.22;
+        if (random() < chance) {
+            // DM2 leaves the odds alone if a field coin already exists.
+            if (this._bonusCoinEl) return 'occupied';
+            if (!this.spawnBonusCoin({ tier: this.selectBonusCoinTier({ random }) })) return 'unavailable';
+            this._bonusCoinSpawnChance = 0.22;
+            return 'spawned';
+        }
+        this._bonusCoinSpawnChance = Math.min(chance + 0.22, 1);
+        return 'miss';
+    }
+
+    advanceBonusCoinEvents(deltaMs) {
+        if (!this.canRunBonusCoinEvents()) return;
+        // Check the early-game trigger once a second; suspended frames cannot
+        // create a queue of offline offers.
+        const elapsed = Number.isFinite(deltaMs) ? Math.max(0, Math.min(deltaMs, 1000)) : 0;
+        this._bonusCoinEarlyCheckMs = (this._bonusCoinEarlyCheckMs || 0) + elapsed;
+        if (this._bonusCoinEarlyCheckMs >= 1000) {
+            this._bonusCoinEarlyCheckMs %= 1000;
+            this.tryOfferEarlyBonusCoin();
+        }
+    }
+
+    tryOfferEarlyBonusCoin() {
+        if (!this.canRunBonusCoinEvents()) return 'paused';
+        if (this.bonusCoinEarlyOffered || this.bonusCoinClaimCount > 0 || !(this.dogecoins > 10)
+            || (this.helpers || []).filter(helper => helper.type === 'miningShibe').length < 9) return 'ineligible';
+        this.bonusCoinEarlyOffered = true;
+        // An ordinary coin already on the field also satisfies this first offer.
+        if (!this._bonusCoinEl) this.spawnBonusCoin();
+        window.saveManager?.saveGame(false);
+        return 'offered';
     }
 
     /** Spawns a clickable Bonus Coin somewhere in the mining area. */
-    spawnBonusCoin() {
+    spawnBonusCoin({ tier: requestedTier } = {}) {
         if (!this.isPlaying || this.isCutscenePlaying || this.isTransitioning || this.isIntroPlaying || this._bonusCoinEl) {
-            this.scheduleBonusCoinSpawn();
-            return;
+            return false;
         }
         const leftPanel = document.getElementById('left-panel');
-        if (!leftPanel) { this.scheduleBonusCoinSpawn(); return; }
+        if (!leftPanel) return false;
 
-        const tier = this.getCurrentBonusCoinTier();
+        // Freeze the rolled offer. Unlocking another tier while this coin is
+        // on the field must not change what clicking it awards.
+        const tier = Object.freeze({ ...(requestedTier || this.selectBonusCoinTier()) });
         const coin = document.createElement('img');
         coin.src = `assets/general/Bonus Coins/${tier.sprite}`;
         coin.className = 'bonus-coin-spawn';
         coin.alt = tier.name;
         coin.style.width = tier.size + 'px';
-        coin.style.setProperty('--bc-glow', tier.glow);
+        coin.style.setProperty('--bc-color', tier.color);
 
-        const rect = leftPanel.getBoundingClientRect();
+        // Position in the panel's logical coordinates, including scaled desktop layouts.
         const margin = 40;
-        const x = margin + Math.random() * Math.max(1, rect.width - margin * 2 - tier.size);
-        const y = margin + Math.random() * Math.max(1, rect.height - margin * 2 - tier.size);
+        const x = margin + Math.random() * Math.max(1, leftPanel.offsetWidth - margin * 2 - tier.size);
+        const y = margin + Math.random() * Math.max(1, leftPanel.offsetHeight - margin * 2 - tier.size);
         coin.style.left = x + 'px';
         coin.style.top = y + 'px';
 
+        let claimed = false;
         const claim = (e) => {
             if (e) { e.stopPropagation(); e.preventDefault(); }
+            if (claimed || this._bonusCoinEl !== coin || this.isTransitioning || this.isCutscenePlaying
+                || this.isIntroPlaying || this.isBetaReportOpen || this.isOfflineReportOpen || this.isStoryOpen) return;
+            claimed = true;
+            clearTimeout(this._bonusCoinDespawnTimeout);
+            this._bonusCoinDespawnTimeout = null;
+            this._stopBonusCoinAudio();
             // Play the 3D spin animation before removing the coin
             if (this._bonusCoinEl) {
                 this._bonusCoinEl.style.animation = 'bonus-coin-spin 0.6s ease-in forwards';
                 // Remove after animation completes
-                setTimeout(() => this._removeBonusCoinEl(), 600);
+                setTimeout(() => this._removeBonusCoinEl(coin), 600);
             }
-            this.activateBonusCoin();
-            this.scheduleBonusCoinSpawn();
+            this.activateBonusCoin(tier);
         };
         coin.addEventListener('click', claim);
         coin.addEventListener('touchstart', claim, { passive: false });
 
         leftPanel.appendChild(coin);
         this._bonusCoinEl = coin;
-        this.playSound('ching');
+        this._bonusCoinFieldTier = tier;
+        this._startBonusCoinAudio();
 
         // Flies away if not clicked within its on-screen lifetime.
         this._bonusCoinDespawnTimeout = setTimeout(() => {
-            this._removeBonusCoinEl();
-            this.scheduleBonusCoinSpawn();
-        }, 12000);
+            this._removeBonusCoinEl(coin);
+        }, 8000);
+        return coin;
     }
 
-    _removeBonusCoinEl() {
+    _startBonusCoinAudio() {
+        this._stopBonusCoinAudio();
+        this.playSound('coinAppear');
+    }
+
+    _stopBonusCoinAudio() {
+        this.stopSound('coinAppear');
+        this.stopSound('coinLoop');
+    }
+
+    _removeBonusCoinEl(expected = this._bonusCoinEl) {
+        if (expected !== this._bonusCoinEl) return;
         if (this._bonusCoinDespawnTimeout) { clearTimeout(this._bonusCoinDespawnTimeout); this._bonusCoinDespawnTimeout = null; }
         if (this._bonusCoinEl) { this._bonusCoinEl.remove(); this._bonusCoinEl = null; }
+        this._bonusCoinFieldTier = null;
+        this._stopBonusCoinAudio();
     }
 
-    /** Activates (or refreshes) the Bonus Coin buff for the current tier. */
-    activateBonusCoin() {
-        const tier = this.getCurrentBonusCoinTier();
+    /** A new claim replaces the previous buff; multipliers never stack. */
+    activateBonusCoin(tier = this.selectBonusCoinTier()) {
+        this.bonusCoinClaimCount = (this.bonusCoinClaimCount || 0) + 1;
+        this.bonusCoinEarlyOffered = true;
+        this.bonusCoinBuffTier = tier.level;
         this.bonusCoinBuffMultiplier = 1 + tier.boost;
         this.bonusCoinBuffEndTime = Date.now() + tier.duration * 1000;
         this.updateDPS();
+        this.updateUI(true);
         this._startBonusCoinBuffTicker();
         this._renderBonusCoinBuffIndicator();
+        window.DogeMinerBonusHud?.showFeedback(this, 'BONUS ACTIVATED!');
+        window.saveManager?.saveGame(false);
         this.playSound('getCoins');
-        // No notification on collect — the buff pill below DPS is indicator enough.
     }
 
     _startBonusCoinBuffTicker() {
@@ -5123,46 +5607,35 @@ class DogeMinerGame {
             } else {
                 this._renderBonusCoinBuffIndicator();
             }
-        }, 1000);
+        }, 100);
     }
 
-    _expireBonusCoinBuff() {
+    _expireBonusCoinBuff({ silent = false } = {}) {
+        const hadBonus = this.bonusCoinBuffMultiplier > 1;
+        this.bonusCoinBuffTier = 0;
         this.bonusCoinBuffMultiplier = 1;
         this.bonusCoinBuffEndTime = 0;
         if (this._bonusCoinBuffInterval) { clearInterval(this._bonusCoinBuffInterval); this._bonusCoinBuffInterval = null; }
         this.updateDPS();
+        this.updateUI(true);
         this._renderBonusCoinBuffIndicator();
+        if (hadBonus && !silent) window.DogeMinerBonusHud?.showFeedback(this, 'BONUS FADED');
     }
 
     /** Restores an in-progress buff after a page reload / save load. */
     resumeBonusCoinBuff() {
         if (this.bonusCoinBuffMultiplier > 1 && this.bonusCoinBuffEndTime > Date.now()) {
+            this.updateDPS();
+            this.updateUI(true);
             this._startBonusCoinBuffTicker();
             this._renderBonusCoinBuffIndicator();
         } else {
-            this.bonusCoinBuffMultiplier = 1;
-            this.bonusCoinBuffEndTime = 0;
+            this._expireBonusCoinBuff({ silent: true });
         }
     }
 
     _renderBonusCoinBuffIndicator() {
-        const active = this.bonusCoinBuffMultiplier > 1 && this.bonusCoinBuffEndTime > Date.now();
-        let el = document.getElementById('bonus-coin-buff');
-        if (!active) { if (el) el.remove(); return; }
-        if (!el) {
-            el = document.createElement('div');
-            el.id = 'bonus-coin-buff';
-            el.className = 'bonus-coin-buff';
-            // Stack it directly beneath the DPS counter so it's clear what it affects.
-            (document.getElementById('stats-display') || document.getElementById('left-panel') || document.body).appendChild(el);
-        }
-        const tier = this.getCurrentBonusCoinTier();
-        el.style.setProperty('--bc-glow', tier.glow);
-        const remaining = Math.max(0, this.bonusCoinBuffEndTime - Date.now());
-        el.innerHTML =
-            `<img src="assets/general/Bonus Coins/${tier.sprite}" alt="">` +
-            `<span class="bcb-mult">+${Math.round((this.bonusCoinBuffMultiplier - 1) * 100)}%</span>` +
-            `<span class="bcb-time">${this._formatMs(remaining)}</span>`;
+        window.DogeMinerBonusHud?.render(this);
     }
 
     // =================== END BONUS COIN SYSTEM ===================
@@ -5170,6 +5643,8 @@ class DogeMinerGame {
 
     // Get sprite paths for a helper type at a specific upgrade level
     getHelperSpritePaths(helperType, upgradeLevel = 0) {
+        // Repeated upgrades retain the final finite sprite, as in Dogeminer 2.
+        upgradeLevel = window.shopManager?.getHelperSpriteLevel(helperType, upgradeLevel) ?? upgradeLevel;
         const spriteMap = {
             // Earth helpers
             miningShibe: { folder: 'shibes', prefix: 'shibes' },
@@ -5225,6 +5700,8 @@ class DogeMinerGame {
     }
 
     updateShopPrices() {
+        this.updateHelperShopDps?.();
+        window.uiManager?.updateHelperUpgradeAffordability();
         // Update shop prices and quantities without rebuilding the entire shop
         const shopItems = document.querySelectorAll('.shop-grid-item');
         shopItems.forEach((item, index) => {
@@ -5275,8 +5752,9 @@ class DogeMinerGame {
                         // Update button width
                         buyButton.style.width = buttonWidth;
 
-                        // Update button state using the refreshed affordability check
-                        if (canAfford) {
+                        // A price refresh must retain progression and discovery locks.
+                        const canBuy = canAfford && !buyButton.classList.contains('locked') && this.isWorldHelperAvailable?.(helperType) !== false;
+                        if (canBuy) {
                             buyButton.disabled = false;
                             buyButton.style.opacity = '1';
                         } else {
@@ -5297,9 +5775,8 @@ class DogeMinerGame {
         this.resumeBonusCoinBuff();
         this.scheduleBonusCoinSpawn();
 
-        // Read value update rate: 0 (instant), 100, 1000, 5000
-        const savedRate = localStorage.getItem('valueUpdateRate');
-        this.dpsUpdateRate = savedRate ? parseInt(savedRate, 10) : 1000;
+        // Source sQ:20ms elapsed-time income. Keep explicit CE rate choices.
+        this.dpsUpdateRate = this.getValueUpdateRate();
 
         this.setupDpsInterval();
 
@@ -5309,21 +5786,35 @@ class DogeMinerGame {
             this.lastGameLoopTime = timestamp;
 
             if (this.isPlaying) {
+                this.advanceTimelineProgress?.(dt);
+                this.advanceWorldDiscovery?.(dt);
+                this.advanceLateProgression?.();
+                this.advanceMoonLaunch?.();
+                this.advanceStoryEvents?.(dt);
+                this.advanceNewsDoge?.(dt);
+                this.advanceSearchdogeDiscovery?.(dt);
+                this.advanceBonusCoinEvents(dt);
+                this.advanceHelperRockMining(dt);
+
                 // If set to instant (0), add continuous DPS per frame
                 if (this.dpsUpdateRate === 0 && this.dps > 0) {
-                    const dpsTick = this.dps * (dt / 1000);
-                    this.dogecoins += dpsTick;
-                    this.totalMined += dpsTick;
-                    this.updateUI(true); // skip shop prices update per frame for performance, unless full UI is refreshed
+                    this.creditPassiveIncome(dt, timestamp, true);
                 }
 
                 this.updateHelpers();
             }
 
-            requestAnimationFrame(gameLoop);
+            this.advanceRickVisitor?.(dt);
+            this.advanceCateThief?.(dt);
+            this.advanceTools?.(dt);
+            this.advanceHelperLoot?.(dt);
+            this.advanceLootAutomation?.(dt);
+            if(window.DogeMinerFrameClock)window.DogeMinerFrameClock.request(gameLoop);
+            else requestAnimationFrame(gameLoop);
         };
 
-        requestAnimationFrame(gameLoop);
+        if(window.DogeMinerFrameClock)window.DogeMinerFrameClock.request(gameLoop);
+        else requestAnimationFrame(gameLoop);
     }
 
     setupDpsInterval() {
@@ -5332,97 +5823,140 @@ class DogeMinerGame {
             this.dpsInterval = null;
         }
 
+        this.resetPassiveIncomeClock();
         if (this.dpsUpdateRate > 0) {
             this.dpsInterval = setInterval(() => {
+                const now = performance.now();
+                const elapsed = Math.max(0, now - this._lastPassiveIncomeTick);
+                this._lastPassiveIncomeTick = now;
                 if (this.isPlaying && this.dps > 0) {
-                    const multiplier = this.dpsUpdateRate / 1000;
-                    this.dogecoins += this.dps * multiplier;
-                    this.totalMined += this.dps * multiplier;
-                    this.updateUI();
+                    this.creditPassiveIncome(elapsed, now);
                 }
-            }, this.dpsUpdateRate);
+            }, this.dpsUpdateRate===20&&this.limitFps?72:this.dpsUpdateRate);
+        }
+    }
+
+    getValueUpdateRate() {
+        const saved = localStorage.getItem('valueUpdateRate');
+        const rate = Number(saved);
+        return saved !== null && [0, 20, 100, 1000, 5000].includes(rate) ? rate : 20;
+    }
+
+    resetPassiveIncomeClock() {
+        this._lastPassiveIncomeTick = performance.now();
+        this._lastPassiveCounterPaint = -Infinity;
+        this._lastPassiveUiPaint = this._lastPassiveIncomeTick;
+    }
+
+    creditPassiveIncome(elapsed, now = performance.now(), instant = false) {
+        if (!Number.isFinite(elapsed) || elapsed <= 0 || !Number.isFinite(this.dps) || this.dps <= 0) return;
+        const earned = this.getRickPassiveIncome?.(elapsed) ?? this.dps * elapsed / 1000;
+        this.dogecoins += earned;
+        this.totalMined += earned;
+        // Source P$ throttles counter painting50ms. The existing arrival ledger
+        // stays authoritative; passive gains never reveal coins still in flight.
+        if (instant || now - this._lastPassiveCounterPaint >= 50) {
+            this.updateDogecoinCounter();
+            this._lastPassiveCounterPaint = now;
+        }
+        // Shop scans/stat panels must not run on the smooth income clock.
+        if (now - this._lastPassiveUiPaint >= Math.max(1000, this.dpsUpdateRate || 0)) {
+            this.updateUI();
+            this._lastPassiveUiPaint = now;
         }
     }
 
     setValueUpdateRate(ms) {
+        if (![0, 20, 100, 1000, 5000].includes(ms)) return false;
         this.dpsUpdateRate = ms;
         localStorage.setItem('valueUpdateRate', ms);
+        for (const id of ['value-update-rate', 'mobile-value-update-rate']) {
+            const select = document.getElementById(id); if (select) select.value = String(ms);
+        }
         this.setupDpsInterval();
+        return true;
+    }
+
+    getPlanetBackgrounds(planet = this.currentLevel) {
+        // Source Pr ordinary pools, in order; local WebP copies of the same art.
+        const pools = {
+            earth: ['bg1','bg-new','bg3','bg5','bg6','bg7','bg4','bg9'],
+            moon: ['bg003','bg001','bg3','bg-new','bg5','bg1','bg6','bgmoon01'],
+            mars: ['bg101','bg102','bg103','bg104','bg105','bg6','bg-new'],
+            jupiter: ['bgjup01','bgjup02','bgjup03','dogewow'],
+            titan: ['titan02','titan03','titan04','titan05']
+        };
+        return (Object.hasOwn(pools, planet) ? pools[planet] : pools.earth).map(name => `assets/backgrounds/${name}.webp`);
+    }
+
+    setPlanetBackgrounds(planet = this.currentLevel, { reset = false } = {}) {
+        const changed = this._backgroundPlanet !== planet;
+        this.backgrounds = this.getPlanetBackgrounds(planet);
+        if (reset || !Number.isInteger(this.currentBackgroundIndex)) this.currentBackgroundIndex = 0;
+        else if (changed) this.currentBackgroundIndex = this.currentBackgroundIndex >= this.backgrounds.length - 1 ? 0 : this.currentBackgroundIndex + 1;
+        this._backgroundPlanet = planet;
+        return this.syncBackgroundImages(true);
     }
 
     startBackgroundRotation() {
-        // Start background rotation every 15 seconds
+        this.stopBackgroundRotation();
+        // Source MP schedules one change every ten seconds, without catch-up.
         this.backgroundRotationInterval = setInterval(() => {
+            if (!this.isPlaying || document.hidden || this.isCutscenePlaying || this.isTransitioning) return;
             this.rotateBackground();
-        }, 15000);
+        }, 10000);
     }
 
     rotateBackground() {
-        // Remove active class from current background
-        const currentImage = document.getElementById(`background-image-${this.currentBackgroundIndex + 1}`);
-        if (currentImage) {
-            currentImage.classList.remove('active');
-        }
-
-        // Move to next background
+        if (!this.backgrounds?.length) return Promise.resolve(false);
         this.currentBackgroundIndex = (this.currentBackgroundIndex + 1) % this.backgrounds.length;
-
-        // Add active class to new background
-        const nextImage = document.getElementById(`background-image-${this.currentBackgroundIndex + 1}`);
-        if (nextImage) {
-            nextImage.classList.add('active');
-        }
-
-        console.log(`Background rotated to: ${this.backgrounds[this.currentBackgroundIndex]}`);
+        return this.syncBackgroundImages();
     }
 
-    // Keep the DOM background elements aligned with the active planet's background pool.
     syncBackgroundImages(forceActive = false) {
         const container = document.getElementById('background-container');
-        if (!container) {
-            return;
+        const nodes = container ? [...container.querySelectorAll('.background-image')] : [];
+        if (nodes.length < 2 || !this.backgrounds?.length) return Promise.resolve(false);
+        if (!Number.isInteger(this.currentBackgroundIndex) || this.currentBackgroundIndex < 0 || this.currentBackgroundIndex >= this.backgrounds.length) this.currentBackgroundIndex = 0;
+        const src = this.backgrounds[this.currentBackgroundIndex];
+        const request = this._backgroundRequest = (this._backgroundRequest || 0) + 1;
+        const planet = this.currentLevel;
+        if (src === this._backgroundSrc) {
+            container.dataset.planet = planet;
+            return Promise.resolve(true);
         }
-
-        const imageNodes = Array.from(container.querySelectorAll('.background-image'));
-        if (!imageNodes.length) {
-            return;
+        this._backgroundCache ||= new Map();
+        if (!this._backgroundCache.has(src)) {
+            const pending = new Promise(resolve => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = () => { this._backgroundCache.delete(src); resolve(false); };
+                image.src = src;
+            });
+            this._backgroundCache.set(src, pending);
         }
-
-        let pool = Array.isArray(this.backgrounds) ? [...this.backgrounds] : [];
-        if (!pool.length) {
-            return;
-        }
-
-        if (pool.length > imageNodes.length) {
-            pool = pool.slice(0, imageNodes.length);
-        }
-
-        if (this.currentBackgroundIndex >= pool.length) {
-            this.currentBackgroundIndex = 0;
-        }
-
-        imageNodes.forEach((img, idx) => {
-            if (idx < pool.length) {
-                const desiredSrc = pool[idx];
-                const currentSrc = img.getAttribute('src') || '';
-                if (!currentSrc.endsWith(desiredSrc)) {
-                    img.src = desiredSrc;
-                }
-                img.style.display = '';
-
-                if (forceActive) {
-                    if (idx === this.currentBackgroundIndex) {
-                        img.classList.add('active');
-                    } else {
-                        img.classList.remove('active');
-                    }
-                }
-            } else {
-                img.style.display = 'none';
-                if (forceActive) {
-                    img.classList.remove('active');
-                }
-            }
+        // Keep the old frame until the replacement has loaded. A late image
+        // from an old planet/import must never replace the current scene.
+        return this._backgroundCache.get(src).then(ready => {
+            if (!ready || request !== this._backgroundRequest || planet !== this.currentLevel) return false;
+            const previous = nodes.find(node => node.classList.contains('active'));
+            const next = nodes.find(node => node !== previous);
+            const instant = !this._backgroundSrc || (forceActive && !this._bootComplete) || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+            clearTimeout(this._backgroundFadeTimer);
+            for (const node of nodes) node.classList.remove('active', 'background-previous');
+            if (previous && !instant) previous.classList.add('background-previous');
+            next.style.transition = 'none'; next.style.opacity = '0'; next.src = src;
+            next.getBoundingClientRect();
+            next.style.transition = instant ? 'none' : ''; next.style.opacity = '';
+            next.classList.add('active');
+            this._backgroundSrc = src;
+            container.dataset.planet = planet;
+            container.dataset.background = src;
+            if (previous && !instant) this._backgroundFadeTimer = setTimeout(() => {
+                previous.style.transition = 'none';
+                previous.classList.remove('background-previous');
+            }, 4000);
+            return true;
         });
     }
 
@@ -5494,33 +6028,47 @@ class DogeMinerGame {
     }
 
     startRickSpawn() {
-        // Rick spawns every 3-5 minutes (180-300 seconds)
-        const spawnTime = 180000 + Math.random() * 120000; // 3-5 minutes
+        if (this.rickInterval) clearTimeout(this.rickInterval);
+        // Slightly rarer spawn interval: 5 to 8 minutes (300,000 to 480,000 ms)
+        const spawnTime = 300000 + Math.random() * 180000;
         this.rickInterval = setTimeout(() => {
             this.spawnRick();
         }, spawnTime);
     }
 
     spawnRick() {
-        if (this.rickVisible) return; // Don't spawn if already visible
+        if (this.rickVisible || this.placedRick?.active || this.isDraggingRick) return;
 
         this.rickVisible = true;
         this.currentRickSprite = 0;
         this.rickAnimationDirection = 1;
         this.rickAnimationComplete = false;
 
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
+
+        // Clean up any stale elements and timeouts
+        if (this.rickStepTimeout) clearTimeout(this.rickStepTimeout);
+        if (this.rickRetractTimeout) clearTimeout(this.rickRetractTimeout);
+        if (this.rickClickDropTimeout) clearTimeout(this.rickClickDropTimeout);
+
+        document.getElementById('rick-portal')?.remove();
+        document.getElementById('rick-doge')?.remove();
+        document.getElementById('rick-cursor-sprite')?.remove();
+
         // Create portal background
         const portal = document.createElement('img');
         portal.id = 'rick-portal';
         portal.src = 'assets/general/rm/portal.webp';
         portal.style.position = 'absolute';
-        portal.style.bottom = '170px'; // Moved up 150px
-        portal.style.right = '10px'; // Moved to the right
+        portal.style.bottom = '170px';
+        portal.style.right = '10px';
         portal.style.width = '80px';
         portal.style.height = '80px';
         portal.style.zIndex = '24';
         portal.style.opacity = '0';
         portal.style.transition = 'opacity 0.5s ease';
+        portal.style.pointerEvents = 'none';
 
         // Create Rick element
         const rick = document.createElement('img');
@@ -5528,77 +6076,541 @@ class DogeMinerGame {
         rick.src = this.rickSprites[0];
         rick.className = 'rick-doge';
         rick.style.position = 'absolute';
-        rick.style.bottom = '170px'; // Moved up 150px
+        rick.style.bottom = '170px';
         rick.style.right = '20px';
         rick.style.width = '80px';
         rick.style.height = '80px';
-        rick.style.zIndex = '25';
-        rick.style.cursor = 'default'; // Remove pointer cursor
+        rick.style.zIndex = '35';
+        rick.style.cursor = 'grab';
+        rick.style.pointerEvents = 'auto';
         rick.style.transition = 'opacity 0.3s ease';
-        rick.style.objectFit = 'contain'; // Fix stretching
+        rick.style.objectFit = 'contain';
+        rick.draggable = false;
 
-        document.getElementById('left-panel').appendChild(portal);
-        document.getElementById('left-panel').appendChild(rick);
+        leftPanel.appendChild(portal);
+        leftPanel.appendChild(rick);
+
+        // Attach drag/click listener right away so player can grab him anytime during emergence
+        this.enableRickPortalDrag(rick);
 
         // Fade in portal
         setTimeout(() => {
             portal.style.opacity = '1';
         }, 100);
 
-        // Animate through sprites
+        // Animate through portal emergence sprites
         this.animateRick();
-
-        // Auto-hide after 8 seconds (faster fade out)
-        setTimeout(() => {
-            this.hideRick();
-        }, 8000);
     }
 
     animateRick() {
-        if (!this.rickVisible || this.rickAnimationComplete) return;
+        if (!this.rickVisible || this.rickAnimationComplete || this.isDraggingRick || this.placedRick) return;
 
         const rick = document.getElementById('rick-doge');
         if (!rick) return;
 
-        // Check if we've completed the full sequence (back to R1)
+        // Check if we've completed the full retraction sequence (back to R1)
         if (this.currentRickSprite === 0 && this.rickAnimationDirection === -1) {
             this.rickAnimationComplete = true;
-            // Fade out immediately when animation completes
             setTimeout(() => {
                 this.hideRick();
-            }, 500); // Small delay to show final frame
-            return; // Stop animation immediately
+            }, 500);
+            return;
         }
 
         // Move to next sprite based on direction
         this.currentRickSprite += this.rickAnimationDirection;
 
-        // Check if we've reached R4 (index 3)
+        // Reached R4 (fully emerged from the portal)
         if (this.currentRickSprite === 3) {
-            // Pause at R4 for 2 seconds
-            rick.src = this.rickSprites[this.currentRickSprite];
-            this.rickAnimationDirection = -1; // Start going backward
-            setTimeout(() => {
-                this.animateRick();
-            }, 2000); // 2 second pause
+            rick.src = this.rickSprites[3];
+            rick.classList.add('ready-to-grab');
+
+            // Pause at R4 for 3.5 seconds before retracting into portal if not grabbed
+            this.rickRetractTimeout = setTimeout(() => {
+                if (!this.isDraggingRick && !this.placedRick && this.rickVisible) {
+                    rick.classList.remove('ready-to-grab');
+                    this.rickAnimationDirection = -1;
+                    this.animateRick();
+                }
+            }, 3500);
             return;
         }
 
         rick.src = this.rickSprites[this.currentRickSprite];
 
-        // Continue animation every 500ms
-        setTimeout(() => {
+        // Animate through emergence / retraction sprites
+        this.rickStepTimeout = setTimeout(() => {
             this.animateRick();
-        }, 500);
+        }, 400);
     }
 
-    // Rick click functionality removed - no longer gives coins
+    enableRickPortalDrag(rick) {
+        const handleStart = (e) => {
+            if (this.isPlacingHelpers) return;
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.preventDefault) e.preventDefault();
+            e.stopPropagation();
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            this.startRickDragFromPortal(clientX, clientY);
+        };
+
+        rick.addEventListener('mousedown', handleStart);
+        rick.addEventListener('touchstart', handleStart, { passive: false });
+    }
+
+    startRickDragFromPortal(clientX, clientY) {
+        // A fading emergence sprite no longer owns the visitor after handoff.
+        if (!this.rickVisible || this.placedRick || this.isDraggingRick) return false;
+        this._rickPortalFlow = null;
+        if (this.rickInterval) clearTimeout(this.rickInterval);
+        if (this.rickStepTimeout) clearTimeout(this.rickStepTimeout);
+        if (this.rickRetractTimeout) clearTimeout(this.rickRetractTimeout);
+
+        this.isDraggingRick = true;
+        this.rickHasMoved = false;
+        this.rickDragStartPos = { x: clientX, y: clientY };
+        this.playSound('grabHelper');
+
+        // Fade and remove spawn portal and initial element
+        const portal = document.getElementById('rick-portal');
+        const rick = document.getElementById('rick-doge');
+        if (portal) {
+            portal.style.opacity = '0';
+            setTimeout(() => { if (portal.parentNode) portal.remove(); }, 300);
+        }
+        if (rick) {
+            rick.remove();
+        }
+        this.rickVisible = false;
+
+        // Create cursor sprite using rick.png
+        this.createRickCursorSprite(clientX, clientY);
+        this.attachRickCursorListeners();
+    }
+
+    createRickCursorSprite(clientX, clientY) {
+        this.removeRickCursorSprite();
+
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
+        const rect = leftPanel.getBoundingClientRect();
+        const container = document.getElementById('helper-container') || leftPanel;
+        const ratio = rect.width / (leftPanel.offsetWidth || rect.width) || 1;
+
+        const x = ((clientX ?? (rect.left + rect.width / 2)) - rect.left) / ratio - 30;
+        const y = ((clientY ?? (rect.top + rect.height / 2)) - rect.top) / ratio - 30;
+
+        // Preview DPS zone follows cursor
+        const cursorZone = document.createElement('div');
+        cursorZone.id = 'rick-cursor-zone';
+        cursorZone.className = 'rick-dps-zone';
+        cursorZone.style.left = (x + 30) + 'px';
+        cursorZone.style.top = (y + 30) + 'px';
+        cursorZone.style.zIndex = '4';
+        cursorZone.style.opacity = '0.85';
+        cursorZone.style.width = cursorZone.style.height = `${this.getRickAuraRadius() * 2}px`;
+
+        const sprite = document.createElement('img');
+        sprite.id = 'rick-cursor-sprite';
+        sprite.src = 'assets/general/rm/rickdoge_smol.png';
+        sprite.className = 'helper-sprite attached-to-mouse rick-helper';
+        sprite.style.width = '60px';
+        sprite.style.height = '60px';
+        sprite.style.opacity = '0.9';
+        sprite.style.zIndex = '35';
+        sprite.style.pointerEvents = 'none';
+        sprite.style.left = x + 'px';
+        sprite.style.top = y + 'px';
+
+        container.appendChild(cursorZone);
+        container.appendChild(sprite);
+    }
+
+    removeRickCursorSprite() {
+        this._rickCursorCleanup?.();
+        document.getElementById('rick-cursor-zone')?.remove();
+        document.getElementById('rick-cursor-sprite')?.remove();
+    }
+
+    attachRickCursorListeners() {
+        this._rickCursorCleanup?.();
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
+        const sprite = document.getElementById('rick-cursor-sprite');
+        const zone = document.getElementById('rick-cursor-zone');
+        let rect = leftPanel.getBoundingClientRect();
+        let ratio = rect.width / (leftPanel.offsetWidth || rect.width) || 1;
+        let frame = null;
+        let point = this.rickDragStartPos;
+        const refreshBounds = () => { rect = leftPanel.getBoundingClientRect(); ratio = rect.width / (leftPanel.offsetWidth || rect.width) || 1; };
+        const render = () => {
+            frame = null;
+            if (!point || !this.isDraggingRick) return;
+            const x = (point.x - rect.left) / ratio - 30;
+            const y = (point.y - rect.top) / ratio - 30;
+            if (sprite) sprite.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+            if (zone) zone.style.transform = `translate3d(${x + 30}px, ${y + 30}px, 0) translate(-50%, -50%)`;
+        };
+        for (const element of [sprite, zone]) {
+            if (!element) continue;
+            element.style.left = '0px';
+            element.style.top = '0px';
+            element.style.willChange = 'transform';
+        }
+        render();
+        const onMove = (e) => {
+            if (!this.isDraggingRick) return;
+            if (e.touches && e.cancelable) e.preventDefault();
+            const source = e.touches ? e.touches[0] : e;
+            this.mouseX = source.clientX;
+            this.mouseY = source.clientY;
+            point = { x: source.clientX, y: source.clientY };
+            if (this.rickDragStartPos && Math.hypot(point.x - this.rickDragStartPos.x, point.y - this.rickDragStartPos.y) > 8) this.rickHasMoved = true;
+            if (frame === null) frame = requestAnimationFrame(render);
+        };
+        const drop = (e) => {
+            const source = e.changedTouches ? e.changedTouches[0] : e;
+            const clientX = source.clientX ?? point?.x ?? this.mouseX;
+            const clientY = source.clientY ?? point?.y ?? this.mouseY;
+            refreshBounds();
+            cleanup();
+            this.isDraggingRick = false;
+            this.removeRickCursorSprite();
+            this.dropRick((clientX - rect.left) / ratio - 30, (clientY - rect.top) / ratio - 30);
+        };
+        const onUp = (e) => { if (this.isDraggingRick && this.rickHasMoved) drop(e); };
+        const onClickDrop = (e) => { if (this.isDraggingRick) drop(e); };
+        const onCancel = (e) => { if (this.isDraggingRick) drop(e); };
+        const cleanup = () => {
+            if (frame !== null) cancelAnimationFrame(frame);
+            frame = null;
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onUp);
+            document.removeEventListener('touchcancel', onCancel);
+            window.removeEventListener('resize', refreshBounds);
+            window.removeEventListener('scroll', refreshBounds, true);
+            leftPanel.removeEventListener('click', onClickDrop);
+            if (this.rickClickDropTimeout) clearTimeout(this.rickClickDropTimeout);
+            this._rickCursorCleanup = null;
+        };
+        this._rickCursorCleanup = cleanup;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onUp);
+        document.addEventListener('touchcancel', onCancel);
+        window.addEventListener('resize', refreshBounds);
+        window.addEventListener('scroll', refreshBounds, true);
+        this.rickClickDropTimeout = setTimeout(() => leftPanel.addEventListener('click', onClickDrop, { once: true }), 120);
+    }
+
+    dropRick(rawX, rawY) {
+        if (this.placedRick) return false;
+        this.isDraggingRick = false;
+        this.removeRickCursorSprite();
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) return;
+        const helperContainer = document.getElementById('helper-container') || leftPanel;
+
+        // Clamp inside left panel bounds
+        const maxX = leftPanel.offsetWidth - 70;
+        const maxY = leftPanel.offsetHeight - 70;
+        const clampedX = Math.max(15, Math.min(maxX, rawX));
+        const clampedY = Math.max(60, Math.min(maxY, rawY));
+
+        const validPos = this.findNearestValidSpot ? this.findNearestValidSpot(clampedX, clampedY, 60) : { x: clampedX, y: clampedY };
+        const x = validPos.x;
+        const y = validPos.y;
+
+        this.playSound('dropHelper');
+
+        // Create placed Rick sprite
+        const sprite = document.createElement('img');
+        sprite.id = 'placed-rick-helper';
+        sprite.src = 'assets/general/rm/rickdoge_smol.png';
+        sprite.className = 'helper-sprite placed-helper rick-helper place-bounce';
+        sprite.style.left = x + 'px';
+        sprite.style.top = y + 'px';
+        sprite.style.zIndex = '12';
+        sprite.style.cursor = 'grab';
+        sprite.style.pointerEvents = 'auto';
+
+        // Create Countdown Timer Badge above Rick (starts upon placement)
+        let remainingSeconds = 30;
+        const timerBadge = document.createElement('div');
+        timerBadge.id = 'placed-rick-timer';
+        timerBadge.className = 'rick-timer-badge';
+        timerBadge.innerHTML = `⏱️ ${remainingSeconds}s`;
+        timerBadge.style.left = (x + 30) + 'px';
+        timerBadge.style.top = (y - 20) + 'px';
+
+        // Create Name Tooltip "rkn" (appears above timer on hover)
+        const tooltip = document.createElement('div');
+        tooltip.id = 'placed-rick-tooltip';
+        tooltip.className = 'helper-name-tooltip';
+        tooltip.textContent = 'rkn';
+        tooltip.style.left = (x + 30) + 'px';
+        tooltip.style.top = (y - 42) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+
+        // Create DPS Zone Aura
+        const zoneEl = document.createElement('div');
+        zoneEl.id = 'placed-rick-zone';
+        zoneEl.className = 'rick-dps-zone';
+        zoneEl.style.left = (x + 30) + 'px';
+        zoneEl.style.top = (y + 30) + 'px';
+
+        helperContainer.appendChild(zoneEl);
+        helperContainer.appendChild(timerBadge);
+        helperContainer.appendChild(tooltip);
+        const rig = document.createElement('div');
+        rig.className = 'rick-field-rig';
+        rig.style.left = x + 'px'; rig.style.top = y + 'px';
+        sprite.style.left = '0px'; sprite.style.top = '0px';
+        rig.appendChild(sprite); helperContainer.appendChild(rig);
+
+        // Hover tooltip events
+        sprite.addEventListener('mouseenter', () => { tooltip.style.opacity = '1'; });
+        sprite.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+
+        // Rick 3fps animation loop (rickidle.png <-> rickmine.png)
+        let isIdle = true;
+        const miningInterval = setInterval(() => {
+            if (isIdle) {
+                sprite.src = 'assets/general/rm/rickmine.png';
+            } else {
+                sprite.src = 'assets/general/rm/rickidle.png';
+            }
+            isIdle = !isIdle;
+        }, 333);
+
+        // Countdown timer interval (starts on placement, ticks every second)
+        const timerInterval = setInterval(() => {
+            remainingSeconds--;
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                this.despawnRick();
+                return;
+            }
+            timerBadge.innerHTML = `⏱️ ${remainingSeconds}s`;
+            if (remainingSeconds <= 5) {
+                timerBadge.classList.add('low-time');
+            }
+        }, 1000);
+
+        // Allow repositioning Rick while active
+        const cleanupDrag = this.addDragToPlacedRick(sprite, tooltip, timerBadge, zoneEl);
+
+        this.placedRick = {
+            active: true,
+            planet: this.currentLevel,
+            x: x,
+            y: y,
+            sprite: sprite,
+            rig: rig,
+            tooltip: tooltip,
+            timerBadge: timerBadge,
+            zoneEl: zoneEl,
+            cleanupDrag: cleanupDrag,
+            miningInterval: miningInterval,
+            timerInterval: timerInterval,
+            placedTime: Date.now()
+        };
+
+        // Update DPS and UI
+        this.updateDPS();
+        this.updateUI();
+    }
+
+    addDragToPlacedRick(sprite, tooltip, timerBadge, zoneEl) {
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0, initX = 0, initY = 0;
+        let ratio = 1;
+        let frame = null;
+        let pendingPosition = null;
+        let lastBuffUpdate = -Infinity;
+        let buffDirty = false;
+        const position = (x, y) => {
+            const rig = this.placedRick.rig || sprite;
+            rig.style.left = x + 'px';
+            rig.style.top = y + 'px';
+            if (tooltip) {
+                tooltip.style.left = (x + 30) + 'px';
+                tooltip.style.top = (y - 42) + 'px';
+            }
+            if (timerBadge) {
+                timerBadge.style.left = (x + 30) + 'px';
+                timerBadge.style.top = (y - 20) + 'px';
+            }
+            if (zoneEl) {
+                zoneEl.style.left = (x + 30) + 'px';
+                zoneEl.style.top = (y + 30) + 'px';
+            }
+            this.placedRick.x = x;
+            this.placedRick.y = y;
+        };
+        const render = (timestamp) => {
+            frame = null;
+            if (!isDragging || !this.placedRick?.active) return;
+            if (pendingPosition) {
+                position(pendingPosition.x, pendingPosition.y);
+                pendingPosition = null;
+                buffDirty = true;
+            }
+            // Follow the pointer at display speed; recompute the buff at 20Hz.
+            // Flush the final move even if the player pauses before releasing.
+            if (buffDirty && timestamp - lastBuffUpdate >= 50) {
+                this.updateDPS();
+                lastBuffUpdate = timestamp;
+                buffDirty = false;
+            }
+            if (buffDirty) frame = requestAnimationFrame(render);
+        };
+        const onStart = (e) => {
+            if (this.isPlacingHelpers || !this.placedRick?.active) return;
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.cancelable) e.preventDefault();
+            isDragging = true;
+            this.placedRick.held = true; this.placedRick.move = null;
+            const source = e.touches ? e.touches[0] : e;
+            dragStartX = source.clientX;
+            dragStartY = source.clientY;
+            initX = this.placedRick.x;
+            initY = this.placedRick.y;
+            const panel = document.getElementById('left-panel');
+            ratio = panel ? panel.getBoundingClientRect().width / (panel.offsetWidth || 1) || 1 : 1;
+            lastBuffUpdate = -Infinity;
+            sprite.style.cursor = 'grabbing';
+            this.playSound('grabHelper');
+        };
+        const onMove = (e) => {
+            if (!isDragging || !this.placedRick?.active) return;
+            if (e.touches && e.cancelable) e.preventDefault();
+            const source = e.touches ? e.touches[0] : e;
+            pendingPosition = { x: initX + (source.clientX - dragStartX) / ratio, y: initY + (source.clientY - dragStartY) / ratio };
+            if (frame === null) frame = requestAnimationFrame(render);
+        };
+        const onEnd = () => {
+            if (!isDragging) return;
+            if (frame !== null) cancelAnimationFrame(frame);
+            frame = null;
+            isDragging = false;
+            if (this.placedRick) this.placedRick.held = false;
+            sprite.style.cursor = 'grab';
+            const leftPanel = document.getElementById('left-panel');
+            if (leftPanel && this.placedRick?.active) {
+                if (pendingPosition) position(pendingPosition.x, pendingPosition.y);
+                const valid = this.findNearestValidSpot ? this.findNearestValidSpot(this.placedRick.x, this.placedRick.y, 60) : this.placedRick;
+                position(Math.max(15, Math.min(leftPanel.offsetWidth - 70, valid.x)), Math.max(60, Math.min(leftPanel.offsetHeight - 70, valid.y)));
+                this.updateDPS();
+                this.updateUI();
+            }
+            pendingPosition = null;
+            buffDirty = false;
+        };
+        const cleanup = () => {
+            isDragging = false;
+            if (frame !== null) cancelAnimationFrame(frame);
+            sprite.removeEventListener('mousedown', onStart);
+            sprite.removeEventListener('touchstart', onStart);
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onEnd);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+            document.removeEventListener('touchcancel', onEnd);
+            window.removeEventListener('blur', onEnd);
+        };
+        sprite.addEventListener('mousedown', onStart);
+        sprite.addEventListener('touchstart', onStart, { passive: false });
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+        document.addEventListener('touchcancel', onEnd);
+        window.addEventListener('blur', onEnd);
+        return cleanup;
+    }
+
+    despawnRick({ animate = true } = {}) {
+        if (!this.placedRick) return;
+
+        const rick = this.placedRick;
+        rick.cleanupDrag?.();
+        this.placedRick = null;
+
+        if (rick.miningInterval) clearInterval(rick.miningInterval);
+        if (rick.timerInterval) clearInterval(rick.timerInterval);
+        if (rick.despawnTimeout) clearTimeout(rick.despawnTimeout);
+
+        if (!animate) {
+            for (const node of [rick.rig || rick.sprite, rick.tooltip, rick.timerBadge, rick.zoneEl]) node?.remove();
+            this.updateDPS(); this.updateUI(true);
+            this.scheduleNextRick();
+            return;
+        }
+        if (rick.tooltip) rick.tooltip.remove();
+        if (rick.timerBadge) {
+            rick.timerBadge.style.transition = 'opacity 0.3s ease';
+            rick.timerBadge.style.opacity = '0';
+            setTimeout(() => { if (rick.timerBadge?.parentNode) rick.timerBadge.remove(); }, 300);
+        }
+        if (rick.zoneEl) {
+            rick.zoneEl.style.transition = 'opacity 0.4s ease';
+            rick.zoneEl.style.opacity = '0';
+            setTimeout(() => { if (rick.zoneEl?.parentNode) rick.zoneEl.remove(); }, 400);
+        }
+
+        // Recalculate DPS without Rick boost
+        this.updateDPS();
+        this.updateUI();
+
+        // Spawn exit portal directly under Rick
+        const leftPanel = document.getElementById('left-panel');
+        const helperContainer = document.getElementById('helper-container') || leftPanel;
+        const portal = document.createElement('img');
+        portal.className = 'rick-exit-portal';
+        portal.src = 'assets/general/rm/portal.webp';
+        portal.style.left = (rick.x + 30) + 'px';
+        portal.style.top = (rick.y + 40) + 'px';
+
+        helperContainer.appendChild(portal);
+
+        // Rick jumps in animation
+        if (rick.sprite) {
+            (rick.rig || rick.sprite).classList.add('rick-jumping-in');
+            this.playSound('pop1');
+
+            setTimeout(() => {
+                (rick.rig || rick.sprite).remove();
+
+                // Close and fade portal
+                portal.classList.add('rick-portal-close');
+                setTimeout(() => {
+                    if (portal.parentNode) portal.remove();
+                }, 350);
+            }, 500);
+        } else {
+            if (portal.parentNode) portal.remove();
+        }
+
+        // Schedule the next Rick spawn
+        this.scheduleNextRick();
+    }
 
     hideRick() {
+        if (this.rickStepTimeout) clearTimeout(this.rickStepTimeout);
+        if (this.rickRetractTimeout) clearTimeout(this.rickRetractTimeout);
+
         const rick = document.getElementById('rick-doge');
         const portal = document.getElementById('rick-portal');
 
         if (rick) {
+            rick.style.pointerEvents = 'none';
             rick.style.opacity = '0';
             setTimeout(() => {
                 if (rick.parentNode) {
@@ -5607,7 +6619,6 @@ class DogeMinerGame {
             }, 300);
         }
 
-        // Portal stays visible for 0.4 seconds after Rick fades
         if (portal) {
             setTimeout(() => {
                 portal.style.opacity = '0';
@@ -5615,24 +6626,35 @@ class DogeMinerGame {
                     if (portal.parentNode) {
                         portal.parentNode.removeChild(portal);
                     }
-                }, 400); // 0.4 seconds
-            }, 300); // Wait for Rick to fade first
+                }, 400);
+            }, 300);
         }
 
         this.rickVisible = false;
+        this.scheduleNextRick();
     }
 
     scheduleNextRick() {
-        // Schedule next Rick spawn
-        const spawnTime = 180000 + Math.random() * 120000; // 3-5 minutes
-        this.rickInterval = setTimeout(() => {
-            this.spawnRick();
-        }, spawnTime);
+        this.startRickSpawn();
     }
 
     // Debug method to force Rick spawn
     forceRickSpawn() {
-        this.hideRick(); // Hide current Rick if visible
+        if (this.placedRick) {
+            this.despawnRick();
+        }
+        if (this.rickInterval) clearTimeout(this.rickInterval);
+        if (this.rickStepTimeout) clearTimeout(this.rickStepTimeout);
+        if (this.rickRetractTimeout) clearTimeout(this.rickRetractTimeout);
+        if (this.rickClickDropTimeout) clearTimeout(this.rickClickDropTimeout);
+
+        document.getElementById('rick-doge')?.remove();
+        document.getElementById('rick-portal')?.remove();
+        this.removeRickCursorSprite();
+
+        this.rickVisible = false;
+        this.isDraggingRick = false;
+
         this.spawnRick();
     }
 
@@ -5672,26 +6694,27 @@ class DogeMinerGame {
         });
     }
 
-    updateUI(skipShopPrices = false) {
-        // Update dogecoin display
-        document.getElementById('dogecoin-amount').textContent = this.formatNumber(Math.floor(this.dogecoins));
-        document.getElementById('dps-amount').textContent = this.formatNumber(this.dps);
-        this.updateDiamondCounter();
+    getVisibleDogecoinBalance() {
+        const offline = this.offlineEarningsReport;
+        const unclaimedOffline = offline && !offline.acknowledged ? offline.amount : 0;
+        return Math.max(0, this.dogecoins - (this.pendingCoinDisplayAmount || 0) - unclaimedOffline);
+    }
 
-        // Dynamic DPS logo positioning based on text length
-        const dpsIcon = document.querySelector('.stat-item:nth-child(2) .stat-icon');
-        const dpsText = document.getElementById('dps-amount');
-        if (dpsIcon && dpsText) {
-            const textLength = dpsText.textContent.length;
-            // Adjust logo position based on text length
-            if (textLength >= 4) {
-                dpsIcon.style.transform = 'translateX(-15px)'; // Move further left for longer text
-            } else if (textLength >= 3) {
-                dpsIcon.style.transform = 'translateX(-10px)'; // Move left for medium text
-            } else {
-                dpsIcon.style.transform = 'translateX(0px)'; // Default position for short text
-            }
-        }
+    updateDogecoinCounter() {
+        document.getElementById('dogecoin-amount').textContent = this.formatCounterAmount(this.getVisibleDogecoinBalance());
+    }
+
+    updateUI(skipShopPrices = false) {
+        // Pending mined coins become visible when their individual flight lands.
+        this.updateDogecoinCounter();
+        document.getElementById('dps-amount').textContent = this.formatCounterAmount(this.dps, true);
+        this.updateDiamondCounter();
+        this.updateInventoryUnread();
+        this.updatePlanetSummary?.();
+        this.syncDogebagField?.();
+        this.syncFieldLoot?.();
+        window.uiManager?.updateUpgradeTabCount?.();
+        if (window.timeTravelManager) window.timeTravelManager.updateDogetalkieButton();
 
         // Update shop prices and quantities without rebuilding the entire shop (unless skipped)
         if (!skipShopPrices) {
@@ -5713,9 +6736,12 @@ class DogeMinerGame {
         const currentPlayTime = Math.floor((Date.now() - this.startTime) / 1000) + this.totalPlayTime;
         document.getElementById('play-time').textContent = this.formatTime(currentPlayTime);
         document.getElementById('highest-dps').textContent = this.formatNumber(this.highestDps);
+        const highestCrit = document.getElementById('highest-crit');
+        if (highestCrit) highestCrit.textContent = this.formatNumber(this.records?.highestcrit || 0);
+        this.updateTimelineHistoryUI?.();
 
         // Update mobile helper bar if on mobile
-        if (window.innerWidth <= 768) {
+        if (this.isMobileDevice()) {
             this.updateMobileHelperBar();
         }
 
@@ -5736,35 +6762,73 @@ class DogeMinerGame {
         }
     }
 
-    formatNumber(num) {
-        if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
-        if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
-        if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
-        if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
-        return Math.floor(num).toString();
+    // HUD currencies use grouping; DPS keeps decimals instead of being floored.
+    // Compact late-game amounts so the counters continue to fit small screens.
+    formatCounterAmount(num, isDps = false) {
+        if (num >= (isDps ? 1000 : 1000000)) return this.formatNumber(num);
+        this._counterFormatters ??= {
+            currency: new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }),
+            dps: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 })
+        };
+        return this._counterFormatters[isDps ? 'dps' : 'currency'].format(isDps ? num : Math.floor(num));
     }
 
-    showNotification(message) {
+    formatNumber(num) {
+        if (!Number.isFinite(num)) return String(num);
+        const magnitude = Math.abs(num);
+        if (magnitude < 1e3) return Math.floor(num).toString();
+        // Short-scale units: quadrillions use Q, quintillions Qi, and so on.
+        const suffixes = ['', 'K', 'M', 'B', 'T', 'Q', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
+        let tier = Math.floor(Math.log10(magnitude) / 3);
+        if (tier >= suffixes.length) return num.toExponential(2);
+        let scaled = num / (10 ** (tier * 3));
+        // Carry rounding into the next unit instead of displaying 1000.00T, etc.
+        if (Number(Math.abs(scaled).toFixed(2)) >= 1000) {
+            tier += 1;
+            if (tier >= suffixes.length) return num.toExponential(2);
+            scaled = num / (10 ** (tier * 3));
+        }
+        return scaled.toFixed(2) + suffixes[tier];
+    }
+
+    showNotification(message, duration = 3000) {
         // Check if notifications are enabled
         if (this.notificationsEnabled === false) {
             return;
         }
 
+        if (window.notificationManager) {
+            return window.notificationManager.show(message, 'info', duration);
+        }
+
+        const container = document.getElementById('notifications');
+        if (!container) return;
+
         const notification = document.createElement('div');
         notification.className = 'notification';
         notification.textContent = message;
-
-        document.getElementById('notifications').appendChild(notification);
+        container.appendChild(notification);
 
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            notification.classList.add('slide-out');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, duration);
     }
 
     playSound(soundFile) {
         // Use audio manager if available
         if (window.audioManager) {
             audioManager.playSound(soundFile);
+        }
+    }
+
+    stopSound(soundFile) {
+        if (window.audioManager) {
+            audioManager.stopSound(soundFile);
         }
     }
 
@@ -5958,7 +7022,7 @@ class DogeMinerGame {
     recreateHelperSprites() {
         // Clear existing helper sprites
         const existingSprites = document.querySelectorAll('.helper-sprite');
-        existingSprites.forEach(sprite => sprite.remove());
+        existingSprites.forEach(sprite => { if (!sprite.classList.contains('rick-helper')) sprite.remove(); });
 
         const existingTooltips = document.querySelectorAll('.helper-tooltip');
         existingTooltips.forEach(tooltip => tooltip.remove());
@@ -5987,13 +7051,13 @@ class DogeMinerGame {
     clearAllHelperSprites() {
         // Clear all helper sprites from the DOM
         const existingSprites = document.querySelectorAll('.helper-sprite');
-        existingSprites.forEach(sprite => sprite.remove());
+        existingSprites.forEach(sprite => { if (!sprite.classList.contains('rick-helper')) sprite.remove(); });
 
         const existingTooltips = document.querySelectorAll('.helper-tooltip');
         existingTooltips.forEach(tooltip => tooltip.remove());
 
         const existingNameTooltips = document.querySelectorAll('.helper-name-tooltip');
-        existingNameTooltips.forEach(tooltip => tooltip.remove());
+        existingNameTooltips.forEach(tooltip => { if (tooltip.id !== 'placed-rick-tooltip') tooltip.remove(); });
     }
 }
 

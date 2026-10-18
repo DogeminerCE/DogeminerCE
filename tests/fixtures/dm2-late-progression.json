@@ -1,0 +1,394 @@
+{
+  "sourceSha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "yogaWave": [
+    [
+      21,
+      2
+    ],
+    [
+      21,
+      3
+    ],
+    [
+      21,
+      4
+    ],
+    [
+      31,
+      2
+    ],
+    [
+      31,
+      3
+    ],
+    [
+      31,
+      4
+    ],
+    [
+      18,
+      4
+    ],
+    [
+      34,
+      2
+    ]
+  ],
+  "metalWave": [
+    [
+      1,
+      8
+    ],
+    [
+      2,
+      9
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      6,
+      4
+    ],
+    [
+      7,
+      5
+    ],
+    [
+      8,
+      6
+    ],
+    [
+      10,
+      5
+    ],
+    [
+      11,
+      6
+    ],
+    [
+      12,
+      6
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      15,
+      6
+    ],
+    [
+      16,
+      3
+    ],
+    [
+      19,
+      3
+    ],
+    [
+      20,
+      3
+    ],
+    [
+      21,
+      5
+    ],
+    [
+      22,
+      4
+    ],
+    [
+      24,
+      3
+    ],
+    [
+      25,
+      3
+    ],
+    [
+      27,
+      5
+    ],
+    [
+      29,
+      4
+    ],
+    [
+      30,
+      4
+    ],
+    [
+      31,
+      5
+    ],
+    [
+      32,
+      3
+    ],
+    [
+      33,
+      4
+    ],
+    [
+      35,
+      3
+    ]
+  ],
+  "blueprintDelay": 500,
+  "blueprintFoundOnSpawn": true,
+  "eligibility": [
+    {
+      "altar": 0,
+      "elapsed": 0,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 0,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 1300,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 1300,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 1301,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 1301,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 5500,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 5500,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 5501,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 0,
+      "elapsed": 5501,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 0,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 0,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 1300,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 1300,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 1301,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 1301,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 5500,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 5500,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 5501,
+      "bp": false,
+      "yoga": true,
+      "metal": false
+    },
+    {
+      "altar": 1,
+      "elapsed": 5501,
+      "bp": true,
+      "yoga": true,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 0,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 0,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 1300,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 1300,
+      "bp": true,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 1301,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 1301,
+      "bp": true,
+      "yoga": false,
+      "metal": true
+    },
+    {
+      "altar": 2,
+      "elapsed": 5500,
+      "bp": false,
+      "yoga": false,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 5500,
+      "bp": true,
+      "yoga": false,
+      "metal": true
+    },
+    {
+      "altar": 2,
+      "elapsed": 5501,
+      "bp": false,
+      "yoga": true,
+      "metal": false
+    },
+    {
+      "altar": 2,
+      "elapsed": 5501,
+      "bp": true,
+      "yoga": true,
+      "metal": true
+    }
+  ],
+  "altar": {
+    "name": "Johnny Silverpaw",
+    "shopIconBucket": 6,
+    "desc": "Super-smart rebel doge that always helps his friends.",
+    "cost": 100000000000,
+    "strength": 1200,
+    "sprite": "silverpaw",
+    "extraFrames": 2,
+    "lockreason": "REQUIRES TITAN BASE",
+    "upgrades": {
+      "upgrade1": {
+        "title": "Flexible Joint Addon",
+        "desc": "It says: Comes with Yoga instructions.",
+        "cost": 200000000000,
+        "strength": 1900,
+        "sprite": "package",
+        "diamonds": 15,
+        "newName": "Johnny Silverpaw 2.0",
+        "newDesc": "Flexible super-smart rebel doge that always helps his friends."
+      },
+      "upgrade2": {
+        "title": "Kennel Kernel Update",
+        "desc": "Update is available, purchase to install.",
+        "cost": 600000000000,
+        "strength": 4999,
+        "sprite": "cpus",
+        "diamonds": 25,
+        "newName": "Johnny Silverpaw 3.0",
+        "newDesc": "Omega-intelligent rebel doge that always helps his friends.",
+        "locked": true
+      }
+    }
+  }
+}

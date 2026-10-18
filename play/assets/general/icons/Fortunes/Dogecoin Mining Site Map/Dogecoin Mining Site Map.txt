@@ -1,0 +1,10 @@
+NAME:
+Dogecoin Mining Site Map
+
+RARITY:
+Common
+
+DESCRIPTION:
+Shows the location of your own mining site on Earth. It has cate paw-prints on it.
+
+STATS:

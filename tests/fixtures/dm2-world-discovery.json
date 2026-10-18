@@ -1,0 +1,7084 @@
+{
+  "source": "DM2 web 2.15.0 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "stories": [
+    {
+      "id": "moon1",
+      "title": "SUCH ACHIEVEMENT",
+      "body": "Wow, you landed on <blue>THE MOON</blue>!\nSet up a <blue>MOON BASE</blue> to begin mining operations.",
+      "image": "story/moonbase"
+    },
+    {
+      "id": "moon2",
+      "title": "A MAP!",
+      "body": "You found a <dark>TREASURE MAP</dark>. The map points to a red dot.",
+      "image": "story/map_red_dot"
+    },
+    {
+      "id": "moon3",
+      "title": "OCEANS?",
+      "body": "A <orange>LANDER SHIBE</orange> has returned from scouting <red>MARS</red> and claims to have spotted oceans of <green>ĐOGECOINS</green>. A <red>MARS ROCKET</red> is now available.",
+      "image": "story/oceans_on_mars"
+    },
+    {
+      "id": "mars1",
+      "title": "THE PARTY PLANET",
+      "body": "You made it to <red>MARS</red>! You see no oceans of <green>ĐOGECOINS</green>, but the vibe is great. A <red>MARS BASE</red> could get the <orange>PARTY SHIBES</orange> started.",
+      "image": "story/mars_party"
+    },
+    {
+      "id": "marsdraw",
+      "title": "THATS ODD",
+      "body": "You found a <dark>CRUDE DRAWING</dark>. It doesn't look like anything to you.",
+      "image": "story/map_crude"
+    },
+    {
+      "id": "mars2",
+      "title": "GOOD VIBRATIONS",
+      "body": "The booming vibrations of the <dark>SPACE BASS</dark> have scattered the outer clouds of <jupiter>JUPITER</jupiter> to reveal massive subclouds of <green>ĐOGECOINS</green>.",
+      "image": "story/vibrations_jupiter"
+    },
+    {
+      "id": "mars3",
+      "title": "THE BIGGEST YET",
+      "body": "Top scientists have designed a rocket powerful enough to get to <jupiter>JUPITER</jupiter>. The <orangered>JUPITER ROCKET</orangered> costs <orange>50 MILLION</orange> <green>ĐOGECOINS</green>.",
+      "image": "story/jupiter_rocket"
+    },
+    {
+      "id": "jupiter1",
+      "title": "CLOUD MINER",
+      "body": "The clouds of <jupiter>JUPITER</jupiter> are a natural formation of gas-like <green>ĐOGECOINS</green>. Mining the clouds might be easier than mining solid matter!",
+      "image": "story/cloud_miner"
+    }
+  ],
+  "gates": [
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMap",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "moonMapStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawing",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "marsDrawingStory",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterRoute",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 1,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 3,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 4,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 5,
+        "counts": {},
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 1,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 1,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 2,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 2,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 3,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 3,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 5,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 5,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 0,
+          "2:8": 6,
+          "2:10": 0,
+          "3:14": 0,
+          "3:15": 6,
+          "3:16": 0
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 0,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 0,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 1,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 1,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 2,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 3,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 5,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 5,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 1,
+          "2:8": 6,
+          "2:10": 1,
+          "3:14": 1,
+          "3:15": 6,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 0,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 0,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 1,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 1,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 2,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 2,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 3,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 3,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 5,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 5,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 2,
+          "2:8": 6,
+          "2:10": 2,
+          "3:14": 2,
+          "3:15": 6,
+          "3:16": 2
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 0,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 0,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 1,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 1,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 2,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 3,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 3,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 5,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 5,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 3,
+          "2:8": 6,
+          "2:10": 3,
+          "3:14": 3,
+          "3:15": 6,
+          "3:16": 3
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 0,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 0,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 1,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 1,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 2,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 2,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 3,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 3,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 5,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 5,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 5,
+          "2:8": 6,
+          "2:10": 5,
+          "3:14": 5,
+          "3:15": 6,
+          "3:16": 5
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 0,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 0,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 1,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 1,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 2,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 2,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 3,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 5,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 5,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 2,
+        "counts": {
+          "2:7": 6,
+          "2:8": 6,
+          "2:10": 6,
+          "3:14": 6,
+          "3:15": 6,
+          "3:16": 6
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": false,
+        "dropped": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "jupiterArrival",
+      "input": {
+        "level": 3,
+        "counts": {
+          "2:7": 6,
+          "2:8": 3,
+          "2:10": 1,
+          "3:14": 3,
+          "3:15": 2,
+          "3:16": 1
+        },
+        "found": true,
+        "dropped": true
+      },
+      "eligible": false
+    }
+  ],
+  "actions": {
+    "moonArrival": {
+      "before": {
+        "events": [
+          [
+            "story",
+            "moon1"
+          ]
+        ],
+        "seen": [],
+        "travel": true,
+        "delays": []
+      },
+      "stages": []
+    },
+    "moonMap": {
+      "before": {
+        "events": [],
+        "seen": [],
+        "travel": true,
+        "delays": [
+          800
+        ]
+      },
+      "stages": [
+        {
+          "delay": 800,
+          "events": [
+            [
+              "artifact",
+              "moon"
+            ]
+          ],
+          "seen": [],
+          "travel": true,
+          "dropped": {
+            "droptmap": true,
+            "dropdrawing": false
+          }
+        }
+      ]
+    },
+    "moonMapStory": {
+      "before": {
+        "events": [
+          [
+            "story",
+            "moon2"
+          ]
+        ],
+        "seen": [],
+        "travel": true,
+        "delays": []
+      },
+      "stages": []
+    },
+    "marsRoute": {
+      "before": {
+        "events": [
+          [
+            "known",
+            3
+          ],
+          [
+            "save"
+          ]
+        ],
+        "seen": [
+          "marsunlock"
+        ],
+        "travel": false,
+        "delays": [
+          1500
+        ]
+      },
+      "stages": [
+        {
+          "delay": 1500,
+          "events": [
+            [
+              "known",
+              3
+            ],
+            [
+              "save"
+            ],
+            [
+              "story",
+              "moon3"
+            ],
+            [
+              "helperUnlocked",
+              19
+            ],
+            [
+              "refresh"
+            ]
+          ],
+          "seen": [
+            "marsunlock"
+          ],
+          "travel": true,
+          "dropped": {
+            "droptmap": false,
+            "dropdrawing": false
+          }
+        }
+      ]
+    },
+    "marsArrival": {
+      "before": {
+        "events": [
+          [
+            "story",
+            "mars1"
+          ]
+        ],
+        "seen": [],
+        "travel": true,
+        "delays": []
+      },
+      "stages": []
+    },
+    "marsDrawing": {
+      "before": {
+        "events": [],
+        "seen": [],
+        "travel": true,
+        "delays": [
+          1500
+        ]
+      },
+      "stages": [
+        {
+          "delay": 1500,
+          "events": [
+            [
+              "artifact",
+              "mars"
+            ]
+          ],
+          "seen": [],
+          "travel": true,
+          "dropped": {
+            "droptmap": false,
+            "dropdrawing": true
+          }
+        }
+      ]
+    },
+    "marsDrawingStory": {
+      "before": {
+        "events": [
+          [
+            "story",
+            "marsdraw"
+          ]
+        ],
+        "seen": [],
+        "travel": true,
+        "delays": []
+      },
+      "stages": []
+    },
+    "jupiterRoute": {
+      "before": {
+        "events": [
+          [
+            "known",
+            4
+          ]
+        ],
+        "seen": [
+          "jupiterun"
+        ],
+        "travel": false,
+        "delays": [
+          1250,
+          1550
+        ]
+      },
+      "stages": [
+        {
+          "delay": 1250,
+          "events": [
+            [
+              "known",
+              4
+            ],
+            [
+              "story",
+              "mars2"
+            ]
+          ],
+          "seen": [
+            "jupiterun"
+          ],
+          "travel": false,
+          "dropped": {
+            "droptmap": false,
+            "dropdrawing": false
+          }
+        },
+        {
+          "delay": 1550,
+          "events": [
+            [
+              "known",
+              4
+            ],
+            [
+              "story",
+              "mars2"
+            ],
+            [
+              "story",
+              "mars3"
+            ],
+            [
+              "helperUnlocked",
+              20
+            ],
+            [
+              "sound",
+              "select1",
+              0.15
+            ],
+            [
+              "refresh"
+            ]
+          ],
+          "seen": [
+            "jupiterun"
+          ],
+          "travel": true,
+          "dropped": {
+            "droptmap": false,
+            "dropdrawing": false
+          }
+        }
+      ]
+    },
+    "jupiterArrival": {
+      "before": {
+        "events": [
+          [
+            "story",
+            "jupiter1"
+          ]
+        ],
+        "seen": [],
+        "travel": true,
+        "delays": []
+      },
+      "stages": []
+    }
+  },
+  "geometry": [
+    {
+      "input": {
+        "phone": false,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0,
+          0
+        ]
+      },
+      "output": {
+        "fromX": 250,
+        "fromY": 340,
+        "x": 70,
+        "y": 337
+      }
+    },
+    {
+      "input": {
+        "phone": false,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.25,
+          0.75
+        ]
+      },
+      "output": {
+        "fromX": 250,
+        "fromY": 340,
+        "x": 89,
+        "y": 174
+      }
+    },
+    {
+      "input": {
+        "phone": false,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.5,
+          0.5
+        ]
+      },
+      "output": {
+        "fromX": 250,
+        "fromY": 340,
+        "x": 34,
+        "y": 216
+      }
+    },
+    {
+      "input": {
+        "phone": false,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.9,
+          0.1
+        ]
+      },
+      "output": {
+        "fromX": 250,
+        "fromY": 340,
+        "x": 1,
+        "y": 337
+      }
+    },
+    {
+      "input": {
+        "phone": false,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.999,
+          0.999
+        ]
+      },
+      "output": {
+        "fromX": 250,
+        "fromY": 340,
+        "x": 137,
+        "y": 97
+      }
+    },
+    {
+      "input": {
+        "phone": true,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0,
+          0
+        ]
+      },
+      "output": {
+        "fromX": 270,
+        "fromY": 350,
+        "x": 193,
+        "y": 286
+      }
+    },
+    {
+      "input": {
+        "phone": true,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.25,
+          0.75
+        ]
+      },
+      "output": {
+        "fromX": 270,
+        "fromY": 350,
+        "x": 207,
+        "y": 203
+      }
+    },
+    {
+      "input": {
+        "phone": true,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.5,
+          0.5
+        ]
+      },
+      "output": {
+        "fromX": 270,
+        "fromY": 350,
+        "x": 270,
+        "y": 218
+      }
+    },
+    {
+      "input": {
+        "phone": true,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.9,
+          0.1
+        ]
+      },
+      "output": {
+        "fromX": 270,
+        "fromY": 350,
+        "x": 329,
+        "y": 280
+      }
+    },
+    {
+      "input": {
+        "phone": true,
+        "platformX": 70,
+        "platformY": 40,
+        "rockX": 270,
+        "rockY": 340,
+        "random": [
+          0.999,
+          0.999
+        ]
+      },
+      "output": {
+        "fromX": 270,
+        "fromY": 350,
+        "x": 403,
+        "y": 240
+      }
+    }
+  ],
+  "artifactMotion": {
+    "fadeMs": 200,
+    "bobMs": 2200,
+    "bobOffset": 5,
+    "spawnMs": 800,
+    "spawnEase": "expo.out",
+    "grabMs": 200,
+    "grabScale": 1.75
+  }
+}

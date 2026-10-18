@@ -1,5 +1,5 @@
 // DogeMiner: Community Edition - Xbox Controller Support
-// Uses the Gamepad API for native controller input — no virtual cursor.
+// Uses the Gamepad API for navigation and a shared Kenney gameplay cursor.
 
 // ── Xbox Button Icon SVGs ────────────────────────────────────────────────────
 // Inline SVGs for Xbox-style button prompts. Colours match the official Xbox
@@ -207,6 +207,7 @@ class ControllerManager {
 
     _onDisconnect(e) {
         console.log(`Gamepad disconnected: ${e.gamepad.id}`);
+        this.game?.releaseDrill?.();
         if (e.gamepad.index === this.gamepadIndex) {
             // Only deactivate if we are NOT on Xbox — on Xbox the controller
             // may briefly disconnect during suspend/resume.
@@ -253,6 +254,11 @@ class ControllerManager {
 
         // If user disabled controller input, skip everything
         if (this._disabledByUser) return;
+        if (document.hidden || document.hasFocus?.() === false) {
+            this.game?.releaseMiningInput?.();
+            this._waitForFocusRelease = true;
+            return;
+        }
 
         const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
         let gp = null;
@@ -275,7 +281,7 @@ class ControllerManager {
             }
         }
 
-        if (!gp) return;
+        if (!gp) { if (this.game?._drill?.input === 'controller') this.game.releaseDrill?.(); return; }
 
         // Build button state snapshot
         const buttons = gp.buttons.map(b => ({
@@ -283,6 +289,14 @@ class ControllerManager {
             value: b.value,
         }));
         const axes = gp.axes.slice();
+
+        // A held button from another window must be released before any game
+        // action, purchase or menu toggle can be triggered on focus return.
+        if (this._waitForFocusRelease) {
+            this.prevButtons = buttons; this.prevAxes = axes;
+            if (buttons.some(button => button.pressed) || axes.some(axis => Math.abs(axis) > .3)) return;
+            this._waitForFocusRelease = false;
+        }
 
         // Detect "just pressed" (edge trigger)
         const justPressed = (index) => {
@@ -301,21 +315,56 @@ class ControllerManager {
                 !(buttons[index] && buttons[index].pressed);
         };
 
+        if (this.game?._drill?.input === 'controller' && (!buttons[GP.A]?.pressed || this.focusContext !== 'mining' || this._dialogOpen || this.game.isStoryOpen || this.game.isBetaReportOpen || this.game.isOfflineReportOpen || this.game.isUpdateNotesOpen)) this.game.releaseDrill?.();
+
         // ── Handle input ─────────────────────────────────────────────────
 
-        // If a cutscene is playing, A skips it
-        if (this.game && this.game.isCutscenePlaying) {
-            if (justPressed(GP.A)) {
-                this.game.closeCutscene();
-            }
+        // A confirmation opened by another modal always owns input first
+        if (this._dialogOpen) {
+            this._handleDialogInput(justPressed, GP, axes);
             this.prevButtons = buttons;
             this.prevAxes = axes;
             return;
         }
 
-        // If the in-game dialog is open, route all input there
-        if (this._dialogOpen) {
-            this._handleDialogInput(justPressed, GP, axes);
+        // Report controls stay separate from mining, travel, dialogs and purchases.
+        if (this.game.isBetaReportOpen || this.game.isOfflineReportOpen || this.game.isStoryOpen || this.game.isUpdateNotesOpen) {
+            this._handleBetaReportInput(buttons, axes);
+            return;
+        }
+        this._betaReportElement = null;
+        this._betaReportLastFrame = null;
+        if (this.game._dogebagReveal) {
+            this._handleDogebagInput(buttons, axes);
+            return;
+        }
+        this._dogebagInputView = null;
+
+
+        // D.I.A. owns its brief, nested warning, decision and rewards. No
+        // mining, purchases, tab changes or moon controls may run behind it.
+        const mission = this._missionInputRoot();
+        if (mission) {
+            this._handleMissionInput(mission, buttons, axes);
+            return;
+        }
+        this._missionInputView = null;
+        const menuModal = ['supporter-modal', 'pickaxe-modal', 'fortune-modal', 'mystery-box-modal']
+            .map(id => document.getElementById(id)).find(root => root?.classList.contains('active'));
+        if (menuModal) {
+            this._handleMenuModalInput(menuModal, buttons, axes);
+            return;
+        }
+        if (this._menuModalReturn) {
+            Object.assign(this, this._menuModalReturn);
+            this._menuModalReturn = null;
+            this._updateFocus();
+        }
+        this._menuModalInputView = null;
+
+        // Moon launch owns initiation, playback and the skip confirmation.
+        if (this.game && this.game.isCutscenePlaying) {
+            this.game.handleMoonLaunchController?.(justPressed, GP);
             this.prevButtons = buttons;
             this.prevAxes = axes;
             return;
@@ -437,6 +486,201 @@ class ControllerManager {
 
     // ── Button Handlers ──────────────────────────────────────────────────
 
+    _handleBetaReportInput(buttons, axes) {
+        const report = document.getElementById(this.game.isUpdateNotesOpen ? 'release-notes' : this.game.isStoryOpen ? 'story-popup'
+            : this.game.isOfflineReportOpen ? 'offline-earnings-report' : 'beta-balance-report');
+        const now = Date.now();
+        try {
+            // Seed the opening frame: a button held while mining cannot confirm.
+            if (!report || this._betaReportElement !== report) {
+                this._betaReportElement = report;
+                this._betaReportLastFrame = now;
+                return;
+            }
+            const justPressed = index => buttons[index]?.pressed && !this.prevButtons[index]?.pressed;
+            if (this.game.isUpdateNotesOpen && justPressed(GP.B)) { window.DogeMinerReleaseNotes.close(); return; }
+            const deadZone = this.DEAD_ZONE || 0.35;
+            const axisPressed = (axis, direction) => direction * (axes[axis] || 0) > deadZone
+                && direction * (this.prevAxes[axis] || 0) <= deadZone;
+            const focusables = [...report.querySelectorAll('button, input, select, summary, [tabindex="0"]')]
+                .filter(element => !element.disabled && !element.closest('[hidden]') && element.getClientRects().length > 0);
+            const focused = document.activeElement;
+            const body = report.querySelector('.beta-balance-body');
+            const elapsed = Math.max(0, Math.min(50, now - (this._betaReportLastFrame ?? now)));
+            if (body && Math.abs(axes[AXIS.RIGHT_Y] || 0) > deadZone) {
+                body.scrollTop += Math.round(axes[AXIS.RIGHT_Y] * elapsed * 0.8);
+            }
+
+            const previous = justPressed(GP.LB) || justPressed(GP.DPAD_UP) || axisPressed(AXIS.LEFT_Y, -1);
+            const next = justPressed(GP.RB) || justPressed(GP.DPAD_DOWN) || axisPressed(AXIS.LEFT_Y, 1);
+            const left = justPressed(GP.DPAD_LEFT) || axisPressed(AXIS.LEFT_X, -1);
+            const right = justPressed(GP.DPAD_RIGHT) || axisPressed(AXIS.LEFT_X, 1);
+            if (!previous && !next && focusables.includes(focused) && focused?.tagName === 'SELECT' && (left || right)) {
+                const count = focused.options.length;
+                if (count) {
+                    focused.selectedIndex = (focused.selectedIndex + (right ? 1 : -1) + count) % count;
+                    focused.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                return;
+            }
+            if (previous || next || left || right) {
+                if (focusables.length) {
+                    const index = focusables.indexOf(focused);
+                    const direction = next || right ? 1 : -1;
+                    const target = index < 0 ? (direction > 0 ? 0 : focusables.length - 1)
+                        : (index + direction + focusables.length) % focusables.length;
+                    focusables[target].focus();
+                }
+                return;
+            }
+            // A activates only a focused action or item; search/filter focus never
+            // acknowledges. B and every other game action intentionally stay idle.
+            if (justPressed(GP.A) && focusables.includes(focused)
+                && (focused.tagName === 'BUTTON' || focused.tagName === 'SUMMARY')) focused.click();
+        } finally {
+            this._betaReportLastFrame = now;
+            this.prevButtons = buttons;
+            this.prevAxes = axes;
+        }
+    }
+
+    _handleMenuModalInput(root, buttons, axes) {
+        const controls = this._visibleControls(root, 'button, input, select, a[href], [tabindex="0"]');
+        try {
+            if (this._menuModalInputView !== root) {
+                this._menuModalReturn ||= { focusContext: this.focusContext, focusIndex: this.focusIndex };
+                this._menuModalInputView = root;
+                this.game?.releaseMiningInput?.();
+                (controls.includes(document.activeElement) ? document.activeElement : controls[0])?.focus({ preventScroll: true });
+                return;
+            }
+            const pressed = index => buttons[index]?.pressed && !this.prevButtons[index]?.pressed;
+            if (pressed(GP.B)) {
+                if (root.id === 'supporter-modal') window.closeSupporterModal?.();
+                else if (root.id === 'pickaxe-modal') this.game.closePickaxeModal();
+                else if (root.id === 'fortune-modal') this.game.closeFortuneModal();
+                else this.game.closeMysteryBoxModal?.();
+                return;
+            }
+            const axis = direction => direction * (axes[AXIS.LEFT_Y] || 0) > this.DEAD_ZONE
+                && direction * (this.prevAxes[AXIS.LEFT_Y] || 0) <= this.DEAD_ZONE;
+            const previous = pressed(GP.LB) || pressed(GP.DPAD_UP) || pressed(GP.DPAD_LEFT) || axis(-1);
+            const next = pressed(GP.RB) || pressed(GP.DPAD_DOWN) || pressed(GP.DPAD_RIGHT) || axis(1);
+            if ((previous || next) && controls.length) {
+                const current = controls.indexOf(document.activeElement), direction = next ? 1 : -1;
+                const index = current < 0 ? (next ? 0 : controls.length - 1)
+                    : (current + direction + controls.length) % controls.length;
+                controls[index].focus({ preventScroll: true });
+                controls[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            } else if (pressed(GP.A) && controls.includes(document.activeElement)) {
+                if (document.activeElement.tagName === 'SELECT') {
+                    const select = document.activeElement;
+                    const options = [...select.options].filter(option => !option.disabled && !option.hidden);
+                    if (options.length) {
+                        select.value = options[(options.indexOf(select.selectedOptions[0]) + 1) % options.length].value;
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                } else if (document.activeElement.tagName !== 'INPUT' || document.activeElement.type === 'checkbox') document.activeElement.click();
+            }
+            if (pressed(GP.SELECT)) this._toggleCursorMode();
+            if (this.vcToggledOn) {
+                this._handleRightStick(axes[AXIS.RIGHT_X] || 0, axes[AXIS.RIGHT_Y] || 0);
+                const target = document.elementFromPoint(this.vcX, this.vcY);
+                if (pressed(GP.RT) && root.contains(target)) this._simulateVirtualClick(true);
+            }
+            if (this.prevButtons[GP.RT]?.pressed && !buttons[GP.RT]?.pressed) this._simulateVirtualClick(false);
+        } finally { this.prevButtons = buttons; this.prevAxes = axes; }
+    }
+
+    _missionInputRoot() {
+        for (const id of ['dia-warning-modal', 'dia-mission-modal', 'mission-cutscene', 'mission-passed']) {
+            const root = document.getElementById(id);
+            if (root && (root.classList.contains('active') || id === 'mission-cutscene' || id === 'mission-passed')) return root;
+        }
+        return null;
+    }
+
+    _handleMissionInput(root, buttons, axes) {
+        const controls = this._visibleControls(root);
+        const now = Date.now();
+        try {
+            // Every new step/action set consumes its opening frame. A held to
+            // finish a line, choose a badge or accept a reward cannot carry on.
+            const changed = this._missionInputView !== root || controls.length !== this._missionControls?.length
+                || controls.some((control, index) => control !== this._missionControls[index]);
+            if (changed) {
+                this.game?.releaseMiningInput?.();
+                this._missionInputView = root;
+                this._missionControls = controls;
+                const preferred = root.id === 'dia-warning-modal' ? controls.find(el => el.id === 'dia-warning-no')
+                    : controls.find(el => el.matches('.dia-badge-card.selected, .dia-btn-right, #cs-attack, #mp-ok'));
+                (preferred || controls[0])?.focus({ preventScroll: true });
+                return;
+            }
+            const pressed = index => buttons[index]?.pressed && !this.prevButtons[index]?.pressed;
+            const axisPressed = (axis, direction) => direction * (axes[axis] || 0) > this.DEAD_ZONE
+                && direction * (this.prevAxes[axis] || 0) <= this.DEAD_ZONE;
+            if (pressed(GP.B)) {
+                if (root.id === 'dia-warning-modal') document.getElementById('dia-warning-no')?.click();
+                else if (root.id === 'dia-mission-modal') window.timeTravelManager?._back();
+                return;
+            }
+            // Reveal a sentence separately from accepting the next reply.
+            if (root.id === 'dia-mission-modal' && window.timeTravelManager?._finishTyping && pressed(GP.A)) {
+                window.timeTravelManager._finishTyping();
+                return;
+            }
+            if (pressed(GP.START)) {
+                controls.find(el => el.id === 'dia-skip-btn' || el.id === 'mission-cutscene-skip')?.click();
+                return;
+            }
+            const previous = pressed(GP.LB) || pressed(GP.DPAD_UP) || pressed(GP.DPAD_LEFT)
+                || axisPressed(AXIS.LEFT_Y, -1) || axisPressed(AXIS.LEFT_X, -1);
+            const next = pressed(GP.RB) || pressed(GP.DPAD_DOWN) || pressed(GP.DPAD_RIGHT)
+                || axisPressed(AXIS.LEFT_Y, 1) || axisPressed(AXIS.LEFT_X, 1);
+            if ((previous || next) && controls.length) {
+                const current = controls.indexOf(document.activeElement), direction = next ? 1 : -1;
+                const index = current < 0 ? (next ? 0 : controls.length - 1)
+                    : (current + direction + controls.length) % controls.length;
+                controls[index].focus({ preventScroll: true });
+                controls[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            } else if (pressed(GP.A) && controls.includes(document.activeElement)) document.activeElement.click();
+            const scroll = root.querySelector('.dia-mission-card, .mp-body, .dia-warning-card');
+            if (scroll && Math.abs(axes[AXIS.RIGHT_Y] || 0) > this.DEAD_ZONE) {
+                scroll.scrollTop += axes[AXIS.RIGHT_Y] * Math.min(50, now - (this._missionInputAt ?? now)) * .8;
+            }
+        } finally {
+            this._missionInputAt = now;
+            this.prevButtons = buttons;
+            this.prevAxes = axes;
+        }
+    }
+
+    _handleDogebagInput(buttons, axes) {
+        try {
+            const view = this.game._dogebagReveal;
+            if (this._dogebagInputView !== view) {this._dogebagInputView = view; return;}
+            const justPressed = index => buttons[index]?.pressed && !this.prevButtons[index]?.pressed;
+            const modal = document.getElementById('dogebag-modal');
+            const controls = [...(modal?.querySelectorAll('button') || [])]
+                .filter(button => !button.disabled && button.getClientRects().length);
+            if (justPressed(GP.B) || view?.kind === 'mystery' && justPressed(GP.START)) {this.game.closeDogebagModal(); return;}
+            const direction = justPressed(GP.LB) || justPressed(GP.DPAD_UP) ? -1
+                : justPressed(GP.RB) || justPressed(GP.DPAD_DOWN) ? 1 : 0;
+            if (direction && controls.length) {
+                const index = controls.indexOf(document.activeElement);
+                const next = index < 0 ? (direction > 0 ? 0 : controls.length - 1) : (index + direction + controls.length) % controls.length;
+                controls[next].focus();
+            }
+            if (justPressed(GP.A) && controls.includes(document.activeElement)) document.activeElement.click();
+            if (this.vcToggledOn || Math.abs(axes[AXIS.RIGHT_X] || 0) > this.DEAD_ZONE || Math.abs(axes[AXIS.RIGHT_Y] || 0) > this.DEAD_ZONE) {
+                this._handleRightStick(axes[AXIS.RIGHT_X] || 0, axes[AXIS.RIGHT_Y] || 0);
+            }
+            if (justPressed(GP.RT)) this._simulateVirtualClick(true);
+            if (this.prevButtons[GP.RT]?.pressed && !buttons[GP.RT]?.pressed) this._simulateVirtualClick(false);
+        } finally {this.prevButtons = buttons; this.prevAxes = axes;}
+    }
+
     _handleA() {
         if (this.focusContext === 'mining') {
             // Mine the rock
@@ -456,12 +700,7 @@ class ControllerManager {
             const items = this._getFocusableItems();
             if (items[this.focusIndex]) {
                 items[this.focusIndex].click();
-                // After clicking, the modal should now be open — switch to modal focus
-                setTimeout(() => {
-                    this.focusContext = 'modal';
-                    this.focusIndex = 0;
-                    this._updateFocus();
-                }, 50);
+
             }
         } else {
             // On non-interactive tabs (achievements), A still mines
@@ -515,7 +754,8 @@ class ControllerManager {
             return;
         }
 
-        // Otherwise return focus to mining
+        // Otherwise return focus to the field, closing a Phone drawer first.
+        if (this._isPhoneLayout() && this.ui?.mobileMenuOpen) this.ui.closeMobileMenu();
         this.focusContext = 'mining';
         this.focusIndex = 0;
         this._updateFocus();
@@ -530,16 +770,18 @@ class ControllerManager {
         const dogebags = rockContainer.querySelectorAll('.dogebag-drop');
         if (dogebags.length > 0) {
             dogebags[0].click();
-            // Dogebag click opens a modal — switch to modal focus
-            setTimeout(() => {
-                this.focusContext = 'modal';
-                this.focusIndex = 0;
-                this._updateFocus();
-            }, 100);
+
             return;
         }
 
-        // Priority 2: Collect nearest coin pile
+        // Collect discovery clues before ordinary coin piles.
+        const clue = document.querySelector('.world-artifact:not(:disabled)');
+        if (clue) { clue.click(); return; }
+
+        const diamond = rockContainer.querySelector('.diamond-stack:not([data-collected])');
+        if (diamond) { diamond.click(); return; }
+
+        // Priority 3: Collect nearest coin pile
         if (typeof window.game.collectNearestCoinPile === 'function') {
             window.game.collectNearestCoinPile();
         }
@@ -567,17 +809,20 @@ class ControllerManager {
             this.focusContext = 'mining';
         } else {
             if (window.game && window.game.openMysteryBoxModal) window.game.openMysteryBoxModal();
-            this.focusContext = 'modal';
-            this.focusIndex = 0;
+            // The active-modal route owns focus and remembers the field context.
         }
         this._updateFocus();
     }
 
     // ── Tab Cycling ──────────────────────────────────────────────────────
 
+    _isPhoneLayout() {
+        return this.game?.isMobileDevice?.() ?? (window.innerWidth <= 768);
+    }
+
     _syncPanelIndex() {
         if (this.ui) {
-            const current = this.ui.activePanel.replace('-tab', '');
+            const current = this._isPhoneLayout() ? this.ui.activeMobileTab : this.ui.activePanel?.replace('-tab', '');
             const idx = this.panelTabs.indexOf(current);
             if (idx >= 0) this.currentPanelIndex = idx;
         }
@@ -596,8 +841,9 @@ class ControllerManager {
         const tabName = this.panelTabs[this.currentPanelIndex];
 
         // Use the global switchMainTab or mobile variant
-        if (window.innerWidth <= 768) {
-            if (window.switchMobileTab) switchMobileTab(tabName);
+        if (this._isPhoneLayout()) {
+            this.ui?.switchMobileTab(tabName);
+            if (this.ui && !this.ui.mobileMenuOpen) this.ui.toggleMobileMenu();
         } else {
             if (window.switchMainTab) switchMainTab(tabName);
         }
@@ -630,7 +876,8 @@ class ControllerManager {
             attempts++;
         } while (attempts < this.planetTabs.length && !this._isPlanetUnlocked(this.planetTabs[newIndex]));
 
-        if (this._isPlanetUnlocked(this.planetTabs[newIndex])) {
+        if (this.game?.isWorldTravelAllowed?.() === false || this.game?.isTransitioning) return;
+        if (newIndex !== this.currentPlanetIndex && this._isPlanetUnlocked(this.planetTabs[newIndex])) {
             this.currentPlanetIndex = newIndex;
             const planetName = this.planetTabs[newIndex];
             if (window.switchPlanet) {
@@ -640,11 +887,12 @@ class ControllerManager {
     }
 
     _isPlanetUnlocked(planet) {
+        if (typeof this.game?.isWorldPlanetUnlocked === 'function') return this.game.isWorldPlanetUnlocked(planet);
         if (planet === 'earth') return true;
 
         // Check the planet tab button's disabled state
         const tab = document.querySelector(`.planet-tab[data-planet="${planet}"]`);
-        if (tab) return !tab.disabled && !tab.classList.contains('locked');
+        if (tab) return !tab.disabled && tab.getAttribute('aria-disabled') !== 'true' && !tab.classList.contains('locked');
 
         // Also check mobile planet tabs
         const mobileTab = document.querySelector(`.mobile-planet-tab[data-planet="${planet}"]`);
@@ -672,7 +920,10 @@ class ControllerManager {
                     return;
                 }
                 this.focusIndex = 0;
-                this._updateFocus();
+                if (this._isPhoneLayout() && this.ui && !this.ui.mobileMenuOpen) {
+                    this.ui.toggleMobileMenu();
+                    setTimeout(() => this._updateFocus(), 100);
+                } else this._updateFocus();
             }
             return;
         }
@@ -709,6 +960,16 @@ class ControllerManager {
             const items = this._getFocusableItems();
             if (items.length === 0) return;
 
+            const currentControl = items[this.focusIndex];
+            if (currentControl?.tagName === 'SELECT' && moveX) {
+                this._changeSettingSelect(currentControl, moveX);
+                return;
+            }
+            if (this._isPhoneLayout()) {
+                this.focusIndex = Math.max(0, Math.min(this.focusIndex + (moveY || moveX), items.length - 1));
+                this._updateFocus();
+                return;
+            }
             const container = document.getElementById('settings-tab');
             const columns = container ? container.querySelectorAll('.settings-column') : [];
 
@@ -760,9 +1021,17 @@ class ControllerManager {
         const items = this._getFocusableItems();
         if (items.length === 0) return;
 
-        // Grid-aware navigation: shop uses a 2-column grid, so D-pad
-        // up/down should jump by the number of columns.
-        const cols = this.focusContext === 'shop' ? 2 : 1;
+        // Phone shop cards page horizontally; upgrade actions are a single
+        // ordered list so both currency choices and slot unlocks are reachable.
+        if (this._isPhoneLayout() || this.focusContext === 'upgrades') {
+            const delta = moveX || moveY;
+            if (moveX < 0 && this.focusIndex === 0) { this.focusContext = 'mining'; this._updateFocus(); return; }
+            this.focusIndex = Math.max(0, Math.min(this.focusIndex + delta, items.length - 1));
+            this._updateFocus();
+            items[this.focusIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            return;
+        }
+        const cols = this._getGridColumns(items);
 
         if (moveY > 0) this.focusIndex += cols;
         if (moveY < 0) this.focusIndex -= cols;
@@ -815,29 +1084,26 @@ class ControllerManager {
 
     _getFocusableItems() {
         if (this.focusContext === 'shop') {
-            const isMobile = window.innerWidth <= 768;
+            const isMobile = this._isPhoneLayout();
             const container = isMobile
                 ? document.getElementById('mobile-shop-content')
                 : document.getElementById('shop-content');
             if (!container) return [];
             // Shop items use .shop-grid-item class
-            return Array.from(container.querySelectorAll('.shop-grid-item'));
+            return Array.from(container.querySelectorAll('.shop-grid-item')).filter(el => el.getClientRects().length && el.querySelector('.shop-buy-btn'));
         }
         if (this.focusContext === 'upgrades') {
-            const isMobile = window.innerWidth <= 768;
+            const isMobile = this._isPhoneLayout();
             const container = isMobile
-                ? document.getElementById('mobile-upgrades-container')
-                : document.getElementById('upgrades-container');
+                ? document.getElementById('mobile-upgrades-tab')
+                : document.getElementById('upgrades-tab');
             if (!container) return [];
-            // Upgrade sections that have actual content
-            return Array.from(container.querySelectorAll('.upgrade-section.has-upgrade'));
+            // Route actual action buttons through their normal purchase handlers.
+            return this._visibleControls(container, '.upgrade-buy-btn, .mobile-upgrade-buy-btn, .searchdoge-unlock-btn');
         }
         if (this.focusContext === 'settings') {
-            const container = document.getElementById('settings-tab');
-            if (!container) return [];
-            // Checkboxes + buttons in the settings tab (filter out hidden ones)
-            return Array.from(container.querySelectorAll('.setting-item, .setting-btn, .google-signin-btn'))
-                .filter(el => el.offsetParent !== null);
+            const container = document.getElementById(this._isPhoneLayout() ? 'mobile-settings-tab' : 'settings-tab');
+            return this._visibleControls(container, '.setting-item input, .setting-item select, button, a[href]');
         }
         if (this.focusContext === 'inventories') {
             return [
@@ -863,22 +1129,10 @@ class ControllerManager {
         if (supporterModal && supporterModal.classList.contains('active')) {
             return Array.from(supporterModal.querySelectorAll('button, a')).filter(b => b.offsetParent !== null);
         }
-        // Dogebag modal — focus the OPEN button or the EQUIP/LOOT action buttons
+        // Shared Dogebag / Mystery Box controls, including prompt and receipt actions.
         const dogebagModal = document.getElementById('dogebag-modal');
-        if (dogebagModal && dogebagModal.classList.contains('active')) {
-            const prompt = document.getElementById('dogebag-state-prompt');
-            if (prompt && prompt.style.display !== 'none') {
-                // State 1: The "OPEN" button
-                return Array.from(prompt.querySelectorAll('button')).filter(b => b.offsetParent !== null);
-            }
-            const reveal = document.getElementById('dogebag-state-reveal');
-            if (reveal && reveal.style.display !== 'none') {
-                // State 2: The EQUIP/LOOT action buttons
-                const actions = document.getElementById('dogebag-actions');
-                if (actions) {
-                    return Array.from(actions.querySelectorAll('button')).filter(b => b.offsetParent !== null);
-                }
-            }
+        if (dogebagModal?.classList.contains('active')) {
+            return Array.from(dogebagModal.querySelectorAll('button')).filter(button => !button.disabled && button.getClientRects().length);
         }
         // Mystery Box modal — only target action buttons, not structural ones
         const mysteryBoxModal = document.getElementById('mystery-box-modal');
@@ -892,6 +1146,7 @@ class ControllerManager {
         this._clearFocusHighlight();
 
         if (this.focusContext === 'mining') {
+            if (document.activeElement?.closest('#settings-tab, #mobile-settings-tab')) document.activeElement.blur();
             const rock = document.getElementById('rock-container');
             if (rock) rock.classList.add('controller-focus');
             return;
@@ -908,7 +1163,12 @@ class ControllerManager {
 
         const items = this._getFocusableItems();
         if (items[this.focusIndex]) {
-            items[this.focusIndex].classList.add('controller-focus');
+            const item = items[this.focusIndex];
+            item.classList.add('controller-focus');
+            if (this.focusContext === 'settings' || this.focusContext === 'upgrades') {
+                item.focus({ preventScroll: true });
+                item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            }
         }
     }
 
@@ -925,14 +1185,13 @@ class ControllerManager {
         const el = items[this.focusIndex];
         if (!el) return;
 
-        // Upgrade sections need special handling for the fade animation
         if (this.focusContext === 'upgrades') {
-            this._buyUpgradeWithAnimation(el);
+            if (!el.disabled && el.getAttribute('aria-disabled') !== 'true') el.click();
             return;
         }
 
         // Try to find and click the buy button inside the focused card
-        const buyBtn = el.querySelector('.buy-btn, .buy-button, [class*="buy"]');
+        const buyBtn = el.querySelector('.shop-buy-btn, .buy-btn, .buy-button');
         if (buyBtn) {
             buyBtn.click();
             return;
@@ -943,14 +1202,17 @@ class ControllerManager {
     }
 
     _buyUpgradeWithAnimation(section) {
-        const buyBtn = section.querySelector('.upgrade-buy-btn[data-upgrade-helper]');
+        // Prefer coins when affordable; the diamond alternative is available
+        // to controller users when the coin button is disabled.
+        const buyBtn = section.querySelector('.upgrade-buy-btn[data-upgrade-helper]:not(:disabled)');
         if (!buyBtn) return;
 
         const helperType = buyBtn.getAttribute('data-upgrade-helper');
         if (!helperType || !window.shopManager) return;
 
-        const success = window.shopManager.buyHelperUpgrade(helperType);
+        const success = window.shopManager.buyHelperUpgrade(helperType, buyBtn.dataset.upgradeCurrency || 'dogecoins', Number(buyBtn.dataset.upgradeLevel));
         if (!success) return;
+        window.uiManager?.updateHelperUpgradeAffordability();
 
         // Determine the section index so the UI can fade-in just that slot
         const allSections = document.querySelectorAll('.upgrade-section');
@@ -984,68 +1246,67 @@ class ControllerManager {
         }, 100);
     }
 
+    _visibleControls(root, selector = 'button, input, select, summary, [tabindex="0"]') {
+        return Array.from(root?.querySelectorAll(selector) || []).filter(el =>
+            !el.disabled && !el.closest('[hidden], .disabled, .dia-btns-hidden') && el.getClientRects().length
+            && el.checkVisibility?.({ checkOpacity: true, checkVisibilityCSS: true }) !== false);
+    }
+
+    _changeSettingSelect(select, direction = 1) {
+        const options = [...select.options].filter(option => !option.disabled && !option.hidden);
+        if (!options.length) return;
+        const current = options.indexOf(select.selectedOptions[0]);
+        select.value = options[(current + Math.sign(direction) + options.length) % options.length].value;
+        const key = select.id.replace(/^mobile-/, '');
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        // Layout can replace the active form. Follow the same setting into it.
+        if (key === 'layout-mode') {
+            if (this._isPhoneLayout()) {
+                this.ui?.switchMobileTab('settings');
+                if (this.ui && !this.ui.mobileMenuOpen) this.ui.toggleMobileMenu();
+            } else window.switchMainTab?.('settings');
+            setTimeout(() => {
+                if (this.focusContext !== 'settings') return;
+                const items = this._getFocusableItems();
+                const index = items.findIndex(item => item.id.replace(/^mobile-/, '') === key);
+                this.focusIndex = Math.max(0, index);
+                this._updateFocus();
+            }, 100);
+        }
+    }
+
     _toggleFocusedSetting() {
-        const items = this._getFocusableItems();
-        const el = items[this.focusIndex];
+        const el = this._getFocusableItems()[this.focusIndex];
         if (!el) return;
-
-        // If it's a setting-item with a checkbox, toggle the checkbox
-        const checkbox = el.querySelector('input[type="checkbox"]');
-        if (checkbox) {
-            checkbox.checked = !checkbox.checked;
-            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-            return;
-        }
-
-        // If it's a setting-item with a <select>, cycle to the next option
-        const selectEl = el.querySelector('select');
-        if (selectEl) {
-            selectEl.selectedIndex = (selectEl.selectedIndex + 1) % selectEl.options.length;
-            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-            return;
-        }
-
-        // If it's a button (setting-btn or google-signin-btn), click it
-        if (el.classList.contains('setting-btn') || el.classList.contains('google-signin-btn') || el.tagName === 'BUTTON') {
-            el.click();
-            return;
-        }
-
-        // Fallback: click the element
-        el.click();
+        if (el.tagName === 'SELECT') this._changeSettingSelect(el);
+        else el.click(); // Native input activation fires exactly one change event.
     }
 
     // ── Xbox-specific UI ─────────────────────────────────────────────────
 
     _hideXboxOnlyElements() {
-        // On Xbox browsers, hide the Google sign-in section since it would be
-        // clunky to sign in with Google on a console platform.
-        const signInSection = document.getElementById('sign-in-section');
-        if (signInSection) {
-            signInSection.style.display = 'none';
-            // Add an Xbox-specific message in its place
-            const notice = document.createElement('p');
-            notice.className = 'cloud-info';
-            notice.textContent = 'Cloud save via Google is not available on Xbox. Use local save instead.';
-            signInSection.parentNode.appendChild(notice);
+        document.body.classList.add('xbox-browser');
+        for (const id of ['sign-in-section', 'mobile-sign-in-section', 'user-info', 'mobile-user-info', 'supporter-settings-section', 'mobile-supporter-settings-section', 'supporter-stat-display', 'controller-disable-setting']) {
+            const element = document.getElementById(id);
+            if (element) element.style.display = 'none';
         }
-
-        // Hide the supporter / Ko-Fi section (not relevant on Xbox)
-        const supporterSection = document.getElementById('supporter-settings-section');
-        if (supporterSection) supporterSection.style.display = 'none';
-
-        const supporterBadge = document.getElementById('supporter-stat-display');
-        if (supporterBadge) supporterBadge.style.display = 'none';
-
-        // Hide the "Disable Controller" setting (nonsensical on Xbox)
-        const controllerDisableSetting = document.getElementById('controller-disable-setting');
-        if (controllerDisableSetting) controllerDisableSetting.style.display = 'none';
+        const mobileDisable = document.getElementById('mobile-disable-controller');
+        if (mobileDisable) mobileDisable.closest('.setting-item').style.display = 'none';
+        for (const [host, id] of [['sign-in-section', 'xbox-cloud-notice'], ['mobile-cloud-save-section', 'mobile-xbox-cloud-notice']]) {
+            const element = document.getElementById(host);
+            if (!element || document.getElementById(id)) continue;
+            const notice = document.createElement('p');
+            notice.id = id; notice.className = 'cloud-info';
+            notice.textContent = 'Cloud save via Google is not available on Xbox. Use local save instead.';
+            (host === 'sign-in-section' ? element.parentNode : element).appendChild(notice);
+        }
     }
 
     // ── Disable Controller Setting ───────────────────────────────────────
 
     setDisabledByUser(disabled) {
         this._disabledByUser = disabled;
+        for (const id of ['disable-controller', 'mobile-disable-controller']) { const box = document.getElementById(id); if (box) box.checked = disabled; }
         localStorage.setItem('controllerDisabled', disabled ? 'true' : 'false');
         if (disabled) {
             this._deactivateControllerMode();
@@ -1120,7 +1381,7 @@ class ControllerManager {
         this._promptElements = {};
 
         // Remove X icons from any existing coin piles
-        document.querySelectorAll('.coin-pile .coin-pile-x-prompt').forEach(el => el.remove());
+        document.querySelectorAll('.coin-pile-x-prompt').forEach(el => el.remove());
 
         this._stopCoinPileObserver();
     }
@@ -1134,7 +1395,7 @@ class ControllerManager {
         if (!rockContainer) return;
 
         // Tag any existing coin piles and dogebags
-        rockContainer.querySelectorAll('.coin-pile, .dogebag-drop').forEach(pile => {
+        rockContainer.querySelectorAll('.coin-pile, .dogebag-drop, .diamond-stack').forEach(pile => {
             this._addCoinPileIcon(pile);
         });
 
@@ -1143,7 +1404,7 @@ class ControllerManager {
             if (!this.controllerMode || !this.showIndicators) return;
             for (const mutation of mutations) {
                 for (const node of mutation.addedNodes) {
-                    if (node.nodeType === 1 && (node.classList.contains('coin-pile') || node.classList.contains('dogebag-drop'))) {
+                    if (node.nodeType === 1 && (node.classList.contains('coin-pile') || node.classList.contains('dogebag-drop') || node.classList.contains('diamond-stack'))) {
                         this._addCoinPileIcon(node);
                     }
                 }
@@ -1174,6 +1435,7 @@ class ControllerManager {
 
     setShowIndicators(enabled) {
         this.showIndicators = enabled;
+        for (const id of ['controller-indicators-enabled', 'mobile-controller-indicators-enabled']) { const box = document.getElementById(id); if (box) box.checked = enabled; }
         if (enabled && this.controllerMode) {
             this._createPrompts();
             if (this.vcActive && this.vcPrompt) {
@@ -1308,7 +1570,7 @@ class ControllerManager {
         if (!this.vcElement) {
             this.vcElement = document.createElement('img');
             this.vcElement.id = 'controller-virtual-cursor';
-            this.vcElement.src = 'assets/quickUI/Cursor for Controller/pointer.cur';
+            this.vcElement.src = window.GameCursor?.paths.default || 'assets/cursors/kenney/outline/pointer_b.png';
             this.vcElement.alt = 'Virtual Cursor';
             this.vcElement.style.position = 'fixed';
             this.vcElement.style.zIndex = '999999';
@@ -1353,10 +1615,13 @@ class ControllerManager {
         }
         
         let shouldShowCursor = false;
-        if (this.game && this.game.isPlacingHelpers) {
-            shouldShowCursor = false;
+        if (this.game?._dogebagReveal) {
+            shouldShowCursor = true;
+            this._updateVirtualCursorPrompt('RT', 'Select');
+        } else if (this.game && this.game.isPlacingHelpers) {
+            shouldShowCursor = true;
             this._updateVirtualCursorPrompt('RT', 'Place');
-        } else if (this.game && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+        } else if (this.game && (this.game._helperDrag || (this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0))) {
             shouldShowCursor = true;
             this._updateVirtualCursorPrompt('RT', 'Drop');
         } else {
@@ -1411,6 +1676,7 @@ class ControllerManager {
             cancelable: true
         });
         document.dispatchEvent(moveEvt);
+        window.GameCursor?.updateVirtualCursor(this, this.game);
 
         if (!this.vcToggledOn) {
             if (this.vcHideTimeout) clearTimeout(this.vcHideTimeout);
@@ -1442,60 +1708,27 @@ class ControllerManager {
             }
         }, 500); // 0.5s transition
         
-        if (this.game && !this.game.isPlacingHelpers && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
+        if (this.game && !this.game.isPlacingHelpers && (this.game._helperDrag || (this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0))) {
             this._simulateVirtualClick(false);
         }
     }
     
     _simulateVirtualClick(isDown) {
-        const target = document.elementFromPoint(this.vcX, this.vcY) || document.body;
-        
-        if (this.game && this.game.isPlacingHelpers) {
-            if (isDown) {
-                const clickEvt = new MouseEvent('click', {
-                    clientX: this.vcX,
-                    clientY: this.vcY,
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                document.dispatchEvent(clickEvt);
-            }
-        } else if (this.game && this.game.helpersOnCursor && this.game.helpersOnCursor.length > 0) {
-            if (!isDown) {
-                const upEvt = new MouseEvent('mouseup', {
-                    clientX: this.vcX,
-                    clientY: this.vcY,
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                document.dispatchEvent(upEvt);
-                this._updateVirtualCursorPrompt('RT', 'Move Helper');
-            }
-        } else {
-            if (isDown) {
-                const downEvt = new MouseEvent('mousedown', {
-                    clientX: this.vcX,
-                    clientY: this.vcY,
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                target.dispatchEvent(downEvt);
-                
-                const clickEvt = new MouseEvent('click', {
-                    clientX: this.vcX,
-                    clientY: this.vcY,
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                target.dispatchEvent(clickEvt);
-                
-                this._updateVirtualCursorPrompt('RT', 'Drop');
-            }
+        window.GameCursor?.setPressed(isDown);
+        if (!isDown) {
+            document.dispatchEvent(new MouseEvent('mouseup', {clientX:this.vcX,clientY:this.vcY,bubbles:true,cancelable:true,view:window}));
+            this._updateVirtualCursorPrompt('RT', 'Move Helper');
+            return;
         }
+        const target = document.elementFromPoint(this.vcX, this.vcY) || document.body;
+        const options = {clientX:this.vcX,clientY:this.vcY,bubbles:true,cancelable:true,view:window};
+        if (this.game?.isPlacingHelpers) {
+            document.dispatchEvent(new MouseEvent('click', options));
+            return;
+        }
+        target.dispatchEvent(new MouseEvent('mousedown', options));
+        if (!this.game?._helperDrag) target.dispatchEvent(new MouseEvent('click', options));
+        this._updateVirtualCursorPrompt('RT', 'Drop');
     }
 
     // ── Cleanup ──────────────────────────────────────────────────────────

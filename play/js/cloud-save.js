@@ -3,11 +3,13 @@ class CloudSaveManager {
     constructor() {
         this.currentUser = null;
         this.isInitialized = false;
+        this._accountEpoch = 0;
+        this._pendingCloud = null;
         this.init();
     }
 
     waitForGameReady(callback, attempts = 0) {
-        const isGameReady = typeof window.game !== 'undefined' && window.game !== null;
+        const isGameReady = window.game?._bootComplete && window.saveManager && !window.saveManager._loadInProgress;
 
         if (isGameReady) {
             callback?.();
@@ -32,6 +34,9 @@ class CloudSaveManager {
 
         // Listen for authentication state changes
         window.firebase.onAuthStateChanged(window.firebase.auth, (user) => {
+            this._accountEpoch++;
+            this._pendingCloud = null;
+            clearTimeout(this._cloudRetry);
             this.currentUser = user;
             this.updateUI();
 
@@ -57,7 +62,7 @@ class CloudSaveManager {
             // User is signed in
             userInfo.style.display = 'block';
             signInSection.style.display = 'none';
-            userName.textContent = `Signed in as: ${this.currentUser.displayName || this.currentUser.email}`;
+            userName.textContent = `Signed in as: ${this.currentUser.displayName || this.currentUser.email || 'Player'}`;
 
             if (cloudLocalActions && localButtons && localButtons.parentElement !== cloudLocalActions) {
                 cloudLocalActions.appendChild(localButtons);
@@ -79,6 +84,15 @@ class CloudSaveManager {
                 localSection.style.display = '';
             }
         }
+        // Auth can change while Phone settings stay open; update the existing
+        // controls without rebuilding the form or losing its scroll/focus.
+        const mobileUserInfo = document.getElementById('mobile-user-info');
+        const mobileSignIn = document.getElementById('mobile-sign-in-section');
+        const mobileUserName = document.getElementById('mobile-user-name');
+        if (mobileUserInfo) mobileUserInfo.style.display = this.currentUser ? 'block' : 'none';
+        if (mobileSignIn) mobileSignIn.style.display = this.currentUser ? 'none' : 'block';
+        if (mobileUserName) mobileUserName.textContent = this.currentUser ? `Signed in as: ${this.currentUser.displayName || this.currentUser.email || 'Player'}` : '';
+        if (typeof isXboxBrowser === 'function' && isXboxBrowser()) window.controllerManager?._hideXboxOnlyElements();
     }
 
     async signInWithGoogle() {
@@ -130,88 +144,60 @@ class CloudSaveManager {
         }
     }
 
-    async saveToCloud() {
-        if (!this.currentUser) {
-            if (window.notificationManager) {
-                window.notificationManager.showWarning('Please sign in first');
-            }
-            return;
-        }
+    async saveToCloud() { return this._saveCloud(false); }
+    async saveToCloudSilent() { return this._saveCloud(true); }
 
-        try {
-            if (window.notificationManager) {
-                window.notificationManager.showInfo('Saving to cloud...');
-            }
-
-            // Get current game state
-            const gameData = this.getGameState();
-
-            if (gameData === null) {
-                if (window.notificationManager) {
-                    window.notificationManager.showError('Cannot save: Game not initialized');
-                }
-                return;
-            }
-
-            // Stripping isSupporter from the cloud-specific payload to prevent client-side clobbering 
-            // of the root-level Source of Truth (which is managed by Ko-Fi/Manual edits).
-            if (gameData && typeof gameData === 'object') {
-                delete gameData.isSupporter;
-            }
-
-            // Save to Firestore
-            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
-            await window.firebase.setDoc(userDocRef, {
-                gameData: gameData,
-                lastSaved: new Date().toISOString(),
-                version: '1.0.0'
-            }, { merge: true });
-
-            if (window.notificationManager) {
-                window.notificationManager.showSuccess('Game saved to cloud successfully!');
-            }
-
-        } catch (error) {
-            console.error('Cloud save error:', error);
-            if (window.notificationManager) {
-                window.notificationManager.showError('Failed to save to cloud. Please try again.');
-            }
-        }
+    _ticket() {
+        return { uid:this.currentUser?.uid, epoch:this._accountEpoch, game:window.game,
+            field:window.game?._currencyFlightEpoch || 0 };
     }
-
-    async saveToCloudSilent() {
-        if (!this.currentUser) {
-            return;
-        }
-
+    _current(ticket) {
+        return !!ticket.uid && ticket.uid === this.currentUser?.uid && ticket.epoch === this._accountEpoch &&
+            ticket.game === window.game && ticket.field === (window.game?._currencyFlightEpoch || 0);
+    }
+    _notify(silent, kind, message) { if (!silent) window.notificationManager?.[kind]?.(message); }
+    _localCandidate() {
+        if (window.saveManager?._saveBlocked) return null;
+        const raw = this.getGameState();
+        const save = raw && JSON.parse(JSON.stringify(raw));
+        // createSaveData stamps the act of serializing; compare the last durable
+        // save time instead, so merely checking cannot win a timestamp tie.
+        if (save) save.timestamp = window.saveManager.lastSave;
+        return save;
+    }
+    async _saveCloud(silent) {
+        const ticket = this._ticket(), policy = window.DogeMinerSaveReconciliation;
+        if (!ticket.uid) { this._notify(silent,'showWarning','Please sign in first'); return 'signed-out'; }
+        if (this._cloudWrite || this._cloudRead || this._pendingCloud || window.saveManager?._loadInProgress) return 'busy';
+        const candidate = this._localCandidate();
+        if (!policy?.valid(candidate, window.saveManager)) return 'invalid-local';
+        this._cloudWrite = true;
         try {
-            // Get current game state
-            const gameData = this.getGameState();
-            
-            // Stripping isSupporter from the cloud-specific payload to prevent client-side clobbering 
-            // of the root-level Source of Truth (which is managed by Ko-Fi/Manual edits).
-            if (gameData && typeof gameData === 'object') {
-                delete gameData.isSupporter;
-            }
-
-            if (gameData === null) {
-                console.error('Cannot save to cloud: gameData is null');
-                return;
-            }
-
-            // Save to Firestore silently
-            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
-            await window.firebase.setDoc(userDocRef, {
-                gameData: gameData,
-                lastSaved: new Date().toISOString(),
-                version: '1.0.0'
-            }, { merge: true });
-
-            console.log('Game auto-saved to cloud');
-
+            const ref = window.firebase.doc(window.firebase.db,'users',ticket.uid);
+            const result = await window.firebase.runTransaction(window.firebase.db, async transaction => {
+                const snapshot = await transaction.get(ref);
+                if (!this._current(ticket) || window.saveManager._saveBlocked) return {status:'stale'};
+                const data = snapshot.exists() ? snapshot.data() : {};
+                const remote = data.gameData;
+                // A malformed remote payload is kept for recovery, not silently
+                // replaced by a fresh local game during startup.
+                if (remote && !policy.valid(remote, window.saveManager)) return {status:'invalid-cloud'};
+                if (policy.compare(remote, candidate) > 0) return {status:'cloud-newer', data};
+                const payload = JSON.parse(JSON.stringify(candidate));
+                delete payload.isSupporter;
+                transaction.set(ref,{gameData:payload,lastSaved:new Date().toISOString(),version:'1.0.0'},{merge:true});
+                return {status:'saved'};
+            });
+            if (!this._current(ticket)) return 'stale';
+            if (result.status === 'cloud-newer') this._receiveCloud(result.data,ticket,silent);
+            else if (result.status === 'saved') this._notify(silent,'showSuccess','Game saved to cloud successfully!');
+            else if (result.status === 'invalid-cloud') this._notify(silent,'showError','Cloud save could not be validated. Both saves were kept.');
+            return result.status;
         } catch (error) {
-            console.error('Silent cloud save error:', error);
-        }
+            console.error('Cloud save error:',error);
+            if (this._current(ticket)) this._notify(silent,'showError','Failed to save to cloud. Your local progress was kept.');
+            return 'error';
+        } finally { this._cloudWrite = false; }
     }
 
     async deleteCloudSave() {
@@ -220,6 +206,7 @@ class CloudSaveManager {
             return;
         }
 
+        this._accountEpoch++; this._pendingCloud = null; clearTimeout(this._cloudRetry);
         try {
             // Only clear gameData, PRESERVE supporter fields (isSupporter, totalTipAmount, eligibleForGameKey)
             // These are set by the Ko-Fi webhook and represent real-money purchases that must never be wiped.
@@ -236,98 +223,74 @@ class CloudSaveManager {
         }
     }
 
-    async loadFromCloud() {
-        if (!this.currentUser) {
-            if (window.notificationManager) {
-                window.notificationManager.showWarning('Please sign in first');
-            }
-            return;
-        }
+    async loadFromCloud() { return this._loadCloud(false); }
+    async loadFromCloudSilent() { return this._loadCloud(true); }
 
+    async _loadCloud(silent) {
+        const ticket = this._ticket();
+        if (!ticket.uid) { this._notify(silent,'showWarning','Please sign in first'); return 'signed-out'; }
+        if (this._cloudRead || this._cloudWrite) return 'busy';
+        this._cloudRead = true;
         try {
-            if (window.notificationManager) {
-                window.notificationManager.showInfo('Loading from cloud...');
-            }
-
-            // Get data from Firestore
-            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
-            const docSnap = await window.firebase.getDoc(userDocRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                if (data.gameData) {
-                    this.loadGameState(data.gameData);
-                    if (window.notificationManager) {
-                        window.notificationManager.showSuccess('Game loaded from cloud successfully!');
-                    }
-                } else {
-                    if (window.notificationManager) {
-                        window.notificationManager.showWarning('No save data found in cloud');
-                    }
-                }
-
-                // Ko-Fi Supporter Sync MUST happen AFTER loadGameState 
-                // because loadGameState clears status to false.
-                if (data.isSupporter && window.game) {
-                    window.game.setSupporterStatus(true);
-                }
-            } else {
-                if (window.notificationManager) {
-                    window.notificationManager.showWarning('No save data found in cloud');
-                }
-            }
-
+            const ref = window.firebase.doc(window.firebase.db,'users',ticket.uid);
+            const snapshot = await window.firebase.getDoc(ref);
+            if (!this._current(ticket)) return 'stale';
+            if (!snapshot.exists()) { this._notify(silent,'showInfo','No save data found in cloud'); return 'empty'; }
+            return this._receiveCloud(snapshot.data(),ticket,silent);
         } catch (error) {
-            console.error('Cloud load error:', error);
-            if (window.notificationManager) {
-                window.notificationManager.showError('Failed to load from cloud. Please try again.');
+            console.error('Cloud load error:',error);
+            if (this._current(ticket)) this._notify(silent,'showError','Failed to load from cloud. Your local progress was kept.');
+            return 'error';
+        } finally { this._cloudRead = false; }
+    }
+    _receiveCloud(data,ticket,silent) {
+        if (!this._current(ticket)) return 'stale';
+        // Account-owned perks are separate from progress selection and payloads.
+        if (data.isSupporter === true) window.game.setSupporterStatus(true);
+        if (!data.gameData) { this._notify(silent,'showInfo','No save data found in cloud'); return 'empty'; }
+        const policy = window.DogeMinerSaveReconciliation, manager = window.saveManager;
+        if (!policy?.valid(data.gameData,manager)) {
+            this._notify(silent,'showError','Cloud save could not be validated. Your local progress was kept.'); return 'invalid-cloud';
+        }
+        if (policy.busy(window.game) || manager._loadInProgress) {
+            this._pendingCloud = {data,ticket,silent};
+            clearTimeout(this._cloudRetry);
+            this._cloudRetry = setTimeout(() => {
+                const pending = this._pendingCloud; this._pendingCloud = null;
+                if (pending) this._receiveCloud(pending.data,pending.ticket,pending.silent);
+            },500);
+            this._notify(silent,'showInfo','Cloud save checked. It will be compared after the current reward or event closes.');
+            return 'deferred';
+        }
+        const local = this._localCandidate(), localValid = policy.valid(local,manager);
+        if (localValid && policy.compare(data.gameData,local) <= 0) {
+            this._notify(silent,'showInfo','This device already has the latest progress.'); return 'local';
+        }
+        const flags = {blocked:manager._saveBlocked,error:manager.loadError};
+        try {
+            manager.applySaveData(data.gameData,{persist:true,recovery:{key:'dogeminer_ce_before_cloud_v1',value:local ? JSON.stringify(local) : localStorage.getItem(manager.saveKey) || 'null'}});
+            if (data.isSupporter === true) window.game.setSupporterStatus(true);
+            this._notify(silent,'showSuccess','Newer cloud progress loaded and saved on this device.');
+            return 'cloud';
+        } catch (error) {
+            // applySaveData rolls back the live object and the atomic storage
+            // write. Restore its field presentation and prior autosave status.
+            if (localValid) {
+                try { manager._applySaveData(local); } catch (_) { /* Keep the existing recovery snapshot. */ }
             }
+            manager._saveBlocked = flags.blocked; manager.loadError = flags.error;
+            console.error('Cloud progress was not applied:',error);
+            this._notify(silent,'showError','Cloud progress could not be saved. Your local progress was kept.');
+            return 'error';
         }
     }
-
-    async loadFromCloudSilent() {
-        if (!this.currentUser) {
-            return;
-        }
-
-        try {
-            // Get data from Firestore
-            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
-            const docSnap = await window.firebase.getDoc(userDocRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                if (data.gameData) {
-                    this.loadGameState(data.gameData);
-                    console.log('Game auto-loaded from cloud');
-                }
-
-                // Ko-Fi Supporter Sync MUST happen AFTER loadGameState
-                if (data.isSupporter && window.game) {
-                    window.game.setSupporterStatus(true);
-                }
-            }
-
-        } catch (error) {
-            console.error('Silent cloud load error:', error);
-        }
-    }
-
     getGameState() {
-        if (typeof window.game !== 'undefined' && window.game && window.saveManager) {
-            return window.saveManager.createSaveData();
-        }
-        console.error('saveManager is not available to create game state');
-        return null;
+        return window.game && window.saveManager ? window.saveManager.createSaveData() : null;
+    }
+    loadGameState(gameData) {
+        return this._receiveCloud({gameData},this._ticket(),false);
     }
 
-    loadGameState(gameData) {
-        if (typeof window.game !== 'undefined' && window.game && window.saveManager && gameData) {
-            window.saveManager.applySaveData(gameData);
-        }
-    }
 }
 
 // Global functions for HTML onclick handlers
@@ -373,6 +336,8 @@ function loadFromCloud() {
     }
 }
 
+window.DogeMinerCloudSave = Object.freeze({Manager:CloudSaveManager});
+
 // Initialize when DOM is loaded
 const initCloudSave = () => {
     if (!cloudSaveManager) {
@@ -381,9 +346,8 @@ const initCloudSave = () => {
     }
 };
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCloudSave);
-} else {
-    initCloudSave();
+if (!window.CEParityTesting?.active) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCloudSave);
+    else initCloudSave();
 }
 

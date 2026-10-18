@@ -10,12 +10,13 @@ class FortuneFactory {
         this.coreStats = new Set([
             'luck', 'lootfind', 'wow', 'critchance',
             'dpcmultiplier', 'helperdpsmultiplier', 'rocketcostreduction',
-            'dps', 'helperdps', 'criticalchance', 'higherground', 'spacerocketcosts'
+            'dps', 'helperdps', 'criticalchance', 'spacerocketcosts', 'mysterybonus', 'holidayspirit'
         ]);
         this.loaded = false;
     }
 
     async loadTemplates() {
+        this.loadErrors = [];
         const basePath = 'assets/general/icons/Fortunes';
 
         // Load standard drop fortunes
@@ -23,7 +24,7 @@ class FortuneFactory {
             this._loadTemplate(basePath + '/' + encodeURIComponent(folderName), folderName)
                 .then(template => {
                     if (template) {
-                        const templateId = this._sanitizeId(template.name);
+                        const templateId = this._sanitizeId(folderName === 'Dogefinity Stone 2 Electric Bugaloo' ? folderName : template.name);
                         template.id = templateId;
 
                         const nameUpper = template.name.toUpperCase();
@@ -38,6 +39,7 @@ class FortuneFactory {
                     }
                 })
                 .catch(err => {
+                    (this.loadErrors ||= []).push(String(err));
                     console.warn(`Failed to load fortune template: ${folderName}`, err);
                 })
         );
@@ -58,8 +60,23 @@ class FortuneFactory {
             })
         );
 
+        loadPromises.push(
+            this._loadTemplate(basePath + '/Protected Non Seasonal/Super Fortune', 'Super Fortune')
+            .then(template => {
+                 if (template) {
+                     const templateId = 'super_fortune';
+                     template.id = templateId;
+                     template.planetRestriction = null;
+                     template.isSuperFortune = true;
+                     template.isProtected = true;
+                     this.templates[templateId] = template;
+                 }
+            })
+        );
+
         await Promise.all(loadPromises);
 
+        window.DogeMinerSeasonal?.installTemplates('fortune', this);
         this.loaded = true;
         console.log(`FortuneFactory: Loaded ${Object.keys(this.templates).length} templates.`);
     }
@@ -69,7 +86,14 @@ class FortuneFactory {
      */
     async _loadTemplate(folderPath, folderName) {
         // Fetch the .txt file (named after the folder)
-        const txtPath = `${folderPath}/${encodeURIComponent(folderName)}.txt`;
+        const dataFiles = {
+            'Filled Bottle': 'Filled Potion',
+            'Ancient Munitions Shell': 'Ancient Munititons Shell',
+            'Dogefinity Stone 2 Electric Bugaloo': 'A Dogfinity Stone',
+            'Silver Mars Fortune': 'Silver Moon Fortune'
+        };
+        const dataFile = dataFiles[folderName] || folderName;
+        const txtPath = `${folderPath}/${encodeURIComponent(dataFile)}.txt`;
         let txtContent;
         try {
             const response = await fetch(txtPath);
@@ -77,11 +101,13 @@ class FortuneFactory {
             txtContent = await response.text();
         } catch (err) {
             console.warn(`Could not fetch ${txtPath}`, err);
+            (this.loadErrors ||= []).push(txtPath);
             return null;
         }
 
         // Parse the txt content
         const template = this._parseTxt(txtContent);
+        if (!template.name) { (this.loadErrors ||= []).push(txtPath); return null; }
 
         const spriteName = FORTUNE_SPRITES[folderName];
         if (spriteName) {
@@ -94,6 +120,12 @@ class FortuneFactory {
         }
 
         template.folderName = folderName;
+        if (window.DogeMinerBalance) {
+            const definition = window.DogeMinerBalance.getDefinition('fortune', template);
+            template.balanceDefinitionId = definition.id;
+            template.balanceSourceMatched = definition.sourceMatched;
+            template.rarity = definition.rarity;
+        }
         return template;
     }
 
@@ -260,66 +292,32 @@ class FortuneFactory {
      * Bypasses RNG drops and spawns an explicit template ID.
      */
     generateSpecialFortune(templateId) {
-        const template = this.templates[templateId];
-        if (!template) return null;
-
-        const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-        
-        // Soulbound fortunes ignore player luck modifiers, passing 0s explicitly
-        let stats = [];
-        if (templateId === 'badge_of_patronage') {
-            stats = [
-                { name: 'patronage', displayName: 'Patronage', indicator: '+', isCore: false, value: 100 },
-                { name: 'lootfind', displayName: 'Loot Find', indicator: '+%', isCore: true, value: 15 },
-                { name: 'luck', displayName: 'Luck', indicator: '+%', isCore: true, value: 15 },
-                { name: 'wow', displayName: 'Wow', indicator: '+%', isCore: true, value: 15 }
-            ];
-        } else {
-            const useBaseStats = template.isSoulbound;
-            stats = this._rollStats(template.statTemplates, useBaseStats ? 0 : 500, useBaseStats ? 0 : 5000, useBaseStats);
-        }
-
-        return {
-            instanceId,
-            templateId,
-            name: template.name,
-            rarity: template.rarity,
-            description: template.description,
-            stats,
-            sprite: template.sprite,
-            isSoulbound: template.isSoulbound || false
-        };
+        return this.generateFromTemplate(templateId, window.DogeMinerBalance.getRollContext(window.game || {}));
     }
 
-    /**
-     * Generates a unique fortune instance from a randomly selected template.
-     * @param {number} playerLootFind - The player's Loot Find stat
-     * @param {number} playerLuck - The player's Luck stat
-     * @param {string} currentPlanet - The current planet (for planet-restricted fortunes)
-     * @param {string[]} excludeIds - Template IDs to exclude from the drop pool
-     * @returns {Object} A unique fortune instance
-     */
-    generateFortune(playerLootFind = 0, playerLuck = 0, currentPlanet = 'earth', excludeIds = []) {
+    /** Legacy selection signature; Luck/Loot Find affect selection, never stat magnitude. */
+    generateFortune(playerLootFind = 0, playerLuck = 0, currentPlanet = 'earth', excludeIds = [], rollContext = null) {
         const templateId = this.rollTemplate(playerLootFind, currentPlanet, excludeIds);
-        if (!templateId) return null;
+        return templateId ? this.generateFromTemplate(templateId, {...window.DogeMinerBalance.getRollContext(window.game || {}, currentPlanet), ...(rollContext || {})}) : null;
+    }
 
+    /** Generate a selected natural/Mystery Box prize using the shared numerical rules. */
+    generateFromTemplate(templateId, rollContext = null, rng = Math.random) {
         const template = this.templates[templateId];
         if (!template) return null;
-
-        // Generate unique instance ID
-        const instanceId = `fortune_${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-
-        // Roll stats based on Luck + Loot Find (NOT Wow)
-        const stats = this._rollStats(template.statTemplates, playerLuck, playerLootFind, false);
-
+        const balance = window.DogeMinerBalance;
+        if (!balance) throw new Error('DM2 balance rules must load before FortuneFactory.');
+        const context = {...balance.getRollContext(window.game || {}), ...(rollContext || {})};
+        const definition = balance.getDefinition('fortune', template);
         return {
-            instanceId,
-            templateId,
-            name: template.name,
-            rarity: template.rarity,
-            description: template.description,
-            stats,
-            sprite: template.sprite
+            instanceId: `fortune_${templateId}_${Date.now()}_${Math.floor(rng() * 10000)}`,
+            templateId, name: template.name, rarity: definition.rarity, description: template.description,
+            stats: balance.rollStats('fortune', template, context, rng), sprite: template.sprite,
+            planetOfOrigin: context.planet, isSoulbound: Boolean(template.isSoulbound),
+            isProtected: Boolean(template.isProtected || definition.protected),
+            isSuperFortune: Boolean(template.isSuperFortune),
+            balanceVersion: balance.VERSION, balanceDefinitionId: definition.id,
+            balanceOrigin: balance.describeOrigin(context, definition)
         };
     }
 
@@ -328,101 +326,15 @@ class FortuneFactory {
      * Filters out planet-restricted fortunes that don't match the current planet.
      */
     rollTemplate(playerLootFind = 0, currentPlanet = 'earth', excludeIds = []) {
-        const planetKey = currentPlanet.toLowerCase();
-        const templateIds = Object.keys(this.templates).filter(id => {
-            // Exclude explicitly excluded template IDs
-            if (excludeIds.includes(id)) return false;
-            const template = this.templates[id];
-            
-            // NEVER natural roll soulbound/special fortunes
-            if (template.isSoulbound) return false;
-
-            // If fortune has a planet restriction, only include it on that planet
-            if (template.planetRestriction) {
-                return template.planetRestriction === planetKey;
-            }
-            return true; // No restriction, available everywhere
-        });
-        if (templateIds.length === 0) return null;
-
-        // Rarity weights (higher = rarer)
-        const rarityWeights = {
-            common: 100,
-            improved: 200,
-            rare: 500,
-            epic: 1000,
-            legendary: 2500
-        };
-
-        // Build weighted pool
-        const weighted = templateIds.map(templateId => {
-            const template = this.templates[templateId];
-            const baseThreshold = rarityWeights[template.rarity] || 100;
-            const effectiveThreshold = baseThreshold / (1 + (playerLootFind / 100));
-            const weight = 1000 / effectiveThreshold;
-            return { templateId, weight };
-        });
-
-        // Weighted random selection
-        const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
-        let roll = Math.random() * totalWeight;
-
-        for (const entry of weighted) {
-            roll -= entry.weight;
-            if (roll <= 0) {
-                return entry.templateId;
-            }
-        }
-
-        return weighted[weighted.length - 1].templateId;
+        const game = {...(window.game || {}), fortuneFactory: this};
+        return window.DogeMinerBalance.selectNaturalTemplate(game, 'fortune', {planet: currentPlanet, lootFind: playerLootFind, excludeIds});
     }
 
-    /**
-     * Rolls random numerical values for all stats on a fortune.
-     * Fortune stats scale with Luck + Loot Find (NOT Wow like pickaxes).
-     */
-    _rollStats(statTemplates, playerLuck = 0, playerLootFind = 0, useBaseStatsOnly = false) {
-        // Combined scaling factor from luck and loot find
-        // Use a logarithmic curve to decisively prevent explosive infinite stat loops
-        const scaleFactor = useBaseStatsOnly ? 1 : (1 + Math.log2(1 + (playerLuck / 50) + (playerLootFind / 500)));
-
-        return statTemplates.map(st => {
-            let value;
-
-            if (st.fixedValue !== null && st.fixedValue !== undefined) {
-                value = st.fixedValue;
-            } else if (st.indicator === '+%') {
-                // Percentage stats: roll 1-25%, scaled by luck+lootFind
-                const baseRoll = 1 + Math.random() * 24;
-                value = baseRoll * scaleFactor;
-                value = Math.round(value * 10) / 10;
-            } else if (st.indicator === '+') {
-                // Flat additive stats: roll 1-100, scaled by luck+lootFind
-                const baseRoll = 1 + Math.floor(Math.random() * 99);
-                value = Math.floor(baseRoll * scaleFactor);
-            } else if (st.indicator === '-%') {
-                // Percentage reduction stats (if not fixed)
-                const baseRoll = 1 + Math.floor(Math.random() * 9);
-                value = Math.floor(baseRoll * scaleFactor);
-            } else if (st.indicator === '-') {
-                // Reduction stats: roll 1-50, stored as positive, displayed with -
-                const baseRoll = 1 + Math.floor(Math.random() * 49);
-                value = Math.floor(baseRoll * scaleFactor);
-            }
-
-            // Apply multiplier if present (e.g., Unknown Fortune x4000)
-            if (st.multiplier) {
-                value = Math.floor(value * st.multiplier);
-            }
-
-            return {
-                name: st.name,
-                displayName: st.displayName,
-                indicator: st.indicator,
-                isCore: st.isCore,
-                value: value
-            };
-        });
+    /** Compatibility adapter: old Luck/Loot parameters no longer change fortune stats. */
+    _rollStats(statTemplates, playerLuck = 0, playerLootFind = 0, useBaseStatsOnly = false, template = null, rollContext = null, rng = Math.random) {
+        const balance = window.DogeMinerBalance;
+        const context = {...balance.getRollContext(window.game || {}), ...(rollContext || {})};
+        return balance.rollStats('fortune', template || Object.values(this.templates).find(candidate => candidate.statTemplates === statTemplates) || {statTemplates, isSoulbound: useBaseStatsOnly}, context, rng);
     }
 
     formatStatForDisplay(stat) {
@@ -448,7 +360,7 @@ class FortuneFactory {
 
 // ============================================================
 // FORTUNE MANIFEST
-// Pre-built list of all fortune folders (standard drop pool).
+// Loaded standard and Mystery-only folders; source pools govern eligibility.
 // Protected and Seasonal fortunes are excluded.
 // ============================================================
 
@@ -478,6 +390,10 @@ const FORTUNE_MANIFEST = [
     'Emerald Doge Fortune',
     'Empty Bottle',
     'Empty Salt Shaker',
+    'Dogecoin Mining Site Map',
+    'Enchanted Red Gem',
+    'Enchanted Green Gem',
+    'Huge Enchanted Green Gem',
     'Enchanted Yellow Gem',
     'Equation Matrix Fortune',
     'Filled Bottle',
@@ -512,6 +428,7 @@ const FORTUNE_MANIFEST = [
     'Glowing piece of Wood-Gold',
     'Golden Doge Fortune',
     'Golden Mars Fortune',
+    'Golden Moon Fortune',
     'Golden Rocket Fortune',
     'Golden Scales',
     'Harder Scales',
@@ -583,6 +500,10 @@ const FORTUNE_SPRITES = {
     'Emerald Doge Fortune': 'emerald.webp',
     'Empty Bottle': 'emptypotion.webp',
     'Empty Salt Shaker': 'emptysaltshaker.webp',
+    'Dogecoin Mining Site Map': 'map2.webp',
+    'Enchanted Red Gem': 'redgem.webp',
+    'Enchanted Green Gem': 'greengem.webp',
+    'Huge Enchanted Green Gem': 'largegem.webp',
     'Enchanted Yellow Gem': 'yellowgem.webp',
     'Equation Matrix Fortune': 'emcdoge.webp',
     'Filled Bottle': 'fullpotion.webp',
@@ -617,6 +538,7 @@ const FORTUNE_SPRITES = {
     'Glowing piece of Wood-Gold': 'goldwood.webp',
     'Golden Doge Fortune': 'gold.webp',
     'Golden Mars Fortune': 'gold.webp',
+    'Golden Moon Fortune': 'gold.webp',
     'Golden Rocket Fortune': 'goldrockets.webp',
     'Golden Scales': 'goldscales.webp',
     'Harder Scales': 'reallyscales.webp',

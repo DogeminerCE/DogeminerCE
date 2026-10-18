@@ -1,0 +1,10 @@
+NAME:
+Enchanted Red Gem
+
+RARITY:
+Epic
+
+DESCRIPTION:
+Some sort of enchanted gem. Holding it feels great.
+
+STATS:

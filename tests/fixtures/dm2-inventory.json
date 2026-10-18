@@ -1,0 +1,262 @@
+{
+  "source": "https://dogeminer2.com/assets/play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "attributes": {
+    "click": {
+      "type": "primary",
+      "title": "Đ",
+      "value": "",
+      "tag": "itemorange"
+    },
+    "wow": {
+      "type": "secondary",
+      "title": "Wow",
+      "value": "%",
+      "tag": "itempink"
+    },
+    "rockets": {
+      "type": "secondary",
+      "title": "Space Rocket Costs",
+      "value": "ps",
+      "prefix": "-",
+      "suffix": "%",
+      "tag": "itempink"
+    },
+    "crit": {
+      "type": "secondary",
+      "title": "Critical Chance",
+      "value": "%",
+      "tag": "itemyellow"
+    },
+    "luck": {
+      "type": "secondary",
+      "title": "Luck",
+      "value": "%",
+      "tag": "itemgreen"
+    },
+    "loot": {
+      "type": "secondary",
+      "title": "Loot Find",
+      "value": "%",
+      "tag": "itempurple"
+    },
+    "income": {
+      "type": "secondary",
+      "title": "Helper ĐPS",
+      "value": "%",
+      "tag": "itemyellow"
+    },
+    "dps": {
+      "type": "primary",
+      "title": "ĐPS",
+      "value": "+",
+      "tag": "itemyellow"
+    },
+    "persec": {
+      "type": "secondary",
+      "title": "ĐPS",
+      "value": "+",
+      "tag": "itemyellow"
+    },
+    "karma": {
+      "type": "tertiary",
+      "title": "Karma",
+      "value": "+",
+      "tag": "itemlight"
+    },
+    "gains": {
+      "type": "tertiary",
+      "title": "Gainz",
+      "value": "+",
+      "tag": "itemgreen"
+    },
+    "defkit": {
+      "type": "primary",
+      "title": "Defuse Kit",
+      "value": "+",
+      "tag": "itemgreen"
+    },
+    "mystery": {
+      "type": "tertiary",
+      "title": "Mystery Bonus",
+      "value": "+",
+      "tag": "itemdarkblue"
+    },
+    "happy": {
+      "type": "tertiary",
+      "title": "Happiness",
+      "value": "+",
+      "tag": "itemgreen"
+    },
+    "love": {
+      "type": "tertiary",
+      "value": "%",
+      "title": "<icon></icon>",
+      "tag": "itemred"
+    },
+    "sad": {
+      "type": "tertiary",
+      "title": "Sadness",
+      "value": "-",
+      "tag": "itemgreen"
+    },
+    "angry": {
+      "type": "tertiary",
+      "title": "Angriness",
+      "value": "%",
+      "tag": "itemgreen"
+    },
+    "highground": {
+      "type": "tertiary",
+      "title": "Higher Ground",
+      "value": "%",
+      "tag": "itemsand"
+    },
+    "freedom": {
+      "type": "tertiary",
+      "title": "Freedom",
+      "value": "+",
+      "tag": "itemgreen"
+    },
+    "discipline": {
+      "type": "tertiary",
+      "title": "Discipline",
+      "value": "+",
+      "tag": "itemblue"
+    },
+    "dancing": {
+      "type": "tertiary",
+      "title": "Dancing Skills",
+      "value": "+",
+      "tag": "itemblue"
+    },
+    "lives": {
+      "type": "tertiary",
+      "title": "lives",
+      "value": "+",
+      "tag": "itemblue"
+    },
+    "away": {
+      "type": "secondary",
+      "title": "Max Away Mining Time",
+      "value": "%",
+      "tag": "itemsand"
+    },
+    "cat": {
+      "type": "secondary",
+      "title": "Kittens Income Bonus",
+      "value": "+",
+      "tag": "itemcyan"
+    },
+    "power": {
+      "type": "secondary",
+      "title": "Pickaxe Power",
+      "value": "%",
+      "tag": "itempurple"
+    },
+    "morale": {
+      "type": "secondary",
+      "title": "Helper Morale",
+      "value": "%",
+      "tag": "itemcyan"
+    },
+    "upgrade": {
+      "type": "secondary",
+      "title": "Upgrade Scouting Skill",
+      "value": "%",
+      "tag": "itemblue"
+    },
+    "poison": {
+      "type": "secondary",
+      "title": "Poison Damage",
+      "value": "+",
+      "tag": "itempurple"
+    },
+    "spirit": {
+      "type": "tertiary",
+      "title": "Holiday Spirit",
+      "value": "+",
+      "tag": "itemgreen"
+    },
+    "charity": {
+      "type": "tertiary",
+      "title": "Charity",
+      "value": "+",
+      "tag": "itempurple"
+    },
+    "cooking": {
+      "type": "tertiary",
+      "title": "Cooking Skill",
+      "value": "+",
+      "tag": "itemblue"
+    },
+    "patronage": {
+      "type": "primary",
+      "title": "Patronage",
+      "value": "+",
+      "tag": "itemblue"
+    },
+    "dpsp": {
+      "type": "primary",
+      "title": "% ĐPS",
+      "value": "+",
+      "tag": "itemyellow"
+    }
+  },
+  "tagColors": {
+    "itemorange": "#fcb456",
+    "itempink": "#fe99ff",
+    "itemyellow": "#f4fa53",
+    "itemgreen": "#4ce024",
+    "itempurple": "#c5b0fc",
+    "itemlight": "#ffffff",
+    "itemdarkblue": "#99a7ff",
+    "itemred": "#fe8d8d",
+    "itemsand": "#f5f8aa",
+    "itemblue": "#9dcefc",
+    "itemcyan": "#8dfafe"
+  },
+  "fortunes": [
+    {
+      "id": "map2",
+      "name": "Dogecoin Mining Site Map",
+      "desc": "Shows the location of your own mining site on Earth. It has cate paw-prints on it.",
+      "sprite": "map2",
+      "quality": 0,
+      "attributes": []
+    },
+    {
+      "id": "redgem",
+      "name": "Enchanted Red Gem",
+      "desc": "Some sort of enchanted gem. Holding it feels great.",
+      "sprite": "redgem",
+      "quality": 3,
+      "attributes": []
+    },
+    {
+      "id": "greengem",
+      "name": "Enchanted Green Gem",
+      "desc": "Some sort of enchanted gem. Holding it feels strange.",
+      "sprite": "greengem",
+      "quality": 3,
+      "attributes": []
+    },
+    {
+      "id": "largegem",
+      "name": "Huge Enchanted Green Gem",
+      "desc": "Touching it makes your head spin. Best keep it in a bag for now.",
+      "sprite": "largegem",
+      "quality": 4,
+      "attributes": []
+    }
+  ],
+  "mysteryOnly": [
+    "reallyscales",
+    "essence",
+    "map2",
+    "redgem",
+    "yellowgem",
+    "greengem",
+    "largegem"
+  ]
+}

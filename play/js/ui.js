@@ -30,6 +30,7 @@ class UIManager {
     setupPanels() {
         // Main tab switching functionality
         window.switchMainTab = (tabName) => {
+            if (!['shop', 'upgrades', 'achievements', 'settings'].includes(tabName)) return;
             // Check if this tab is already active
             const currentTab = this.activePanel.replace('-tab', '');
             const isTabAlreadyActive = currentTab === tabName;
@@ -73,6 +74,7 @@ class UIManager {
 
                 // Add new active tab with slide-in animation
                 targetTabElement.classList.add('active');
+                if (tabName === 'achievements') this.game.updateTimelineHistoryUI?.();
                 if (isMovingRight) {
                     targetTabElement.classList.add('slide-in-right');
                 } else {
@@ -106,6 +108,8 @@ class UIManager {
 
         // Planet tab switching with loading transition
         window.switchPlanet = (planetName) => {
+            if (this.game.isStoryOpen || this.game.isBetaReportOpen || this.game.isOfflineReportOpen
+                || this.game.isCutscenePlaying || this.game.isWorldTravelAllowed?.() === false) return false;
             // Cancel helper placement if switching planets to drop helper back in its native unplaced state
             if (this.game && typeof this.game.finishHelperPlacement === 'function') {
                 this.game.finishHelperPlacement();
@@ -118,7 +122,7 @@ class UIManager {
             if (planetName === 'moon') {
                 const spaceRocketCount = this.game.helpers.filter(h => h.type === 'spaceRocket').length;
 
-                if (spaceRocketCount === 0) {
+                if (spaceRocketCount === 0 && !this.game.isWorldPlanetUnlocked?.('moon')) {
                     // Play locked sound
                     if (window.audioManager) {
                         audioManager.playSound('uhoh');
@@ -134,12 +138,12 @@ class UIManager {
                 if (window.audioManager) {
                     audioManager.playSound('uhoh');
                 }
-                window.notificationManager?.showWarning?.('LOCKED: Requires Lander Shibe');
+                this.showPlanetDiscoveryLocked('mars');
                 return;
             }
 
             if (planetName === 'jupiter') {
-                if (!this.isMarsUnlocked()) {
+                if (!this.isMarsUnlocked() && !this.isJupiterUnlocked()) {
                     if (window.audioManager) {
                         audioManager.playSound('uhoh');
                     }
@@ -151,36 +155,19 @@ class UIManager {
                     if (window.audioManager) {
                         audioManager.playSound('uhoh');
                     }
-                    window.notificationManager?.showWarning?.('LOCKED: Requires Jupiter Rocket');
+                    this.showPlanetDiscoveryLocked('jupiter');
                     return;
                 }
             }
 
-            if (planetName === 'titan') {
-                if (!this.isJupiterUnlocked()) {
-                    if (window.audioManager) {
-                        audioManager.playSound('uhoh');
-                    }
-                    window.notificationManager?.showWarning?.('LOCKED: Requires Jupiter');
-                    return;
-                }
-
-                if (!this.isTitanUnlocked()) {
-                    if (window.audioManager) {
-                        audioManager.playSound('uhoh');
-                    }
-                    // Show specific missing requirement
-                    if (!this.playerHasDogeStar()) {
-                        window.notificationManager?.showWarning?.('LOCKED: Requires DogeStar');
-                    } else if (!this.playerHasCloudBaseSensorPackage()) {
-                        window.notificationManager?.showWarning?.('LOCKED: Requires Cloud Base Sensor Package');
-                    }
-                    return;
-                }
+            if (planetName === 'titan' && !this.isTitanUnlocked()) {
+                window.audioManager?.playSound('uhoh');
+                this.showPlanetDiscoveryLocked('titan');
+                return;
             }
 
             // Update planet tab buttons
-            const targetElement = event && event.target ? event.target.closest('.planet-tab') : document.querySelector(`.planet-tab[data-planet="${planetName}"]`);
+            const targetElement = window.event?.target?.closest?.('.planet-tab') || document.querySelector(`.planet-tab[data-planet="${planetName}"]`);
 
             document.querySelectorAll('.planet-tab').forEach(btn => {
                 btn.classList.remove('active');
@@ -234,34 +221,44 @@ class UIManager {
                 }
 
                 // Save current planet's rock health state
-                if (this.game.planetRockData && this.game.planetRockData[this.game.currentLevel]) {
+                if (!this.game.isRockRegenerating && this.game.planetRockData && this.game.planetRockData[this.game.currentLevel]) {
                     this.game.planetRockData[this.game.currentLevel] = {
                         rocksBroken: this.game.rocksBroken,
+                        rockLevel: this.game.rockLevel,
                         currentHP: this.game.rockCurrentHP,
                         maxHP: this.game.rockMaxHP
                     };
                 }
 
+                this.game.resetWorldDiscoveryPresentation?.();
+                // Rick is a temporary aura in the current field.
+                this.game.despawnRick?.({ animate: false });
                 // Clear the current helpers from the screen
                 this.game.clearAllHelperSprites();
 
                 // Update game state to reflect planet change
                 this.game.currentLevel = planetName;
+                this.game.noteStoryLocation?.();
+                this.game.updateDPS();
 
                 // Load the new planet's rock health state
                 if (this.game.planetRockData && this.game.planetRockData[planetName]) {
                     const rockData = this.game.planetRockData[planetName];
                     this.game.rocksBroken = rockData.rocksBroken || 0;
+                    this.game.rockLevel = rockData.rockLevel || 1;
                     this.game.rockBaseHP = this.game.getPlanetRockBaseHP(planetName);
+                    this.game.isRockRegenerating = false;
+                    this.game._helperRockElapsed = 0;
                     
-                    if (rockData.maxHP !== null && rockData.currentHP !== null) {
+                    if (Number.isFinite(rockData.maxHP) && rockData.maxHP > 0 && Number.isFinite(rockData.currentHP) && rockData.currentHP > 0) {
                         this.game.rockMaxHP = rockData.maxHP;
                         this.game.rockCurrentHP = rockData.currentHP;
                     } else {
                         // First time visiting this planet
-                        this.game.rockMaxHP = this.game.rockBaseHP;
-                        this.game.rockCurrentHP = this.game.rockBaseHP;
+                        this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rockLevel - 1, planetName);
+                        this.game.rockCurrentHP = this.game.rockMaxHP;
                     }
+                    this.game.lastDamageThresholdPercent = this.game.rockCurrentHP / this.game.rockMaxHP * 100;
                 }
                 
                 // Update rock UI
@@ -269,9 +266,7 @@ class UIManager {
                     this.game.updateRockHealthDisplay();
                 }
 
-                // Clear upgrade caches so they refresh for the new planet
-                this._cachedUpgrades = null;
-                this._cachedMobileUpgrades = null;
+                // Upgrade offers are restored from this planet's saved slots.
 
                 // Set data-planet attribute on body for CSS targeting
                 document.body.dataset.planet = planetName;
@@ -377,61 +372,7 @@ class UIManager {
                     }
                 }
 
-                // Update backgrounds with the correct pool
-                if (planetName === 'earth') {
-                    // Earth backgrounds
-                    this.game.backgrounds = [
-                        'backgrounds/bg1.webp',
-                        'backgrounds/bg3.webp',
-                        'backgrounds/bg4.webp',
-                        'backgrounds/bg5.webp',
-                        'backgrounds/bg6.webp',
-                        'backgrounds/bg7.webp',
-                        'backgrounds/bg9.webp',
-                        'backgrounds/bg-new.webp'
-                    ];
-                } else if (planetName === 'moon') {
-                    // Moon backgrounds (same as earth since DOM only has 8 background elements)
-                    this.game.backgrounds = [
-                        'backgrounds/bg1.webp',
-                        'backgrounds/bg3.webp',
-                        'backgrounds/bg4.webp',
-                        'backgrounds/bg5.webp',
-                        'backgrounds/bg6.webp',
-                        'backgrounds/bg7.webp',
-                        'backgrounds/bg9.webp',
-                        'backgrounds/bg-new.webp'
-                    ];
-                } else if (planetName === 'mars') {
-                    this.game.backgrounds = [
-                        'backgrounds/bg6.webp',
-                        'assets/backgrounds/bg101.webp',
-                        'assets/backgrounds/bg102.webp',
-                        'assets/backgrounds/bg103.webp',
-                        'assets/backgrounds/bg104.webp',
-                        'assets/backgrounds/bg105.webp',
-                        'backgrounds/bg-new.webp'
-                    ];
-                } else if (planetName === 'jupiter') {
-                    this.game.backgrounds = [
-                        'assets/backgrounds/bgjup01.webp',
-                        'assets/backgrounds/bgjup02.webp',
-                        'assets/backgrounds/bgjup03.webp',
-                        'assets/backgrounds/dogewow.webp'
-                    ];
-                } else if (planetName === 'titan') {
-                    // Titan uses its own background set for atmospheric effect
-                    this.game.backgrounds = [
-                        'assets/backgrounds/titan02.webp',
-                        'assets/backgrounds/titan03.webp',
-                        'assets/backgrounds/titan04.webp',
-                        'assets/backgrounds/titan05.webp'
-                    ];
-                }
-                this.game.currentBackgroundIndex = 0;
-
-                // Sync background image DOM nodes to match the newly selected planet.
-                this.game.syncBackgroundImages?.(true);
+                this.game.setPlanetBackgrounds(planetName);
 
                 // Update the shop to show the appropriate helpers
                 this.updateShopContent();
@@ -448,6 +389,7 @@ class UIManager {
 
                     // Reset transitioning flag
                     this.game.isTransitioning = false;
+                    this.game.updateUI(true); // Restore this planet's field loot even while paused.
 
                     // Trigger landing animation depending on destination
                     const characterContainer = document.getElementById('character-container');
@@ -507,6 +449,7 @@ class UIManager {
                 document.getElementById('achievements-content').classList.add('active');
             } else if (tabName === 'stats') {
                 document.getElementById('stats-content').classList.add('active');
+                this.game.updateTimelineHistoryUI?.();
             }
         };
 
@@ -580,7 +523,7 @@ class UIManager {
                 // Choose the correct helper array based on current planet
                 const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
                 const owned = helperArray.filter(h => h.type === type).length;
-                const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
+                const cost = this.game.getHelperCost(helper.baseCost, owned, type);
                 const canAfford = this.game.dogecoins >= cost;
 
                 // Get upgrade-based info for helpers (applies to all levels with upgrades)
@@ -608,8 +551,8 @@ class UIManager {
 
                 let lockReason = null;
                 if (this.game.currentLevel === 'earth') {
-                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
-                    if (type === 'timeMachineRig' && !jupiterReached) {
+                    // The rig follows its saved invention; the Drive keeps its existing progression gate.
+                    if (type === 'timeMachineRig' && !(this.game.isWorldHelperAvailable?.(type) ?? jupiterReached)) {
                         lockReason = 'notInvented';
                     }
                     else if (type === 'infiniteDogebility' && !jupiterReached) {
@@ -642,6 +585,13 @@ class UIManager {
                         lockReason = 'titanBase';
                     }
                 }
+                if (type === 'marsRocket' && moonBaseOwned) {
+                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (landerShibeOwned ? 'discoveringRoute' : 'landerShibe') : null;
+                }
+                if (type === 'jupiterRocket' && marsBaseOwned) {
+                    const spaceBassOwned = marsHelpers.some(helper => helper.type === 'spaceBass');
+                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (spaceBassOwned ? 'discoveringRoute' : 'spaceBass') : null;
+                }
                 const isLocked = lockReason !== null;
 
 
@@ -667,7 +617,8 @@ class UIManager {
 
                 const buttonDisabled = (!canAfford || isLocked) ? 'disabled' : '';
                 let lockText = 'REQUIRES MOON BASE';
-                if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
+                if (lockReason === 'discoveringRoute') lockText = 'SCOUTING THE ROUTE';
+                else if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
                 else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
@@ -694,7 +645,7 @@ class UIManager {
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
                     <div class="shop-item-title ${titleSizeClass}">${displayName}</div>
-                    <div class="shop-item-dps">${displayDps} ĐPS</div>
+                    <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
                     <div class="shop-item-sprite">
                         <img src="${displayIcon}" alt="${displayName}">
                     </div>
@@ -724,6 +675,7 @@ class UIManager {
 
         // Add event listeners to all buy buttons
         this.setupShopButtonListeners();
+        this.game.updateHelperShopDps?.();
     }
 
     // Render upgrade button for Earth helpers that have upgrades available
@@ -1171,19 +1123,146 @@ class UIManager {
         }
     }
 
+    getDisplayHelperUpgrades(availableUpgrades, mobile = false, persist = true) {
+        const planet = this.game.currentLevel;
+        const offers = this.game.helperUpgradeOffers ||= {};
+        const previous = offers[planet];
+        const slots = window.DogeMinerSearchdoge.slotsFor(this.game, availableUpgrades);
+        const changed = !Array.isArray(previous) || previous.length !== 3 || slots.some((type, i) => type !== previous[i]);
+        offers[planet] = slots;
+        if (changed && persist) window.saveManager?.saveGame(false);
+        const byType = new Map(availableUpgrades.map(upgrade => [upgrade.helperType, upgrade]));
+        // Rendering never discovers or rerolls an offer. Empty slots keep searching.
+        return slots.map(type => byType.get(type) || null);
+    }
+
+    replacePurchasedHelperUpgradeOffer(helperType) {
+        const slots = this.game.helperUpgradeOffers?.[this.game.currentLevel];
+        if (!Array.isArray(slots) || !slots.includes(helperType)) return;
+        this.game.helperUpgradeOffers[this.game.currentLevel] = slots.map(type => type === helperType ? null : type);
+        this.game.delaySearchdogeDiscovery?.();
+        this.updateUpgradeTabCount();
+    }
+
+    renderHelperUpgradePurchaseButtons(upgrade, mobile = false, sectionIndex) {
+        const buttonClass = mobile ? 'mobile-upgrade-buy-btn' : 'upgrade-buy-btn';
+        const attributes = `data-upgrade-helper="${upgrade.helperType}" data-upgrade-level="${upgrade.nextLevel}"${mobile ? ` data-section-index="${sectionIndex}"` : ''}`;
+        const canAffordCoins = window.shopManager.canAffordHelperUpgrade(upgrade.helperType);
+        const canAffordDiamonds = window.shopManager.canAffordHelperUpgrade(upgrade.helperType, 'dogediamonds');
+        return `
+            <div class="helper-upgrade-purchases">
+                <button class="shop-buy-btn ${buttonClass}${canAffordCoins ? '' : ' disabled'}"
+                        ${attributes} data-upgrade-currency="dogecoins"
+                        aria-label="Buy upgrade for ${upgrade.price} Dogecoins" ${canAffordCoins ? '' : 'disabled'}>
+                    <img src="assets/general/dogecoin_70x70.webp" alt="Dogecoins" class="buy-btn-icon">
+                    <span class="buy-btn-price">${this.game.formatNumber(upgrade.price)}</span>
+                </button>
+                ${Number.isFinite(upgrade.diamondPrice) ? `
+                <span class="helper-upgrade-currency-separator" aria-hidden="true">/</span>
+                <button class="searchdoge-unlock-btn helper-upgrade-diamond-btn ${buttonClass}${canAffordDiamonds ? '' : ' disabled'}"
+                        ${attributes} data-upgrade-currency="dogediamonds"
+                        aria-label="Buy upgrade for ${upgrade.diamondPrice} Dogediamonds" ${canAffordDiamonds ? '' : 'disabled'}>
+                    <img src="assets/general/diamond.webp" alt="Dogediamonds">
+                    <span class="unlock-amount">${this.game.formatNumber(upgrade.diamondPrice)}</span>
+                </button>` : ''}
+            </div>`;
+    }
+
+    renderHelperUpgradeCard(upgrade, mobile = false, sectionIndex) {
+        const sprite = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel).idle;
+        const totalDps = upgrade.newDps * upgrade.helperCount;
+        const totalText = totalDps < 1000 ? String(Number(totalDps.toFixed(1))) : this.game.formatNumber(totalDps);
+        const increase = (upgrade.newDps - upgrade.currentDps).toFixed(1);
+        const prefix = mobile ? 'mobile-upgrade' : 'upgrade';
+        return `
+            <div class="${mobile ? 'mobile-upgrade-item' : 'upgrade-item-full'} helper-upgrade-card">
+                <div class="upgrade-art-icon">
+                    <img src="${upgrade.upgradeIcon || sprite}" alt="" aria-hidden="true">
+                </div>
+                <div class="${prefix}-content">
+                    <div class="${prefix}-header">
+                        <div class="${prefix}-name">${upgrade.upgradeName}</div>
+                    </div>
+                    <div class="${prefix}-description">${upgrade.upgradeDesc}</div>
+                    <div class="${prefix}-dps-increase">+${increase} ĐPS per helper</div>
+                </div>
+                <div class="upgrade-helper-preview">
+                    <div class="${prefix}-helper-sprite">
+                        <img src="${sprite}" alt="${upgrade.helperName}">
+                    </div>
+                    <div class="${prefix}-total-dps">${totalText} ĐPS</div>
+                </div>
+                <div class="${prefix}-footer">
+                    ${this.renderHelperUpgradePurchaseButtons(upgrade, mobile, sectionIndex)}
+                </div>
+            </div>`;
+    }
+
+    updateUpgradeTabCount() {
+        const slots = this.game.helperUpgradeOffers?.[this.game.currentLevel] || [];
+        const limit = this.game.searchdogeSlot3Unlocked ? 3 : 2;
+        const owned = this.game.getHelperArrayForLevel();
+        const found = new Set(slots.slice(0, limit).filter(type => typeof type === 'string'
+            && owned.some(helper => helper.type === type) && window.shopManager?.getNextHelperUpgrade(type)));
+        const count = found.size;
+        const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        for (const badge of document.querySelectorAll('.upgrade-tab-count')) {
+            const previous = badge.dataset.count === undefined ? null : Number(badge.dataset.count);
+            badge.parentElement.setAttribute('aria-label', count ? `Upgrades, ${count} found` : 'Upgrades');
+            if (previous === count) continue;
+            badge.dataset.count = String(count);
+            badge._countAnimation?.cancel();
+            badge._countAnimation = null;
+            if (count > 0) {
+                badge.textContent = String(count);
+                badge.hidden = false;
+                if (badge.animate && !reducedMotion && (previous === 0 || (previous !== null && count > previous))) {
+                    badge._countAnimation = badge.animate([
+                        { transform: `scale(${previous === 0 ? 0 : 1})` },
+                        { transform: 'scale(1.18)', offset: 75 / 215 },
+                        { transform: 'scale(1)' }
+                    ], { duration: 215, easing: 'ease-out' });
+                }
+            } else if (previous > 0 && badge.animate && !reducedMotion) {
+                const animation = badge.animate([{ transform: 'scale(1)', opacity: 1 },
+                    { transform: 'scale(0)', opacity: 0 }], { duration: 220, easing: 'ease-in' });
+                badge._countAnimation = animation;
+                animation.onfinish = () => {
+                    if (badge._countAnimation !== animation || badge.dataset.count !== '0') return;
+                    badge.hidden = true;
+                    badge.textContent = '0';
+                    badge._countAnimation = null;
+                };
+            } else {
+                badge.textContent = '0';
+                badge.hidden = true;
+            }
+        }
+        return count;
+    }
+
+    updateHelperUpgradeAffordability() {
+        if (!window.shopManager) return;
+        document.querySelectorAll('[data-upgrade-helper][data-upgrade-currency]').forEach(button => {
+            const type = button.dataset.upgradeHelper;
+            const next = window.shopManager.getNextHelperUpgrade(type);
+            const canAfford = next?.level === Number(button.dataset.upgradeLevel)
+                && window.shopManager.canAffordHelperUpgrade(type, button.dataset.upgradeCurrency);
+            button.disabled = !canAfford;
+            button.classList.toggle('disabled', !canAfford);
+        });
+    }
+
     updateUpgradeContent(fadeInSectionIndex) {
         // Get all available helper upgrades for Earth helpers the player owns
         const availableUpgrades = this.getAvailableHelperUpgrades();
 
-        // Only shuffle once - store the order to prevent changes on scroll
-        if (!this._cachedUpgrades || this._cachedUpgrades.length !== availableUpgrades.length) {
-            this._cachedUpgrades = availableUpgrades.sort(() => Math.random() - 0.5).slice(0, 3);
-        }
-        const displayUpgrades = this._cachedUpgrades;
+        const displayUpgrades = this.getDisplayHelperUpgrades(availableUpgrades);
 
         // Populate the 3 upgrade sections
         const upgradeSections = document.querySelectorAll('.upgrade-section');
         upgradeSections.forEach((section, index) => {
+            if(window.DogeMinerUpgradePresentation?.renderSlot(this,section,index))return;
             // The 3rd Searchdoge slot is gated behind a 1-Dogediamond purchase
             if (index === 2 && !this.game.searchdogeSlot3Unlocked) {
                 const canAfford = (this.game.dogediamonds || 0) >= 1;
@@ -1201,45 +1280,10 @@ class UIManager {
                 section.classList.remove('has-upgrade');
                 return;
             }
-            if (index < displayUpgrades.length) {
+            if (displayUpgrades[index]) {
                 const upgrade = displayUpgrades[index];
-                const canAfford = this.game.dogecoins >= upgrade.price;
-                const priceText = this.game.formatNumber(upgrade.price);
 
-                // Get sprite path for the upgraded helper
-                const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
-                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.webp';
-
-                // Calculate total DPS (new DPS * helper count)
-                const totalDps = upgrade.newDps * upgrade.helperCount;
-                const dpsIncrease = (upgrade.newDps - upgrade.currentDps).toFixed(1);
-
-                // Replace entire section content with the upgrade
-                section.innerHTML = `
-                    <div class="upgrade-item-full">
-                        <div class="upgrade-helper-sprite">
-                            <img src="${helperSprite}" alt="${upgrade.helperName}">
-                        </div>
-                        <div class="upgrade-content">
-                            <div class="upgrade-header">
-                                <div class="upgrade-name">${upgrade.upgradeName}</div>
-                                <div class="upgrade-dps-row">
-                                    <div class="upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
-                                    <div class="upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
-                                </div>
-                            </div>
-                            <div class="upgrade-description">${upgrade.upgradeDesc}</div>
-                            <div class="upgrade-footer">
-                                <button class="shop-buy-btn upgrade-buy-btn${canAfford ? '' : ' disabled'}" 
-                                        data-upgrade-helper="${upgrade.helperType}"
-                                        ${canAfford ? '' : 'disabled'}>
-                                    <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
-                                    <span class="buy-btn-price">${priceText}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                section.innerHTML = this.renderHelperUpgradeCard(upgrade);
                 section.classList.add('has-upgrade');
             } else {
                 // No upgrade available - show "Looking for Upgrades" state
@@ -1316,7 +1360,9 @@ class UIManager {
                     nextLevel: nextUpgrade.level,
                     upgradeName: nextUpgrade.upgradeName,
                     upgradeDesc: nextUpgrade.upgradeDesc,
+                    upgradeIcon: nextUpgrade.upgradeIcon,
                     price: nextUpgrade.price,
+                    diamondPrice: nextUpgrade.diamondPrice,
                     currentDps: currentInfo.dps,
                     newDps: nextUpgrade.dps,
                     helperCount: helperCount
@@ -1329,39 +1375,11 @@ class UIManager {
     }
 
     setupUpgradeBuyListeners() {
-        const upgradeButtons = document.querySelectorAll('.upgrade-buy-btn[data-upgrade-helper]');
-        upgradeButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const helperType = button.getAttribute('data-upgrade-helper');
-                if (helperType && window.shopManager) {
-                    const success = window.shopManager.buyHelperUpgrade(helperType);
-                    if (success) {
-                        // Find the upgrade section that contains this button
-                        const section = button.closest('.upgrade-section');
-                        if (section) {
-                            // Get the section index
-                            const allSections = document.querySelectorAll('.upgrade-section');
-                            let sectionIndex = -1;
-                            allSections.forEach((sec, idx) => {
-                                if (sec === section) sectionIndex = idx;
-                            });
-
-                            // Add fade-out class for animation
-                            section.classList.add('upgrade-fade-out');
-
-                            // Wait for animation to complete, then update content
-                            setTimeout(() => {
-                                section.classList.remove('upgrade-fade-out');
-                                // Pass the section index to only fade-in that one
-                                this.updateUpgradeContent(sectionIndex);
-                            }, 500);
-                        } else {
-                            // Fallback if section not found
-                            this.updateUpgradeContent();
-                        }
-                    }
-                }
+        document.querySelectorAll('.upgrade-buy-btn[data-upgrade-helper]').forEach(button=>{
+            button.addEventListener('click',event=>{
+                event.stopPropagation();
+                if(window.shopManager?.buyHelperUpgrade(button.dataset.upgradeHelper,button.dataset.upgradeCurrency||'dogecoins',Number(button.dataset.upgradeLevel)))
+                    this.updateHelperUpgradeAffordability();
             });
         });
     }
@@ -1454,7 +1472,7 @@ class UIManager {
     }
 
     isMarsUnlocked() {
-        const marsRocketOwned = this.playerHasMarsRocket();
+        const marsRocketOwned = this.playerHasMarsRocket() || this.game.isWorldPlanetUnlocked?.('mars');
 
         if (marsRocketOwned && this.game && !this.game.hasPlayedMoonLaunch) {
             this.game.hasPlayedMoonLaunch = true;
@@ -1469,7 +1487,7 @@ class UIManager {
     }
 
     isJupiterUnlocked() {
-        return this.playerHasJupiterRocket();
+        return this.playerHasJupiterRocket() || this.game.isWorldPlanetUnlocked?.('jupiter');
     }
 
     playerHasDogeStar() {
@@ -1486,48 +1504,29 @@ class UIManager {
     }
 
     isTitanUnlocked() {
-        // Titan requires owning DogeStar AND having Sensor Package upgrade for Cloud Base
-        return this.playerHasDogeStar() && this.playerHasCloudBaseSensorPackage();
+        // DogeStar opens the route; Sensor Package only discovers the destination.
+        return this.game.isWorldPlanetUnlocked ? this.game.isWorldPlanetUnlocked('titan') : this.playerHasDogeStar();
+    }
+
+    showPlanetDiscoveryLocked(planet) {
+        for (const tab of document.querySelectorAll(`.planet-tab[data-planet="${planet}"], .mobile-planet-tab[data-planet="${planet}"]`)) {
+            if (tab.querySelector('.planet-discovery-locked')) continue;
+            const label = document.createElement('span'); label.className = 'planet-discovery-locked'; label.textContent = 'LOCKED';
+            tab.append(label); setTimeout(() => label.remove(), 1501);
+        }
     }
 
     updatePlanetTabVisibility() {
-        const marsTab = document.querySelector('.planet-tab[data-planet="mars"]');
-        if (marsTab) {
-            const marsUnlocked = this.isMarsUnlocked();
-            marsTab.style.display = marsUnlocked ? '' : 'none';
-            marsTab.disabled = !marsUnlocked;
-
-            if (!marsUnlocked && marsTab.classList.contains('active')) {
-                marsTab.classList.remove('active');
-                const fallbackTab = document.querySelector('.planet-tab[data-planet="earth"]');
-                fallbackTab?.classList.add('active');
-            }
-        }
-
-        const jupiterTab = document.querySelector('.planet-tab[data-planet="jupiter"]');
-        if (jupiterTab) {
-            const jupiterUnlocked = this.isJupiterUnlocked();
-            jupiterTab.style.display = jupiterUnlocked ? '' : 'none';
-            jupiterTab.disabled = !jupiterUnlocked;
-
-            if (!jupiterUnlocked && jupiterTab.classList.contains('active')) {
-                jupiterTab.classList.remove('active');
-                const fallbackTab = document.querySelector('.planet-tab[data-planet="earth"]');
-                fallbackTab?.classList.add('active');
-            }
-        }
-
-        const titanTab = document.querySelector('.planet-tab[data-planet="titan"]');
-        if (titanTab) {
-            const titanUnlocked = this.isTitanUnlocked();
-            titanTab.style.display = titanUnlocked ? '' : 'none';
-            titanTab.disabled = !titanUnlocked;
-
-            if (!titanUnlocked && titanTab.classList.contains('active')) {
-                titanTab.classList.remove('active');
-                const fallbackTab = document.querySelector('.planet-tab[data-planet="earth"]');
-                fallbackTab?.classList.add('active');
-            }
+        for (const planet of ['mars', 'jupiter', 'titan']) {
+            const tab = document.querySelector(`.planet-tab[data-planet="${planet}"]`);
+            if (!tab) continue;
+            const unlocked = planet === 'mars' ? this.isMarsUnlocked() : planet === 'jupiter' ? this.isJupiterUnlocked() : this.isTitanUnlocked();
+            const known = this.game.isWorldPlanetKnown?.(planet) || unlocked;
+            tab.style.display = known ? '' : 'none'; tab.disabled = false;
+            tab.setAttribute('aria-disabled', String(!unlocked));
+            tab.setAttribute('aria-label', `${planet === 'mars' ? 'Mars' : planet === 'jupiter' ? 'Jupiter' : 'Titan'}${unlocked ? '' : ' — locked'}`);
+            tab.classList.toggle('discovery-locked', !unlocked);
+            if (!unlocked) tab.classList.remove('active');
         }
 
         // Also update mobile planet tabs
@@ -1587,6 +1586,9 @@ class UIManager {
             mobilePlanetTabs.forEach(tab => {
                 tab.addEventListener('click', (e) => {
                     const planet = e.currentTarget.dataset.planet;
+                    if (planet && e.currentTarget.getAttribute('aria-disabled') === 'true' && ['mars', 'jupiter', 'titan'].includes(planet)) {
+                        this.showPlanetDiscoveryLocked(planet); window.audioManager?.playSound('uhoh'); return;
+                    }
                     if (planet && !e.currentTarget.disabled) {
                         // Use arrow function or bind to ensure 'this' refers to UIManager
                         // switchPlanet is defined on window in setupPanels
@@ -1632,8 +1634,10 @@ class UIManager {
 
             // Update mobile content on window resize
             window.addEventListener('resize', () => {
-                if (window.innerWidth <= 768) {
+                this.game.updateMobileHelperBar();
+                if (this.game.isMobileDevice()) {
                     this.updateMobileShopContent();
+                    if (this.activeMobileTab === 'upgrades') this.updateMobileUpgradesContent();
                 }
             });
 
@@ -1654,7 +1658,7 @@ class UIManager {
                     isUnlocked = true;
                     break;
                 case 'moon':
-                    isUnlocked = this.game.unlockedLevels.has('moon');
+                    isUnlocked = this.game.isWorldPlanetUnlocked?.('moon') ?? this.game.unlockedLevels.has('moon');
                     break;
                 case 'mars':
                     isUnlocked = this.isMarsUnlocked();
@@ -1667,7 +1671,11 @@ class UIManager {
                     break;
             }
 
-            tab.disabled = !isUnlocked;
+            const discovered = ['mars', 'jupiter', 'titan'].includes(planet);
+            tab.hidden = discovered && !(this.game.isWorldPlanetKnown?.(planet) || isUnlocked);
+            tab.disabled = !isUnlocked && !discovered;
+            tab.setAttribute('aria-disabled', String(!isUnlocked));
+            tab.classList.toggle('discovery-locked', !isUnlocked);
             const lockOverlay = tab.querySelector('.mobile-lock-overlay');
             if (lockOverlay) {
                 lockOverlay.style.display = isUnlocked ? 'none' : 'block';
@@ -1756,6 +1764,7 @@ class UIManager {
 
     // Switch between mobile tabs
     switchMobileTab(tabName) {
+        if (!['shop', 'upgrades', 'achievements', 'settings'].includes(tabName)) return;
         // Check if this tab is already active
         if (this.activeMobileTab === tabName) return;
 
@@ -1799,6 +1808,7 @@ class UIManager {
 
                 // Add new active tab with slide-in animation
                 targetTabContent.classList.add('active');
+                if (tabName === 'achievements') this.game.updateTimelineHistoryUI?.();
                 if (isMovingRight) {
                     targetTabContent.classList.add('slide-in-right');
                 } else {
@@ -1872,7 +1882,7 @@ class UIManager {
             if (i < helperEntries.length) {
                 const [type, helper] = helperEntries[i];
                 const owned = helperArray.filter(h => h.type === type).length;
-                const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
+                const cost = this.game.getHelperCost(helper.baseCost, owned, type);
                 const canAfford = this.game.dogecoins >= cost;
 
                 // Check if helper is locked (same logic as desktop)
@@ -1887,8 +1897,8 @@ class UIManager {
                 const jupiterReached = this.isJupiterUnlocked();
 
                 if (this.game.currentLevel === 'earth') {
-                    // Time Machine Mining Rig and Infinite Dogebility Drive unlock when Jupiter is reached
-                    if (type === 'timeMachineRig' && !jupiterReached) {
+                    // The rig follows its saved invention; the Drive keeps its existing progression gate.
+                    if (type === 'timeMachineRig' && !(this.game.isWorldHelperAvailable?.(type) ?? jupiterReached)) {
                         lockReason = 'notInvented';
                     }
                     // Infinite Dogebility Drive requires further progress
@@ -1922,6 +1932,13 @@ class UIManager {
                         lockReason = 'titanBase';
                     }
                 }
+                if (type === 'marsRocket' && moonBaseOwned) {
+                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (landerShibeOwned ? 'discoveringRoute' : 'landerShibe') : null;
+                }
+                if (type === 'jupiterRocket' && marsBaseOwned) {
+                    const spaceBassOwned = marsHelpers.some(helper => helper.type === 'spaceBass');
+                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (spaceBassOwned ? 'discoveringRoute' : 'spaceBass') : null;
+                }
                 const isLocked = lockReason !== null;
 
                 const priceText = this.game.formatNumber(cost);
@@ -1952,7 +1969,8 @@ class UIManager {
 
                 // Build lock text based on lock reason
                 let lockText = 'REQUIRES MOON BASE';
-                if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
+                if (lockReason === 'discoveringRoute') lockText = 'SCOUTING THE ROUTE';
+                else if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
                 else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
                 else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
                 else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
@@ -1971,7 +1989,7 @@ class UIManager {
                 item.innerHTML = `
                     <div class="shop-item-quantity">#${owned}</div>
                     <div class="shop-item-title">${displayName}</div>
-                    <div class="shop-item-dps">${displayDps} ĐPS</div>
+                    <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
                     <div class="shop-sprite-description-container">
                         <div class="shop-item-sprite">
                             <img src="${displayIcon}" alt="${displayName}">
@@ -2008,6 +2026,7 @@ class UIManager {
 
             mobileShopContent.appendChild(item);
         }
+        this.game.updateHelperShopDps?.();
     }
 
     // Update mobile upgrades content
@@ -2018,11 +2037,7 @@ class UIManager {
         // Get all available helper upgrades for the current level's helpers
         const availableUpgrades = this.getAvailableHelperUpgrades();
 
-        // Only shuffle once - store the order to prevent changes on scroll
-        if (!this._cachedMobileUpgrades || this._cachedMobileUpgrades.length !== availableUpgrades.length) {
-            this._cachedMobileUpgrades = availableUpgrades.sort(() => Math.random() - 0.5).slice(0, 3);
-        }
-        const displayUpgrades = this._cachedMobileUpgrades;
+        const displayUpgrades = this.getDisplayHelperUpgrades(availableUpgrades, true);
 
         // Build HTML for upgrade sections
         let html = '<div class="mobile-upgrade-sections">';
@@ -2046,45 +2061,13 @@ class UIManager {
                 `;
                 continue;
             }
-            if (i < displayUpgrades.length) {
+            if (displayUpgrades[i]) {
                 const upgrade = displayUpgrades[i];
-                const canAfford = this.game.dogecoins >= upgrade.price;
-                const priceText = this.game.formatNumber(upgrade.price);
-
-                // Get sprite path for the upgraded helper
-                const spritePaths = this.game.getHelperSpritePaths(upgrade.helperType, upgrade.nextLevel);
-                const helperSprite = spritePaths?.idle || 'assets/helpers/shibes/shibes-idle-0.webp';
-
-                // Calculate total DPS (new DPS * helper count)
-                const totalDps = upgrade.newDps * upgrade.helperCount;
-                const dpsIncrease = (upgrade.newDps - upgrade.currentDps).toFixed(1);
 
                 html += `
-                    <div class="mobile-upgrade-section${fadeInSectionIndex === i ? ' mobile-upgrade-fade-in' : ''}" data-section-index="${i}">
-                        <div class="mobile-upgrade-item">
-                            <div class="mobile-upgrade-helper-sprite">
-                                <img src="${helperSprite}" alt="${upgrade.helperName}">
-                            </div>
-                            <div class="mobile-upgrade-content">
-                                <div class="mobile-upgrade-header">
-                                    <div class="mobile-upgrade-name">${upgrade.upgradeName}</div>
-                                    <div class="mobile-upgrade-total-dps">${this.game.formatNumber(totalDps)} ĐPS</div>
-                                </div>
-                                <div class="mobile-upgrade-description">${upgrade.upgradeDesc}</div>
-                                <div class="mobile-upgrade-footer">
-                                    <button class="shop-buy-btn mobile-upgrade-buy-btn${canAfford ? '' : ' disabled'}" 
-                                            data-upgrade-helper="${upgrade.helperType}"
-                                            data-section-index="${i}"
-                                            ${canAfford ? '' : 'disabled'}>
-                                        <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
-                                        <span class="buy-btn-price">${priceText}</span>
-                                    </button>
-                                    <div class="mobile-upgrade-dps-increase">+${dpsIncrease} ĐPS per helper</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    <div class="mobile-upgrade-section has-upgrade${fadeInSectionIndex === i ? ' mobile-upgrade-fade-in' : ''}" data-section-index="${i}">
+                        ${this.renderHelperUpgradeCard(upgrade, true, i)}
+                    </div>`;
             } else {
                 // No upgrade available - show "Looking for Upgrades" state
                 html += `
@@ -2103,6 +2086,8 @@ class UIManager {
         html += '</div>';
         mobileUpgradesContainer.innerHTML = html;
 
+        for(const section of mobileUpgradesContainer.querySelectorAll('[data-section-index]'))
+            window.DogeMinerUpgradePresentation?.renderSlot(this,section,Number(section.dataset.sectionIndex),true);
         // Attach event listeners for mobile upgrade buy buttons
         this.setupMobileUpgradeBuyListeners();
 
@@ -2119,41 +2104,11 @@ class UIManager {
 
     // Setup mobile upgrade buy button listeners
     setupMobileUpgradeBuyListeners() {
-        const upgradeButtons = document.querySelectorAll('.mobile-upgrade-buy-btn[data-upgrade-helper]');
-        upgradeButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const helperType = button.getAttribute('data-upgrade-helper');
-                const sectionIndex = parseInt(button.getAttribute('data-section-index'), 10);
-
-                if (helperType && window.shopManager) {
-                    const success = window.shopManager.buyHelperUpgrade(helperType);
-                    if (success) {
-                        // Find the upgrade section that contains this button
-                        const section = button.closest('.mobile-upgrade-section');
-                        if (section) {
-                            // Add fade-out class for animation
-                            section.classList.add('mobile-upgrade-fade-out');
-
-                            // Wait for animation to complete, then update content
-                            setTimeout(() => {
-                                section.classList.remove('mobile-upgrade-fade-out');
-                                // Clear cached upgrades to get fresh list
-                                this._cachedMobileUpgrades = null;
-                                // Pass the section index to only fade-in that one
-                                this.updateMobileUpgradesContent(sectionIndex);
-                                // Also update mobile shop and helper bar
-                                this.updateMobileShopContent();
-                                this.game.updateMobileHelperBar();
-                            }, 500);
-                        } else {
-                            this._cachedMobileUpgrades = null;
-                            this.updateMobileUpgradesContent();
-                            this.updateMobileShopContent();
-                            this.game.updateMobileHelperBar();
-                        }
-                    }
-                }
+        document.querySelectorAll('.mobile-upgrade-buy-btn[data-upgrade-helper]').forEach(button=>{
+            button.addEventListener('click',event=>{
+                event.stopPropagation();
+                if(window.shopManager?.buyHelperUpgrade(button.dataset.upgradeHelper,button.dataset.upgradeCurrency||'dogecoins',Number(button.dataset.upgradeLevel)))
+                    this.updateHelperUpgradeAffordability();
             });
         });
     }
@@ -2167,6 +2122,8 @@ class UIManager {
         mobileAchievementsContent.innerHTML = `
             <div class="mobile-content-wrapper">
                 <h3 class="mobile-section-header">Statistics</h3>
+                <section id="mobile-timeline-summary" class="timeline-history timeline-summary" aria-label="Current timeline" hidden></section>
+                <h3 class="statistics-lifetime-title">Lifetime statistics</h3>
                 <div class="mobile-stats-list">
                     <div class="stat-row">
                         <span class="stat-label">Total Dogecoins:</span>
@@ -2189,6 +2146,10 @@ class UIManager {
                         <span id="mobile-highest-dps" class="stat-value">0</span>
                     </div>
                     <div class="stat-row">
+                        <span class="stat-label">Highest Critical Hit:</span>
+                        <span id="mobile-highest-crit" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-row">
                         <span class="stat-label">Helpers Owned:</span>
                         <span id="mobile-helpers-owned" class="stat-value">0</span>
                     </div>
@@ -2201,6 +2162,7 @@ class UIManager {
                         <span id="mobile-play-time" style="font-weight: 700; font-size: 14px;">0:00:00</span>
                     </div>
                 </div>
+                <section id="mobile-timeline-history" class="timeline-history" aria-label="Timeline history" hidden></section>
             </div>
         `;
 
@@ -2220,6 +2182,8 @@ class UIManager {
             if (mobileTotalClicks) mobileTotalClicks.textContent = this.game.formatNumber(this.game.totalClicks || 0);
             if (mobileCurrentDps) mobileCurrentDps.textContent = this.game.formatNumber(this.game.dps || 0) + ' Đ/s';
             if (mobileHighestDps) mobileHighestDps.textContent = this.game.formatNumber(this.game.highestDps || 0) + ' Đ/s';
+            const mobileHighestCrit = document.getElementById('mobile-highest-crit');
+            if (mobileHighestCrit) mobileHighestCrit.textContent = this.game.formatNumber(this.game.records?.highestcrit || 0);
 
             const totalHelpers = (this.game.helpers?.length || 0) +
                 (this.game.moonHelpers?.length || 0) +
@@ -2246,6 +2210,7 @@ class UIManager {
 
     // Update mobile stats (called regularly when achievements tab is open)
     updateMobileStats() {
+        this.game?.updateTimelineHistoryUI?.();
         if (!this.game || this.activeMobileTab !== 'achievements') return;
 
         const mobileTotalMined = document.getElementById('mobile-total-mined');
@@ -2261,6 +2226,8 @@ class UIManager {
         if (mobileTotalClicks) mobileTotalClicks.textContent = this.game.formatNumber(this.game.totalClicks || 0);
         if (mobileCurrentDps) mobileCurrentDps.textContent = this.game.formatNumber(this.game.dps || 0) + ' Đ/s';
         if (mobileHighestDps) mobileHighestDps.textContent = this.game.formatNumber(this.game.highestDps || 0) + ' Đ/s';
+        const mobileHighestCrit = document.getElementById('mobile-highest-crit');
+        if (mobileHighestCrit) mobileHighestCrit.textContent = this.game.formatNumber(this.game.records?.highestcrit || 0);
 
         const totalHelpers = (this.game.helpers?.length || 0) +
             (this.game.moonHelpers?.length || 0) +
@@ -2302,28 +2269,83 @@ class UIManager {
                         <span class="setting-label">Background Music</span>
                     </label>
                     <label class="setting-item">
+                        <input type="checkbox" id="mobile-mute-rock-sounds" ${this.game.rockSoundsEnabled === false ? 'checked' : ''}>
+                        <span class="setting-label">Mute Rock Sounds</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-background-audio-enabled" ${this.game.backgroundAudioEnabled !== false ? 'checked' : ''}>
+                        <span class="setting-label">Sound in Background</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-hints-enabled" ${this.game.hintsEnabled !== false ? 'checked' : ''}>
+                        <span class="setting-label">Show Hints</span>
+                    </label>
+                    <label class="setting-item">
                         <input type="checkbox" id="mobile-notifications-enabled" ${notificationsChecked}>
                         <span class="setting-label">Notifications</span>
                     </label>
+                    ${this.game.timelineNumber > 2 ? `
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-stories-enabled" ${this.game.storiesEnabled !== false ? 'checked' : ''}>
+                        <span class="setting-label">Enable Story Popups</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-news-enabled" ${this.game.newsEnabled !== false ? 'checked' : ''}>
+                        <span class="setting-label">Enable News</span>
+                    </label>` : ''}
+                    ${this.game.timelineNumber > 1 ? `<label class="setting-item">
+                        <input type="checkbox" id="mobile-auto-pickup-loot" ${this.game.getLootAutomationForSave?.().enabled ? 'checked' : ''}>
+                        <span class="setting-label">Auto-Pickup Loot (equip new)</span>
+                    </label>` : ''}
                     <label class="setting-item">
                         <input type="checkbox" id="mobile-auto-save-enabled" ${autoSaveChecked}>
                         <span class="setting-label">Auto Save</span>
                     </label>
-                    <label class="setting-item">
-                        <input type="checkbox" id="mobile-force-mobile-ui" ${localStorage.getItem('forceMobileUI') === '1' ? 'checked' : ''}>
-                        <span class="setting-label">Force Mobile UI</span>
+                    <label class="setting-item" ${(this.game.timelineNumber || 1)>1 ? '' : 'hidden'}>
+                        <input type="checkbox" id="mobile-holidays-enabled" ${this.game.seasonal?.enabled!==false?'checked':''}>
+                        <span class="setting-label">Holiday Events</span>
                     </label>
-                    <label class="setting-item" style="margin-top: 10px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; cursor: default;">
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-controller-indicators-enabled" ${window.controllerManager?.showIndicators !== false ? 'checked' : ''}>
+                        <span class="setting-label">Controller Button Indicators</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-auto-place-helpers" ${this.game.autoPlaceHelpers !== false ? 'checked' : ''}>
+                        <span class="setting-label">Auto place helpers</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-disable-controller" ${window.controllerManager?._disabledByUser ? 'checked' : ''}>
+                        <span class="setting-label">Disable Controller Input</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-less-effects" ${this.game.lessEffects ? 'checked' : ''}>
+                        <span class="setting-label">Less Effects</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="mobile-limit-fps" ${this.game.limitFps ? 'checked' : ''}>
+                        <span class="setting-label">Limit FPS (48)</span>
+                    </label>
+                    <label class="setting-item mobile-select-setting">
+                        <span class="setting-label">Layout</span>
+                        <select id="mobile-layout-mode" aria-label="Game layout"><option value="auto">Automatic</option><option value="desktop">Desktop</option><option value="tablet">Tablet</option><option value="phone">Phone</option></select>
+                    </label>
+                    <label class="setting-item mobile-select-setting">
                         <span class="setting-label">Value Update Rate</span>
-                        <select id="mobile-value-update-rate" style="padding: 5px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.3); background: #eee; width: 100%; font-family: 'DogeSans', sans-serif;">
-                            <option value="0" ${localStorage.getItem('valueUpdateRate') === '0' ? 'selected' : ''}>Instant (Per Frame)</option>
-                            <option value="100" ${localStorage.getItem('valueUpdateRate') === '100' ? 'selected' : ''}>100ms</option>
-                            <option value="1000" ${(localStorage.getItem('valueUpdateRate') === '1000' || !localStorage.getItem('valueUpdateRate')) ? 'selected' : ''}>1 Second (Default)</option>
-                            <option value="5000" ${localStorage.getItem('valueUpdateRate') === '5000' ? 'selected' : ''}>5 Seconds</option>
+                        <select id="mobile-value-update-rate">
+                            <option value="20" ${this.game.getValueUpdateRate() === 20 ? 'selected' : ''}>Smooth (Default)</option>
+                            <option value="0" ${this.game.getValueUpdateRate() === 0 ? 'selected' : ''}>Instant (Per Frame)</option>
+                            <option value="100" ${this.game.getValueUpdateRate() === 100 ? 'selected' : ''}>100ms</option>
+                            <option value="1000" ${this.game.getValueUpdateRate() === 1000 ? 'selected' : ''}>1 Second</option>
+                            <option value="5000" ${this.game.getValueUpdateRate() === 5000 ? 'selected' : ''}>5 Seconds</option>
                         </select>
                     </label>
                 </div>
                 
+                <section class="mobile-supporter-section" id="mobile-supporter-settings-section">
+                    <h3 class="mobile-section-header">Support DogeminerCE</h3>
+                    <p>Want to support development? Unlock sweet in-game perks!</p>
+                    <button class="setting-btn" onclick="openSupporterModal()">Become a Supporter!</button>
+                </section>
                 <h3 class="mobile-section-header">Cloud Save</h3>
                 <div id="mobile-cloud-save-section" style="margin-bottom: 15px;">
                     <div id="mobile-user-info" style="display: none;">
@@ -2360,41 +2382,17 @@ class UIManager {
             </div>
         `;
 
+        window.DogeMinerPerformance?.bind(this.game, 'mobile-');
         // Attach event listeners
-        const soundCheckbox = document.getElementById('mobile-sound-enabled');
-        if (soundCheckbox) {
-            soundCheckbox.checked = this.game.soundEnabled; // Ensure initial state is correct
-            soundCheckbox.addEventListener('change', (e) => {
-                this.game.soundEnabled = e.target.checked;
-                if (window.audioManager) {
-                    window.audioManager.soundEnabled = this.game.soundEnabled;
-                }
-                if (window.saveGame) window.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('sound-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+        for (const [id, key, inverse] of window.audioManager?.audioPreferences?.() || []) {
+            document.getElementById(`mobile-${id}`)?.addEventListener('change', event => {
+                window.audioManager.setAudioPreference(key, inverse ? !event.target.checked : event.target.checked);
             });
         }
 
-        const musicCheckbox = document.getElementById('mobile-music-enabled');
-        if (musicCheckbox) {
-            musicCheckbox.checked = this.game.musicEnabled; // Ensure initial state is correct
-            musicCheckbox.addEventListener('change', (e) => {
-                this.game.musicEnabled = e.target.checked;
-                if (window.audioManager) {
-                    window.audioManager.musicEnabled = this.game.musicEnabled;
-                    if (this.game.musicEnabled) {
-                        window.audioManager.playBackgroundMusic();
-                    } else {
-                        window.audioManager.stopMusic();
-                    }
-                }
-                if (window.saveGame) window.saveGame(false);
-
-                // Sync desktop checkbox
-                const desktopCheckbox = document.getElementById('music-enabled');
-                if (desktopCheckbox) desktopCheckbox.checked = e.target.checked;
+        for (const [id, key] of [['hints', 'hintsEnabled'], ['stories', 'storiesEnabled'], ['news', 'newsEnabled']]) {
+            document.getElementById(`mobile-${id}-enabled`)?.addEventListener('change', event => {
+                this.game.setStoryPreference(key, event.target.checked);
             });
         }
 
@@ -2424,6 +2422,17 @@ class UIManager {
             });
         }
 
+        for (const id of ['controller-indicators-enabled', 'auto-place-helpers', 'disable-controller']) {
+            document.getElementById('mobile-' + id)?.addEventListener('change', event => {
+                const desktop = document.getElementById(id);
+                if (!desktop) return;
+                desktop.checked = event.target.checked;
+                desktop.dispatchEvent(new Event('change', {bubbles: true}));
+            });
+        }
+
+        window.DogeMinerLayout?.sync(this.game);
+        this.game.syncSeasonalSettings?.();
         const forceMobileCheckbox = document.getElementById('mobile-force-mobile-ui');
         if (forceMobileCheckbox) {
             forceMobileCheckbox.addEventListener('change', (e) => {
@@ -2447,6 +2456,8 @@ class UIManager {
                 if (desktopSelect) desktopSelect.value = e.target.value;
             });
         }
+
+        if (typeof isXboxBrowser === 'function' && isXboxBrowser()) window.controllerManager?._hideXboxOnlyElements();
 
         // Update cloud save UI based on user sign-in state
         const userInfo = document.getElementById('user-info');

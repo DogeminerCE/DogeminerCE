@@ -6,6 +6,12 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dogeminer:CE</title>
+    <script>
+        // A missing sandbox bootstrap must stop boot before any player-save access.
+        window.CEParityTesting = { active: /^checkpoint-(?:[1-9]|[1-5][0-9]|6[0-9])$/.test(new URLSearchParams(location.search).get('parityTest')),
+            error: 'Checkpoint test storage could not be loaded. Please refresh.' };
+    </script>
+    <script src="js/parity-test-storage.js?v=69"></script>
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.webp">
@@ -13,7 +19,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.webp">
     <link rel="manifest" href="../favicon_io/site.webmanifest">
 
-    <link rel="stylesheet" href="styles.css?v=36">
+    <link rel="stylesheet" href="styles.css?v=153">
     <style>
         @font-face {
             font-family: 'DogeSans';
@@ -92,18 +98,51 @@
 </head>
 
 <body>
+    <!-- Round and antialias only the outline mask; keep the original sprite crisp.
+         The sharpened edge extends 2px, with a narrow antialiased fringe. -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false"
+        style="position: absolute; pointer-events: none;">
+        <defs>
+            <filter id="mystery-solid-outline" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+                <feComponentTransfer in="SourceGraphic" result="clean-box"><feFuncA type="discrete" tableValues="0 1" /></feComponentTransfer>
+                <feMorphology in="clean-box" operator="dilate" radius="2" result="expanded-box" />
+                <feComposite in="expanded-box" in2="clean-box" operator="out" result="box-edge" />
+                <feFlood flood-color="#495dff" result="box-color" />
+                <feComposite in="box-color" in2="box-edge" operator="in" result="box-stroke" />
+                <feMerge><feMergeNode in="box-stroke" /><feMergeNode in="clean-box" /></feMerge>
+            </filter>
+            <filter id="green-sprite-outline" x="-10%" y="-10%" width="120%" height="120%"
+                color-interpolation-filters="sRGB">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="expanded-alpha" />
+                <feGaussianBlur in="expanded-alpha" stdDeviation="0.75" result="rounded-alpha" />
+                <feComponentTransfer in="rounded-alpha" result="stroke-alpha">
+                    <feFuncA type="linear" slope="10" intercept="-0.4" />
+                </feComponentTransfer>
+                <feComposite in="stroke-alpha" in2="SourceAlpha" operator="out" result="outline-alpha" />
+                <feFlood flood-color="#4caf50" result="outline-color" />
+                <feComposite in="outline-color" in2="outline-alpha" operator="in" result="outline" />
+                <feMerge>
+                    <feMergeNode in="outline" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+            <filter id="orange-sprite-outline" x="-15%" y="-15%" width="130%" height="130%"
+                color-interpolation-filters="sRGB">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="expanded-alpha" />
+                <feComposite in="expanded-alpha" in2="SourceAlpha" operator="out" result="outline-alpha" />
+                <feFlood flood-color="#f1951d" result="outline-color" />
+                <feComposite in="outline-color" in2="outline-alpha" operator="in" result="outline" />
+                <feMerge><feMergeNode in="outline" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+        </defs>
+    </svg>
+
     <!-- Page Background (with ad spaces) -->
     <div id="page-background">
         <!-- Background Images -->
         <div id="background-container">
             <img src="backgrounds/bg1.webp" alt="Background" id="background-image-1" class="background-image active">
-            <img src="backgrounds/bg3.webp" alt="Background" id="background-image-2" class="background-image">
-            <img src="backgrounds/bg4.webp" alt="Background" id="background-image-3" class="background-image">
-            <img src="backgrounds/bg5.webp" alt="Background" id="background-image-4" class="background-image">
-            <img src="backgrounds/bg6.webp" alt="Background" id="background-image-5" class="background-image">
-            <img src="backgrounds/bg7.webp" alt="Background" id="background-image-6" class="background-image">
-            <img src="backgrounds/bg9.webp" alt="Background" id="background-image-7" class="background-image">
-            <img src="backgrounds/bg-new.webp" alt="Background" id="background-image-8" class="background-image">
+            <img alt="" id="background-image-2" class="background-image" aria-hidden="true">
         </div>
     </div>
 
@@ -119,6 +158,7 @@
                             alt="Pickaxes" class="switcher-btn-icon">
                     </div>
                     <span class="switcher-label">PICKAXES</span>
+                    <span class="inventory-unread" id="pickaxe-unread" aria-hidden="true" hidden></span>
                 </button>
                 <button class="switcher-btn" id="fortune-btn" onclick="openFortuneModal()">
                     <div class="switcher-btn-circle">
@@ -126,6 +166,7 @@
                             class="switcher-btn-icon fortune-icon-placeholder">
                     </div>
                     <span class="switcher-label">FORTUNES</span>
+                    <span class="inventory-unread" id="fortune-unread" aria-hidden="true" hidden></span>
                 </button>
                 <button class="switcher-btn mystery-box-sidebar-btn" id="mystery-box-btn"
                     onclick="window.game.openMysteryBoxModal()" style="display:none">
@@ -133,15 +174,6 @@
                         class="mbox-sidebar-icon">
                     <div id="mbox-sidebar-timer" class="mbox-sidebar-timer">--:--</div>
                 </button>
-            </div>
-
-            <!-- Mystery Box Modal -->
-            <div id="mystery-box-modal" class="switcher-modal">
-                <div class="switcher-modal-content mystery-box-modal-content">
-                    <div id="mystery-box-modal-body">
-                        <!-- States rendered dynamically by JS -->
-                    </div>
-                </div>
             </div>
 
             <!-- Dogediamonds First-Find Explainer -->
@@ -183,19 +215,25 @@
 
                 <!-- Particle Effects -->
                 <div id="particle-container"></div>
-
-                <!-- Floating Coins -->
-                <div id="floating-coins"></div>
             </div>
 
-            <!-- Dogediamond Counter (top-right of left panel) -->
-            <div id="diamond-counter" style="display: none;">
-                <img src="assets/general/diamond.webp" alt="Dogediamonds" class="diamond-counter-icon">
-                <span id="diamond-amount">0</span>
+            <!-- Floating Coins (Layered above mining area, under stats display) -->
+            <div id="floating-coins"></div>
+
+            <!-- Top-right HUD: Dogetalkie (injected) + Dogediamond counter -->
+            <div id="topright-hud">
+                <div id="diamond-counter" style="display: none;">
+                    <img src="assets/general/diamond.webp" alt="Dogediamonds" class="diamond-counter-icon">
+                    <span id="diamond-amount">0</span>
+                </div>
             </div>
 
             <!-- Helper Container -->
             <div id="helper-container"></div>
+            <div id="planet-summary" aria-label="Current planet and population">
+                <img id="planet-summary-icon" src="../assets/general/earth.webp" alt="">
+                <div><div id="planet-summary-name">EARTH</div><div id="planet-summary-population">POPULATION: 1</div></div>
+            </div>
 
             <!-- Stats Display -->
             <div id="stats-display">
@@ -212,7 +250,7 @@
 
         <!-- Version Indicator & Supporter Badge -->
         <div id="footer-badges">
-            <div id="version-indicator">v0.055 (ALPHA)</div>
+            <div id="version-indicator">v0.1 (BETA)</div>
             <div id="supporter-stat-display" onclick="openSupporterModal()" style="display: none;">
                 &#x1F496; SUPPORTER
             </div>
@@ -334,35 +372,45 @@
             </div>
         </div>
 
-        <!-- Dogebag Modal -->
-        <div id="dogebag-modal" class="switcher-modal">
-            <div class="switcher-modal-content dogebag-modal-content">
-                <!-- State 1: The Prompt -->
-                <div id="dogebag-state-prompt" class="dogebag-state">
-                    <img src="assets/general/icons/dogebag.webp" alt="Dogebag" class="dogebag-modal-icon">
-                    <h2 class="modal-title">A DOGEBAG!</h2>
-                    <p class="modal-subtitle">A DOGEBAG is a magical container that may contain special items!</p>
+        <!-- Batch Dogebag scene; independent of the old inventory modal animation. -->
+        <div id="dogebag-modal" class="dogebag-overlay" role="dialog" aria-modal="true" aria-labelledby="dogebag-burst-title">
+            <div class="dogebag-scene">
+                <h2 id="dogebag-burst-title">DOGEBAG CONTAINED:</h2>
+                <p id="dogebag-batch-summary" aria-live="polite" hidden></p>
+                <button class="dogebag-burst-close" aria-label="Close rewards" onclick="closeDogebagModal()">×</button>
+                <div id="dogebag-burst-stage">
+                    <img id="dogebag-burst-bag" src="assets/general/icons/dogebag.webp" alt="">
+                    <span id="dogebag-burst-count"></span>
+                </div>
+                <div id="dogebag-state-prompt">
                     <button class="dogebag-open-btn" onclick="openDogebagContents()">OPEN</button>
                 </div>
-                <!-- State 2: The Reveal -->
-                <div id="dogebag-state-reveal" class="dogebag-state" style="display:none;">
-                    <div class="dogebag-radial-container">
-                        <img src="assets/general/fx/radial.webp" alt="" class="dogebag-radial-fx">
-                        <img id="dogebag-item-icon" src="" alt="" class="dogebag-item-icon">
-                    </div>
-                    <h2 class="modal-title">DOGEBAG CONTAINED:</h2>
-                    <div id="dogebag-item-name" class="dogebag-item-name"></div>
-                    <div id="dogebag-item-rarity" class="dogebag-item-rarity"></div>
-                    <div id="dogebag-item-description" class="dogebag-item-description"></div>
-                    <div id="dogebag-item-dpc" class="dogebag-item-dpc" style="display:none;">
-                        <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
-                        <span id="dogebag-dpc-value"></span>
-                    </div>
-                    <div id="dogebag-item-stats" class="dogebag-item-stats"></div>
-                    <div id="dogebag-actions" class="dogebag-actions">
-                        <!-- Buttons dynamically set by JS -->
-                    </div>
+                <div id="mystery-loot-prompt" hidden>
+                    <p id="mystery-loot-status"></p>
+                    <p id="mystery-loot-timer"></p>
+                    <p id="mystery-loot-bonus"></p>
+                    <button id="mystery-loot-open" class="dogebag-open-btn" onclick="window.game.openMysteryBoxRewards()">OPEN NOW</button>
                 </div>
+                <div id="dogebag-state-reveal" hidden>
+                    <div class="dogebag-prize-layout">
+                        <div class="dogebag-prize-card">
+                            <img id="dogebag-item-icon" alt="" class="dogebag-item-icon">
+                            <div id="dogebag-item-name" class="dogebag-item-name"></div>
+                        </div>
+                        <div class="dogebag-prize-details">
+                            <div id="dogebag-item-rarity" class="dogebag-item-rarity"></div>
+                            <div id="dogebag-item-dpc" class="dogebag-item-dpc">
+                                <img src="assets/general/dogecoin_70x70.webp" alt="DPC">
+                                <span id="dogebag-dpc-value"></span>
+                            </div>
+                            <div id="dogebag-item-description" class="dogebag-item-description"></div>
+                            <div id="dogebag-item-stats" class="dogebag-item-stats"></div>
+                        </div>
+                    </div>
+                    <div id="dogebag-currency-display"></div>
+                    <div id="dogebag-actions" class="dogebag-actions"></div>
+                </div>
+                <div id="dogebag-reward-tray" aria-label="Opened Dogebag loot"></div>
             </div>
         </div>
 
@@ -370,7 +418,7 @@
         <div id="controller-dialog" class="controller-dialog-overlay">
             <div class="controller-dialog-box">
                 <h3 id="controller-dialog-title" class="controller-dialog-title">Confirm</h3>
-                <p id="controller-dialog-message" class="controller-dialog-message"></p>
+                <p id="controller-dialog-message" tabindex="0" class="controller-dialog-message"></p>
                 <div class="controller-dialog-buttons">
                     <button id="controller-dialog-confirm" class="controller-dialog-btn confirm">Confirm</button>
                     <button id="controller-dialog-cancel" class="controller-dialog-btn cancel">Cancel</button>
@@ -497,9 +545,14 @@
                         <img src="assets/quickUI/Pickaxe.webp" alt="Shop" class="tab-icon">
                         <span class="tab-text">SHOP</span>
                     </button>
-                    <button class="tab-btn" onclick="switchMainTab('upgrades')">
+                    <button class="tab-btn" id="upgrades-tab-btn" onclick="switchMainTab('upgrades')">
                         <img src="assets/quickUI/ArrowUp.webp" alt="Upgrades" class="tab-icon">
                         <span class="tab-text">UPGRADE</span>
+                        <span class="upgrade-tab-count" hidden></span>
+                    </button>
+                    <button class="tab-btn" id="hats-tab-btn" hidden onclick="switchMainTab('hats')">
+                        <img src="assets/quickUI/Hat.webp" alt="Hats" class="tab-icon">
+                        <span class="tab-text">HATS</span>
                     </button>
                 </div>
                 <div class="tabs-right">
@@ -562,6 +615,13 @@
                     </div>
                 </div>
 
+                <!-- Hats Tab -->
+                <div id="hats-tab" hidden class="tab-content">
+                    <div id="hats-content">
+                        <!-- Hats content will be populated in future update -->
+                    </div>
+                </div>
+
                 <!-- Achievements Tab -->
                 <div id="achievements-tab" class="tab-content">
                     <div id="achievements-content">
@@ -569,6 +629,8 @@
                     </div>
 
                     <div id="stats-content" class="achievements-sub-content">
+                        <section id="timeline-summary" class="timeline-history timeline-summary" aria-label="Current timeline" hidden></section>
+                        <h3 class="statistics-lifetime-title">Lifetime statistics</h3>
                         <div class="stats-grid">
                             <div class="stat-row">
                                 <span>Total Dogecoins Mined:</span>
@@ -594,7 +656,12 @@
                                 <span>Highest DPS:</span>
                                 <span id="highest-dps">0</span>
                             </div>
+                            <div class="stat-row">
+                                <span>Highest Critical Hit:</span>
+                                <span id="highest-crit">0</span>
+                            </div>
                         </div>
+                        <section id="timeline-history" class="timeline-history" aria-label="Timeline history" hidden></section>
                     </div>
                 </div>
 
@@ -619,9 +686,45 @@
                                 </div>
                                 <div class="setting-item">
                                     <label>
+                                        <input type="checkbox" id="mute-rock-sounds">
+                                        Mute Rock Sounds
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="background-audio-enabled" checked>
+                                        Sound in Background
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="hints-enabled" checked>
+                                        Show Hints
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
                                         <input type="checkbox" id="notifications-enabled" checked>
                                         Notifications
                                     </label>
+                                </div>
+                                <div class="setting-item" hidden>
+                                    <label>
+                                        <input type="checkbox" id="stories-enabled" checked>
+                                        Enable Story Popups
+                                    </label>
+                                </div>
+                                <div class="setting-item" hidden>
+                                    <label>
+                                        <input type="checkbox" id="news-enabled" checked>
+                                        Enable News
+                                    </label>
+                                </div>
+                                <div class="setting-item" hidden>
+                                    <label><input type="checkbox" id="auto-pickup-loot"> Auto-Pickup Loot (equip new)</label>
+                                </div>
+                                <div class="setting-item" hidden>
+                                    <label><input type="checkbox" id="holidays-enabled" checked> Holiday Events</label>
                                 </div>
                                 <div class="setting-item">
                                     <label>
@@ -635,13 +738,7 @@
                                         Controller Button Indicators
                                     </label>
                                 </div>
-                                <div class="setting-item">
-                                    <label>
-                                        <input type="checkbox" id="force-mobile-ui"
-                                            onchange="toggleForceMobileUI(this.checked)">
-                                        Force Mobile UI
-                                    </label>
-                                </div>
+                                <div class="setting-item"><label><input type="checkbox" id="auto-place-helpers" checked>Auto place helpers</label></div>
                                 <div class="setting-item" id="controller-disable-setting">
                                     <label>
                                         <input type="checkbox" id="disable-controller"
@@ -649,27 +746,28 @@
                                         Disable Controller Input
                                     </label>
                                 </div>
-                                <div class="setting-item"
-                                    style="margin-top: 15px; display: flex; flex-direction: column; align-items: flex-start;">
-                                    <label for="value-update-rate"
-                                        style="margin-bottom: 5px; font-family: 'DogeSans', sans-serif;">Value Update
-                                        Rate</label>
+                                <div class="setting-item value-update-setting">
+                                    <label for="layout-mode">Layout</label>
+                                    <select id="layout-mode" aria-label="Game layout"><option value="auto">Automatic</option><option value="desktop">Desktop</option><option value="tablet">Tablet</option><option value="phone">Phone</option></select>
+                                </div>
+                                <div class="setting-item value-update-setting">
+                                    <label for="value-update-rate">Value Update Rate</label>
                                     <select id="value-update-rate"
-                                        onchange="if(window.game) window.game.setValueUpdateRate(parseInt(this.value))"
-                                        style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; background: #fff; width: 100%; font-family: 'DogeSans', sans-serif;">
+                                        onchange="if(window.game) window.game.setValueUpdateRate(parseInt(this.value))">
+                                        <option value="20" selected>Smooth (Default)</option>
                                         <option value="0">Instant (Per Frame)</option>
                                         <option value="100">100ms</option>
-                                        <option value="1000">1 Second (Default)</option>
+                                        <option value="1000">1 Second</option>
                                         <option value="5000">5 Seconds</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="settings-section" id="supporter-settings-section">
                                 <h3>Support DogeminerCE</h3>
-                                <p style="font-size: 14px; color: #a58e6e; margin-bottom: 15px;">Want to support
+                                <p class="supporter-settings-copy">Want to support
                                     development? Unlock sweet in-game perks!</p>
                                 <button class="setting-btn"
-                                    style="background: linear-gradient(#f96854, #d14633); border-color: #a83525; color: white;"
+                                    style="background: linear-gradient(#f96854 0 50%, #d14633 50% 100%); border-color: #a83525; color: white;"
                                     onclick="openSupporterModal()">Become a Supporter!</button>
                             </div>
                         </div>
@@ -714,9 +812,18 @@
                                     <button class="setting-btn" onclick="saveGame()">Save Game</button>
                                     <button class="setting-btn" onclick="loadGame()">Load Game</button>
                                     <button class="setting-btn" onclick="exportSave()">Export Save</button>
-                                    <button class="setting-btn" onclick="importSave()">Import Save</button>
+                                    <button class="setting-btn" onclick="importSave()">Import CE / DM2 Save</button>
                                     <button class="setting-btn warning" onclick="repairSave()">Repair Save</button>
                                     <button class="setting-btn danger" onclick="resetGame()">Reset Game</button>
+                                </div>
+                            </div>
+                            <div class="settings-section" id="performance-settings-section">
+                                <h3>Performance</h3>
+                                <div class="setting-item">
+                                    <label><input type="checkbox" id="less-effects"> Less Effects</label>
+                                </div>
+                                <div class="setting-item">
+                                    <label><input type="checkbox" id="limit-fps"> Limit FPS (48)</label>
                                 </div>
                             </div>
                         </div>
@@ -787,6 +894,11 @@
                 <button class="mobile-tab-btn" data-tab="upgrades" onclick="switchMobileTab('upgrades')">
                     <img src="assets/quickUI/ArrowUp.webp" alt="Upgrades" class="tab-icon">
                     <span class="tab-text">UPGRADE</span>
+                <span class="upgrade-tab-count" hidden></span>
+                </button>
+                <button class="mobile-tab-btn" id="mobile-hats-tab-btn" hidden data-tab="hats" onclick="switchMobileTab('hats')">
+                    <img src="assets/quickUI/Hat.webp" alt="Hats" class="tab-icon">
+                    <span class="tab-text">HATS</span>
                 </button>
             </div>
             <div class="mobile-tabs-right">
@@ -814,6 +926,13 @@
             <div id="mobile-upgrades-tab" class="mobile-tab-content">
                 <div id="mobile-upgrades-container">
                     <!-- Upgrades will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Mobile Hats Tab -->
+            <div id="mobile-hats-tab" hidden class="mobile-tab-content">
+                <div id="mobile-hats-content" class="mobile-shop-scroll">
+                    <!-- Hats content will be populated in future update -->
                 </div>
             </div>
 
@@ -860,13 +979,14 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, runTransaction } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
 
         // Import your web app's Firebase configuration
         import { firebaseConfig } from "./js/firebase-config.js";
 
-        // Initialize Firebase
+        // Checkpoint tests never initialize an account, analytics or remote save.
+        if (!window.CEParityTesting?.active) {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -884,10 +1004,12 @@
             doc,
             setDoc,
             getDoc,
+            runTransaction,
             collection
         };
 
         console.log("Firebase initialized successfully!");
+        }
     </script>
 
     <!-- Scripts -->
@@ -935,8 +1057,9 @@
                 }
 
                 window.Howler = {
+                    _muted: false,
                     volume: () => 1,
-                    mute: () => { },
+                    mute(enabled) { this._muted = !!enabled; return this; },
                     stop: () => { },
                     ctx: null
                 };
@@ -1033,17 +1156,74 @@
             ];
 
             const gameScripts = [
-                'js/audio.js',
-                'js/pickaxe-factory.js',
-                'js/fortune-factory.js',
-                'js/game.js?v=37',
-                'js/ui.js',
-                'js/shop.js',
-                'js/save.js',
-                'js/notifications.js',
-                'js/controller.js',
-                'js/cloud-save.js',
-                'js/main.js'
+                'js/audio.js?v=11',
+                'js/balance-data.js?v=2',
+                'js/balance.js?v=4',
+                'js/beta-migration.js?v=1',
+                'js/save-reconciliation.js?v=8',
+                'js/lz-string.js?v=1',
+                'js/dm2-import-data.js?v=1',
+                'js/seasonal.js?v=2',
+                'js/popup-presentation.js?v=4',
+                'js/beta-report.js?v=8',
+                'js/offline-earnings.js?v=1',
+                'js/pickaxe-factory.js?v=5',
+                'js/fortune-factory.js?v=6',
+                'js/game.js?v=102',
+                'js/layout.js?v=3',
+                'js/tool-runtime.js?v=7',
+                'js/sundoge-fusion.js?v=3',
+                'js/drill-data.js?v=1',
+                'js/drill-mining.js?v=3',
+                'js/tool-profiles.js?v=3',
+                'js/tool-audio.js?v=3',
+                'js/moon-launch.js?v=4',
+                'js/bonus-hud.js?v=1',
+                'js/performance-settings.js?v=3',
+                'js/frame-clock.js?v=1',
+                'js/mobile-gestures.js?v=4',
+                'js/helper-names.js?v=1',
+                'js/timeline-history.js?v=5',
+                'js/secret-codes.js?v=2',
+                'js/stories.js?v=8',
+                'js/field-encounters.js?v=4',
+                'js/rick-visitor.js?v=7',
+                'js/rock-replacement.js?v=1',
+                'js/release-notes.js?v=9',
+                'js/world-discovery.js?v=5',
+                'js/late-progression.js?v=5',
+                'js/seasonal-runtime.js?v=2',
+                'js/dm2-import.js?v=7',
+                'js/landing-save.js?v=1',
+                'js/newsdoge.js?v=5',
+                'js/story-history.js?v=1',
+                'js/welcome-back.js?v=4',
+                'js/searchdoge.js?v=4',
+                'js/game-cursor.js?v=7',
+                'js/helper-presentation.js?v=12',
+                'js/upgrade-presentation.js?v=3',
+                'js/field-personality-data.js?v=1',
+                'js/field-personality.js?v=11',
+                'js/loot-motion.js?v=3',
+                'js/dogebag-presentation.js?v=15',
+                'js/mystery-box-presentation.js?v=3',
+                'js/field-loot.js?v=3',
+                'js/helper-loot.js?v=2',
+                'js/loot-automation.js?v=3',
+                'js/ui.js?v=92',
+                'js/shop.js?v=12',
+                'js/save.js?v=45',
+                'js/bulk-shop.js?v=12',
+                'js/helper-shop-details.js?v=4',
+                'js/notifications.js?v=3',
+                'js/event-notifications.js?v=1',
+                'js/motion-notice.js?v=1',
+                'js/controller.js?v=20',
+                'js/cloud-save.js?v=4',
+                'js/time-travel.js?v=27',
+                'js/button-motion.js?v=2',
+                'js/parity-testing.js?v=69',
+                'js/main.js?v=41'
             ];
 
             function appendScript(src) {

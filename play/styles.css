@@ -742,14 +742,20 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.9) contrast(1.1);
+    object-position:left top;
     opacity: 0;
-    transition: opacity 2s ease-in-out;
+    z-index:0;
+    transition: opacity 4s ease;
 }
 
 .background-image.active {
     opacity: 1;
+    z-index:2;
 }
+
+/* Keep the previous image opaque below the incoming source-style fade. */
+.background-image.background-previous { opacity:1; z-index:1; transition:none; }
+@media(prefers-reduced-motion:reduce) { .background-image { transition:none; } }
 
 /* Game Container - Fixed Size for Consistent Display */
 #game-container {
@@ -774,6 +780,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     /* Only translate horizontally */
+    transform-origin: center top;
 }
 
 /* Game Panels - Opaque Rounded Rectangles */
@@ -796,6 +803,48 @@ body {
     position: relative;
 }
 
+.timeline-history {
+    --timeline-border: #d4af37;
+    --timeline-surface: rgba(255, 255, 255, .95);
+    --timeline-label: #8b4513;
+    --timeline-value: #b48a15;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 12px 10px 10px;
+    color: var(--timeline-label);
+}
+.moon-theme .timeline-history {
+    --timeline-border: rgb(120, 185, 235);
+    --timeline-surface: rgba(240, 250, 250, .95);
+    --timeline-label: rgb(40, 95, 155);
+    --timeline-value: rgb(40, 95, 155);
+}
+.planet-mars .timeline-history {
+    --timeline-border: rgba(165, 100, 90, .55);
+    --timeline-surface: linear-gradient(to right, rgba(120, 55, 50, .5), rgba(80, 30, 25, .5));
+    --timeline-label: #ffe7d9;
+    --timeline-value: #ffe7d9;
+}
+.planet-jupiter .timeline-history { --timeline-border: rgb(225, 180, 105); }
+.planet-titan .timeline-history { --timeline-border: rgb(235, 190, 80); }
+.planet-mars #timeline-history { padding-right: 0; padding-left: 0; }
+#mobile-timeline-history { padding: 12px 0 0; }
+.timeline-history-title { margin: 0 0 10px; font-size: 18px; font-weight: 600; }
+.timeline-history h4 { margin: 18px 0 10px; font-size: 14px; font-weight: 600; }
+.timeline-history-note { margin: 10px 0; font-size: 12px; line-height: 1.5; }
+.timeline-record-values { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 14px; margin: 12px 0 0; font-size: 13px; }
+.timeline-record-values dt, .timeline-record-values dd { margin: 0; overflow-wrap: anywhere; }
+.timeline-record-values dd { color: var(--timeline-value); text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.timeline-current-values, .timeline-record { padding: 12px 14px; border: 2px solid var(--timeline-border); border-radius: 10px; background: var(--timeline-surface); }
+.timeline-current-values { margin: 0; font-size: 14px; row-gap: 12px; }
+.timeline-current-values dt { font-weight: 600; }
+.timeline-record { margin: 0 0 8px; }
+.timeline-record summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.timeline-record summary::marker { color: var(--timeline-value); }
+.timeline-history-more { padding: 8px 12px; border: 1px solid var(--timeline-border); border-radius: 6px; color: inherit; background: linear-gradient(to bottom, rgba(255,255,255,.3) 50%, rgba(0,0,0,.06) 50%); font: inherit; font-size: 12px; cursor: pointer; }
+.inventory-copy-count { position: absolute; right: 6px; bottom: 32px; border: 1px solid var(--item-border); border-radius: 4px; padding: 2px 5px; background: #29231e; color: #fff; font-size: 12px; line-height: 1.2; pointer-events: none; }
+.inventory-consolidation-note { font-size: 12px; line-height: 1.4; padding: 6px 0; border-top: 1px solid currentColor; }
+
 /* ===================== Bonus Coin ===================== */
 /* Clickable coin that periodically appears in the mining area */
 .bonus-coin-spawn {
@@ -806,8 +855,11 @@ body {
     -webkit-user-drag: none;
     /* Override the global `img { pointer-events: none }` so the coin is clickable */
     pointer-events: auto;
-    /* Glow tinted to the coin's level color (set inline via --bc-glow) */
-    filter: drop-shadow(0 0 12px var(--bc-glow, rgba(255, 200, 40, 0.9)));
+    /* A crisp rarity stroke, matching the rest of the loot presentation. */
+    filter: drop-shadow(1px 0 0 var(--bc-color, #ffcc33))
+        drop-shadow(-1px 0 0 var(--bc-color, #ffcc33))
+        drop-shadow(0 1px 0 var(--bc-color, #ffcc33))
+        drop-shadow(0 -1px 0 var(--bc-color, #ffcc33));
     animation: bonus-coin-appear 0.4s ease-out, bonus-coin-bob 1.6s ease-in-out 0.4s infinite;
     transition: transform 0.12s ease;
 }
@@ -834,42 +886,34 @@ body {
     100% { transform: perspective(1200px) rotateY(1800deg) scale(0.3); opacity: 0; }
 }
 
-/* Active-buff indicator pill — sits below the DPS counter in #stats-display */
-.bonus-coin-buff {
-    align-self: center;
-    margin-top: -6px;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px 4px 4px;
-    /* Flat color tinted to the active coin's level (set inline via --bc-glow) */
-    background: var(--bc-glow, #ff9800);
-    border: 2px solid rgba(255, 255, 255, 0.85);
-    border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    font-weight: 800;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-    pointer-events: none;
-    animation: bonus-coin-appear 0.3s ease-out;
+/* Source bonus row:28px coin,16px boost, hourglass and13px tenths. */
+.bonus-coin-buff { align-self:center; margin-top:-24px; display:flex; align-items:center; gap:6px;
+    padding:0; border:0; background:none; pointer-events:none; color:#c9fcd0;
+    -webkit-text-stroke:3px #9e671e; paint-order:stroke fill; font-weight:normal; }
+.bonus-coin-buff .bcb-icon { width:28px; height:28px; object-fit:contain; animation:bonus-icon-pulse 700ms cubic-bezier(.37,0,.63,1) infinite; }
+.bcb-details { text-align:center; min-width:54px; }
+.bcb-mult { display:block; font-size:16px; line-height:20px; }
+.bcb-timer { display:flex; align-items:center; justify-content:center; gap:3px; height:16px; }
+.bcb-hourglass { width:12.5px; height:14.5px; flex:none; }
+.bcb-time { font-size:13px; line-height:16px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.bonus-wallet-active { animation:bonus-wallet-pulse 1400ms cubic-bezier(.37,0,.63,1) infinite; transform-origin:center; }
+@keyframes bonus-icon-pulse {0%,100%{scale:1;}50%{scale:1.2;}}
+@keyframes bonus-wallet-pulse {0%,100%{scale:1;}50%{scale:1.035;}}
+.bonus-hud-feedback { position:absolute; left:50%; top:50%; z-index:3; width:max-content; pointer-events:none;
+    font:26px/1.2 'DogeSans',sans-serif; color:white; -webkit-text-stroke:2px #9e671e; paint-order:stroke fill; text-shadow:none;
+    transform:translate(-50%,-50%); animation:bonus-feedback 1110ms cubic-bezier(.455,.03,.515,.955) forwards; }
+@keyframes bonus-feedback {
+    0%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+    18%{transform:translate(-50%,calc(-50% - 2px)) scale(1);}
+    27%{transform:translate(-50%,calc(-50% - 4px)) scale(.65);}
+    75%{opacity:1;}
+    100%{opacity:0;transform:translate(-50%,calc(-50% - 22px)) scale(.65);}
 }
-
-.bonus-coin-buff img {
-    width: 26px;
-    height: 26px;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+@media(prefers-reduced-motion:reduce) {
+ .bonus-coin-buff .bcb-icon,.bonus-wallet-active {animation:none;}
+ .bonus-hud-feedback {animation:bonus-feedback-fade 1110ms linear forwards;}
 }
-
-.bonus-coin-buff .bcb-mult {
-    font-size: 15px;
-}
-
-.bonus-coin-buff .bcb-time {
-    font-size: 13px;
-    opacity: 0.85;
-    font-variant-numeric: tabular-nums;
-}
+@keyframes bonus-feedback-fade {0%,75%{opacity:1;}100%{opacity:0;}}
 
 /* ===================== Dogediamonds ===================== */
 /* Single diamond loot that pops out of the rock (click to collect) */
@@ -886,12 +930,21 @@ body {
     width: 23px;
     height: auto;
     pointer-events: auto;
-    filter: drop-shadow(0 0 4px rgba(120, 210, 255, 0.95)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
+    filter: none;
 }
 
 .diamond-loot:hover img {
-    filter: drop-shadow(0 0 7px rgba(150, 225, 255, 1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
+    filter: none;
 }
+.diamond-pile-body { position:relative; isolation:isolate; width:23px; }
+.diamond-pile-body img { display:block; }
+.diamond-pile-copy { position:absolute; left:0; top:0; z-index:0; }
+.diamond-pile-copy + .diamond-pile-copy { z-index:1; }
+.diamond-pile-main { position:relative; z-index:2; }
+.diamond-stack-count { position:absolute; z-index:3; left:19.78px; top:21.35px; transform:translate(-50%,-50%); white-space:nowrap; color:#fff;
+    font:14.53px 'DogeSans',sans-serif; -webkit-text-stroke:3.63px #7a4a14; paint-order:stroke fill; pointer-events:none; }
+.diamond-stack-count[hidden],.diamond-pile-copy[hidden] { display:none; }
+.diamond-field-flight { pointer-events:none; }
 
 /* Floating "+1 [diamond]" text shown on collect */
 .diamond-collected {
@@ -908,34 +961,119 @@ body {
     vertical-align: middle;
 }
 
-/* Dogediamond counter — top-right of the left panel, flat light-blue rectangle */
-#diamond-counter {
+/* Top-right HUD: Dogetalkie button + Dogediamond counter side by side */
+#topright-hud {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 30;
+    top: 24px;
+    right: 8px;
+    z-index: 100;
     display: flex;
     align-items: center;
+    gap: 10px;
+}
+
+/* Compact gray-blue amount plate, with the diamond overlapping its left edge. */
+#diamond-counter {
+    display: flex;
+    align-items: center;
+    flex: none;
 }
 
 .diamond-counter-icon {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: auto;
+    flex: none;
     position: relative;
+    left: 4px;
     z-index: 2;
 }
 
 #diamond-counter #diamond-amount {
-    background: #aee3f5; /* flat light blue */
-    color: #0d3b4f;
-    padding: 8px 15px 8px 22px;
-    border-radius: 10px; /* same rounding as the Dogecoin / DPS rectangles */
-    margin-left: -16px;
+    background: rgba(164, 181, 198, 0.55);
+    color: #fff;
+    padding: 4px 12px 4px 36px;
+    border-radius: 9px;
+    /* Extend the complete rounded plate beneath the diamond, without clipping. */
+    margin-left: -30px;
     position: relative;
     z-index: 1;
-    min-width: 36px;
+    min-width: 50px;
+    min-height: 38px;
     text-align: center;
-    font-weight: 700;
+    font-size: 26px;
+    line-height: 30px;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    /* Stroke is centered on the glyph; painting fill last leaves 2px outside. */
+    -webkit-text-stroke: 4px #73959f;
+    paint-order: stroke fill;
+    display: inline-block;
+    transform-origin: center center;
+}
+
+@keyframes diamondFlashGreen {
+    0% {
+        color: #16a34a;
+    }
+    40% {
+        color: #15803d;
+    }
+    100% {
+        color: #fff;
+    }
+}
+
+@keyframes diamondFlashRed {
+    0% {
+        color: #dc2626;
+    }
+    40% {
+        color: #b91c1c;
+    }
+    100% {
+        color: #fff;
+    }
+}
+
+#diamond-counter #diamond-amount.flash-green {
+    animation: diamondFlashGreen 0.45s ease-out;
+}
+
+#diamond-counter #diamond-amount.flash-red {
+    animation: diamondFlashRed 0.45s ease-out;
+}
+
+/* Leave room for the Dogetalkie beside long amounts on narrow phones. */
+@media (max-width: 360px) {
+    #topright-hud {
+        gap: 6px;
+    }
+
+    .diamond-counter-icon {
+        width: 44px;
+    }
+
+    #diamond-counter #diamond-amount {
+        margin-left: -30px;
+        padding: 4px 10px 4px 34px;
+        min-height: 34px;
+        font-size: 22px;
+        line-height: 26px;
+    }
+}
+
+/* Keep the counters and active bonus clear of Doge on shorter phones. */
+@media (max-width: 768px) and (max-height: 650px) {
+    #left-panel #stats-display {
+        gap: 10px;
+    }
+
+    .bonus-coin-buff {
+        margin-top: -8px;
+        padding:0;
+    }
+
+    .bonus-coin-buff .bcb-icon { width:28px; height:28px; }
 }
 
 /* First-find explainer popup */
@@ -1064,6 +1202,554 @@ body {
     opacity: 1;
 }
 
+/* ===================== Time Travel / D.I.A. Mission ===================== */
+/* Mission UI is tinted to the planet the player is on (defaults = Earth).
+   The concept screenshots were gold because they were taken on Titan. */
+body {
+    --tt-card-top: rgba(240, 235, 220, 0.98);
+    --tt-card-bottom: rgba(255, 240, 180, 0.98);
+    --tt-card-border: #d4af37;
+    --tt-text: rgb(80, 50, 0);
+    --tt-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    --tt-btn-top: rgb(255, 220, 115);
+    --tt-btn-bottom: rgb(255, 210, 70);
+    --tt-btn-border: rgb(185, 150, 65);
+    --tt-btn-text: rgb(80, 50, 0);
+}
+body.moon-theme {
+    --tt-card-top: rgba(225, 235, 240, 0.98);
+    --tt-card-bottom: rgba(210, 230, 240, 0.98);
+    --tt-card-border: rgb(160, 200, 225);
+    --tt-text: rgb(35, 70, 95);
+    --tt-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    --tt-btn-top: rgb(228, 240, 246);
+    --tt-btn-bottom: rgb(205, 228, 240);
+    --tt-btn-border: rgb(160, 200, 225);
+    --tt-btn-text: rgb(35, 70, 95);
+}
+body.planet-mars {
+    --tt-card-top: rgba(80, 35, 30, 0.98);
+    --tt-card-bottom: rgba(90, 30, 25, 0.98);
+    --tt-card-border: rgb(130, 80, 75);
+    --tt-text: #fff;
+    --tt-text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+    --tt-btn-top: rgb(160, 75, 65);
+    --tt-btn-bottom: rgb(135, 58, 50);
+    --tt-btn-border: rgb(180, 115, 105);
+    --tt-btn-text: #fff;
+    --tt-box-bg: rgb(62, 28, 24);
+}
+body.planet-jupiter {
+    --tt-card-top: rgba(225, 190, 135, 0.98);
+    --tt-card-bottom: rgba(240, 215, 190, 0.98);
+    --tt-card-border: rgb(225, 180, 105);
+    --tt-text: rgb(80, 50, 0);
+    --tt-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    --tt-btn-top: rgb(242, 210, 155);
+    --tt-btn-bottom: rgb(230, 190, 125);
+    --tt-btn-border: rgb(200, 155, 85);
+    --tt-btn-text: rgb(80, 50, 0);
+}
+body.planet-titan {
+    /* Titan = the gold look from the concept build */
+    --tt-card-top: #ffd24a;
+    --tt-card-bottom: #ffb300;
+    --tt-card-border: #e8a400;
+    --tt-text: #fff;
+    --tt-text-shadow: 0 2px 3px rgba(120, 80, 0, 0.6);
+    --tt-btn-top: #ffedb0;
+    --tt-btn-bottom: #ffdf7a;
+    --tt-btn-border: #d8a71f;
+    --tt-btn-text: #8a6a00;
+    --tt-box-bg: rgb(255, 210, 82);
+}
+
+.dogetalkie-btn .switcher-btn-icon { width: 40px; height: 40px; object-fit: contain; }
+
+.timeline-label {
+    /* Reserved space above the lowered diamond counter and Dogetalkie. */
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    z-index: 30;
+    font-family: 'DogeSans', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    line-height: 14px;
+    color: #8a6a00;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    text-align: right;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+}
+
+/* ---- Mission Brief dialog (gold panel) ---- */
+.dia-mission-modal {
+    position: fixed; inset: 0; z-index: 1200;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(15, 10, 0, 0.62);
+    font-family: 'DogeSans', sans-serif;
+}
+.dia-mission-modal.active { display: flex; }
+
+.dia-mission-card {
+    position: relative;
+    width: 660px; max-width: 92vw; min-height: 470px;
+    background: linear-gradient(to bottom, var(--tt-card-top) 20%, var(--tt-card-bottom) 80%);
+    border: 2px solid var(--tt-card-border);
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    padding: 22px 28px 86px;
+    display: flex; flex-direction: column; align-items: center;
+}
+.dia-mission-title {
+    color: var(--tt-text); font-weight: 800; font-size: 20px; letter-spacing: 1px;
+    text-shadow: var(--tt-text-shadow); margin: 4px 0 14px;
+}
+.dia-skip-btn {
+    position: absolute; top: calc(50% - 268px); left: 50%; transform: translateX(-50%);
+    background: linear-gradient(to bottom, var(--tt-btn-top) 50%, var(--tt-btn-bottom) 50%);
+    border: 1px solid var(--tt-btn-border);
+    color: var(--tt-btn-text); font-weight: 800; font-size: 18px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    padding: 6px 22px; border-radius: 10px; cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25); z-index: 2;
+}
+.dia-mission-body { flex: 1; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end; width: 100%; }
+
+/* Talking steps: the card backing disappears — Burt, the box, and the buttons
+   float directly over the dimmed game (visual-novel style). */
+.dia-mission-card.dia-card-clear {
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+}
+.dia-card-clear .dia-mission-title {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+}
+
+/* Badge picker keeps the classic centered card layout */
+.dia-mission-body.dia-body-centered { align-items: center; justify-content: space-between; }
+.dia-body-centered .dia-text { text-align: center; }
+
+/* Visual-novel scene: big Burt anchored bottom-LEFT, props float on the right */
+.dia-scene { position: relative; flex: 1; min-height: 215px; z-index: 1; }
+.dia-scene .dia-burt {
+    position: absolute;
+    left: 8px;
+    bottom: -18px; /* tucks under the dialogue box so the box overlaps him */
+    width: 235px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+}
+.dia-scene .dia-talkie {
+    position: absolute;
+    right: 64px;
+    bottom: 8px;
+    width: 62px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    transform: rotate(8deg);
+}
+.dia-scene.dia-char-badge { display: flex; align-items: center; justify-content: center; }
+.dia-badge-logo { width: 185px; height: auto; }
+
+/* Dialogue box along the bottom, layered over the portrait */
+.dia-box {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: 112px;
+    /* Opaque: the portrait tucks BEHIND the box, never ghosting through it */
+    background: var(--tt-box-bg, rgb(255, 250, 236));
+    border: 2px solid var(--tt-card-border);
+    border-radius: 12px;
+    padding: 20px 20px 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* When the reply buttons ride the box's bottom edge they reach ~19px up into
+   the box — pad the text clear of them so the last line never runs underneath */
+.dia-box.dia-box-has-btns {
+    padding-bottom: 34px;
+}
+
+/* Name plate riding the box's top edge (??? until he introduces himself) */
+.dia-nameplate {
+    position: absolute;
+    top: -17px;
+    left: 16px;
+    background: linear-gradient(to bottom, var(--tt-btn-top) 50%, var(--tt-btn-bottom) 50%);
+    border: 1px solid var(--tt-btn-border);
+    color: var(--tt-btn-text);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    font-weight: 800;
+    font-size: 16px;
+    padding: 4px 22px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dia-text {
+    color: var(--tt-text); font-size: 16px; line-height: 1.45; text-align: left;
+    text-shadow: var(--tt-text-shadow); margin: 0; font-weight: 700;
+}
+.dia-text em { font-style: italic; font-weight: 800; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4); }
+
+.dia-mission-buttons { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 0 40px; }
+/* Talking steps: the replies ride the dialogue box's bottom edge, mirroring
+   the name plate on its top edge */
+.dia-mission-buttons.dia-btns-on-box { bottom: -26px; }
+/* Two-tone (top/bottom split) like the game's tab & buy buttons */
+.dia-btn {
+    background: linear-gradient(to bottom, var(--tt-btn-top) 50%, var(--tt-btn-bottom) 50%);
+    border: 1px solid var(--tt-btn-border);
+    color: var(--tt-btn-text); font-family: 'DogeSans', sans-serif; font-weight: 800;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    font-size: 20px; padding: 10px 30px; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2); transition: transform 0.08s ease;
+}
+.dia-btn:hover { transform: translateY(-1px); }
+.dia-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.dia-btn.disabled { opacity: 0.45; pointer-events: none; }
+
+/* Replies stay hidden while Burt is talking, then fade in once the line lands */
+.dia-mission-buttons { transition: opacity 0.45s ease, transform 0.45s ease; }
+.dia-mission-buttons.dia-btns-hidden { opacity: 0; transform: translateY(10px); pointer-events: none; transition: none; }
+
+/* Burt bobs gently while his line types out */
+.dia-burt.dia-talking { animation: dia-talk-bob 0.32s ease-in-out infinite alternate; }
+@keyframes dia-talk-bob {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-4px); }
+}
+
+/* Badge picker */
+.dia-picker-title { color: var(--tt-text); font-weight: 800; font-size: 18px; text-shadow: var(--tt-text-shadow); margin-bottom: 14px; }
+.dia-badge-cards { display: flex; gap: 16px; justify-content: center; }
+.dia-badge-card {
+    font-family: inherit;
+    width: 150px; background: linear-gradient(135deg, #5aa6e8, #2f74c4);
+    border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; padding: 8px;
+    cursor: pointer; text-align: center; transition: transform 0.1s ease, box-shadow 0.1s ease;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-sizing: border-box;
+}
+.dia-badge-card.selected { transform: scale(1.05); box-shadow: 0 0 0 3px #fff, 0 6px 16px rgba(0,0,0,0.4); }
+.dia-badge-card:not(.selected) { filter: brightness(0.92); }
+/* Once a badge is picked, the others wash out gold (matches the concept build) */
+.dia-badge-card.unpicked { background: linear-gradient(135deg, #e8cf8a, #cfa53f); filter: saturate(0.55) brightness(0.95); }
+.dia-badge-tag { color: #cfe8ff; font-size: 11px; font-weight: 800; }
+.dia-badge-card img { width: 90px; height: 90px; object-fit: contain; display: block; margin: 0 auto; }
+.dia-badge-name { color: #fff; font-weight: 800; font-size: 13px; }
+.dia-picker-text { font-size: 16px; }
+
+/* ---- "No going back" warning ---- */
+.dia-warning-modal { position: fixed; inset: 0; z-index: 3000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); font-family: 'DogeSans', sans-serif; }
+.dia-warning-modal.active { display: flex; }
+.dia-warning-card { background: #fff; border-radius: 16px; padding: 28px 36px; width: 440px; max-width: 90vw; text-align: center; box-shadow: 0 14px 40px rgba(0,0,0,0.45); }
+.dia-warning-icon { width: 84px; height: 84px; border: 5px solid #ff8c42; border-radius: 50%; color: #ff8c42; font-size: 50px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.dia-warning-title { color: #444; font-size: 24px; font-weight: 900; margin: 0 0 8px; }
+.dia-warning-text { color: #888; font-size: 14px; margin: 0 0 22px; }
+.dia-warning-buttons { display: flex; gap: 14px; justify-content: center; }
+.dia-warning-no, .dia-warning-yes { font-family: 'DogeSans', sans-serif; font-weight: 800; font-size: 16px; padding: 10px 26px; border: none; border-radius: 8px; cursor: pointer; color: #fff; }
+.dia-warning-no { background: #9e9e9e; }
+.dia-warning-yes { background: #e8584a; }
+
+/* ---- Cutscene ---- */
+.mission-cutscene {
+    position: fixed; inset: 0; z-index: 3500; background: #000; overflow: hidden;
+    font-family: 'DogeSans', sans-serif;
+    /* Cutscene buttons always use the default Earth palette, regardless of the
+       planet the player time-travelled from. */
+    --tt-btn-top: rgb(255, 220, 115);
+    --tt-btn-bottom: rgb(255, 210, 70);
+    --tt-btn-border: rgb(185, 150, 65);
+    --tt-btn-text: rgb(80, 50, 0);
+}
+.cutscene-stage { position: absolute; inset: 0; }
+.cutscene-skip { position: absolute; bottom: 12px; right: 18px; text-align: right; cursor: pointer; z-index: 20; }
+.cs-skip-key { display: block; color: #ff9a3c; font-weight: 800; font-size: 15px; }
+.cs-skip-label { display: block; color: #fff; font-weight: 800; font-size: 14px; letter-spacing: 1px; }
+
+/* Part 1: travelling through time — rushing warp streaks in the void */
+.cs-space { background: radial-gradient(ellipse at center, #0a0a14 0%, #000 70%); }
+.cs-warp { position: absolute; inset: 0; overflow: hidden; }
+/* Each layer tiles a small horizontal light-streak; animating background-position
+   makes the streaks rush past right-to-left (the machine racing forward). */
+.cs-warp-layer {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse 90px 2px at 50% 50%, rgba(140, 190, 255, 0.85), transparent 70%);
+    background-size: 360px 96px;
+    animation: cs-warp-rush-1 0.4s linear infinite;
+}
+.cs-warp-2 {
+    background-image: radial-gradient(ellipse 60px 1.5px at 50% 50%, rgba(255, 255, 255, 0.7), transparent 70%);
+    background-size: 240px 62px;
+    background-position: 90px 30px;
+    animation: cs-warp-rush-2 0.28s linear infinite;
+}
+.cs-warp-3 {
+    background-image: radial-gradient(ellipse 150px 3.5px at 50% 50%, rgba(120, 140, 255, 0.5), transparent 70%);
+    background-size: 560px 150px;
+    background-position: 200px 70px;
+    filter: blur(1.5px);
+    animation: cs-warp-rush-3 0.65s linear infinite;
+}
+@keyframes cs-warp-rush-1 { 0% { background-position-x: 0px; } 100% { background-position-x: -360px; } }
+@keyframes cs-warp-rush-2 { 0% { background-position-x: 90px; } 100% { background-position-x: -150px; } }
+@keyframes cs-warp-rush-3 { 0% { background-position-x: 200px; } 100% { background-position-x: -360px; } }
+
+.cs-car { position: absolute; z-index: 5; }
+/* The rig sprite faces left; the journey plays out left-to-right */
+.cs-car img { width: 200px; height: auto; transform: scaleX(-1); filter: drop-shadow(0 0 16px rgba(120, 170, 255, 0.8)); }
+.cs-car-float { top: 45%; left: 48%; animation: cs-float 1.7s ease-in-out infinite; }
+@keyframes cs-float {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-2deg); }
+    50%      { transform: translate(-50%, -58%) rotate(2deg); }
+}
+
+.cs-car-accelerate {
+    top: 45% !important;
+    left: 48% !important;
+    animation: cs-car-accel 0.85s cubic-bezier(0.4, 0, 0.9, 0.6) forwards !important;
+}
+@keyframes cs-car-accel {
+    0% {
+        transform: translate(-50%, -54%) scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 16px rgba(120, 170, 255, 0.8));
+    }
+    20% {
+        transform: translate(-70%, -54%) scale(0.96) rotate(-2.5deg);
+    }
+    100% {
+        transform: translate(420%, -54%) scale(1.15) rotate(1deg);
+        filter: drop-shadow(0 0 35px rgba(120, 210, 255, 1));
+    }
+}
+.cs-speech-car { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); color: #ffd27a; text-shadow: -1.5px -1.5px 0 #3a2a00, 0 -1.5px 0 #3a2a00, 1.5px -1.5px 0 #3a2a00, -1.5px 0 0 #3a2a00, 1.5px 0 0 #3a2a00, -1.5px 1.5px 0 #3a2a00, 0 1.5px 0 #3a2a00, 1.5px 1.5px 0 #3a2a00, 0 3px 6px rgba(0,0,0,0.45); }
+
+/* Speech pop-in */
+.cs-speech { font-weight: 800; font-size: 18px; }
+.cs-speech-pop { animation: cs-speech-pop 0.25s ease-out; }
+@keyframes cs-speech-pop { 0% { transform: scale(0.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.cs-speech-car.cs-speech-pop { animation-name: cs-speech-pop-centered; }
+@keyframes cs-speech-pop-centered { 0% { transform: translateX(-50%) scale(0.4); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+.cs-flash { position: absolute; inset: 0; background: #fff; z-index: 15; animation: cs-flash 0.65s ease-out forwards; }
+@keyframes cs-flash { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Part 2: Cateland, circa 1930 — sepia sky, black skyline band, cream ground */
+.cs-cateland { background: #e8e2d4; }
+.cs-sky { position: absolute; top: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, #ffffff 0%, #e8e2d4 100%); }
+.cs-skyline {
+    position: absolute; top: 35px; left: 0; right: 0; height: 135px;
+    background-image: url('assets/general/missions/city.webp');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: bottom left;
+}
+.cs-cateland-label { position: absolute; top: 14px; left: 18px; color: #d8b25a; font-weight: 800; font-size: 20px; text-shadow: 0 1px 1px rgba(0,0,0,0.2); z-index: 6; }
+
+.cs-cateland .cs-car { top: 45%; left: 10%; }
+.cs-cateland .cs-car img { filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)) drop-shadow(0 0 10px rgba(120,170,255,0.5)); }
+
+/* The time machine zaps into Cateland in a crackle of electricity */
+.cs-car-hidden img:first-child { opacity: 0; }
+.cs-car img:first-child { transition: opacity 0.12s ease-out; }
+.cs-car .cs-zap-bolt {
+    position: absolute;
+    top: -60px; left: 50%;
+    width: 190px; height: auto;
+    transform: translateX(-50%);
+    opacity: 1;
+    z-index: 6;
+    filter: drop-shadow(0 0 14px rgba(120, 190, 255, 0.95)) drop-shadow(0 0 4px rgba(60, 120, 220, 0.9));
+    pointer-events: none;
+}
+
+/* Pulsing blue energy burst behind the materialising time machine */
+.cs-car .cs-zap-flash {
+    position: absolute;
+    inset: -50px;
+    background: radial-gradient(circle, rgba(130, 195, 255, 0.75) 0%, rgba(130, 195, 255, 0) 62%);
+    animation: cs-electric 0.12s linear infinite;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.cs-kitler { position: absolute; right: 5%; top: 38%; text-align: center; z-index: 4; }
+.cs-kitler img { width: 130px; height: auto; }
+.cs-speech-kitler { position: absolute; top: -10px; right: 75%; white-space: nowrap; color: #fff; font-size: 19px; text-shadow: -1.5px -1.5px 0 #3a2a00, 0 -1.5px 0 #3a2a00, 1.5px -1.5px 0 #3a2a00, -1.5px 0 0 #3a2a00, 1.5px 0 0 #3a2a00, -1.5px 1.5px 0 #3a2a00, 0 1.5px 0 #3a2a00, 1.5px 1.5px 0 #3a2a00, 0 3px 6px rgba(0,0,0,0.45); }
+.cs-crowd-wrap { position: absolute; right: 2%; bottom: 4%; z-index: 3; }
+.cs-crowd { width: 230px; height: auto; display: block; }
+.cs-speech-crowd { position: absolute; top: -6px; left: -30%; white-space: nowrap; color: #ffe6ad; font-size: 16px; text-shadow: -1.5px -1.5px 0 #3a2a00, 0 -1.5px 0 #3a2a00, 1.5px -1.5px 0 #3a2a00, -1.5px 0 0 #3a2a00, 1.5px 0 0 #3a2a00, -1.5px 1.5px 0 #3a2a00, 0 1.5px 0 #3a2a00, 1.5px 1.5px 0 #3a2a00, 0 3px 6px rgba(0,0,0,0.45); }
+
+.cs-choice { position: absolute; top: 48%; left: 50%; transform: translateX(-50%); text-align: center; z-index: 8; }
+.cs-choice-title { color: #ffd24a; font-weight: 800; font-size: 26px; margin-bottom: 22px; text-shadow: -1.5px -1.5px 0 #3a2a00, 0 -1.5px 0 #3a2a00, 1.5px -1.5px 0 #3a2a00, -1.5px 0 0 #3a2a00, 1.5px 0 0 #3a2a00, -1.5px 1.5px 0 #3a2a00, 0 1.5px 0 #3a2a00, 1.5px 1.5px 0 #3a2a00, 0 3px 6px rgba(0,0,0,0.45); }
+.cs-choice-btn {
+    display: block; margin: 22px auto;
+    background: linear-gradient(to bottom, var(--tt-btn-top) 50%, var(--tt-btn-bottom) 50%);
+    border: 1px solid var(--tt-btn-border);
+    color: var(--tt-btn-text); text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    font-family: 'DogeSans', sans-serif; font-weight: 800; font-size: 24px;
+    padding: 10px 40px; border-radius: 14px; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25); transition: transform 0.08s ease;
+}
+.cs-choice-btn:hover { transform: scale(1.05); }
+.cs-choice-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0,0,0,0.25); }
+
+/* The charge: battle cry above the car, dust trail behind it */
+.cs-shout { position: absolute; top: -44px; left: 30px; white-space: nowrap; color: #ffd24a; font-weight: 800; font-size: 26px; text-shadow: -1.5px -1.5px 0 #3a2a00, 0 -1.5px 0 #3a2a00, 1.5px -1.5px 0 #3a2a00, -1.5px 0 0 #3a2a00, 1.5px 0 0 #3a2a00, -1.5px 1.5px 0 #3a2a00, 0 1.5px 0 #3a2a00, 1.5px 1.5px 0 #3a2a00, 0 3px 6px rgba(0,0,0,0.45); animation: cs-speech-pop 0.25s ease-out; }
+.cs-car-charge { animation: cs-charge 1.9s cubic-bezier(0.55, 0, 0.85, 0.4) forwards !important; }
+@keyframes cs-charge {
+    0%   { left: 10%; transform: rotate(0deg); }
+    12%  { transform: rotate(-3deg); }  /* rear back before launching */
+    100% { left: 76%; transform: rotate(1deg); }
+}
+.cs-dust-puff { position: fixed; width: 56px; height: auto; opacity: 0.65; z-index: 1450; pointer-events: none; animation: cs-dust-fade 0.7s ease-out forwards; }
+@keyframes cs-dust-fade {
+    0%   { transform: scale(0.5) rotate(0deg); opacity: 0.7; }
+    100% { transform: scale(1.4) rotate(-40deg) translate(-30px, -10px); opacity: 0; }
+}
+
+/* Impact: shaking Kitler, lightning frames, full-screen electric flicker */
+.cs-kitler-shake { animation: cs-shake-el 0.1s linear infinite; }
+@keyframes cs-shake-el { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.cs-lightning { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 170px; height: auto; z-index: 9; filter: drop-shadow(0 0 12px rgba(120,190,255,0.9)); }
+.cs-electric-flicker { position: absolute; inset: 0; z-index: 7; pointer-events: none; background: radial-gradient(ellipse at 78% 45%, rgba(140, 200, 255, 0.55) 0%, rgba(140, 200, 255, 0) 55%); animation: cs-electric 0.12s linear infinite; }
+@keyframes cs-electric { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+.cs-shake { animation: cs-screenshake 0.08s linear infinite; }
+@keyframes cs-screenshake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-7px,4px); } 75% { transform: translate(7px,-4px); } }
+.cs-whiteout { position: absolute; inset: 0; background: #fff; z-index: 18; animation: cs-whiteout 0.5s ease-in forwards; }
+@keyframes cs-whiteout { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+/* ---- Mission Passed / rewards ---- */
+.mission-passed { position: fixed; inset: 0; z-index: 4000; background: #fff; display: flex; flex-direction: column; font-family: 'DogeSans', sans-serif; }
+.mp-banner {
+    margin-top: 50px;
+    background: #797979;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 800;
+    text-align: center;
+    padding: 16px 0;
+    letter-spacing: 1.5px;
+}
+.mp-banner-text {
+    display: inline-block;
+    color: #ffffff;
+    -webkit-text-stroke: 1.2px #bd8624;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+.mp-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding-bottom: 40px; }
+.mp-receive { position: relative; z-index: 3; color: #f7931e; font-weight: 800; font-size: 24px; letter-spacing: 0.5px; -webkit-text-stroke: 1.2px #9c4f00; text-shadow: 0 1px 2px rgba(0,0,0,0.15); margin-bottom: 2px; }
+.mp-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; min-width: 240px; transition: opacity 0.2s ease-out, transform 0.2s ease-out; }
+.mp-item.mp-fade-out { opacity: 0; transform: scale(0.96); }
+.mp-item.mp-fade-in { animation: mp-item-in 0.3s ease-out forwards; }
+@keyframes mp-item-in {
+    0%   { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.mp-burst {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    width: 280px;
+    height: 280px;
+    transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, rgba(120, 195, 255, 0.45) 0deg 12deg, rgba(255, 255, 255, 0) 12deg 24deg);
+    border-radius: 50%;
+    -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 70%);
+    mask-image: radial-gradient(circle, rgba(0,0,0,1) 15%, rgba(0,0,0,0) 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: mp-spin 12s linear infinite;
+}
+@keyframes mp-spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+.mp-diamond-img { width: 96px; height: auto; position: relative; z-index: 2; margin-bottom: 6px; }
+.mp-diamond-label { color: #3b5bdb; font-weight: 800; font-size: 20px; position: relative; z-index: 2; -webkit-text-stroke: 1px #1d3557; text-shadow: 0 0 4px #ffffff, 0 0 8px #ffffff; }
+.mp-diamond-amount { color: #3b5bdb; font-weight: 800; font-size: 20px; position: relative; z-index: 2; margin-top: 2px; -webkit-text-stroke: 1px #1d3557; text-shadow: 0 0 4px #ffffff; }
+.mp-ok {
+    background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 195, 60) 50%);
+    border: 1px solid rgb(185, 150, 65);
+    color: rgb(122, 90, 0); text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    font-family: 'DogeSans', sans-serif; font-weight: 800; font-size: 20px;
+    padding: 8px 30px; border-radius: 10px; cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    position: relative; z-index: 3;
+    margin-top: 10px;
+}
+.mp-ok:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+
+/* 3-part sequential entrance animations for Mission Passed screen */
+.mp-anim-banner {
+    opacity: 0;
+    animation: mp-seq-fade 0.45s ease-out 0.1s forwards;
+}
+.mp-anim-text {
+    opacity: 0;
+    animation: mp-seq-fade 0.45s ease-out 0.5s forwards;
+}
+.mp-anim-body {
+    opacity: 0;
+    animation: mp-seq-fade 0.55s ease-out 0.95s forwards;
+}
+@keyframes mp-seq-fade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.mp-fortune { position: relative; z-index: 1; display: flex; align-items: stretch; }
+.mp-fortune-card { width: 200px; border-radius: 12px; padding: 10px; text-align: center; color: #fff; background: linear-gradient(135deg, #5aa6e8, #2f74c4); }
+.mp-fortune.rarity-legendary .mp-fortune-card { background: linear-gradient(135deg, #ffcf6e, #e69020); }
+.mp-fortune-tag { font-size: 11px; font-weight: 800; opacity: 0.9; }
+.mp-fortune-card img { width: 120px; height: 120px; object-fit: contain; }
+.mp-fortune-cardname { font-weight: 800; font-size: 15px; }
+.mp-fortune-detail { width: 280px; border-radius: 0 12px 12px 0; margin-left: -6px; padding: 14px 18px; color: #fff; text-align: left; background: linear-gradient(135deg, #2f74c4, #1c4e8c); }
+.mp-fortune.rarity-legendary .mp-fortune-detail { background: linear-gradient(135deg, #d98a1e, #9c5e10); }
+.mp-fortune-rarity { font-size: 12px; opacity: 0.85; }
+.mp-fortune-name { font-weight: 800; font-size: 18px; margin: 2px 0 6px; }
+.mp-fortune-desc { font-size: 12px; font-style: italic; opacity: 0.9; margin-bottom: 8px; }
+.mp-fortune-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 14px; font-size: 12px; font-weight: 700; }
+.mp-stat-pos { color: #9be79b; }
+.mp-stat-neg { color: #ff9a9a; }
+
+/* ---- "You know the drill" ---- */
+/* #drill-modal is appended to <body> (the other switcher modals live inside
+   #game-container), so re-anchor it: fixed, centered on the viewport like the
+   game container itself, aligned to the container's 20px top / 590px height.
+   Without this the backdrop hugs the page's left edge instead of covering
+   the two panels */
+#drill-modal {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 20px;
+    width: 1144px;
+    height: 590px;
+}
+.drill-content { padding-top: 26px !important; max-width: 460px !important; max-height: none !important; overflow: visible !important; }
+#drill-modal > .switcher-modal-content { transform: scale(0); opacity: 0; }
+/* Keyframe animation (not a transition) so the zoom always plays, even when the
+   modal is created and shown in the same frame right after the timeline reset. */
+#drill-modal.active > .switcher-modal-content {
+    animation: drill-zoom-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes drill-zoom-in {
+    0%   { transform: scale(0.2); opacity: 0; }
+    70%  { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.drill-title { color: #ff9a3c; font-weight: 900; font-size: 26px; margin: 4px 0 12px; -webkit-text-stroke: 0.5px #fff; }
+.drill-art { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.drill-rocket { width: 90px; height: auto; }
+.drill-moon { width: 130px; height: auto; }
+.drill-text { color: #5a4a2a; font-size: 15px; line-height: 1.5; margin: 0 0 16px; }
+.drill-close { position: static; bottom: auto; margin: 4px auto 0; }
+
 /* Switcher Buttons (Pickaxes & Fortunes) */
 #switcher-buttons {
     position: absolute;
@@ -1094,6 +1780,15 @@ body {
 .switcher-btn:active {
     transform: scale(0.95);
 }
+
+.inventory-unread { position:absolute; top:-3px; right:-3px; z-index:2; min-width:19px; height:19px;
+    box-sizing:border-box; padding:0 3px; border:2px solid #a06820; border-radius:12px;
+    background:#ffe078; color:#593a16; font:12px/15px 'DogeSans',sans-serif; text-align:center; pointer-events:none; }
+.inventory-unread[hidden] { display:none; }
+.moon-theme .inventory-unread { background:#d0efff; border-color:#6688a8; color:#244154; }
+.planet-mars .inventory-unread { background:#efb7a8; border-color:#ab665c; color:#54251d; }
+.planet-jupiter .inventory-unread { background:#edc9dc; border-color:#a66b91; color:#53364c; }
+.planet-titan .inventory-unread { background:#ffe697; border-color:#a98634; color:#5a441b; }
 
 .switcher-btn-circle {
     width: 52px;
@@ -2065,286 +2760,12 @@ body {
 .planet-titan .item-card-description { color: #6a5a3a; }
 .planet-titan .item-card-stat span { color: #2d2416; }
 
-/* ========== DOGEBAG SYSTEM ========== */
-
-/* In-world dogebag element */
-.dogebag-drop {
-    position: absolute;
-    width: 95px;  /* Increased by ~5% from 90px */
-    height: 95px; /* Increased by ~5% from 90px */
-    cursor: pointer;
-    z-index: 15;
-    filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.8)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.5));
-    animation: coinPileDisperse 0.4s ease-out forwards;
-    transition: transform 0.15s ease;
-}
-
-.dogebag-drop:hover {
-    transform: scale(1.18); /* Slightly increased to map well with new base scale (was 1.15) */
-    filter: drop-shadow(0 0 6px rgba(76, 175, 80, 1)) drop-shadow(0 0 12px rgba(76, 175, 80, 0.7));
-}
-
-.dogebag-img-wrapper {
-    width: 100%;
-    height: 100%;
-    animation: rocketFloat 2.4s ease-in-out infinite;
-}
-
-.dogebag-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
-}
-
-@keyframes dogebagBob {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-6px);
-    }
-}
-
-/* Drop-in from above: swoops down and bounces into place */
-@keyframes dogebagDropIn {
-    0%   { transform: translateY(-160px); opacity: 0; }
-    60%  { transform: translateY(12px);   opacity: 1; }
-    80%  { transform: translateY(-5px);   opacity: 1; }
-    100% { transform: translateY(0);      opacity: 1; }
-}
-
-/* Dogebag Modal Content – no container box, floats over the white backdrop */
-.dogebag-modal-content {
-    text-align: center;
-    max-width: 380px;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    overflow: visible !important;
-    padding-top: 20px !important;
-}
-
-/* Drop-in animation class — added by JS each time the modal opens */
-.dogebag-modal-content.dogebag-dropping {
-    animation: dogebagDropIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Make subtitle readable over the translucent backdrop */
-.dogebag-modal-content .modal-subtitle {
-    color: #4a3a1a;
-    text-shadow:
-        -1px -1px 0 rgba(255, 255, 255, 0.8),
-         1px -1px 0 rgba(255, 255, 255, 0.8),
-        -1px  1px 0 rgba(255, 255, 255, 0.8),
-         1px  1px 0 rgba(255, 255, 255, 0.8),
-         0    0   4px rgba(255, 255, 255, 0.6);
-}
-
-.dogebag-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.dogebag-modal-icon {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(76, 175, 80, 0.6));
-    /* Bob starts after drop-in animation (0.5s) has settled */
-    animation: dogebagBob 2s ease-in-out 0.55s infinite;
-}
-
-.dogebag-open-btn {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff;
-    /* Two-tone hard split (light green top, dark green bottom) */
-    background: linear-gradient(to bottom, #5cbf60 0 50%, #3a8c3e 50% 100%);
-    border: 3px solid #2e7d32;
-    border-radius: 12px;
-    padding: 12px 48px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    margin-top: 10px;
-}
-
-.dogebag-open-btn:hover {
-    background: linear-gradient(to bottom, #72d176 0 50%, #49a34d 50% 100%);
-    transform: scale(1.08);
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
-}
-
-/* Reveal state */
-.dogebag-radial-container {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 8px;
-}
-
-.dogebag-radial-fx {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    opacity: 0.6;
-    animation: radialSpin 8s linear infinite;
-    pointer-events: none;
-}
-
-@keyframes radialSpin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.dogebag-item-icon {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    z-index: 1;
-}
-
-.dogebag-item-name {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    color: #3a2a1a;
-}
-
-.dogebag-item-rarity {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.dogebag-item-rarity.rarity-common {
-    color: #888888;
-}
-
-.dogebag-item-rarity.rarity-improved {
-    color: #6b8e23;
-}
-
-.dogebag-item-rarity.rarity-rare {
-    color: #4169e1;
-}
-
-.dogebag-item-rarity.rarity-epic {
-    color: #9932cc;
-}
-
-.dogebag-item-rarity.rarity-legendary {
-    color: #ffa500;
-}
-
-.dogebag-item-description {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 11px;
-    color: #6a5a4a;
-    font-style: italic;
-    max-width: 280px;
-}
-
-.dogebag-item-dpc {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background: rgba(255, 215, 0, 0.3);
-    border-radius: 8px;
-    padding: 4px 12px;
-}
-
-.dogebag-item-dpc img {
-    width: 18px;
-    height: 18px;
-}
-
-.dogebag-item-dpc span {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    color: #5a4a2a;
-}
-
-.dogebag-item-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    align-items: center;
-}
-
-.dogebag-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 8px;
-}
-
-.dogebag-action-btn {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;
-    padding: 10px 32px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid;
-}
-
-.dogebag-action-btn.equip-btn {
-    color: #fff;
-    /* Two-tone hard split (matching OPEN button style) */
-    background: linear-gradient(to bottom, #5cbf60 0 50%, #3a8c3e 50% 100%);
-    border-color: #2e7d32;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.dogebag-action-btn.equip-btn:hover {
-    background: linear-gradient(to bottom, #72d176 0 50%, #49a34d 50% 100%);
-    transform: scale(1.05);
-}
-
-.dogebag-action-btn.loot-btn {
-    color: #5a4a2a;
-    /* Same two-tone style as close buttons */
-    background: linear-gradient(to bottom, #ffe7a4 0 50%, #f1c35a 50% 100%);
-    border-color: #c78b2b;
-}
-
-.dogebag-action-btn.loot-btn:hover {
-    background: linear-gradient(to bottom, #fff0bf 0 50%, #f6d07c 50% 100%);
-    transform: scale(1.05);
-}
-
-/* Coin reveal (no item icon, shows coin stack) */
-.dogebag-coin-reveal {
-    font-family: 'DogeSans', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-    color: #b89b3c;
-    text-shadow: 1px 1px 0 #fff;
-}
-
+/* Persistent field bags. Counts never expire; opening consumes the saved stack. */
+.dogebag-drop {position:absolute;width:82px;height:82px;z-index:15;cursor:pointer;animation:coinPileDisperse 400ms ease-out forwards;}
+.dogebag-stack-restored {animation:none;transform:translate(calc(-50% + var(--pile-end-x)),calc(-50% + var(--pile-end-y)));}
+.dogebag-img-wrapper {position:relative;width:100%;height:100%;animation:rocketFloat 2.4s ease-in-out infinite;}
+.dogebag-img-wrapper img {width:100%;height:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(2px 0 0 var(--bag-color)) drop-shadow(-2px 0 0 var(--bag-color)) drop-shadow(0 2px 0 var(--bag-color)) drop-shadow(0 -2px 0 var(--bag-color));}
+.dogebag-stack-count {position:absolute;bottom:5px;left:0;width:100%;text-align:center;font:18px 'DogeSans',sans-serif;color:white;-webkit-text-stroke:3px #795723;paint-order:stroke fill;pointer-events:none;}
 /* ========== END DOGEBAG SYSTEM ========== */
 
 #right-panel {
@@ -2430,7 +2851,7 @@ body {
     color: white;
     font-size: 11px;
     font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    text-shadow: none;
     background: rgba(0, 0, 0, 0.6);
     padding: 0 6px;
     height: 22px;
@@ -2441,6 +2862,25 @@ body {
     display: flex;
     align-items: center;
     overflow: hidden;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#version-indicator:hover {
+    background-image: linear-gradient(90deg, #ff4545, #ffa500, #ffff33, #33ff33, #00ffff, #4d79ff, #d633ff, #ff4545);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    animation: rainbow-shift 2s linear infinite;
+}
+
+@keyframes rainbow-shift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
 }
 
 /* Supporter Badge (next to version indicator) */
@@ -2503,7 +2943,7 @@ body {
     width: 350px;
     /* 50px bigger (300px + 50px) */
     height: auto;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+    filter: none;
 }
 
 /* Particle Container */
@@ -2607,11 +3047,11 @@ body {
 /* Hover effect for placed helpers only */
 .helper-sprite.placed-helper {
     pointer-events: auto;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .helper-sprite.placed-helper:hover {
-    filter: drop-shadow(0 0 4px #ff8c00) drop-shadow(0 0 6px rgba(255, 140, 0, 0.6));
+    filter: url("#orange-sprite-outline");
     transform: scale(1.02);
 }
 
@@ -2772,6 +3212,167 @@ body {
     height: 72px;
 }
 
+.helper-sprite.rick-helper {
+    width: 60px;
+    height: 60px;
+    image-rendering: auto;
+}
+
+/* Pointer movement owns Rick's transform; the generic float animation would
+   override it and leave the cursor sprite behind. */
+#rick-cursor-sprite {
+    animation: none;
+    transition: none;
+}
+
+/* Placed Rick DPS zone */
+.rick-dps-zone {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 4;
+    transform: translate(-50%, -50%);
+    background: rgba(50, 255, 120, 0.035);
+    border: 1.5px dashed rgba(70, 255, 140, 0.55);
+    contain: layout paint;
+    will-change: transform, opacity;
+    animation: rickZonePulse 3s infinite ease-in-out;
+}
+
+@keyframes rickZonePulse {
+    0%, 100% {
+        opacity: 0.75;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Rick's green buff stroke takes priority over the orange hover stroke. */
+.helper-sprite.rick-boosted {
+    filter: url("#green-sprite-outline") !important;
+}
+
+/* Rick Countdown Timer Badge */
+.rick-timer-badge {
+    position: absolute;
+    transform: translateX(-50%);
+    background: rgba(12, 28, 16, 0.88);
+    color: #46ff8c;
+    border: 1.5px solid rgba(70, 255, 140, 0.75);
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-family: 'DogeSans', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 16;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    text-shadow: none;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.rick-timer-badge.low-time {
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.85);
+    box-shadow: none;
+    text-shadow: none;
+    animation: timerPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes timerPulse {
+    0% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(1.08); }
+}
+
+/* Rick Exit Portal & Jump In Animation */
+.rick-exit-portal {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%);
+    z-index: 8;
+    pointer-events: none;
+    object-fit: contain;
+    animation: rickPortalOpen 0.35s ease-out forwards;
+}
+
+@keyframes rickPortalOpen {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+.helper-sprite.rick-jumping-in,.rick-field-rig.rick-jumping-in {
+    animation: rickJumpIn 0.5s ease-in forwards !important;
+    pointer-events: none !important;
+}
+
+@keyframes rickJumpIn {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    35% {
+        transform: translate(0, -28px) scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 18px) scale(0);
+        opacity: 0;
+    }
+}
+
+.rick-portal-close {
+    animation: rickPortalClose 0.35s ease-in forwards !important;
+}
+
+@keyframes rickPortalClose {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Rick doge interactive portal emergence */
+.rick-doge {
+    pointer-events: auto !important;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.rick-doge.ready-to-grab {
+    cursor: grab !important;
+    pointer-events: auto !important;
+    animation: rickEmergedWobble 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes rickEmergedWobble {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-4px) rotate(2deg);
+    }
+}
+
 /* Cursor helper floating animation */
 .helper-sprite.attached-to-mouse {
     animation: cursorFloat 2.5s ease-in-out infinite;
@@ -2804,7 +3405,7 @@ body {
     width: 137px;
     /* 10% smaller than previous size */
     height: auto;
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+    filter: none;
 }
 
 /* Mars rock size - 10% bigger */
@@ -2889,15 +3490,14 @@ body.planet-mars #main-rock {
     cursor: pointer;
     z-index: 5;
     /* Below the rock (rock is at default z-index) */
-    transition: filter 0.15s ease-out;
     pointer-events: auto;
 }
 
 .coin-pile img {
     width: 50px;
     height: auto;
-    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.4));
     pointer-events: auto;
+    transform-origin: center;
 }
 
 /* Small coin pile size (1-10% rewards) */
@@ -2908,19 +3508,6 @@ body.planet-mars #main-rock {
 /* Medium coin pile size (11-45% rewards) */
 .coin-pile.pile-medium img {
     width: 40px;
-}
-
-.coin-pile:hover {
-    filter: brightness(1.15);
-}
-
-.coin-pile:hover img {
-    transform: scale(1.1);
-    transition: transform 0.15s ease-out;
-}
-
-.coin-pile:active img {
-    transform: scale(0.95);
 }
 
 /* Coin Pile Disperse Animation - from center outward */
@@ -3039,7 +3626,7 @@ body.planet-mars #main-rock {
 #main-character {
     width: 120px;
     height: auto;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+    filter: none;
     position: relative;
     z-index: 2;
     order: 2;
@@ -3260,6 +3847,37 @@ body.planet-mars #main-rock {
 
 
 
+/* Helper Marquee Selection Box & Highlight (PC/Desktop) */
+.marquee-select-box {
+    position: absolute;
+    border: 1.5px solid #40e0d0;
+    background: rgba(64, 224, 208, 0.22);
+    box-shadow: 0 0 8px rgba(64, 224, 208, 0.45);
+    pointer-events: none;
+    z-index: 95;
+    border-radius: 2px;
+}
+
+.helper-sprite.helper-selected {
+    filter: sepia(0.3) hue-rotate(155deg) saturate(1.8) brightness(1.1) opacity(0.85) !important;
+    outline: none !important;
+}
+
+/* Keep the selection tint alongside the appropriate hover or buff stroke. */
+.helper-sprite.helper-selected:hover {
+    filter: sepia(0.3) hue-rotate(155deg) saturate(1.8) brightness(1.1) opacity(0.85) url("#orange-sprite-outline") !important;
+}
+
+.helper-sprite.helper-selected.rick-boosted {
+    filter: sepia(0.3) hue-rotate(155deg) saturate(1.8) brightness(1.1) opacity(0.85) url("#green-sprite-outline") !important;
+}
+
+/* Eased relocation for helpers landing outside valid placement boundaries */
+.helper-sprite.ease-relocate,
+.helper-name-tooltip.ease-relocate {
+    transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1), top 0.35s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
 #character-container {
     position: relative;
     z-index: 2;
@@ -3293,78 +3911,165 @@ body.planet-mars #main-rock {
     right: calc(20% - 80px);
 }
 
+/* Timeline-start Paw: sits behind Doge, invisible unless swinging to mine */
+#pickaxe.pickaxe-paw {
+    width: 57px;
+    height: 229px;
+    top: -15px;
+    right: 35px;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 50% 50%;
+    transform: rotate(15deg);
+    transition: transform 0.136s ease-out, opacity 0.03s ease-out;
+}
+
 #pickaxe.swing-down {
     transform: rotate(-58deg);
 }
 
+#pickaxe.pickaxe-paw.swing-down {
+    opacity: 1;
+    transform: rotate(-74deg);
+}
 
-/* Stats Display - DogeMiner Style */
+
+/* Fixed icon overlap and separate plate sizing mirror the original counters. */
 #stats-display {
     position: absolute;
-    top: 20px;
+    top: 44px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 30;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    gap: 32px;
+    pointer-events: none;
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    gap: 0px;
+    gap: 0;
+    flex: none;
     justify-content: center;
     position: relative;
-}
-
-.stat-item:first-child {
-    margin-top: 30px;
+    pointer-events: auto;
 }
 
 .stat-icon {
-    width: 44px;
-    height: 44px;
+    width: 60px;
+    height: 60px;
+    flex: none;
     z-index: 2;
     position: relative;
 }
 
 .stat-item:nth-child(2) .stat-icon {
-    width: 33px;
-    height: 33px;
+    width: 50px;
+    height: 50px;
 }
 
-.stat-item:first-child .stat-icon {
-    transform: translateX(-10px);
-}
-
-.stat-item span {
-    background: rgb(250, 235, 185);
-    padding: 8px 15px;
-    border-radius: 10px;
-    margin-left: -22px;
+.stat-item > span {
+    background: rgba(255, 245, 185, 0.8);
+    padding: 0 22px 0 46px;
+    border-radius: 0 20px 20px 0;
+    margin-left: -30px;
     z-index: 1;
     position: relative;
-    min-width: 60px;
+    min-width: 108px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
     color: #8b4513;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    opacity: 0.8;
+    text-shadow: none;
+    white-space: nowrap;
 }
 
 /* Specific colors for dogecoin and DPS amounts */
 #dogecoin-amount {
-    color: rgb(60, 60, 60) !important;
-    font-weight: 900 !important;
-    /* Extra bold */
+    color: #333;
+    transform-origin: center center;
+}
+
+.planet-mars #dogecoin-amount {
+    color: #ffffff;
+}
+
+@keyframes dogecoinFlashGreen {
+    0% {
+        color: #16a34a;
+    }
+    40% {
+        color: #15803d;
+    }
+    100% {
+        color: rgb(60, 60, 60);
+    }
+}
+
+@keyframes dogecoinFlashRed {
+    0% {
+        color: #dc2626;
+    }
+    40% {
+        color: #b91c1c;
+    }
+    100% {
+        color: rgb(60, 60, 60);
+    }
+}
+
+@keyframes dogecoinFlashGreenMars {
+    0% {
+        color: #22c55e;
+    }
+    40% {
+        color: #4ade80;
+    }
+    100% {
+        color: #ffffff;
+    }
+}
+
+@keyframes dogecoinFlashRedMars {
+    0% {
+        color: #ef4444;
+    }
+    40% {
+        color: #f87171;
+    }
+    100% {
+        color: #ffffff;
+    }
+}
+
+#dogecoin-amount.flash-green {
+    animation: dogecoinFlashGreen 0.45s ease-out;
+}
+
+#dogecoin-amount.flash-red {
+    animation: dogecoinFlashRed 0.45s ease-out;
+}
+
+.planet-mars #dogecoin-amount.flash-green {
+    animation-name: dogecoinFlashGreenMars;
+}
+
+.planet-mars #dogecoin-amount.flash-red {
+    animation-name: dogecoinFlashRedMars;
 }
 
 #dps-amount {
     color: rgb(115, 85, 45) !important;
-    font-weight: 900 !important;
-    /* Extra bold */
 }
 
 .planet-mars #dogecoin-amount,
@@ -3372,10 +4077,62 @@ body.planet-mars #main-rock {
     color: #ffffff !important;
 }
 
-.stat-item:nth-child(2) span {
-    padding: 4px 8px;
-    margin-left: -20px;
-    border-radius: 6px;
+.stat-item:nth-child(2) > span {
+    padding: 0 18px 0 35px;
+    margin-left: -25px;
+    min-width: 87px;
+    height: 42px;
+    border-radius: 0 16px 16px 0;
+    font-size: 22px;
+}
+
+/* Desktop uses smaller counters; mobile keeps its established dimensions. */
+@media (min-width: 769px) {
+    #stats-display {
+        gap: 26px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .stat-item:nth-child(2) .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stat-item > span {
+        padding: 0 18px 0 37px;
+        margin-left: -24px;
+        min-width: 86px;
+        height: 43px;
+        border-radius: 0 16px 16px 0;
+        font-size: 22px;
+    }
+
+    .stat-item:nth-child(2) > span {
+        padding: 0 14px 0 28px;
+        margin-left: -20px;
+        min-width: 70px;
+        height: 34px;
+        border-radius: 0 13px 13px 0;
+        font-size: 18px;
+    }
+
+    .diamond-counter-icon {
+        width: 44px;
+    }
+
+    #diamond-counter #diamond-amount {
+        padding: 3px 10px 3px 32px;
+        margin-left: -30px;
+        min-width: 40px;
+        min-height: 30px;
+        border-radius: 7px;
+        font-size: 21px;
+        line-height: 24px;
+    }
 }
 
 /* Floating Coins - moved to DogeCoin Effects section */
@@ -3399,16 +4156,18 @@ body.planet-mars #main-rock {
 .tabs-left {
     display: flex;
     gap: 4px;
-    /* Consistent spacing between Shop and Upgrade tabs */
+    /* Consistent spacing between Shop, Upgrade, and Hats tabs */
     margin-left: 10px;
-    /* Move tabs 10px to the right */
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
 }
 
 .tabs-right {
     display: flex;
     gap: 4px;
     margin-right: 10px;
-    /* Move tabs 10px to the left */
+    flex-shrink: 0; /* icon tabs stay intact; the text tabs absorb any squeeze */
 }
 
 .moon-theme .tabs-left,
@@ -3422,9 +4181,7 @@ body.planet-mars #main-rock {
     background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
     border: 1px solid rgb(185, 150, 65);
     color: rgb(80, 50, 0);
-    /* Changed to R: 80, G: 50, B: 0 */
-    padding: 12px 18px;
-    /* Made bigger - increased padding */
+    padding: 12px 10px;
     cursor: pointer;
     background-color: rgb(255, 220, 115);
     transition-property: transform !important;
@@ -3433,7 +4190,6 @@ body.planet-mars #main-rock {
     font-family: inherit;
     font-weight: 700;
     font-size: 18px;
-    /* Bigger font */
     white-space: nowrap;
     /* More rounded top, flat bottom */
     border-radius: 10px 10px 0 0;
@@ -3444,19 +4200,20 @@ body.planet-mars #main-rock {
     gap: 6px;
 }
 
-/* Make Shop and Upgrades tabs uniform size */
+.tabs-right .tab-btn {
+    padding: 12px 14px;
+}
+
+/* Make Shop, Upgrades, and Hats tabs uniform size */
 .tabs-left .tab-btn {
-    min-width: 100px;
-    /* Reduced to 100px width */
+    flex-shrink: 1;
+    overflow: hidden;
     justify-content: center;
-    /* Center content within the button */
 }
 
 .tab-icon {
     width: 24px;
-    /* Made even bigger */
     height: 24px;
-    /* Made even bigger */
     filter: brightness(0) saturate(100%) invert(16%) sepia(100%) saturate(1000%) hue-rotate(30deg) brightness(90%) contrast(100%) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
     pointer-events: none;
     /* Allow clicks to pass through to button */
@@ -3502,7 +4259,10 @@ body.planet-mars #main-rock {
 }
 
 #panel-content {
-    height: calc(100% - 35px);
+    /* Fill exactly what the tab bar leaves (the panel is a flex column) —
+       a hardcoded height here used to extend past the panel's bottom edge */
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     /* Allow vertical scrolling */
     overflow-x: hidden;
@@ -3512,9 +4272,10 @@ body.planet-mars #main-rock {
     /* Tighter spacing with tabs */
 }
 
-/* Disable scrolling for settings tab */
+/* Settings keeps its controls inside the panel and scrolls on short layouts. */
 #panel-content #settings-tab {
-    overflow: hidden !important;
+    height:100%; min-height:0; box-sizing:border-box;
+    overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain;
 }
 
 #panel-content:has(#settings-tab.active) {
@@ -3544,12 +4305,14 @@ body.planet-mars #main-rock {
     overflow: hidden !important;
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    /* minmax(0, ...) so card content can never push the grid past the panel */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
     row-gap: 4px;
     column-gap: 4px;
-    padding: 4px 4px 4px 4px;
-    /* 4px padding on all sides including bottom */
+    padding: 4px;
+    /* Original 4px inset on all sides — the bottom bleed is fixed by the
+       minmax rows fitting the panel, not by widening the padding */
     box-sizing: border-box;
     /* Ensure padding is included in height calculation */
     height: 100%;
@@ -3569,14 +4332,21 @@ body.planet-mars #main-rock {
         "sprite description"
         "button button";
     grid-template-rows: 20px 15px 46px auto;
-    grid-template-columns: 1fr 40px;
-    gap: 4px;
+    grid-template-columns: minmax(0, 1fr) 40px;
+    /* 3px (not 4px) row gap: buys back the ~10px the panel interior is short
+       for three natural-height cards, so the buy button keeps its 7px
+       breathing room instead of being squeezed against the card's bottom */
+    gap: 3px;
     position: relative;
+    min-width: 0; /* never force the shop grid wider than the panel */
     transition: all 0.2s ease;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     outline: 1px solid rgb(135, 125, 105);
     min-height: auto;
+    /* Clip inside the card on short windows instead of pushing the grid
+       past the panel's bottom edge */
+    overflow: hidden;
 }
 
 .shop-grid-item:hover {
@@ -4001,10 +4771,16 @@ body.planet-mars #main-rock {
     height: 100%;
 }
 
+/* Shop tab fills the panel too, so its 3x2 grid sizes to the panel
+   instead of its content (which bled past the panel's bottom edge) */
+#shop-tab.active {
+    height: 100%;
+}
+
 #upgrades-tab.active #upgrades-container {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    min-height: 0;
+    display: grid;
 }
 
 .tab-content.slide-out-left,
@@ -4271,24 +5047,26 @@ body.planet-mars #main-rock {
 
 .settings-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    /* minmax(0, ...) so column content can never push the grid past the panel */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
 }
 
 .settings-column {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    min-width: 0; /* columns may shrink instead of bleeding past the panel */
 }
 
 .settings-section {
-    margin-bottom: 25px;
+    margin-bottom: 14px;
     padding: 0;
 }
 
 .settings-section h3 {
     color: #8b4513;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     font-size: 16px;
     border-bottom: 2px solid #d4af37;
     padding-bottom: 5px;
@@ -4300,7 +5078,7 @@ body.planet-mars #main-rock {
 }
 
 .setting-item {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .setting-item label {
@@ -4321,7 +5099,7 @@ body.planet-mars #main-rock {
 .setting-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 #user-info .setting-buttons {
@@ -4557,16 +5335,34 @@ body.planet-mars #main-rock {
     margin-bottom: 8px;
     color: #8b4513;
     font-weight: 600;
-    transform: translateX(100%);
-    animation: slideIn 0.3s ease forwards;
+    transform: translateX(120%);
+    animation: notificationSlideIn 0.3s ease forwards;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(5px);
     max-width: 300px;
+    word-wrap: break-word;
+    pointer-events: auto;
 }
 
-@keyframes slideIn {
+.notification.slide-out {
+    animation: notificationSlideOut 0.3s ease forwards;
+}
+
+@keyframes notificationSlideIn {
+    from {
+        transform: translateX(120%);
+    }
     to {
         transform: translateX(0);
+    }
+}
+
+@keyframes notificationSlideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(120%);
     }
 }
 
@@ -4764,7 +5560,69 @@ body.planet-mars #main-rock {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 15;
+    z-index: 25;
+    overflow: hidden;
+}
+
+.floating-coin-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 25;
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+
+.floating-coin-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.floating-coin-item.is-crit .floating-coin-img {
+    width: 42px;
+    height: 42px;
+    filter: none;
+}
+
+.floating-coin-text {
+    font-family: 'DogeSans', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: rgb(180, 155, 60);
+    text-shadow: none;
+    -webkit-text-stroke: 4px #ffffff;
+    paint-order: stroke fill;
+    pointer-events: none;
+}
+
+.floating-coin-item.is-crit .floating-coin-text {
+    font-size: 26px;
+    color: rgb(255, 140, 0);
+}
+
+.floating-diamond-img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.floating-diamond-text {
+    font-family: 'DogeSans', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: #0d3b4f;
+    text-shadow:
+        2px 2px 0px #ffffff,
+        -2px -2px 0px #ffffff,
+        2px -2px 0px #ffffff,
+        -2px 2px 0px #ffffff,
+        0 2px 4px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
 }
 
 .earth-particle {
@@ -4811,11 +5669,12 @@ body.planet-mars #main-rock {
 
 /* Upgrades Tab Styling */
 #upgrades-container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: repeat(3, minmax(148px, 1fr));
     height: 100%;
-    gap: 2px;
+    gap: 6px;
     padding: 4px;
+    overflow-y: auto;
 }
 
 .upgrade-section {
@@ -4828,7 +5687,8 @@ body.planet-mars #main-rock {
     padding: 15px;
     overflow: hidden;
     position: relative;
-    min-height: 0;
+    min-height: 148px;
+    container-type: size;
 }
 
 /* Corner brackets - decorative corners only */
@@ -4905,7 +5765,7 @@ body.planet-mars #main-rock {
     justify-content: center;
     height: 100%;
     width: 100%;
-    padding: 20px;
+    padding: 4px;
     box-sizing: border-box;
 }
 
@@ -5032,8 +5892,7 @@ body.planet-mars #main-rock {
     color: #5a4a2a;
     text-align: center;
     width: 100%;
-    /* Faux-bold using text-shadow since font doesn't support traditional bolding */
-    text-shadow: 0.7px 0 0 currentColor, -0.7px 0 0 currentColor;
+    text-shadow: none;
     letter-spacing: 0.5px;
     line-height: 1.1;
 }
@@ -5075,6 +5934,20 @@ body.planet-mars #main-rock {
     width: 100%;
 }
 
+.helper-upgrade-purchases {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.helper-upgrade-purchases .helper-upgrade-diamond-btn {
+    flex-shrink: 0;
+    width: auto;
+    font-size: 22px;
+    padding: 7px 22px;
+}
 
 /* Ensure upgrade buy buttons size to content */
 .upgrade-footer .shop-buy-btn {
@@ -5125,12 +5998,19 @@ body.planet-mars #main-rock {
     white-space: nowrap;
 }
 
-/* Active upgrade section with rounded rectangle container */
+/* Shared card surface lets the panel gradient show through on both layouts. */
+.upgrade-section.has-upgrade,
+.mobile-upgrade-section.has-upgrade {
+    background: rgba(255, 250, 229, 0.6);
+    border: 1.5px solid #c9a227;
+    border-radius: 10px;
+}
+
 .upgrade-section.has-upgrade {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.95) 100%);
-    border: 3px solid #c9a227;
-    border-radius: 12px;
-    margin: 2px 5px;
+    margin: 0;
+    padding: 6px 12px;
+    flex: 1 0 auto;
+    min-height: 148px;
 }
 
 /* Hide corner brackets when upgrade is displayed */
@@ -5184,10 +6064,12 @@ body.planet-mars #main-rock {
     border-color: rgb(120, 185, 235);
 }
 
-.moon-theme .upgrade-section.has-upgrade {
-    background: linear-gradient(135deg, rgba(120, 185, 235, 0.15) 0%, rgba(240, 250, 255, 0.95) 100%);
-    border: 3px solid rgb(120, 185, 235);
-    border-radius: 12px;
+.moon-theme .upgrade-section.has-upgrade,
+.planet-moon .upgrade-section.has-upgrade,
+.moon-theme .mobile-upgrade-section.has-upgrade,
+.planet-moon .mobile-upgrade-section.has-upgrade {
+    border-color: rgb(120, 185, 235);
+    background: rgba(240, 250, 255, 0.7);
 }
 
 .moon-theme .upgrade-name {
@@ -5217,10 +6099,10 @@ body.planet-mars #main-rock {
     border-color: rgb(130, 80, 75);
 }
 
-.planet-mars .upgrade-section.has-upgrade {
-    background: linear-gradient(135deg, rgba(125, 30, 95, 0.25) 0%, rgba(80, 35, 30, 0.95) 100%);
-    border: 3px solid rgb(130, 80, 75);
-    border-radius: 12px;
+.planet-mars .upgrade-section.has-upgrade,
+.planet-mars .mobile-upgrade-section.has-upgrade {
+    border-color: rgb(130, 80, 75);
+    background: rgba(80, 35, 30, 0.9);
 }
 
 .planet-mars .upgrade-name {
@@ -5296,10 +6178,16 @@ body.planet-mars #main-rock {
     border-color: rgb(225, 180, 105);
 }
 
-.planet-jupiter .upgrade-section.has-upgrade {
-    background: linear-gradient(135deg, rgba(250, 205, 125, 0.25) 0%, rgba(255, 250, 240, 0.95) 100%);
-    border: 3px solid rgb(225, 180, 105);
-    border-radius: 12px;
+.planet-jupiter .upgrade-section.has-upgrade,
+.planet-jupiter .mobile-upgrade-section.has-upgrade {
+    border-color: rgb(225, 180, 105);
+    background: rgba(255, 250, 240, 0.7);
+}
+
+.planet-titan .upgrade-section.has-upgrade,
+.planet-titan .mobile-upgrade-section.has-upgrade {
+    border-color: rgb(235, 190, 80);
+    background: rgba(255, 241, 199, 0.7);
 }
 
 .planet-jupiter .upgrade-name {
@@ -5337,7 +6225,7 @@ body.planet-mars #main-rock {
 .upgrade-name {
     font-size: 13px;
     font-weight: 700;
-    color: #8b4513;
+    color: #5a4a2a;
 }
 
 .upgrade-target {
@@ -5364,6 +6252,140 @@ body.planet-mars #main-rock {
     width: 80%;
     padding: 5px 10px;
     font-size: 11px;
+}
+
+/* Fixed equal slots prevent a replacement from moving neighboring offers. */
+/* Reference-style upgrade cards with separate upgrade art and helper preview. */
+.helper-upgrade-card.upgrade-item-full,
+.helper-upgrade-card.mobile-upgrade-item {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 70px;
+    grid-template-rows: minmax(min-content, 1fr) auto;
+    grid-template-areas: "icon content helper" "footer footer footer";
+    align-items: center;
+    gap: 6px 10px;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.helper-upgrade-card .upgrade-art-icon {
+    grid-area: icon;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    justify-self: center;
+}
+
+.helper-upgrade-card .upgrade-art-icon img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.helper-upgrade-card .upgrade-content,
+.helper-upgrade-card .mobile-upgrade-content {
+    grid-area: content;
+    align-items: center;
+    gap: 4px;
+}
+
+.helper-upgrade-card .upgrade-name {
+    font-size: 20px !important;
+    letter-spacing: 0;
+}
+
+.helper-upgrade-card .upgrade-description {
+    font-size: 14px;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+}
+
+.helper-upgrade-card .upgrade-dps-increase {
+    font-size: 12px;
+}
+
+/* Scale the text to the available slot height while retaining currency sizes. */
+@container (max-height: 160px) {
+    .helper-upgrade-card .upgrade-name {
+        font-size: 18px !important;
+    }
+    .helper-upgrade-card .upgrade-description {
+        font-size: 12px;
+    }
+}
+
+.helper-upgrade-card .upgrade-helper-preview {
+    grid-area: helper;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.helper-upgrade-card .upgrade-helper-sprite,
+.helper-upgrade-card .mobile-upgrade-helper-sprite {
+    position: static;
+    width: 54px;
+    height: 54px;
+}
+
+.helper-upgrade-card .upgrade-total-dps {
+    font-size: 14px;
+}
+
+.helper-upgrade-card .upgrade-footer,
+.helper-upgrade-card .mobile-upgrade-footer {
+    grid-area: footer;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.helper-upgrade-purchases {
+    gap: 8px;
+}
+
+.helper-upgrade-currency-separator {
+    font-size: 25px;
+    line-height: 1;
+    color: #7a6a4a;
+}
+
+.helper-upgrade-purchases .shop-buy-btn,
+.helper-upgrade-purchases .helper-upgrade-diamond-btn {
+    margin: 0;
+    min-height: 40px;
+}
+
+.helper-upgrade-purchases .helper-upgrade-diamond-btn {
+    background: linear-gradient(to bottom, #c2eaf6 50%, #aee3f5 50%);
+    border: 1px solid #6fc6e6;
+    border-radius: 8px;
+    padding: 5px 14px;
+    gap: 8px;
+    font-size: 22px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.helper-upgrade-purchases .helper-upgrade-diamond-btn:disabled {
+    background: linear-gradient(to bottom, #e1ebeb 50%, #d3e2e6 50%);
+    border-color: #a8c7d0;
+    filter: none;
+}
+
+.helper-upgrade-purchases .helper-upgrade-diamond-btn img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.planet-mars .helper-upgrade-currency-separator {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .upgrade-placeholder {
@@ -5418,7 +6440,7 @@ body.planet-mars #main-rock {
     flex-direction: column !important;
     max-width: 100% !important;
     width: 100% !important;
-    padding-top: 40px !important;
+    padding-top: 0 !important;
 }
 
 .force-mobile #left-panel {
@@ -5516,43 +6538,6 @@ body.planet-mars #main-rock {
 /* Mobile Media Query - Applies to screens 768px and below */
 @media screen and (max-width: 768px) {
     /* Dogebag modal: fit screen and keep buttons reachable */
-    .switcher-modal-content.dogebag-modal-content {
-        width: calc(100vw - 18px);
-        max-width: calc(100vw - 18px);
-        max-height: calc(100vh - 70px);
-        overflow: visible;
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-    }
-
-    .dogebag-state {
-        flex: 1 1 auto;
-        overflow-y: auto;
-        padding-bottom: 10px;
-    }
-
-    .dogebag-actions {
-        position: sticky;
-        bottom: 0;
-        background: none;
-        padding: 10px 0 4px;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
-
-    .dogebag-open-btn,
-    .dogebag-action-btn {
-        width: 100%;
-        max-width: 320px;
-    }
-
-    .dogebag-actions {
-        flex-direction: column;
-        gap: 8px;
-    }
     /* Inventory modals: fit screen, compact grid */
     .switcher-modal {
         left: 0 !important;
@@ -5734,7 +6719,7 @@ body.planet-mars #main-rock {
 
     /* Adjust stats display for mobile */
     #stats-display {
-        top: 20px;
+        top: 64px;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
@@ -5742,7 +6727,7 @@ body.planet-mars #main-rock {
     }
 
     .stat-item {
-        flex: 1;
+        flex: none;
     }
 
     /* Mobile swipe animation for tab content */
@@ -5762,6 +6747,11 @@ body.planet-mars #main-rock {
     .helper-sprite.placed-helper,
     .helper-name-tooltip {
         display: none !important;
+    }
+
+    /* Rick is an interactive visitor even when ordinary helpers use the bar. */
+    .helper-sprite.rick-helper {
+        display: block !important;
     }
 
     /* Mobile Helper Scaling - 1.2x bigger for smaller screens */
@@ -5939,12 +6929,13 @@ body.planet-mars #main-rock {
         bottom: 0;
         left: 0;
         right: 0;
-        height: 40vh;
+        height: var(--mobile-drawer-height,40vh);
         background: linear-gradient(to bottom, rgba(240, 235, 220, 0.98) 20%, rgba(255, 240, 180, 0.98) 80%);
         border-top: 2px solid #d4af37;
         border-radius: 0;
         z-index: 2100;
-        display: flex;
+        /* Override generic .mobile-only visibility rules so flex sizing works. */
+        display: flex !important;
         flex-direction: column;
         transform: translateY(100%);
         transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -5980,7 +6971,7 @@ body.planet-mars #main-rock {
     .mobile-tabs-left,
     .mobile-tabs-right {
         display: flex;
-        gap: 6px;
+        gap: 4px;
         align-items: center;
     }
 
@@ -5990,7 +6981,7 @@ body.planet-mars #main-rock {
         background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
         border: 1px solid rgb(185, 150, 65);
         color: rgb(80, 50, 0);
-        padding: 10px 14px;
+        padding: 10px 8px;
         cursor: pointer;
         background-color: rgb(255, 220, 115);
         transition-property: transform !important;
@@ -5998,10 +6989,19 @@ body.planet-mars #main-rock {
         transition-timing-function: ease !important;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         border-radius: 8px 8px 0 0;
         font-size: 12px;
         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .mobile-tabs-right .mobile-tab-btn {
+        padding: 10px 10px;
+    }
+
+    .mobile-tab-btn .tab-icon {
+        width: 18px;
+        height: 18px;
     }
 
     .mobile-tab-btn:active {
@@ -6127,9 +7127,10 @@ body.planet-mars #main-rock {
     /* Mobile Panel Content */
     #mobile-panel-content {
         flex: 1;
+        min-height: 0;
         overflow: hidden;
         position: relative;
-        height: calc(40vh - 50px);
+        height: auto;
     }
 
     .mobile-tab-content {
@@ -6428,19 +7429,77 @@ body.planet-mars #main-rock {
 
     /* Mobile Upgrade Sections Container */
     .mobile-upgrade-sections {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: repeat(3, minmax(170px, 1fr));
         gap: 8px;
-        height: 100%;
+        min-height: 100%;
+        height: auto;
     }
 
     /* Mobile Upgrade Section Card */
     .mobile-upgrade-section {
-        flex: 1 1 0;
+        flex: 1 0 auto;
         position: relative;
         padding: 12px;
         min-height: 80px;
         background: transparent;
+    }
+
+    .mobile-upgrade-section.has-upgrade {
+        padding: 10px;
+    }
+
+    .mobile-upgrade-section.has-upgrade::before,
+    .mobile-upgrade-section.has-upgrade::after {
+        display: none;
+    }
+
+    .helper-upgrade-card.mobile-upgrade-item {
+        grid-template-columns: 52px minmax(0, 1fr) 52px;
+        grid-template-rows: minmax(min-content, 1fr) auto;
+        gap: 6px;
+        height: 100%;
+    }
+
+    .helper-upgrade-card .upgrade-art-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-helper-sprite {
+        width: 40px;
+        height: 40px;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-header {
+        justify-content: center;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-name,
+    .helper-upgrade-card .mobile-upgrade-description {
+        text-align: center;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-name {
+        line-height: 1.15;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-dps-increase {
+        text-align: center;
+        font-size: 10px;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-footer .helper-upgrade-purchases {
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .helper-upgrade-card .mobile-upgrade-buy-btn {
+        min-height: 30px;
+    }
+
+    .helper-upgrade-card .helper-upgrade-currency-separator {
+        font-size: 20px;
     }
 
     /* Corner brackets for mobile upgrade sections */
@@ -6473,7 +7532,7 @@ body.planet-mars #main-rock {
         flex-direction: row;
         align-items: center;
         gap: 10px;
-        height: 100%;
+        height: auto;
     }
 
     /* Mobile Upgrade Helper Sprite */
@@ -6539,6 +7598,22 @@ body.planet-mars #main-rock {
         align-items: center;
         gap: 8px;
         margin-top: 4px;
+        flex-wrap: wrap;
+    }
+
+    .mobile-upgrade-footer .helper-upgrade-purchases {
+        gap: 6px;
+        justify-content: flex-start;
+    }
+
+    .mobile-upgrade-footer .shop-buy-btn {
+        width: auto !important;
+        margin: 0;
+        height: auto;
+    }
+
+    .mobile-upgrade-buy-btn .buy-btn-price {
+        font-size: 15px !important;
     }
 
     .mobile-upgrade-buy-btn {
@@ -6577,8 +7652,52 @@ body.planet-mars #main-rock {
     }
 
     .mobile-upgrade-empty .searchdog-container-centered .searchdog {
-        width: 35px;
+        width: 30px;
         height: auto;
+    }
+
+    /* Mobile Compressed Locked 3rd Searchdoge Slot */
+    .mobile-upgrade-section .searchdoge-slot-locked {
+        padding: 2px 4px !important;
+        gap: 2px !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .mobile-upgrade-section .searchdoge-slot-locked .slot-locked-title {
+        font-size: 13px !important;
+        line-height: 1.15 !important;
+        color: #5a4a2a !important;
+        margin: 0 !important;
+    }
+
+    .mobile-upgrade-section .searchdoge-slot-locked .slot-locked-sub {
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+        max-width: 280px !important;
+        color: rgba(90, 74, 42, 0.8) !important;
+        margin: 0 !important;
+    }
+
+    .mobile-upgrade-section .searchdoge-unlock-btn {
+        padding: 3px 16px !important;
+        font-size: 15px !important;
+        gap: 8px !important;
+        border-radius: 8px !important;
+        border-width: 1.5px !important;
+        margin-top: 2px !important;
+    }
+
+    .mobile-upgrade-section .searchdoge-unlock-btn img {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    .mobile-upgrade-section .searchdoge-unlock-btn .unlock-amount {
+        font-size: 15px !important;
     }
 
     /* Mobile Upgrade Fade Animations */
@@ -7056,7 +8175,7 @@ body.planet-mars #main-rock {
     }
 
     #mobile-menu-toggle.menu-open {
-        bottom: calc(40vh - 33px);
+        bottom: calc(var(--mobile-drawer-height,40vh) - 33px);
     }
 
     /* Mobile Planet Menu */
@@ -7569,6 +8688,9 @@ body.xbox-mode #sign-in-section {
     margin: 0 0 20px;
     line-height: 1.55;
     white-space: pre-line;
+    max-height: min(45vh, 320px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .controller-dialog-buttons {
@@ -7644,6 +8766,196 @@ body.xbox-mode #sign-in-section {
 }
 
 /* ========== INVENTORY STATS SIDEBAR ========== */
+/* DM2 item presentation inside CE's searchable inventory grid. */
+.inventory-item-tile,
+.inventory-item-tooltip {
+    --item-main: #c2c2c2;
+    --item-border: #959595;
+}
+.inventory-item-tile.rarity-improved,
+.inventory-item-tooltip.rarity-improved { --item-main: #10d339; --item-border: #057415; }
+.inventory-item-tile.rarity-rare,
+.inventory-item-tooltip.rarity-rare { --item-main: #2d94fc; --item-border: #3651c5; }
+.inventory-item-tile.rarity-epic,
+.inventory-item-tooltip.rarity-epic { --item-main: #f049ff; --item-border: #9012b5; }
+.inventory-item-tile.rarity-legendary,
+.inventory-item-tooltip.rarity-legendary { --item-main: #ffbd49; --item-border: #c58736; }
+
+.item-card.inventory-item-tile {
+    width: 200px;
+    height: 200px;
+    flex: 0 0 200px;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 2px solid var(--item-border);
+    border-radius: 12px;
+    background: radial-gradient(ellipse at 50% 40%, var(--item-main) 5%, var(--item-main) 35%, var(--item-border) 130%);
+    font-family: 'DogeSans', sans-serif;
+    color: #fff;
+    text-align: center;
+    appearance: none;
+    overflow: visible;
+    transform-origin: center;
+    transition: transform 90ms ease, box-shadow 90ms ease;
+    isolation: isolate;
+}
+.inventory-item-tile .item-card-icon {
+    position: absolute;
+    width: 112px;
+    height: 112px;
+    top: 29px;
+    left: calc(50% - 56px);
+    margin: 0;
+    object-fit: contain;
+    pointer-events: none;
+}
+.inventory-item-pickaxe .item-card-icon { transform: rotate(24deg); }
+.inventory-item-fortune .item-card-icon { width: 130px; height: 130px; left: calc(50% - 65px); top: 20px; }
+.inventory-item-tile .item-card-name {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 8px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.12;
+    margin: 0;
+    -webkit-text-stroke: 3px var(--item-border);
+    paint-order: stroke fill;
+    overflow-wrap: anywhere;
+    text-shadow: none;
+}
+.inventory-item-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    font-size: 12px;
+    color: #fff;
+    -webkit-text-stroke: 2px var(--item-border);
+    paint-order: stroke fill;
+}
+.item-card.inventory-item-tile.equipped {
+    border-color: var(--item-border);
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--item-border);
+}
+.item-card.inventory-item-tile:focus-visible,
+.item-card.inventory-item-tile.controller-focus { outline: 3px solid #fff; outline-offset: 5px; }
+@media (hover: hover) and (pointer: fine) {
+    .item-card.inventory-item-tile:hover {
+        z-index: 2;
+        transform: perspective(700px) translateY(-4px) scale(1.035) rotateX(var(--item-tilt-x, 0deg)) rotateY(var(--item-tilt-y, 0deg));
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+    .item-card.inventory-item-tile.equipped:hover { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--item-border), 0 8px 16px rgba(0, 0, 0, 0.25); }
+}
+
+.inventory-item-tooltip {
+    position: fixed;
+    z-index: 10020;
+    box-sizing: border-box;
+    width: min(300px, calc(100vw - 20px));
+    max-height: calc(100dvh - 20px);
+    overflow-y: auto;
+    padding: 10px 12px 12px;
+    border: 2px solid var(--item-border);
+    border-radius: 12px;
+    background: linear-gradient(110deg, var(--item-border) 0%, color-mix(in srgb, var(--item-border), #171717 38%) 100%);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+    color: #fff;
+    font-family: 'DogeSans', sans-serif;
+    text-align: left;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+    animation: inventoryTooltipIn 200ms ease;
+}
+.inventory-item-tooltip[hidden] { display: none; }
+.inventory-tooltip-rarity { font-size: 15px; text-transform: capitalize; margin-bottom: 4px; }
+.inventory-tooltip-name { font-size: 20px; line-height: 1.15; margin-bottom: 8px; }
+.inventory-tooltip-dpc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0 10px; }
+.inventory-tooltip-dpc > img { width: 30px; height: 30px; object-fit: contain; }
+.inventory-tooltip-dpc > span:first-of-type {
+    color: #fcb456;
+    font-size: 32px;
+    line-height: 1;
+    -webkit-text-stroke: 2px #fff;
+    paint-order: stroke fill;
+}
+.inventory-dpc-comparison {
+    font-size: 12px;
+    white-space: nowrap;
+    border: 1px solid currentColor;
+    border-radius: 7px;
+    padding: 3px 6px;
+    background: rgba(0, 0, 0, 0.5);
+}
+.inventory-dpc-comparison.increase { color: #4ce024; }
+.inventory-dpc-comparison.decrease { color: #fe8d8d; }
+.inventory-dpc-comparison.equal { color: #fff; }
+.inventory-tooltip-description { font-size: 14px; font-style: italic; margin: 8px 0 12px; white-space: pre-line; }
+.inventory-tooltip-stats { display: flex; flex-direction: column; gap: 4px; }
+.inventory-tooltip-stat { font-size: 14px; }
+.inventory-tooltip-description,
+.inventory-tooltip-stat { -webkit-text-stroke: 2px #343434; paint-order: stroke fill; }
+.inventory-stat-green { color: #4ce024; }
+.inventory-stat-purple { color: #c5b0fc; }
+.inventory-stat-pink { color: #fe99ff; }
+.inventory-stat-yellow { color: #f4fa53; }
+.inventory-stat-blue { color: #9dcefc; }
+.inventory-stat-darkblue { color: #99a7ff; }
+.inventory-stat-sand { color: #f5f8aa; }
+.inventory-stat-cyan { color: #8dfafe; }
+.inventory-stat-orange { color: #fcb456; }
+.inventory-stat-red { color: #fe8d8d; }
+.inventory-stat-light { color: #fff; }
+.inventory-tooltip-hint { font-size: 11px; margin-top: 14px; opacity: 0.85; }
+.inventory-tooltip-close { display: none; }
+.inventory-item-tooltip.touch-details { pointer-events: auto; max-height: min(48dvh, 420px); }
+.touch-details .inventory-tooltip-close {
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+}
+.touch-details .inventory-tooltip-rarity,
+.touch-details .inventory-tooltip-name { padding-right: 24px; }
+.inventory-stats-explained { margin-top: 10px; font-size: 12px; line-height: 1.4; text-align: left; }
+.inventory-stats-explained summary { cursor: pointer; font-weight: bold; }
+.inventory-stats-explained p { margin: 8px 0; }
+.inventory-other-stats-title { margin:14px 0 2px; font-size:12px; font-weight:bold; }
+.inventory-other-stats-hint { margin:0 0 6px; font-size:11px; opacity:.85; }
+@keyframes inventoryTooltipIn { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 768px) {
+    #pickaxe-modal .inventory-split-layout,
+    #fortune-modal .inventory-split-layout { align-items: stretch; width: 100%; }
+    #pickaxe-modal .switcher-grid-container,
+    #fortune-modal .switcher-grid-container,
+    #pickaxe-grid,
+    #fortune-grid { width: 100%; box-sizing: border-box; }
+    #pickaxe-modal .inventory-stats-sidebar,
+    #fortune-modal .inventory-stats-sidebar { max-height: 40dvh; overflow-y: auto; box-sizing: border-box; }
+    .item-card.inventory-item-tile { width: 100%; height: auto; aspect-ratio: 1; min-width: 0; flex-basis: auto; padding: 8px; }
+    .inventory-item-tile .item-card-icon { width: 60%; height: 60%; top: 14%; left: 20%; }
+    .inventory-item-fortune .item-card-icon { width: 66%; height: 66%; top: 10%; left: 17%; }
+    .inventory-item-tile .item-card-name { font-size: clamp(11px, 3.55vw, 14px); bottom: 6px; -webkit-text-stroke-width: 2px; }
+    .inventory-item-badge { font-size: 10px; top: 5px; }
+    .item-card.inventory-item-tile:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .item-card.inventory-item-tile { transition: none; }
+    .item-card.inventory-item-tile:hover { transform: none; }
+    .inventory-item-tooltip { animation: none; }
+}
+
 .inventory-split-layout {
     display: flex;
     flex-direction: row;
@@ -7840,6 +9152,372 @@ body.xbox-mode #sign-in-section {
         margin-top: 10px;
         flex-shrink: 0;
     }
+
+    /* ================= D.I.A. MISSION MOBILE STYLES ================= */
+    .dia-mission-modal {
+        z-index: 2500 !important;
+        padding: 12px 10px !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .dia-mission-card {
+        width: 100% !important;
+        max-width: 360px !important;
+        min-height: auto !important;
+        padding: 16px 14px 62px !important;
+        border-radius: 12px !important;
+    }
+
+    .dia-mission-title {
+        font-size: 16px !important;
+        margin: 2px 0 10px !important;
+        letter-spacing: 0.5px !important;
+        text-align: center !important;
+    }
+
+    .dia-skip-btn {
+        top: 10px !important;
+        font-size: 13px !important;
+        padding: 4px 14px !important;
+        border-radius: 8px !important;
+    }
+
+    .dia-scene {
+        min-height: 150px !important;
+    }
+
+    .dia-scene .dia-burt {
+        width: 160px !important;
+        left: -8px !important;
+        bottom: -14px !important;
+    }
+
+    .dia-scene .dia-talkie {
+        right: 12px !important;
+        bottom: 6px !important;
+        width: 44px !important;
+    }
+
+    .dia-badge-logo {
+        width: 130px !important;
+    }
+
+    .dia-box {
+        min-height: 95px !important;
+        padding: 14px 12px 12px !important;
+        border-radius: 10px !important;
+    }
+
+    .dia-box.dia-box-has-btns {
+        padding-bottom: 26px !important;
+    }
+
+    .dia-nameplate {
+        top: -14px !important;
+        left: 10px !important;
+        font-size: 13px !important;
+        padding: 3px 14px !important;
+    }
+
+    .dia-text {
+        font-size: 13.5px !important;
+        line-height: 1.35 !important;
+    }
+
+    .dia-mission-buttons {
+        bottom: 12px !important;
+        padding: 0 10px !important;
+        gap: 8px !important;
+    }
+
+    .dia-mission-buttons.dia-btns-on-box {
+        bottom: -22px !important;
+    }
+
+    .dia-btn {
+        font-size: 15px !important;
+        padding: 8px 18px !important;
+        border-radius: 10px !important;
+    }
+
+    /* Badge Picker Grid on Mobile */
+    .dia-picker-title {
+        font-size: 15px !important;
+        margin-bottom: 10px !important;
+        text-align: center !important;
+    }
+
+    .dia-badge-cards {
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .dia-badge-card {
+        width: 32% !important;
+        max-width: 104px !important;
+        padding: 6px 4px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+    }
+
+    .dia-badge-card img,
+    .dia-badge-img {
+        width: 58px !important;
+        height: 58px !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 2px auto !important;
+    }
+
+    .dia-badge-tag {
+        font-size: 9px !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .dia-badge-name {
+        font-size: 11px !important;
+        margin-top: 3px !important;
+        line-height: 1.15 !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .dia-badge-desc {
+        font-size: 10px !important;
+        line-height: 1.25 !important;
+        margin-top: 3px !important;
+    }
+
+    /* Mission Cutscenes on Mobile */
+    .cs-cateland-label {
+        font-size: 14px !important;
+        top: 10px !important;
+        left: 10px !important;
+    }
+
+    .cutscene-skip {
+        bottom: 16px !important;
+        left: 16px !important;
+        right: auto !important;
+        padding: 8px 16px !important;
+        border-radius: 14px !important;
+        text-align: left !important;
+        z-index: 25 !important;
+    }
+
+    .cs-car img {
+        width: 130px !important;
+    }
+
+    .cs-kitler img {
+        width: 85px !important;
+    }
+
+    .cs-crowd {
+        width: 140px !important;
+    }
+
+    .cs-speech {
+        font-size: 13px !important;
+    }
+
+    .cs-speech-kitler {
+        font-size: 14px !important;
+        right: 80% !important;
+        top: -8px !important;
+    }
+
+    .cs-speech-crowd {
+        font-size: 12px !important;
+        left: -15% !important;
+    }
+
+    .cs-choice {
+        top: 46% !important;
+        width: 90% !important;
+    }
+
+    .cs-choice-title {
+        font-size: 20px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .cs-choice-btn {
+        font-size: 18px !important;
+        padding: 8px 24px !important;
+        margin: 10px auto !important;
+        border-radius: 10px !important;
+    }
+
+    /* Mission Passed Modal on Mobile */
+    .mission-passed {
+        overflow-y: auto !important;
+        padding: 12px !important;
+    }
+
+    .mp-banner {
+        margin-top: 20px !important;
+        font-size: 24px !important;
+        padding: 12px !important;
+    }
+
+    .mp-card {
+        max-width: 100% !important;
+        padding: 16px 14px !important;
+        margin-top: 15px !important;
+    }
+
+    .mp-fortune {
+        flex-direction: column !important;
+        align-items: center !important;
+        width: calc(100vw - 32px) !important;
+        max-width: 320px !important;
+    }
+
+    .mp-fortune-card {
+        width: 100% !important;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 12px 10px !important;
+    }
+
+    .mp-fortune-card img {
+        width: 90px !important;
+        height: 90px !important;
+    }
+
+    .mp-fortune-detail {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: -2px !important;
+        border-radius: 0 0 12px 12px !important;
+        padding: 12px 14px !important;
+    }
+
+    .mp-badge-img {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .mp-btn {
+        font-size: 18px !important;
+        padding: 10px 30px !important;
+    }
+
+    /* Warning Modal on Mobile */
+    .dia-warning-card {
+        padding: 20px 16px !important;
+        width: calc(100vw - 32px) !important;
+        max-width: 320px !important;
+        border-radius: 14px !important;
+    }
+
+    .dia-warning-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 36px !important;
+        border-width: 4px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .dia-warning-title {
+        font-size: 18px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .dia-warning-text {
+        font-size: 12.5px !important;
+        margin-bottom: 18px !important;
+        line-height: 1.35 !important;
+    }
+
+    .dia-warning-no, .dia-warning-yes {
+        font-size: 14px !important;
+        padding: 8px 18px !important;
+        border-radius: 8px !important;
+    }
+
+    /* "You know the drill" Modal on Mobile */
+    #drill-modal {
+        position: fixed !important;
+        inset: 0 !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 2500 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    #drill-modal > .switcher-modal-content,
+    .drill-content {
+        width: 100% !important;
+        max-width: 320px !important;
+        padding: 20px 16px 36px !important;
+        box-sizing: border-box !important;
+        max-height: none !important;
+        overflow: visible !important;
+        text-align: center !important;
+        margin: auto !important;
+        position: relative !important;
+    }
+
+    .drill-title {
+        font-size: 20px !important;
+        margin: 2px 0 8px !important;
+        text-align: center !important;
+    }
+
+    .drill-art {
+        gap: 8px !important;
+        margin-bottom: 8px !important;
+        justify-content: center !important;
+    }
+
+    .drill-rocket {
+        width: 60px !important;
+        height: auto !important;
+    }
+
+    .drill-moon {
+        width: 90px !important;
+        height: auto !important;
+    }
+
+    .drill-text {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+        margin: 0 0 14px !important;
+        text-align: center !important;
+    }
+
+    .drill-close {
+        position: absolute !important;
+        bottom: -20px !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 auto !important;
+        font-size: 16px !important;
+        padding: 10px 32px !important;
+        display: block !important;
+        z-index: 15 !important;
+    }
 }
 #pickaxe.pickaxe-scale-baguette {
     width: 160px;
@@ -7848,3 +9526,956 @@ body.xbox-mode #sign-in-section {
     right: calc(20% - 70px);
     transform-origin: 50% 90%;
 }
+
+/* Purchase amounts remain crisp across shop, upgrade, and unlock buttons. */
+.shop-buy-btn, .shop-buy-btn *,
+.buy-btn, .buy-btn *,
+.upgrade-buy-btn-small, .upgrade-buy-btn-small *,
+.searchdoge-unlock-btn, .searchdoge-unlock-btn * {
+    text-shadow: none !important;
+}
+
+/* Total output uses the card body gray; per-helper gains keep their green. */
+.upgrade-total-dps, .mobile-upgrade-total-dps {
+    color: #666 !important;
+}
+
+/* DM2 PopupBox/Sd/Fd: one gradient frame, 0/8/13% stops, solid text strokes. */
+.beta-balance-overlay {
+    --beta-top:#fff9e5; --beta-middle:#fff9e5; --beta-bottom:#feeebd;
+    --beta-border:#dea435; --beta-title-fill:#fff; --beta-title-stroke:#dea435;
+    --beta-text-fill:#fff; --beta-text-stroke:#b09054; --beta-fineprint:#5a4a2a;
+    --beta-button-top:#ffde72; --beta-button-bottom:#ffd445;
+    --beta-button-stroke:#dea435;
+    position:fixed; inset:auto; min-height:0; z-index:50000;
+    display:flex; align-items:center; justify-content:center;
+    padding:40px 22px; box-sizing:border-box; background:rgba(0,0,0,.5);
+}
+.beta-balance-overlay[data-planet="moon"] {
+    --beta-top:#fff; --beta-middle:#e7f3f9; --beta-bottom:#e8f4fb;
+    --beta-border:#56b0d5; --beta-title-stroke:#56b0d5; --beta-text-stroke:#4f93c7;
+    --beta-fineprint:#365776; --beta-button-top:#bbdaf1; --beta-button-bottom:#a5d1f1;
+    --beta-button-stroke:#56b0d5;
+}
+.beta-balance-overlay[data-planet="mars"] {
+    --beta-top:#f4e4ec; --beta-middle:#e8d0dc; --beta-bottom:#e8d0dc;
+    --beta-border:#c017ae; --beta-title-fill:#f3ebeb; --beta-title-stroke:#b70916;
+    --beta-text-stroke:#7c020c; --beta-fineprint:#6b2030;
+    --beta-button-top:#7e1860; --beta-button-bottom:#751358; --beta-button-stroke:#c017ae;
+}
+.beta-balance-overlay[data-planet="jupiter"] {
+    --beta-top:#f9e7d4; --beta-middle:#f1cc90; --beta-bottom:#fce1a9;
+    --beta-border:#eaa013; --beta-title-stroke:#eaa013; --beta-text-stroke:#b09054;
+    --beta-fineprint:#5a3010; --beta-button-top:#facd80; --beta-button-bottom:#efc173;
+    --beta-button-stroke:#eaa013;
+}
+.beta-balance-overlay[data-planet="titan"] {
+    --beta-top:#ffdd63; --beta-middle:#ffd139; --beta-bottom:#ffb900;
+    --beta-border:#e8b200; --beta-title-stroke:#e8b200; --beta-text-stroke:#9e8048;
+    --beta-fineprint:#4a3200; --beta-button-top:#feeaae; --beta-button-bottom:#f8de8d;
+    --beta-button-stroke:#e8b200;
+}
+.beta-balance-panel {
+    position:relative; display:flex; flex-direction:column;
+    width:min(510px,100%); max-height:calc(var(--beta-viewport-height,100dvh) - 80px);
+    box-sizing:border-box; padding-bottom:28px;
+    border:4px solid var(--beta-border); border-radius:10px;
+    background:linear-gradient(to bottom,var(--beta-top) 0%,var(--beta-middle) 8%,var(--beta-bottom) 13%,var(--beta-bottom) 100%);
+    color:var(--beta-text-fill); font:700 17px/1.3 'DogeSans',sans-serif;
+    text-align:center; box-shadow:none; overflow:visible;
+    animation:beta-balance-enter 600ms cubic-bezier(.16,.85,.3,1);
+}
+.beta-balance-header { flex:none; padding:15px 18px 5px; background:none; border:0; }
+.beta-balance-title {
+    margin:0; color:var(--beta-title-fill); font:700 30px/1.15 'DogeSans',sans-serif;
+    text-transform:uppercase; -webkit-text-stroke:5px var(--beta-title-stroke); paint-order:stroke fill;
+}
+.beta-balance-title:focus { outline:none; }
+.beta-balance-eyebrow {
+    margin:5px 0 0; font-size:12px; color:var(--beta-text-fill);
+    -webkit-text-stroke:2.4px var(--beta-text-stroke); paint-order:stroke fill;
+}
+.beta-balance-body {
+    min-height:0; padding:8px 18px 10px; overflow-y:auto;
+    color:var(--beta-text-fill); -webkit-text-stroke:2.4px var(--beta-text-stroke); paint-order:stroke fill;
+}
+.beta-balance-stat-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2px 12px; }
+.beta-balance-stat {
+    display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:1px 5px;
+    padding:2px 0; border-bottom:1px solid color-mix(in srgb,var(--beta-border) 28%,transparent);
+    font-size:11px; text-align:left; font-variant-numeric:tabular-nums;
+}
+.beta-balance-stat-name { grid-column:1/-1; font-size:11px; }
+.beta-balance-stat-before { font-size:10px; }
+.beta-balance-stat-after { font-size:12px; font-weight:700; }
+.beta-balance-stat-up .beta-balance-stat-direction,.beta-balance-stat-up .beta-balance-stat-after {
+    color:#c9fcd0; -webkit-text-stroke:2px #27713c;
+}
+.beta-balance-stat-down .beta-balance-stat-direction,.beta-balance-stat-down .beta-balance-stat-after {
+    color:#fedede; -webkit-text-stroke:2px #ad3333;
+}
+.beta-balance-stat-direction { font:700 15px/1 sans-serif; }
+.beta-balance-unchanged { grid-column:1/-1; margin:5px 0; font-size:13px; }
+.beta-balance-footer { display:flex; flex:none; justify-content:center; padding:0 16px; }
+.beta-balance-error { color:var(--beta-fineprint); font:700 11px/1.3 'DogeSans',sans-serif; margin:0 0 5px; }
+.beta-balance-error[hidden] { display:none; }
+.beta-balance-continue {
+    position:absolute; left:50%; bottom:0; transform:translate(-50%,50%);
+    min-height:42px; max-width:calc(100% - 28px); border:3px solid var(--beta-button-stroke);
+    border-radius:8px; padding:5px 17px;
+    background:linear-gradient(to bottom,var(--beta-button-top) 0 50%,var(--beta-button-bottom) 51% 100%);
+    color:var(--beta-title-fill); font:700 20px/1.15 'DogeSans',sans-serif; white-space:nowrap;
+    -webkit-text-stroke:3.5px var(--beta-button-stroke); paint-order:stroke fill; text-shadow:none;
+    transition:transform 100ms ease-out;
+}
+.beta-balance-continue:hover { filter:none; transform:translate(-50%,50%) scale(1.035); }
+.beta-balance-continue:active { transform:translate(-50%,50%) scale(.97); }
+.beta-balance-continue:focus-visible,.beta-balance-close:focus-visible { outline:2px solid var(--beta-text-stroke); outline-offset:4px; }
+.beta-balance-continue:disabled,.beta-balance-close:disabled { opacity:.65; }
+.beta-balance-close {
+    position:absolute; right:-18px; top:-34px; width:48px; height:48px; padding:0;
+    background:none; border:0; text-shadow:none;
+    transition:transform 100ms ease-out;
+}
+.beta-balance-close svg { display:block; width:100%; height:100%; }
+.beta-balance-close:hover { transform:scale(1.08); }
+.beta-balance-overlay[data-report-kind="offline"] .beta-balance-panel { width:min(560px,100%); min-height:min(440px,calc(var(--beta-viewport-height,100dvh) - 80px)); padding-bottom:36px; }
+.beta-balance-overlay[data-report-kind="offline"] .beta-balance-title { font-size:34px; -webkit-text-stroke-width:6px; }
+.offline-earnings-emblem { display:block; flex:none; width:180px; height:180px; object-fit:contain; margin:16px auto 12px; opacity:.9; }
+.beta-balance-body.offline-earnings-body { flex:1; display:flex; flex-direction:column; justify-content:flex-end; width:100%; max-width:480px; box-sizing:border-box; margin:0 auto; padding:0 16px 10px; overflow:visible; font-size:19px; -webkit-text-stroke-width:3px; }
+.offline-earnings-copy { margin:0; }
+.offline-earnings-copy + .offline-earnings-copy { margin-top:14px; }
+.offline-earnings-copy strong { font-weight:700; }
+.offline-earnings-amount { color:#fadd9d; }
+.offline-earnings-currency { color:#c9fcd0; }
+.offline-earnings-rule { color:#fce1c0; }
+.beta-balance-overlay[data-report-kind="offline"] .beta-balance-continue { min-height:48px; font-size:27px; padding:5px 20px; -webkit-text-stroke-width:4.5px; }
+@keyframes beta-balance-enter { 0%{opacity:0;transform:scale(.3)} 55%{opacity:1} 78%{transform:scale(1.035)} 100%{opacity:1;transform:scale(1)} }
+@media(min-width:460px) { .beta-balance-stat-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:768px) {
+    .beta-balance-overlay { padding-left:10px; padding-right:10px; }
+    .beta-balance-close { display:none; }
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-panel { width:min(350px,100%); min-height:min(420px,calc(var(--beta-viewport-height,100dvh) - 80px)); }
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-title { font-size:30px; -webkit-text-stroke-width:5px; }
+    .offline-earnings-emblem { width:clamp(125px,42vw,158px); height:clamp(125px,42vw,158px); margin:12px auto; }
+    .beta-balance-body.offline-earnings-body { font-size:17px; padding-left:12px; padding-right:12px; }
+    .offline-earnings-linebreak { display:none; }
+}
+@media(max-width:380px) {
+    .beta-balance-overlay { padding-left:10px; padding-right:10px; }
+    .beta-balance-header { padding:13px 12px 5px; }
+    .beta-balance-title { font-size:27px; }
+    .beta-balance-body { padding:6px 12px 8px; }
+    .beta-balance-stat-grid { gap:2px 12px; }
+    .beta-balance-stat { padding:2px 0; }
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-title { font-size:28px; }
+}
+@media(max-height:560px) {
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-panel { min-height:0; }
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-header { padding-top:10px; }
+    .beta-balance-overlay[data-report-kind="offline"] .beta-balance-title { font-size:27px; }
+    .offline-earnings-emblem { width:96px; height:96px; margin:8px auto; }
+    .beta-balance-body.offline-earnings-body { font-size:16px; }
+    .offline-earnings-copy + .offline-earnings-copy { margin-top:9px; }
+}
+@media(max-height:360px) { .offline-earnings-emblem { display:none; } }
+@media(prefers-reduced-motion:reduce) {
+    .beta-balance-panel { animation:none; }
+    .beta-balance-continue,.beta-balance-close { transition:none; }
+}
+
+/* Shared Kenney cursors, including grab/release states from the reference clip. */
+body { cursor:url('assets/cursors/kenney/outline/pointer_b.png') 10 8,default !important; }
+button, a, summary, label, [role="button"], .coin-pile, .dogebag-drop, .diamond-drop { cursor:url('assets/cursors/kenney/outline/hand_small_point.png') 13 7,pointer !important; }
+.placed-helper, .rick-doge.ready-to-grab { cursor:url('assets/cursors/kenney/outline/hand_small_open.png') 16 15,grab !important; }
+button:disabled, [aria-disabled="true"] { cursor:url('assets/cursors/kenney/outline/cursor_disabled.png') 10 8,not-allowed !important; }
+body[data-cursor-state="grabbing"], body[data-cursor-state="grabbing"] * { cursor:url('assets/cursors/kenney/outline/hand_small_closed.png') 16 15,grabbing !important; }
+.controller-mode, .controller-mode * { cursor:none !important; }
+
+/* Lifted helpers use the sprite's actual silhouette, flattened onto the ground. */
+#helper-container.helpers-holding { z-index:45; }
+.helper-sprite.grouped-helper { transform:scale(var(--helper-group-scale,1)); transform-origin:50% 80%; }
+.helper-sprite.grouped-helper:hover { transform:scale(calc(var(--helper-group-scale,1) * 1.02)); }
+.helper-sprite.helper-held { pointer-events:none !important; z-index:2000; transition:none; opacity:1 !important; transform-origin:50% 80%; }
+.helper-silhouette-shadow { position:absolute; pointer-events:none; z-index:8; object-fit:contain; filter:brightness(0) blur(2px); opacity:.3; transform:scale(.86,-.3); transform-origin:center; }
+.helper-group-ghost { position:absolute; object-fit:contain; pointer-events:none; z-index:40; }
+.helper-flight { position:fixed; pointer-events:none; object-fit:contain; z-index:120; }
+.helper-group-action { position:absolute; z-index:1200; transform:translateX(-50%); white-space:nowrap; pointer-events:auto; border:1px solid #b67b25; border-radius:6px; background:#fff1be; color:#654110; padding:5px 9px; font:11px 'DogeSans',sans-serif; box-shadow:0 3px 10px #0003; animation:helper-group-action-enter 180ms cubic-bezier(.2,.75,.25,1); }
+.helper-group-action:hover, .helper-group-action:focus-visible { background:#ffe386; outline:2px solid #fff; outline-offset:1px; }
+.moon-theme .helper-group-action { background:#d8ebfa; color:#234460; border-color:#719eba; }
+.planet-mars .helper-group-action { background:#713346; color:#ffe6e1; border-color:#cb879d; }
+.planet-jupiter .helper-group-action { background:#f5d69d; color:#623915; border-color:#bd8248; }
+.planet-titan .helper-group-action { background:#ffe178; color:#3a3d13; border-color:#828c35; }
+
+/* DM2's translucent blue plate becomes dark over the Mars panel. */
+.planet-mars #diamond-counter #diamond-amount { background:rgba(25,90,181,.15); }
+
+.tab-btn, .mobile-tab-btn { position:relative; }
+.upgrade-tab-count { position:absolute; top:-5px; right:-5px; min-width:19px; height:19px; padding:0 5px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#cb8b17; color:#fff; border:2px solid #fff0b3; font:11px 'DogeSans',sans-serif; line-height:1; z-index:3; pointer-events:none; font-variant-numeric:tabular-nums; box-shadow:0 1px 3px #0003; }
+.upgrade-tab-count[hidden] { display:none; }
+.moon-theme .upgrade-tab-count { background:#3883b9; border-color:#deeffb; }
+.planet-mars .upgrade-tab-count { background:#ab347f; border-color:#ddb5c1; }
+.planet-jupiter .upgrade-tab-count { background:#c27c36; border-color:#ffe0ad; }
+.planet-titan .upgrade-tab-count { background:#798927; border-color:#ffe998; }
+
+#planet-summary { position:absolute; bottom:12px; left:12px; z-index:20; display:flex; align-items:center; gap:7px; pointer-events:none; font-family:'DogeSans',sans-serif; color:#383838; }
+#planet-summary-icon { width:80px; height:80px; object-fit:contain; }
+#planet-summary-name { font-size:32px; line-height:1; }
+#planet-summary-population { font-size:12px; margin-top:6px; color:#e29b18; }
+.moon-theme #planet-summary { color:#362b36; }
+.planet-mars #planet-summary { color:#dcd0d0; }
+.planet-jupiter #planet-summary { color:#633621; }
+.planet-jupiter #planet-summary-population { color:#844827; }
+.planet-titan #planet-summary { color:#562e00; }
+.planet-titan #planet-summary-population { color:#203100; }
+.planet-titan #planet-summary-icon { width:65px; height:65px; }
+.force-mobile #planet-summary { display:none; }
+@media(max-width:768px) { #planet-summary {display:none;} }
+
+/* Source hover: 1px lift, subtle highlight, a soft 22% shadow. */
+.shop-grid-item { transition:transform 90ms cubic-bezier(.65,0,.35,1), box-shadow 120ms ease, filter 120ms ease; }
+@media(hover:hover) { .shop-grid-item:hover, .shop-grid-item:focus-within { transform:translateY(-1px); filter:none; box-shadow:0 2px 16px rgba(0,0,0,.22); z-index:2; } }
+@media(prefers-reduced-motion:reduce) { .helper-flight, .helper-group-ghost {display:none;} .shop-grid-item:hover {transform:none;} }
+
+#click-overlay, #main-rock, #main-character { cursor:url('assets/cursors/kenney/outline/pointer_b.png') 10 8,default !important; }
+.controller-mode #click-overlay, .controller-mode #main-rock, .controller-mode #main-character { cursor:none !important; }
+
+body[data-cursor-state="grabbing"] #click-overlay, body[data-cursor-state="grabbing"] #main-rock, body[data-cursor-state="grabbing"] #main-character { cursor:url('assets/cursors/kenney/outline/hand_small_closed.png') 16 15,grabbing !important; }
+body.controller-mode #click-overlay, body.controller-mode #main-rock, body.controller-mode #main-character { cursor:none !important; }
+/* Idle float animations must not replace held sway or a grouped sprite's scale. */
+.helper-sprite.grouped-helper { animation:none; }
+.helper-sprite.grouped-helper.rocket,
+.helper-sprite.grouped-helper.mars-rocket,
+.helper-sprite.grouped-helper.jupiter-rocket,
+.helper-sprite.grouped-helper.lander-shibe,
+.helper-sprite.grouped-helper.cloud-base,
+.helper-sprite.grouped-helper.doge-air-ship,
+.helper-sprite.grouped-helper.flying-doggo,
+.helper-sprite.grouped-helper.space-bass { animation:helperGroupFloat 2.4s ease-in-out infinite; }
+.helper-sprite.helper-held { animation:none !important; filter:url('#orange-sprite-outline'); }
+@keyframes helperGroupFloat { 0%,100% {transform:translateY(0) scale(var(--helper-group-scale,1))} 50% {transform:translateY(-7px) scale(var(--helper-group-scale,1))} }
+
+/* Corrections from the DM2 source and supplied motion references. */
+.helper-sprite.helper-motion { animation:none!important; transition:none!important; }
+.helper-group-ghost { z-index:2500; animation:none!important; pointer-events:none; }
+@keyframes helper-group-action-enter { from {opacity:0;transform:translate(-50%,9px)} to {opacity:1;transform:translate(-50%,0)} }
+.upgrade-tab-count {top:4px;right:4px;min-width:18px;height:18px;padding:0 4px;font-size:10px;}
+/* DM2 stacks the image, title, and population on one centered axis. */
+#planet-summary {width:115px;height:135px;left:12px;bottom:0;display:block;text-align:center;}
+#planet-summary-icon {position:absolute;width:78px;height:78px;left:50%;bottom:49px;transform:translateX(-50%);opacity:.7;}
+#planet-summary-name {position:absolute;left:0;bottom:25px;width:100%;font-size:26px;line-height:1;opacity:.7;}
+#planet-summary-population {position:absolute;left:0;bottom:10px;width:100%;font-size:10px;line-height:1;letter-spacing:0;margin:0;font-weight:bold;color:#ffa500;opacity:.8;}
+.moon-theme #planet-summary-name {font-size:20px;color:#fff;-webkit-text-stroke:2px #acacac;paint-order:stroke fill;}
+.planet-jupiter #planet-summary-population {color:#844827;}
+.planet-titan #planet-summary-icon {width:78px;height:78px;}
+.planet-titan #planet-summary-population {color:#203100;}
+@media(max-width:768px) {#planet-summary{display:none;}}
+.force-mobile #planet-summary {display:none;}
+.shop-grid-item {isolation:isolate;}
+.shop-grid-item::before {content:'';position:absolute;inset:0;border-radius:inherit;background:inherit;mix-blend-mode:plus-lighter;opacity:0;pointer-events:none;transition:opacity 120ms ease;}
+@media(hover:hover) {.shop-grid-item:hover::before,.shop-grid-item:focus-within::before {opacity:.11;}}
+
+/* DM2 batch opening: separate scene with a single receipt strip and claim flights. */
+.dogebag-overlay {position:fixed;inset:0;z-index:3000;background:#ffffffe6;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 500ms ease,visibility 0s 500ms;font-family:'DogeSans',sans-serif;}
+.dogebag-overlay.active {opacity:1;visibility:visible;pointer-events:auto;transition:opacity 450ms ease,visibility 0s;}
+.dogebag-overlay.closing {opacity:0;pointer-events:none;}
+.dogebag-scene {position:relative;width:min(900px,100%);height:min(700px,100%);margin:auto;top:50%;transform:translateY(-50%);}
+#dogebag-burst-title {position:absolute;top:8%;left:0;width:100%;text-align:center;font-size:27px;color:white;-webkit-text-stroke:4px #c58736;paint-order:stroke fill;line-height:1.1;}
+#dogebag-burst-stage {position:absolute;left:10%;top:32%;width:110px;height:120px;transition:opacity 350ms ease,scale 350ms ease;}
+#dogebag-burst-bag {width:100%;height:100%;object-fit:contain;filter:drop-shadow(2px 0 0 var(--bag-color)) drop-shadow(-2px 0 0 var(--bag-color)) drop-shadow(0 2px 0 var(--bag-color)) drop-shadow(0 -2px 0 var(--bag-color));}
+#dogebag-burst-count {position:absolute;bottom:0;left:0;width:100%;text-align:center;font-size:24px;color:#fff;-webkit-text-stroke:3px #795723;paint-order:stroke fill;}
+#dogebag-burst-stage.finished {opacity:0;scale:.8;pointer-events:none;}
+#dogebag-state-prompt {position:absolute;top:55%;left:50%;transform:translateX(-50%);}
+#dogebag-state-reveal {position:absolute;left:50%;top:27%;transform:translateX(-50%);width:420px;max-width:92vw;}
+.dogebag-overlay [hidden] {display:none!important;}
+.dogebag-prize-layout {display:grid;grid-template-columns:155px minmax(0,1fr);align-items:center;}
+.dogebag-prize-card {position:relative;min-height:155px;border:1px solid color-mix(in srgb,var(--reward-color) 65%,#555);border-radius:6px;background:radial-gradient(ellipse at 45% 40%,#fff,var(--reward-color) 85%);box-shadow:0 2px 8px #0003;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1;}
+.dogebag-prize-card .dogebag-item-icon {width:110px;height:120px;object-fit:contain;}
+.dogebag-prize-card .dogebag-item-name {text-align:center;width:100%;font-size:12px;color:#fff;-webkit-text-stroke:2px #555;paint-order:stroke fill;padding:5px;margin:0;}
+.dogebag-prize-details {padding:10px 12px;border-radius:0 6px 6px 0;background:linear-gradient(90deg,color-mix(in srgb,var(--reward-color) 55%,#fff),color-mix(in srgb,var(--reward-color) 70%,#777));color:#383838;box-shadow:1px 2px 5px #0002;}
+.dogebag-item-rarity {font-size:11px;margin-bottom:5px;color:#fff;-webkit-text-stroke:1px #555;paint-order:stroke fill;}
+.dogebag-item-description {font-size:11px;line-height:1.35;font-style:italic;margin:6px 0;color:#444;}
+.dogebag-item-dpc {display:flex;align-items:center;gap:4px;color:#c17b20;font-size:21px;}
+.dogebag-item-dpc img {width:24px;height:24px;}
+.dogebag-item-stats {font-size:11px;line-height:1.4;color:#23802a;}
+.dogebag-actions {display:flex;justify-content:center;gap:12px;margin-top:42px;}
+.dogebag-action-btn,.dogebag-open-btn {min-width:80px;padding:7px 14px;font:17px 'DogeSans',sans-serif;color:#fff;border:1px solid #c48e2b;border-radius:7px;background:linear-gradient(#ffe490 0 50%,#efbb50 50% 100%);-webkit-text-stroke:2px #ad7b19;paint-order:stroke fill;text-shadow:none;cursor:pointer;}
+.dogebag-action-btn:hover,.dogebag-open-btn:hover {filter:brightness(1.04);}
+#dogebag-state-reveal[data-kind="pickaxe"] .dogebag-item-icon {transform:rotate(35deg);}
+#dogebag-reward-tray {position:absolute;left:50%;bottom:6%;display:flex;flex-wrap:nowrap;align-items:center;gap:12px;width:max-content;transform:translateX(-50%) scale(var(--tray-scale,1));transform-origin:center center;}
+.dogebag-reward-mini {display:flex;align-items:center;gap:4px;background:none;border:1px solid transparent;border-radius:4px;padding:3px;font:20px 'DogeSans',sans-serif;color:#fff;-webkit-text-stroke:2px #c58736;paint-order:stroke fill;opacity:0;transition:opacity 160ms ease;}
+.dogebag-reward-mini img {width:40px;height:40px;object-fit:contain;filter:drop-shadow(1px 0 0 var(--reward-color)) drop-shadow(-1px 0 0 var(--reward-color)) drop-shadow(0 1px 0 var(--reward-color)) drop-shadow(0 -1px 0 var(--reward-color));}
+.dogebag-reward-mini.arrived {opacity:1;}
+.dogebag-reward-mini.selected,.dogebag-reward-mini:hover,.dogebag-reward-mini:focus-visible {background:#fff5;border-color:var(--reward-color);outline:none;}
+.dogebag-reward-mini.reviewed {opacity:.65;}
+.dogebag-flight {position:fixed;width:44px;height:44px;object-fit:contain;pointer-events:none;z-index:3100;filter:drop-shadow(1px 0 0 var(--reward-color,#c58736)) drop-shadow(-1px 0 0 var(--reward-color,#c58736)) drop-shadow(0 1px 0 var(--reward-color,#c58736)) drop-shadow(0 -1px 0 var(--reward-color,#c58736));}
+.dogebag-claim-flight {z-index:4000;}
+.dogebag-burst-close {position:absolute;right:12px;top:20px;border:0;background:none;color:#a77b32;font:34px 'DogeSans',sans-serif;padding:4px 10px;}
+@media(max-width:768px) {
+ #dogebag-burst-title {top:22px;font-size:22px;padding:0 58px;}
+ #dogebag-burst-stage {left:14px;top:68px;width:65px;height:75px;}
+ #dogebag-state-reveal {top:27%;width:305px;}
+ .dogebag-prize-layout {grid-template-columns:115px minmax(0,1fr);}
+ .dogebag-prize-card {min-height:120px;}
+ .dogebag-prize-card .dogebag-item-icon {width:85px;height:90px;}
+ .dogebag-prize-details {padding:8px;}
+ .dogebag-item-description,.dogebag-item-stats {font-size:10px;}
+ .dogebag-actions {flex-direction:row;margin-top:30px;}
+ .dogebag-action-btn {width:auto;}
+ .dogebag-reward-mini {font-size:18px;}
+ .dogebag-reward-mini img {width:32px;height:32px;}
+ #dogebag-reward-tray {gap:8px;bottom:22px;}
+ .dogebag-burst-close {top:8px;right:6px;}
+}
+@media(prefers-reduced-motion:reduce) {.dogebag-overlay{transition:none;}.dogebag-img-wrapper{animation:none;}}
+
+
+@media(prefers-reduced-motion:reduce) {#dogebag-burst-stage.finished{display:none;}}
+
+/* Native tracking; helper interactions retain lift, sway and bounce. */
+.helper-sprite.helper-motion {will-change:transform;}
+#planet-summary {left:12px;bottom:10px;width:90px;}
+.tabs-left,.tabs-left .tab-btn,.mobile-tabs-left,.mobile-tab-btn {overflow:visible;}
+.tabs-left .tab-btn {isolation:isolate;}
+.tabs-left .tab-btn .tab-text {min-width:0;overflow:hidden;text-overflow:clip;}
+.tabs-left .tab-btn .tab-icon {flex-shrink:0;}
+.upgrade-tab-count {top:-6px;right:-6px;z-index:20;min-width:19px;height:19px;font-size:11px;}
+.dogebag-overlay {position:absolute;background:transparent;}
+.dogebag-backdrop {position:absolute;background:rgba(255,255,255,.9);pointer-events:none;}
+.dogebag-scene {width:calc(100% - 56px);height:100%;margin-left:28px;top:0;transform:none;}
+#dogebag-burst-title {top:18px;font-size:25px;}
+#dogebag-batch-summary{position:absolute;top:49px;left:50%;transform:translateX(-50%);width:calc(100% - 90px);margin:0;text-align:center;font-size:13px;line-height:1.3;color:#795723;}
+#dogebag-burst-stage {left:65px;top:100px;}
+#dogebag-state-reveal {top:145px;width:380px;}
+.dogebag-prize-layout {grid-template-columns:145px minmax(0,1fr);}
+.dogebag-prize-card {min-height:145px;}
+.dogebag-prize-details {font-size:12px;line-height:1.4;}
+.dogebag-actions {margin-top:36px;}
+#dogebag-state-reveal[data-kind="coins"] .dogebag-prize-layout,
+#dogebag-state-reveal[data-kind="diamonds"] .dogebag-prize-layout {display:none;}
+#dogebag-currency-display {display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff;font-size:27px;-webkit-text-stroke:3px #c58736;paint-order:stroke fill;min-height:145px;}
+#dogebag-currency-display img {width:90px;height:90px;object-fit:contain;}
+#dogebag-state-reveal[data-kind="pickaxe"] #dogebag-currency-display,
+#dogebag-state-reveal[data-kind="fortune"] #dogebag-currency-display {display:none;}
+.dogebag-reward-mini[hidden] {display:none!important;}
+#dogebag-reward-tray {bottom:22px;gap:12px;}
+@media(max-width:768px) {
+ .dogebag-scene {width:100%;margin:0;}
+ #dogebag-burst-title {top:18px;font-size:clamp(18px,5.6vw,21px);padding:0 40px;}
+ #dogebag-burst-stage {left:10px;top:94px;width:65px;height:75px;}
+ #dogebag-state-reveal {top:27%;width:305px;}
+ .dogebag-prize-layout {grid-template-columns:115px minmax(0,1fr);}
+ .dogebag-prize-card {min-height:120px;}
+ #dogebag-reward-tray {bottom:16px;gap:8px;}
+}
+
+.tabs-left .tab-btn:has(.upgrade-tab-count:not([hidden])),
+.mobile-tab-btn:has(.upgrade-tab-count:not([hidden])) {z-index:10;}
+
+
+/* DM2 field piles: layers at counts two/three, corner badge, source hover and arrival. */
+.dogebag-drop,.dogebag-field-flight {width:82px;height:119px;transform:translate(-50%,-50%);animation:none;}
+.dogebag-field-flight {position:absolute;z-index:16;pointer-events:none;}
+.dogebag-img-wrapper {animation:none;will-change:transform;}
+.dogebag-pile-body {position:absolute;inset:0;scale:.85;filter:drop-shadow(2px 0 0 var(--bag-color)) drop-shadow(-2px 0 0 var(--bag-color)) drop-shadow(0 2px 0 var(--bag-color)) drop-shadow(0 -2px 0 var(--bag-color));}
+.dogebag-img-wrapper img {position:absolute;inset:0;filter:none;}
+.dogebag-pile-copy[hidden],.dogebag-stack-count[hidden] {display:none;}
+.dogebag-stack-count {position:absolute;left:calc(50% + 25px);top:calc(50% + 34px);bottom:auto;width:auto;font:26px/1 'DogeSans',sans-serif;-webkit-text-stroke:6px #7a4a14;paint-order:stroke fill;transform:translate(-50%,-50%);}
+.dogebag-settled {animation:dogebag-rest-float 4.4s ease-in-out infinite;}
+@keyframes dogebag-rest-float {0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% + 5px))}}
+.dogebag-pile-full .dogebag-stack-count {color:#ff5a4a;}
+#dogebag-modal[data-loot-kind="mystery"] {--mystery-ink:#3651c5;}
+#dogebag-modal[data-loot-kind="mystery"] #dogebag-burst-title {-webkit-text-stroke-color:var(--mystery-ink);}
+#dogebag-modal[data-loot-kind="mystery"] .dogebag-open-btn,
+#dogebag-modal[data-loot-kind="mystery"] .dogebag-action-btn {background:linear-gradient(#bddcff 0 50%,#81b7f0 50% 100%);border-color:#3651c5;-webkit-text-stroke-color:#3651c5;}
+#dogebag-modal[data-loot-kind="mystery"] #dogebag-burst-stage {left:50%;top:90px;width:170px;height:225px;transform:translateX(-50%);}
+#dogebag-modal[data-loot-kind="mystery"] #dogebag-burst-bag {object-position:center bottom;position:relative;z-index:1;filter:url('#mystery-solid-outline');}
+#mystery-loot-prompt {position:absolute;left:50%;top:340px;width:min(420px,90%);transform:translateX(-50%);text-align:center;color:#3651c5;}
+#mystery-loot-status {font-size:21px;margin:0 0 12px;}
+#mystery-loot-timer {font-size:25px;margin:8px 0;color:#fff;-webkit-text-stroke:3px #3651c5;paint-order:stroke fill;}
+#mystery-loot-bonus {font-size:15px;margin:12px 0 18px;}
+.mystery-loot-rays {position:absolute;left:20%;top:5%;width:60%;height:70%;border-radius:50%;background:repeating-conic-gradient(#bddcff 0deg 12deg,transparent 12deg 24deg);pointer-events:none;}
+#dogebag-modal.mystery-review #dogebag-burst-stage {left:100px;top:120px;width:110px;height:146px;transform:translateX(-50%);opacity:.4;scale:1;display:block;transition:none;}
+.mystery-box-ready .mbox-sidebar-icon {filter:none;}
+@media(max-width:768px){
+ #dogebag-modal[data-loot-kind="mystery"] #dogebag-burst-stage {top:80px;width:130px;height:172px;}
+ #mystery-loot-prompt {top:280px;}
+ #mystery-loot-status {font-size:18px;}
+ #mystery-loot-bonus {font-size:13px;}
+ #dogebag-modal.mystery-review #dogebag-burst-stage {left:50px;top:75px;width:65px;height:86px;}
+ .dogebag-stack-count {font-size:22px;-webkit-text-stroke-width:5px;}
+}
+@media(prefers-reduced-motion:reduce){.dogebag-settled{animation:none;}.mystery-box-ready .mbox-sidebar-icon{animation:none;}}
+
+.upgrade-tab-count { transform-origin:75% 25%; }
+
+/* Developer checkpoint controls live outside the scaled game canvas. */
+#debug-console button { border:1px solid #b99a59; border-radius:4px; padding:6px 8px; margin:3px 2px; color:#fff4d8; background:linear-gradient(#51472f 0 50%,#403923 50% 100%); font:11px/1.25 monospace; cursor:pointer; text-shadow:none; }
+#debug-console button:hover { filter:brightness(1.12); }
+#debug-console button:focus-visible,#debug-console select:focus-visible { outline:2px solid #ffe09c; outline-offset:2px; }
+#debug-console h3 { margin:0 0 8px; font-size:13px; color:#ffe09c; }
+#debug-console p { margin:6px 0; line-height:1.4; font-size:11px; }
+#debug-console label { display:block; font-size:11px; margin:9px 0 5px; }
+#debug-console select { background:#29261f; color:#fff4d8; border:1px solid #b99a59; border-radius:4px; padding:4px; font:11px monospace; }
+#debug-console .legacy-debug-tools { margin-top:12px; border-top:1px solid #77623a; padding-top:10px; }
+#debug-console summary { cursor:pointer; margin-bottom:5px; }
+#debug-console .debug-close { display:block; width:100%; margin:10px 0 0; }
+#debug-console .parity-checkpoint-tools select,#debug-console input[type=search]{max-width:100%;width:100%;box-sizing:border-box;}
+#debug-console input[type=search]{background:#29261f;color:#fff4d8;border:1px solid #b99a59;border-radius:4px;padding:7px;font:12px monospace;}
+#debug-console .parity-checkpoint-tools details{border-top:1px solid #77623a;padding-top:9px;margin-top:9px;}
+#debug-console .parity-checkpoint-tools summary{font-weight:bold;line-height:1.4;}
+#debug-console .parity-checkpoint-tools input[type=checkbox]{vertical-align:middle;}
+#parity-tools-launcher{position:fixed;right:8px;bottom:8px;z-index:22001;padding:9px 10px;border:1px solid #b99a59;border-radius:6px;background:#403923;color:#fff4d8;font:12px sans-serif;cursor:pointer;min-height:38px;}
+#parity-tools-launcher:focus-visible{outline:2px solid #ffe09c;outline-offset:2px;}
+.parity-test-result { padding-top:8px; border-top:1px solid #77623a; color:#e0f4d3; }
+.parity-test-stats { padding:7px; margin:6px 0; background:#0004; color:#eee2c6; font:10px/1.5 monospace; white-space:pre-wrap; }
+#parity-test-banner { position:fixed; top:5px; width:max-content; left:50%; transform:translateX(-50%); z-index:12000; max-width:calc(100vw - 24px); box-sizing:border-box; border:1px solid #bc9c56; border-radius:5px; padding:5px 9px; background:#25231fe8; color:#ffe09c; font:10px/1.35 monospace; text-align:center; pointer-events:none; }
+@media(max-width:768px) {
+ #parity-test-banner[data-checkpoint="20"] { top:auto; bottom:90px; }
+}
+
+/* Stories share the existing planet-colored DM2 popup frame. */
+.story-popup-panel { width:min(560px,100%); }
+.story-popup-panel .beta-balance-title { font-size:clamp(26px,4vw,36px); }
+.story-popup-body { font-size:20px; line-height:1.45; text-align:center; }
+.story-popup-body p { margin:12px 0; white-space:pre-line; }
+.story-popup-image { display:block; width:100%; height:170px; object-fit:contain; margin:0 auto 12px; }
+.story-popup-cross { font:700 48px/1 sans-serif; color:#fff; -webkit-text-stroke:4px #b42825; paint-order:stroke fill; }
+.story-popup-income { color:#e5ffba; -webkit-text-stroke-color:#387812; }
+.story-popup-amount { color:#fff5b9; -webkit-text-stroke-color:#c27410; }
+.story-popup-red { color:#ffd4c7; -webkit-text-stroke-color:#9c2d23; }
+.story-popup-blue { color:#cff1ff; -webkit-text-stroke-color:#16649a; }
+.story-popup-dark { color:#fff4ce; -webkit-text-stroke-color:#4a3a20; }
+.story-news { display:flex; flex-direction:column; gap:5px; max-width:min(330px,calc(100vw - 40px)); }
+.story-news-title { font-size:22px; }
+.story-news p { margin:0; }
+.story-news .story-popup-income { color:#2f6616; }
+.newsdoge { position:absolute; top:187px; left:0; width:100%; height:28px; z-index:55; }
+.newsdoge-surface { position:absolute; left:0; top:0; height:36px; transform-origin:0 0;
+    background:var(--news-fill); border-block:1px solid var(--news-stroke); box-sizing:border-box;
+    color:var(--news-text); font:17px/34px 'DogeSans',sans-serif; }
+.newsdoge-track { position:absolute; inset:0; overflow:hidden; }
+.newsdoge-text { display:block; width:max-content; white-space:nowrap; will-change:transform; }
+.newsdoge-label { position:absolute; left:-1px; top:-1px; width:165px; height:36px; box-sizing:border-box; padding-left:5px;
+    background:var(--news-report); border:1px solid var(--news-stroke); border-radius:0 10px 10px 0; font-size:16px; }
+.newsdoge-reporter-clip { position:absolute; left:0; right:0; top:-28.5px; height:95px; overflow:hidden; pointer-events:none; }
+.newsdoge-reporter { position:absolute; right:-15px; top:0; padding:0; width:85px; height:95px;
+    border:0; background:none; cursor:pointer; pointer-events:auto; }
+.newsdoge-reporter img { width:100%; height:100%; object-fit:contain; transition:transform 100ms ease; }
+.newsdoge-reporter:focus-visible { outline:2px solid var(--news-stroke); outline-offset:2px; }
+@media (max-width:768px) {
+    .newsdoge-surface { font-size:18px; }
+    .newsdoge-label { width:77px; font-size:12px; }
+    .newsdoge-report-label { display:none; }
+    .newsdoge-reporter { right:-40px; }
+}
+@media (prefers-reduced-motion:reduce) {
+    .newsdoge-reporter img { transition:none; }
+}
+.setting-item[hidden] { display:none !important; }
+.story-mining-hint { position:fixed; z-index:900; box-sizing:border-box; padding:9px 12px;
+    border:2px solid #d8ae39; border-radius:8px; background:#fff4ce; color:#593c18;
+    font:18px/1.2 'DogeSans',sans-serif; text-align:center; pointer-events:none; }
+.story-mining-hint::after { content:''; position:absolute; top:calc(100% + 7px); left:calc(50% - 9px);
+    border:9px solid transparent; border-top:12px solid #9c6424; animation:story-hint-arrow .8s ease-in-out infinite alternate; }
+@keyframes story-hint-arrow { to { transform:translateY(6px); } }
+.shop-grid-item.story-rocket-flash::after { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background:#fff; opacity:0; animation:story-rocket-flash 520ms ease-in-out 3; }
+@keyframes story-rocket-flash { 0%,71.15%,100% { opacity:0; } 36.54% { opacity:.5; } }
+@media (prefers-reduced-motion:reduce) {
+    .story-mining-hint::after { animation:none; }
+    .shop-grid-item.story-rocket-flash::after { animation-duration:520ms; }
+}
+.story-popup-body .beta-balance-error { -webkit-text-stroke:0; }
+@media (max-width:768px) {
+    .story-popup-image { height:125px; }
+    .story-popup-body { font-size:18px; }
+    .story-popup-panel .beta-balance-title { -webkit-text-stroke-width:4px; }
+    .story-popup-cross { display:none; }
+}
+@media (max-height:480px) {
+    .story-popup-image { height:70px; }
+    .story-popup-body { font-size:16px; }
+    .story-popup-body p { margin:6px 0; }
+}
+
+/* Discovery clues use the original map sprite, solid strokes and source bob. */
+.world-artifact {position:absolute;width:60px;height:60px;padding:0;margin:0;border:0;border-radius:0;background:none;box-shadow:none;z-index:25;touch-action:manipulation;}
+.world-artifact:hover,.world-artifact:active,.world-artifact:disabled {background:none;box-shadow:none;filter:none;opacity:1;}
+.world-artifact-bob {display:block;width:100%;height:100%;animation:world-clue-bob 4.4s ease-in-out infinite;}
+.world-artifact-art {display:block;width:52px;height:58px;margin:auto;object-fit:contain;pointer-events:none;filter:drop-shadow(1px 0 0 #d7ba57) drop-shadow(-1px 0 0 #d7ba57) drop-shadow(0 1px 0 #d7ba57) drop-shadow(0 -1px 0 #d7ba57);}
+.world-artifact:focus-visible {outline:2px solid #bd8b29;outline-offset:5px;border-radius:8px;}
+.world-artifact-retry {outline:2px solid #b34838;border-radius:8px;}
+@keyframes world-clue-bob {0%,100%{translate:0 0;}50%{translate:0 5px;}}
+@media(prefers-reduced-motion:reduce) {.world-artifact-bob{animation:none;}}
+
+.planet-tab.discovery-locked {opacity:.5;}
+.planet-discovery-locked {position:absolute;left:50%;top:18px;transform:translate(-50%,-50%);font:700 18px/1 'DogeSans',sans-serif;color:#fff;-webkit-text-stroke:4px #642626;paint-order:stroke fill;pointer-events:none;z-index:2;white-space:nowrap;}
+.mobile-planet-tab[hidden] {display:none;}
+.mobile-planet-tab.discovery-locked {opacity:.6;}
+
+/* Keep the complete settings form, including Supporter, in the panel. */
+#settings-tab {padding:8px;}
+#settings-tab .settings-column {gap:6px;}
+#settings-tab .settings-column:has(#performance-settings-section) {gap:4px;}
+#performance-settings-section .setting-item:last-child {margin-bottom:0;}
+#settings-tab .settings-section {margin-bottom:0;}
+#settings-tab .settings-section h3 {font-size:15px;line-height:1.2;margin:0 0 5px;padding-bottom:4px;}
+#settings-tab .setting-item {margin-bottom:2px;}
+#settings-tab .setting-item label {font-size:13px;line-height:1.2;min-height:17px;}
+#settings-tab .setting-item input[type="checkbox"] {flex:none;margin:0;}
+#settings-tab .value-update-setting {display:flex;align-items:center;gap:6px;margin-top:3px;}
+#settings-tab .value-update-setting label {flex:0 0 104px;font-size:12px;white-space:nowrap;}
+#layout-mode,#value-update-rate {height:24px;min-height:24px;min-width:0;flex:1;width:100%;padding:2px 4px;border-radius:4px;border:1px solid #ccc;background:#fff;font:12px 'DogeSans',sans-serif;}
+#supporter-settings-section .supporter-settings-copy {font-size:12px;line-height:1.2;color:#a58e6e;margin:0 0 5px;}
+#supporter-settings-section .setting-btn {width:100%;padding:6px 9px;}
+
+/* Moon's older spacing rule must not stretch the expanded settings list. */
+.moon-theme #settings-tab .setting-item {margin-bottom:2px;}
+#settings-tab #supporter-settings-section {border-top:0;padding-top:0;}
+
+/* Preserve native vertical inventory/content scrolling; the panel header alone
+   owns its downward close gesture. Mining and control targets stay independent. */
+#pickaxe-modal, #fortune-modal, #inventory-item-tooltip {touch-action:pan-y;}
+#pickaxe-modal .switcher-grid-container,#fortune-modal .switcher-grid-container,.inventory-item-tile{touch-action:pan-y;}
+#mobile-panel-tabs, #mobile-menu-toggle {touch-action:none;}
+
+/* Checkpoint-only visual comparison. */
+#parity-frame-demo {position:absolute;left:18px;top:225px;width:156px;height:57px;pointer-events:none;z-index:31;font:12px 'DogeSans',sans-serif;color:#8b4513;}
+#parity-frame-demo img {width:26px;height:26px;animation:parity-frame-travel 1500ms linear infinite alternate;}
+#parity-frame-demo span {position:absolute;left:0;top:33px;white-space:nowrap;}
+@keyframes parity-frame-travel {from{transform:translateX(0) rotate(0);}to{transform:translateX(120px) rotate(360deg);}}
+@media(prefers-reduced-motion:reduce){#parity-frame-demo img{animation:none;}}
+
+/* One placement/transition owner for dialogs; backgrounds retain their own shape. */
+.popup-managed.popup-exiting {
+    display:flex !important; visibility:visible !important; pointer-events:none !important;
+}
+.popup-reward-stage { display:flex; flex-direction:column; min-height:0; }
+.popup-reward-stage .mp-banner { flex:none; }
+.popup-reward-stage .mp-body { min-height:0; overflow-y:auto; }
+.popup-managed > .controller-dialog-box { width:min(440px,90%); }
+.story-popup-medium-title .beta-balance-title { font-size:clamp(21px,3vw,28px); }
+
+/* Coin pickup/hops own their transform only while active. */
+.helper-sprite.helper-loot-motion { animation:none!important; transition:none!important; }
+/* The private phone previews expose the desktop field without changing the
+   normal grouped mobile helper bar. Removed whenever a preview is replaced. */
+.parity-helper-field-preview .helper-sprite.placed-helper,
+.parity-helper-field-preview .helper-name-tooltip { display:block!important; }
+
+.auto-loot-prize { position:fixed; z-index:2500; width:54px; height:54px; transform:translate(-50%,-50%); pointer-events:none; }
+.auto-loot-prize img { width:100%; height:100%; object-fit:contain; }
+.auto-loot-prize.auto-loot-item img { filter:drop-shadow(1px 0 0 var(--loot-color)) drop-shadow(-1px 0 0 var(--loot-color)) drop-shadow(0 1px 0 var(--loot-color)) drop-shadow(0 -1px 0 var(--loot-color)); }
+@media(max-width:768px) { .auto-loot-prize { width:42px; height:42px; } }
+
+.shop-buy-btn[data-helper-type] { touch-action:none; }
+.shop-buy-btn.buy-max-charging { outline:2px solid currentColor; outline-offset:2px; }
+/* The source calls this design Ladder, but draws two moving chevrons, no rails. */
+.buy-max-popover { position:fixed; z-index:2800; width:176px; height:0; pointer-events:none; }
+.buy-max-action.shop-buy-btn { position:absolute; top:-29px; left:0; width:100%!important; min-width:0; height:58px; margin:0; display:flex; flex-direction:column; gap:2px; justify-content:center; transform-origin:center; pointer-events:auto; transition:none!important; animation:none!important; box-shadow:0 3px 6px #0003; }
+.buy-max-label { font-size:17px; white-space:nowrap; }
+.buy-max-price { display:flex; align-items:center; justify-content:center; gap:3px; font-size:12px; white-space:nowrap; }
+.buy-max-price-icon { width:18px; height:18px; object-fit:contain; }
+.buy-max-price-icon[hidden] { display:none; }
+.buy-max-action[aria-disabled="true"] { opacity:.6; }
+.buy-max-action.armed { background:linear-gradient(to bottom,#fff 50%,#ececec 50%)!important; }
+.buy-max-cue { position:absolute; width:16px; height:12px; color:var(--buy-max-border,#806631); pointer-events:none; }
+.buy-max-cue::after { content:""; position:absolute; width:8px; height:8px; top:4px; left:3px; border-top:3px solid currentColor; border-left:3px solid currentColor; border-radius:2px 0 0 0; transform:rotate(45deg); }
+.buy-max-cue[hidden] { display:none; }
+.buy-max-leaving .buy-max-action { pointer-events:none; }
+.buy-max-particle { position:absolute; top:0; left:0; pointer-events:none; border-radius:1px; }
+
+button.shop-item-dps[data-helper-dps] { padding:0; border:0; border-radius:0; background:none; box-shadow:none; font-family:'DogeSans',sans-serif; font-weight:400; line-height:1.25; justify-self:start; cursor:pointer; opacity:.75; }
+button.shop-item-dps[data-helper-dps]:hover { font-style:italic; }
+button.shop-item-dps[data-helper-dps]:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+.helper-dps-details { position:fixed; z-index:2700; display:flex; flex-direction:column; gap:3px; width:max-content; max-width:calc(100vw - 16px); box-sizing:border-box; padding:13px 18px; border:2px solid var(--hint-stroke); border-radius:10px; background:var(--hint-fill); color:var(--hint-color); text-align:center; font:16px/1.25 'DogeSans',sans-serif; cursor:pointer; }
+.helper-dps-details .helper-dps-added { color:#12661e; }
+@media(max-width:768px) { button.shop-item-dps[data-helper-dps] { width:auto; min-height:26px; } .helper-dps-details { font-size:15px; padding:11px 14px; } }
+
+/* Record critical hits use DM2's 1.3x pop, dark Canvas tint and brief recoil. */
+.floating-coin-pop { display:inline-flex; align-items:center; gap:6px; transform-origin:center; }
+.floating-coin-item.is-record-crit .floating-coin-pop { filter:brightness(0.7843137255); }
+
+/* Statistics keeps current-run values first, with compact lifetime rows below. */
+#stats-content .stats-grid,
+#mobile-achievements-content .mobile-stats-list {
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 18px; padding:0 10px;
+}
+#stats-content .stats-grid > .stat-row,
+#mobile-achievements-content .mobile-stats-list > .stat-row {
+    min-width:0; margin:0; padding:7px 0; gap:5px;
+    border:0 !important; border-bottom:1px solid rgba(130,100,40,.22) !important;
+    border-radius:0; background:none !important; box-shadow:none; backdrop-filter:none;
+}
+#stats-content .stats-grid > .stat-row span,
+#mobile-achievements-content .mobile-stats-list > .stat-row span {
+    min-width:0; font-size:12px; line-height:1.25; overflow-wrap:anywhere;
+}
+#stats-content .stats-grid > .stat-row span:last-child { text-align:right; }
+.statistics-lifetime-title { margin:10px 10px 2px; font-size:13px; font-weight:600; }
+.timeline-summary { padding-top:6px; padding-bottom:0; }
+.timeline-summary .timeline-history-title { margin-bottom:6px; font-size:16px; }
+.timeline-summary .timeline-current-values { padding:8px 10px; row-gap:6px; font-size:13px; }
+#mobile-timeline-summary { padding:0; }
+#mobile-achievements-content .statistics-lifetime-title { margin-left:0; margin-right:0; }
+#mobile-achievements-content .mobile-stats-list { padding:0; gap:0 12px; }
+#mobile-achievements-content .mobile-stats-list > .stat-row { flex-direction:column; align-items:flex-start; gap:2px; }
+#mobile-achievements-content .mobile-stats-list > .stat-row span:first-child { font-size:11px; }
+#mobile-achievements-content .mobile-stats-list > .stat-row span:last-child { font-size:13px !important; }
+
+/* DM2 upgrade hover: 2px lift, additive11% background highlight, soft22% shadow.
+   Source tilt is disabled by the shared base config. Phone cards stay static. */
+@media (hover:hover) and (pointer:fine) and (min-width:769px) {
+    .upgrade-section.has-upgrade {
+        isolation:isolate;
+        transition:transform 100ms cubic-bezier(.455,.03,.515,.955), box-shadow 100ms ease;
+    }
+    .upgrade-section.has-upgrade::before {
+        display:block; inset:0; width:auto; height:auto; border:0; border-radius:inherit;
+        background:inherit; mix-blend-mode:plus-lighter; opacity:0;
+        transition:opacity 120ms cubic-bezier(.455,.03,.515,.955);
+    }
+    .upgrade-section.has-upgrade > .helper-upgrade-card { position:relative; z-index:1; }
+    .upgrade-section.has-upgrade:not(.upgrade-fade-out):not(.upgrade-fade-in):is(:hover,:focus-within) {
+        transform:translateY(-2px); box-shadow:0 2px 12px 3px rgba(0,0,0,.16);
+        transition-timing-function:cubic-bezier(.25,.46,.45,.94),ease;
+    }
+    .upgrade-section.has-upgrade:not(.upgrade-fade-out):not(.upgrade-fade-in):is(:hover,:focus-within)::before {
+        opacity:.11; transition-timing-function:cubic-bezier(.25,.46,.45,.94);
+    }
+}
+@media (prefers-reduced-motion:reduce) {
+    .upgrade-section.has-upgrade { transition:none; }
+    .upgrade-section.has-upgrade:is(:hover,:focus-within) { transform:none !important; }
+    .upgrade-section.has-upgrade::before { transition:none; }
+}
+
+/* Keep Statistics inside the fixed panel; its own viewport owns long history. */
+#panel-content #achievements-tab {
+    height:100%; min-height:0; box-sizing:border-box;
+    overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain;
+}
+@media(max-width:768px) {
+    #mobile-achievements-tab { overflow:hidden; }
+    #mobile-achievements-content {
+        height:100%; min-height:0; box-sizing:border-box;
+        overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y;
+    }
+}
+
+/* Source helper hover: crisp amber stroke, immediate name, one-second fade. */
+.helper-sprite.placed-helper { z-index:var(--helper-rest-depth,10); }
+.helper-sprite.placed-helper.helper-hover-fading { z-index:199998; }
+.helper-sprite.placed-helper.helper-hover-active { z-index:200000; }
+.helper-sprite.placed-helper.helper-hover-active:not(.rick-boosted) { filter:url('#orange-sprite-outline'); }
+.helper-sprite.helper-held, .helper-sprite.helper-motion { z-index:400000 !important; }
+.helper-group-action { z-index:600000; }
+.helper-name-tooltip {
+    font-size:14px; color:#fff; text-shadow:none;
+    -webkit-text-stroke:3px #f1951d; paint-order:stroke fill;
+    transition:opacity 1000ms ease-out;
+}
+.helper-sprite.helper-selected.helper-hover-active:not(.rick-boosted) {
+    filter:sepia(0.3) hue-rotate(155deg) saturate(1.8) brightness(1.1) opacity(0.85) url('#orange-sprite-outline') !important;
+}
+.helper-sprite.placed-helper:hover { transform:none; }
+.helper-sprite.grouped-helper:hover { transform:scale(var(--helper-group-scale,1)); }
+/* Keyboard focus uses the same silhouette cue instead of a rectangular ring. */
+.helper-sprite.placed-helper:focus { outline:none; }
+
+/* Brief source-style field phrases: solid white stroke, no box or glow. */
+.mining-phrase-layer { position:absolute; inset:0; z-index:25; pointer-events:none; }
+.field-phrase { position:absolute; z-index:500000; max-width:calc(100% - 14px); width:max-content;
+    text-align:center; pointer-events:none; font-family:'DogeSans',sans-serif; font-weight:normal;
+    line-height:1.2; overflow-wrap:anywhere; -webkit-text-stroke:var(--phrase-stroke,3px) #fff;
+    paint-order:stroke fill; text-shadow:none; transform:translate(var(--phrase-anchor-x,-50%),-100%) rotate(var(--phrase-angle,0deg));
+    opacity:1; animation:field-phrase-in 250ms linear both, field-phrase-out 400ms linear calc(250ms + var(--phrase-hold,1800ms)) forwards; }
+@keyframes field-phrase-in { from {opacity:0;} to {opacity:1;} }
+@keyframes field-phrase-out { from {opacity:1;} to {opacity:0;} }
+.field-phrase-mining { --phrase-anchor-x:-100%; transform-origin:100% 100%; text-align:left; }
+@media(prefers-reduced-motion:reduce) { .field-phrase {transform:translate(var(--phrase-anchor-x,-50%),-100%);} }
+
+/* Source button motion owns visual scale/lift. Keep layout transforms
+   such as the report button's centered anchor and existing two-tone artwork. */
+.dm2-button-motion { transform-origin:center; transition-property:background-color,border-color,color,opacity,filter; }
+button.dm2-button-motion:not(.beta-balance-continue):hover,
+button.dm2-button-motion:not(.beta-balance-continue):active { transform:none; }
+button.beta-balance-continue.dm2-button-motion:hover,
+button.beta-balance-continue.dm2-button-motion:active { transform:translate(-50%,50%); }
+
+@media (max-width:768px) and (max-height:650px) {
+    /* Short phones retain horizontal card paging and can scroll each card to
+       reach its buy control when the description exceeds the drawer height. */
+    #mobile-shop-content .shop-grid-item { overflow-y:auto; }
+}
+
+/* The shipped DM2 info frame is also the fallback for dormant quest/achievement
+   texture names, which are absent from its current atlas. No invented artwork. */
+#notifications { display:grid; z-index:1000; pointer-events:none; }
+.notification[data-type] { grid-area:1/1; container-type:inline-size; position:relative; width:100%; max-width:none; aspect-ratio:411 / 181; flex:none;
+    padding:0; margin:0; border:0; border-radius:0; background:transparent url('assets/general/notification_info.webp') center / 100% 100% no-repeat;
+    box-shadow:none; backdrop-filter:none; font-family:'DogeSans',sans-serif; font-weight:normal;
+    transform:scale(.3); opacity:0; animation:notification-pop 500ms cubic-bezier(.2,.85,.25,1.18) forwards; }
+.notification[data-type] .notification-title { position:absolute; top:-3px; left:39%; right:5%; z-index:1; text-align:center; color:white;
+    font-size:clamp(15px,6.32cqw,26px); line-height:1.1; font-weight:bold; -webkit-text-stroke:clamp(4px,2.43cqw,10px) #dea435; paint-order:stroke fill; pointer-events:none; }
+.notification-content { position:absolute; inset:0; border:0; background:none; padding:0; width:100%; color:white; font:inherit; cursor:pointer; }
+.notification-info,.notification-details { position:absolute; left:15%; right:6%; display:block; text-align:center; color:white;
+    font-weight:normal; line-height:1.12; -webkit-text-stroke:clamp(2px,.97cqw,4px) #b09054; paint-order:stroke fill; overflow-wrap:anywhere; }
+.notification-info { top:30%; font-size:clamp(15px,6.32cqw,26px); }
+.notification-details { top:62%; font-size:clamp(11px,4.62cqw,19px); }
+.notification-with-icon .notification-info { top:24%; }
+.notification-icon { position:absolute; bottom:16%; left:53%; transform:translateX(-50%); width:22%; height:38%; object-fit:contain; }
+.notification-content:focus-visible { outline:2px solid #9a6b13; outline-offset:2px; }
+.notification[data-type].slide-out { pointer-events:none; animation:notification-shrink 300ms ease-in forwards; }
+.notification-text-green { -webkit-text-stroke-color:#48a33a; }
+.notification-text-blue { -webkit-text-stroke-color:#2982bd; }
+.notification-text-red { -webkit-text-stroke-color:#b73636; }
+.notification-text-sand { -webkit-text-stroke-color:#b09054; }
+.notification[data-type="quest"] .notification-details { -webkit-text-stroke-color:#48a33a; }
+.notification[data-type="achievement"] .notification-info,.notification[data-type="achievement"] .notification-details { -webkit-text-stroke-color:#376528; }
+.notification[data-notification-id="reduced-motion"] .notification-title { left:33%; right:2%; top:2%; text-align:left; }
+.notification[data-notification-id="reduced-motion"] .notification-info { top:29%; font-size:clamp(12px,4.62cqw,19px); }
+.notification[data-notification-id="reduced-motion"] .notification-details { top:51%; font-size:clamp(10px,3.65cqw,15px); line-height:1.2; }
+@keyframes notification-pop { from { transform:scale(.3); opacity:0; } 50% {opacity:1;} to {transform:scale(1); opacity:1;} }
+@keyframes notification-shrink { from {transform:scale(1); opacity:1;} to {transform:scale(.3); opacity:0;} }
+@media(prefers-reduced-motion:reduce) {
+    .notification[data-type] {transform:none; animation:notification-fade 160ms linear forwards;}
+    .notification[data-type].slide-out {transform:none; animation:notification-fade-out 160ms linear forwards;}
+}
+@keyframes notification-fade {from {opacity:0;} to {opacity:1;}}
+@keyframes notification-fade-out {from {opacity:1;} to {opacity:0;}}
+
+.notification[data-notification-id="reduced-motion"] { z-index:1; }
+
+/* First Moon launch; all controls stay inside the two-panel game area. */
+.cutscene-overlay[aria-hidden="true"] { visibility: hidden; }
+.moon-launch-stage { position: fixed; display: grid; grid-template-columns: minmax(0,1fr) 180px; align-items: center; background: #000; color: #fff; }
+.moon-launch-stage [hidden] { display: none !important; }
+.moon-launch-stage .cutscene-video { grid-column: 1; width: 100%; height: 100%; max-width: none; max-height: none; object-fit: contain; box-shadow: none; }
+#moon-launch-start { position: absolute; inset: 0; z-index: 2; width: 100%; border: 0; background: #000; color: #fff; font: 32px/1.2 'DogeSans',sans-serif; display: flex; flex-direction: column; gap: 25px; align-items: center; justify-content: center; cursor: pointer; }
+.moon-launch-logo { width: min(320px,55%); height: auto; max-height: 120px; object-fit: contain; }
+.moon-launch-rocket { width: auto; height: min(160px,26%); object-fit: contain; }
+#moon-launch-controls { grid-column: 2; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 20px 8px 75px; gap: 12px; font-size: 18px; text-align: center; }
+#moon-launch-controls button:not(.moon-launch-button) { background: transparent; color: #fff; border: 1px solid transparent; border-radius: 6px; cursor: pointer; min-width: 44px; min-height: 44px; font: 40px/1 'DogeSans',sans-serif; padding: 0 6px; }
+#moon-launch-controls button:disabled { opacity: .4; cursor: default; }
+#moon-launch-fallback { color: #fff; text-decoration: underline; font-size: 21px; line-height: 1.15; margin-bottom: auto; padding: 10px 0; }
+.moon-launch-volume-buttons { display: flex; gap: 20px; }
+#moon-launch-volume { white-space: nowrap; }
+#moon-launch-status { font-size: 17px; line-height: 1.2; min-height: 42px; margin: 0; }
+.moon-launch-button { border: 1px solid #b99641; border-radius: 12px; padding: 10px 15px; color: #383838; background: linear-gradient(to bottom,#ffdc73 50%,#ffd246 50%); font: 18px 'DogeSans',sans-serif; cursor: pointer; box-shadow: none; }
+#cutscene-skip.moon-launch-button { position: absolute; bottom: 10px; right: 10px; min-width: 100px; font-size: 24px; }
+.moon-launch-stage button:focus-visible,.moon-launch-stage a:focus-visible { outline: 2px solid #ffe16c; outline-offset: 4px; }
+#moon-launch-confirm { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #0009; padding: 16px; z-index: 4; }
+#moon-launch-confirm section { width: min(430px,100%); border: 2px solid #b99641; border-radius: 14px; background: #f4edd4; color: #383838; padding: 22px; text-align: center; box-sizing: border-box; }
+#moon-launch-confirm h2 { font-size: 30px; margin: 0 0 12px; }
+#moon-launch-confirm p { font-size: 19px; margin: 0 0 22px; }
+#moon-launch-confirm section>div { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+@media (max-width:768px) {
+    .moon-launch-stage { grid-template-columns: 1fr; grid-template-rows: minmax(0,1fr) auto; }
+    .moon-launch-stage .cutscene-video { grid-row: 1; min-height: 0; }
+    #moon-launch-start { font-size: 28px; gap: 24px; }
+    #moon-launch-controls { grid-column: 1; grid-row: 2; flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 8px 18px; padding: 10px 14px 74px; font-size: 16px; }
+    #moon-launch-fallback { display: none; }
+    #moon-launch-status { width: 100%; min-height: 20px; font-size: 16px; }
+    #moon-launch-confirm section { padding: 18px 12px; }
+    #moon-launch-confirm h2 { font-size: 27px; }
+}
+@media (max-height:450px) {
+    #moon-launch-start { font-size: 24px; gap: 12px; }
+    .moon-launch-logo { max-height: 65px; }
+    #moon-launch-controls { gap: 4px; padding-top: 4px; padding-bottom: 66px; }
+    #moon-launch-fallback { padding: 3px 0; font-size: 18px; }
+    #moon-launch-status { font-size: 14px; min-height: 34px; }
+    #moon-launch-controls button:not(.moon-launch-button) { font-size: 32px; }
+    #moon-launch-confirm p { margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion:reduce) {
+    .cutscene-overlay { transition: none; }
+}
+.moon-launch-stage { grid-template-rows: minmax(0,1fr); }
+.moon-launch-stage .cutscene-video { min-width: 0; min-height: 0; }
+#moon-launch-controls { min-height: 0; box-sizing: border-box; }
+@media(max-width:768px) { .moon-launch-stage { grid-template-rows: minmax(0,1fr) auto; } }
+
+/* Source blueprint art is243×225 at0.6scale; source hit circle has60px radius. */
+.world-artifact[data-artifact="blueprint"] { width:120px;height:120px; }
+.world-artifact[data-artifact="blueprint"] .world-artifact-art { width:145.8px;height:135px;max-width:none;object-fit:contain; }
+.world-artifact[data-artifact="blueprint"] .world-artifact-bob { display:flex;align-items:center;justify-content:center;width:120px;height:120px; }
+
+/* Source upgrade applying state: dim art, shrink payment controls, then DONE. */
+.helper-upgrade-applying { position:relative; }
+.helper-upgrade-applying .helper-upgrade-card { opacity:.5;transition:opacity 500ms ease-out; }
+.helper-upgrade-applying .helper-upgrade-purchases { transform:scaleY(0);opacity:0;transform-origin:center;transition:transform 500ms ease-out,opacity 500ms ease-out;pointer-events:none; }
+.helper-upgrade-progress { position:absolute;bottom:25px;left:8px;right:8px;text-align:center;font:27px/1.1 'DogeSans',sans-serif;color:inherit;animation:helper-upgrade-progress-in 500ms ease-out;pointer-events:none; }
+.helper-upgrade-done .helper-upgrade-card,.helper-upgrade-done .helper-upgrade-progress { animation:helper-upgrade-progress-out 1000ms ease-in forwards; }
+.helper-upgrade-transforming { pointer-events:none !important; }
+@keyframes helper-upgrade-progress-in { from {opacity:0;}to {opacity:1;} }
+@keyframes helper-upgrade-progress-out { from {opacity:1;}to {opacity:0;} }
+@media(prefers-reduced-motion:reduce){
+ .helper-upgrade-applying .helper-upgrade-card,.helper-upgrade-applying .helper-upgrade-purchases {transition:none;}
+ .helper-upgrade-progress,.helper-upgrade-done .helper-upgrade-card {animation:none;}
+}
+.helper-upgrade-applying:not(.helper-upgrade-done) .helper-upgrade-card { animation:helper-upgrade-card-dim 500ms ease-out forwards; }
+.helper-upgrade-applying:not(.helper-upgrade-done) .helper-upgrade-purchases { animation:helper-upgrade-payments-out 500ms ease-out forwards; }
+.helper-upgrade-done .helper-upgrade-card { animation:helper-upgrade-card-out 1000ms ease-in forwards; }
+@keyframes helper-upgrade-card-dim { from{opacity:1;}to{opacity:.5;} }
+@keyframes helper-upgrade-payments-out { from{opacity:1;transform:scaleY(1);}to{opacity:0;transform:scaleY(0);} }
+@keyframes helper-upgrade-card-out { from{opacity:.5;}to{opacity:0;} }
+@media(prefers-reduced-motion:reduce){
+ .helper-upgrade-applying .helper-upgrade-card,.helper-upgrade-applying .helper-upgrade-purchases {animation:none;}
+}
+
+/* Paired tools use the source rear-hand offset and scale. */
+#pickaxe-offhand {position:absolute;width:142px;height:195px;object-fit:contain;top:-58px;right:calc(20% - 10px);transform:rotate(30deg);transform-origin:50% 80%;scale:.94;z-index:1;pointer-events:none;}
+#pickaxe-offhand.pickaxe-shift-right {width:185px;height:255px;top:-98px;right:calc(20% - 40px);}
+#pickaxe-offhand.pickaxe-scale-half {width:107px;height:146px;top:-23px;right:calc(20% - 15px);}
+#pickaxe-offhand.pickaxe-scale-baguette {width:160px;height:340px;top:-203px;right:calc(20% - 30px);transform-origin:50% 90%;}
+#pickaxe-offhand.pickaxe-paw {width:57px;height:229px;top:-23px;right:75px;opacity:0;transform-origin:50% 50%;transform:rotate(15deg);}
+#pickaxe-offhand.swing-down {transform:rotate(-58deg);}
+#pickaxe-offhand.pickaxe-paw.swing-down {opacity:1;transform:rotate(-74deg);}
+.tool-discovery {position:absolute;top:14%;left:50%;width:min(90%,320px);transform:translateX(-50%);pointer-events:none;text-align:center;z-index:45;color:#ffedb5;}
+.tool-discovery small,.tool-discovery strong {display:block;}
+.tool-discovery small {font-size:15px;color:#65451e;-webkit-text-stroke:1px #fff2cb;paint-order:stroke fill;}
+.tool-discovery strong {font-size:30px;-webkit-text-stroke:4px #65451e;paint-order:stroke fill;}
+
+.tool-fusing {visibility:hidden !important;}
+.sundoge-fusion {position:absolute;z-index:44;pointer-events:none;isolation:isolate;}
+.sundoge-fusion svg {position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:#d5a63e;stroke-width:2;}
+.sundoge-fusion img {position:absolute;width:50%;height:82%;object-fit:contain;left:25%;top:10%;transform-origin:50% 75%;}
+.sundoge-fusion span {position:absolute;left:0;right:0;bottom:0;text-align:center;color:#ffedb5;font-size:20px;-webkit-text-stroke:3px #65451e;paint-order:stroke fill;}
+
+#pickaxe.tool-drilling,#pickaxe-offhand.tool-drilling {transform:translate(var(--drill-x,0px),var(--drill-y,0px)) rotate(var(--drill-angle,28deg)) skewX(var(--drill-shear,0rad));transition:none;}
+
+.tool-hold-drill #click-overlay,.tool-hold-drill #character-container {touch-action:none;}
+
+/* Source rest/swing angles, idle visibility and rear layering. */
+#pickaxe:not(.pickaxe-paw):not(.tool-drilling),#pickaxe-offhand:not(.pickaxe-paw):not(.tool-drilling) {transform:rotate(28deg);}
+#pickaxe.swing-down:not(.pickaxe-paw):not(.tool-drilling),#pickaxe-offhand.swing-down:not(.pickaxe-paw):not(.tool-drilling) {transform:rotate(-65deg);}
+#pickaxe.tool-behind,#pickaxe-offhand.tool-behind {z-index:1;}
+#pickaxe.tool-noidle,#pickaxe-offhand.tool-noidle {opacity:0;}
+#pickaxe.tool-noidle.swing-down,#pickaxe-offhand.tool-noidle.swing-down {opacity:1;}
+#pickaxe.tool-phone-staff {scale:.8;translate:-34px 0;}
+#pickaxe-offhand.tool-phone-staff {scale:.752;translate:-24px -6.4px;}
+
+#pickaxe.tool-phone-pair {scale:.9;translate:-10px 0;}
+#pickaxe-offhand.tool-phone-pair {scale:.846;translate:-10px 0;}
+
+@media(max-width:768px){.tool-discovery small{font-size:13px;}.tool-discovery strong{font-size:24px;}}
+
+.cate-thief{position:absolute;z-index:32;border:0;background:transparent;padding:0;width:64px;height:72px;cursor:crosshair;touch-action:manipulation;}
+.cate-thief img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(1px 0 #d56b45) drop-shadow(-1px 0 #d56b45) drop-shadow(0 1px #d56b45) drop-shadow(0 -1px #d56b45);}
+.cate-thief span{position:absolute;bottom:100%;left:50%;translate:-50% 0;white-space:nowrap;color:#b42c26;font-size:13px;-webkit-text-stroke:2px #fff4d6;paint-order:stroke fill;}
+
+.rick-field-rig{position:absolute;width:60px;height:60px;pointer-events:none;z-index:12;}
+.rick-field-rig .rick-helper{width:66px;height:60.5px;margin-left:-3px;margin-top:-.25px;object-fit:contain;animation:none;}
+.rick-field-pickaxe{position:absolute;transform-origin:50% 75%;pointer-events:none;z-index:13;}
+
+.rock-capacity-hint{position:absolute;left:12px;right:12px;bottom:105px;z-index:36;text-align:center;font-size:15px;color:#80542d;background:#fff1c5;border:1px solid #c79c32;border-radius:5px;padding:6px 8px;pointer-events:none;}
+
+/* Checkpoint 44: compact planet-themed release notes. */
+#version-indicator[role="button"] { cursor:pointer; }
+#version-indicator.update-available { border-color:#dfb72b; }
+.release-notes-panel { width:620px; display:flex;flex-direction:column; }
+.release-notes-panel .release-notes-body { overflow-y:auto;min-height:0;max-height:340px;padding:14px 24px; }
+.release-notes-panel .beta-balance-title { font-size:26px; }
+.release-note h3 { margin:0 0 3px;font-size:19px; }
+.release-note time { font-size:12px;opacity:.75; }
+.release-note ul { padding-left:20px;margin:12px 0 8px; }
+.release-note li { margin:7px 0;line-height:1.3; }
+.release-notes-panel .beta-balance-footer { gap:10px;flex-wrap:wrap; }
+@media(max-width:600px){.release-notes-panel .release-notes-body{padding:12px 16px;font-size:14px;}.release-notes-panel .beta-balance-title{font-size:22px;}}
+.tool-discovery.tool-discovery-diamonds strong { color:#c6e8fb; }
+
+.release-notes-panel { padding-bottom:0;text-align:left; }
+.release-notes-panel .release-notes-body,.release-notes-panel .beta-balance-eyebrow { color:var(--beta-fineprint);-webkit-text-stroke:0;text-shadow:none; }
+.release-notes-panel .beta-balance-header { text-align:center; }
+.release-notes-panel .beta-balance-footer { padding:10px 16px 16px; }
+.release-notes-panel .beta-balance-continue { position:static;left:auto;bottom:auto;transform:none;font-size:17px; }
+.release-notes-panel .beta-balance-continue:hover,.release-notes-panel .beta-balance-continue:active,.release-notes-panel .beta-balance-continue.dm2-button-motion:hover,.release-notes-panel .beta-balance-continue.dm2-button-motion:active { transform:none; }
+.release-notes-overlay { inset:0;width:100vw;height:100dvh; }
+#version-indicator{gap:6px;white-space:nowrap;flex:none;min-width:0;overflow:visible;text-decoration:none;}
+#version-indicator.update-available::before{content:'';display:block;flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:#ffd653;}
+#version-indicator:focus-visible{outline:2px solid #ffe09c;outline-offset:3px;}
+.dia-skip-btn,.cutscene-skip{font-family:inherit;}
+.cutscene-skip{border:0;}
+
+/* Source holiday artwork, with CE geometry and crisp edges. */
+.seasonal-scene[hidden]{display:none!important;}
+.seasonal-accessory{position:absolute;z-index:4;pointer-events:none;max-width:none;}
+.seasonal-rock{position:absolute;bottom:-8px;left:50%;width:100%;transform:translateX(-50%);z-index:4;pointer-events:none;}
+body[data-holiday=halloween] .seasonal-rock{width:80%;bottom:-12px;opacity:.5;}
+.seasonal-platform{position:absolute;width:76px;left:50%;bottom:18px;transform:translateX(-50%);pointer-events:none;z-index:2;}
+#seasonal-egg-progress{position:absolute;left:7px;top:82px;z-index:31;padding:0;border:0;background:transparent;cursor:pointer;line-height:0;}
+#seasonal-egg-progress img{display:block;width:154px;height:auto;max-width:none;}
+#seasonal-egg-progress:focus-visible{outline:2px solid #e4b54a;outline-offset:3px;}
+body[data-holiday=easter] #stats-display .dogecoin-icon{content:url('assets/general/easterdogecoin_70x70.webp');}
+body[data-holiday=halloween] .tab-btn.active{border-color:#b27632;}
+body[data-holiday=xmas] .tab-btn.active{border-color:#b44c42;}
+.seasonal-hidden-egg{position:absolute;right:10px;top:50px;width:34px;height:46px;padding:0;border:0;background:transparent;cursor:pointer;z-index:80;touch-action:manipulation;}
+.seasonal-hidden-egg img{display:block;width:100%;height:100%;opacity:.65;}
+.seasonal-hidden-egg:focus-visible{outline:2px solid #e4b54a;outline-offset:3px;}
+.seasonal-hidden-egg[data-egg="2"]{top:30%;right:44%;}
+.seasonal-hidden-egg[data-egg="3"]{top:auto;bottom:15px;right:25%;}
+.seasonal-hidden-egg[data-egg="4"]{top:auto;bottom:25px;right:15px;}
+.seasonal-hidden-egg[data-egg="5"]{top:150px;right:auto;left:15px;}
+.seasonal-hidden-egg[data-egg="setting"]{top:55%;right:15px;}
+.seasonal-hidden-egg[data-egg="inv1"]{top:70px;right:24px;}
+.seasonal-hidden-egg[data-egg="inv2"]{top:75px;right:45%;}
+.seasonal-hidden-egg[data-egg="upgrade"]{top:35px;right:20px;}
+#settings-tab,#upgrades-tab,#mobile-settings-tab,#mobile-upgrades-tab{position:relative;}
+#seasonal-egg-progress[data-phone=true]{top:65px;}
+#seasonal-egg-progress[data-phone=true] img{width:115.5px;}
+#planet-summary .seasonal-rock{width:155px;max-width:none;bottom:14px;left:38px;z-index:-1;}
+#planet-summary .seasonal-platform{width:76px;max-width:none;left:38px;bottom:59px;}
+.seasonal-hidden-egg .seasonal-egg-mask{position:absolute;inset:0;}
+body[data-holiday=easter] #stats-display .dogecoin-icon{content:normal;}
+
+#layout-quick-control{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:22000;padding:5px 8px;border:1px solid #a88131;border-radius:6px;background:#fff1c5;color:#604721;font:12px sans-serif;}
+#layout-quick-control[hidden]{display:none;}
+#layout-quick-control select{font:inherit;min-height:30px;border:1px solid #a88131;border-radius:4px;background:#fff5d9;color:#604721;}
+body[data-layout=tablet] .shop-buy-btn{min-height:38px;}
+body[data-layout=tablet] .tab-btn{min-height:48px;}
+body[data-layout=tablet] #panel-tabs{gap:3px;}
+body[data-layout=tablet] .tabs-left{margin-left:5px;gap:3px;flex:1;}
+body[data-layout=tablet] .tabs-right{margin-right:5px;gap:3px;}
+body[data-layout=tablet] .tabs-left .tab-btn{padding:10px 6px;gap:3px;min-width:0;flex:1;}
+body[data-layout=tablet] .tabs-left .tab-text{font-size:13px;letter-spacing:-.5px;}
+body[data-layout=tablet] .tab-icon{width:19px;height:19px;flex-shrink:0;}
+body[data-layout=tablet] .tabs-right .tab-btn{padding:10px 8px;}
+#secret-doge-message{position:fixed;bottom:55px;left:50%;transform:translateX(-50%);z-index:22000;width:min(440px,calc(100vw -24px));padding:14px 30px 14px 14px;border:2px solid #b38d33;border-radius:8px;background:#fff0bc;color:#604721;font:14px/1.5 sans-serif;}
+#secret-doge-message a{color:#785300;text-decoration:underline;}
+#secret-doge-message button{position:absolute;right:8px;top:5px;border:0;background:none;font-size:22px;color:inherit;cursor:pointer;}
+
+.release-notes-body:focus-visible{outline:2px solid #b58a30;outline-offset:-4px;}
+
+.mobile-settings-list{gap:6px;}
+#mobile-settings-content .setting-item{min-height:44px;padding:8px 10px;margin-bottom:0;box-sizing:border-box;}
+.mobile-settings-list .mobile-select-setting{display:grid!important;grid-template-columns:minmax(84px,1fr) minmax(0,1.4fr);align-items:center;gap:8px;cursor:default;margin-top:0;}
+#mobile-layout-mode,#mobile-value-update-rate{min-height:44px;min-width:0;padding:5px;border-radius:4px;border:1px solid #aaa;background:#eee;width:100%;font:16px DogeSans,sans-serif;}
+#mobile-settings-content button{min-height:44px;}
+.mobile-supporter-section{margin:14px 0;}
+.mobile-supporter-section p{font-size:13px;line-height:1.3;margin:0 0 8px;}
+.mobile-supporter-section .setting-btn{width:100%;}
+.dia-badge-card:focus-visible,.dia-skip-btn:focus-visible,.cutscene-skip:focus-visible,.cs-choice-btn:focus-visible,.mp-ok:focus-visible{outline:3px solid #d4af37;outline-offset:4px;}
+@media(max-width:768px){
+    #mobile-bottom-menu{padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);box-sizing:border-box;}
+    #mobile-settings-content{scroll-padding-block:10px;}
+    /* Panel dialogs live inside the game canvas; the fixed drawer must yield
+       while one is open, then reveal the same tab and scroll position. */
+    body:has(.switcher-modal.active) #mobile-bottom-menu,
+    body:has(.switcher-modal.active) #mobile-menu-toggle{visibility:hidden;pointer-events:none;}
+}
+@media(max-width:768px) and (max-height:500px){
+    #mobile-bottom-menu{--mobile-drawer-height:min(72dvh,360px);}
+}
+@media(max-width:360px){
+    #mobile-panel-tabs .tab-text{display:none;}
+    .mobile-tab-btn{min-width:44px;min-height:44px;padding:8px;justify-content:center;}
+}
+
+/* Hats ship after v0.1; keep the reserved markup out of every input route. */
+#hats-tab-btn,#mobile-hats-tab-btn,#hats-tab,#mobile-hats-tab{display:none!important;}
+
+body.xbox-browser :is(#sign-in-section,#mobile-sign-in-section,#user-info,#mobile-user-info,#supporter-settings-section,#mobile-supporter-settings-section,#supporter-stat-display,#controller-disable-setting),
+body.xbox-browser .setting-item:has(#mobile-disable-controller){display:none!important;}

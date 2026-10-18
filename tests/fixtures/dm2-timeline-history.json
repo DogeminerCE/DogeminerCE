@@ -1,0 +1,127 @@
+{
+  "source": "DM2 2.15 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "routines": [
+    "CL timeline arrays/reset",
+    "YB choice records: 0/1",
+    "wK integer seconds"
+  ],
+  "cases": [
+    {
+      "input": {
+        "timeline": 1,
+        "coins": 0,
+        "earned": 0,
+        "playTimeMs": 0,
+        "choice": 0
+      },
+      "output": {
+        "timeline": 2,
+        "coins": 0,
+        "alltimecoins": 0,
+        "timeplayed": 0,
+        "timeplayedms": 0,
+        "timelinecoins": [
+          0
+        ],
+        "timelinealltimecoins": [
+          0
+        ],
+        "timelineplayeds": [
+          0
+        ],
+        "kitlerstats": [
+          0
+        ],
+        "extrapersec": 0
+      }
+    },
+    {
+      "input": {
+        "timeline": 1,
+        "coins": 1000000,
+        "earned": 2000000,
+        "playTimeMs": 12375,
+        "choice": 1
+      },
+      "output": {
+        "timeline": 2,
+        "coins": 0,
+        "alltimecoins": 0,
+        "timeplayed": 0,
+        "timeplayedms": 0,
+        "timelinecoins": [
+          1000000
+        ],
+        "timelinealltimecoins": [
+          2000000
+        ],
+        "timelineplayeds": [
+          12
+        ],
+        "kitlerstats": [
+          1
+        ],
+        "extrapersec": 0
+      }
+    },
+    {
+      "input": {
+        "timeline": 2,
+        "coins": 1000000000000000,
+        "earned": 4000000000000000,
+        "playTimeMs": 5000000,
+        "choice": 0
+      },
+      "output": {
+        "timeline": 3,
+        "coins": 0,
+        "alltimecoins": 0,
+        "timeplayed": 0,
+        "timeplayedms": 0,
+        "timelinecoins": [
+          1000000000000000
+        ],
+        "timelinealltimecoins": [
+          4000000000000000
+        ],
+        "timelineplayeds": [
+          5000
+        ],
+        "kitlerstats": [
+          0
+        ],
+        "extrapersec": 0
+      }
+    },
+    {
+      "input": {
+        "timeline": 5,
+        "coins": 40000000000000000,
+        "earned": 70000000000000000,
+        "playTimeMs": 1125,
+        "choice": 1
+      },
+      "output": {
+        "timeline": 6,
+        "coins": 0,
+        "alltimecoins": 0,
+        "timeplayed": 0,
+        "timeplayedms": 0,
+        "timelinecoins": [
+          40000000000000000
+        ],
+        "timelinealltimecoins": [
+          70000000000000000
+        ],
+        "timelineplayeds": [
+          1
+        ],
+        "kitlerstats": [
+          1
+        ],
+        "extrapersec": 0
+      }
+    }
+  ]
+}

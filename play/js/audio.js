@@ -3,6 +3,8 @@ class AudioManager {
     constructor() {
         this.musicEnabled = true;
         this.soundEnabled = true;
+        this.rockSoundsEnabled = true;
+        this.backgroundAudioEnabled = true;
         this.currentTrack = null;
         this.introSound = null;
         this.loopSound = null;
@@ -33,6 +35,7 @@ class AudioManager {
 
             // Listen for settings changes
             this.setupSettingsListeners();
+            this.setupAudioFocusListeners();
         } catch (error) {
             console.error('Error initializing audio:', error);
             console.error('Audio will be disabled');
@@ -42,6 +45,7 @@ class AudioManager {
     }
 
     loadSoundEffects() {
+        this.soundEffects.cate_dying=new Howl({src:['../assets/SoundsSrc/main/cate_dying.wav'],volume:.5});
         // Load swipe sound for tab switching - paths adjusted for play/ directory serving
         this.soundEffects.swipe = new Howl({
             src: ['../assets/SoundsSrc/main/swipe3.wav'],
@@ -60,10 +64,24 @@ class AudioManager {
             volume: 0.5
         });
 
+        // DM2's tab-scoped helper DPS hint entrance.
+        this.soundEffects.notification = new Howl({
+            src: ['../assets/SoundsSrc/main/notification.mp3'], volume: 0.5
+        });
+
         // Load check sound for settings toggles
         this.soundEffects.check = new Howl({
             src: ['../assets/SoundsSrc/main/check.wav'],
             volume: 0.5
+        });
+
+        this.soundEffects.biblip = new Howl({
+            src: ['../assets/SoundsSrc/main/biblip.wav'],
+            volume: 0.5
+        });
+
+        this.soundEffects.news1 = new Howl({
+            src: ['../assets/SoundsSrc/main/news1.mp3'], volume: 0.25
         });
 
         // Load pick sounds for rock hitting (normal pickaxes)
@@ -84,6 +102,18 @@ class AudioManager {
         // Inventory close (swipe)
         this.soundEffects.inventoryClose = new Howl({
             src: ['../assets/SoundsSrc/main/swipe_fast_low.wav'],
+            volume: 0.5
+        });
+
+        // DM2 PopupBox default exit sound (source gain 0.3).
+        this.soundEffects.swipe_fast_low = new Howl({
+            src: ['../assets/SoundsSrc/main/swipe_fast_low.wav'],
+            volume: 0.3
+        });
+
+        // DM2 story popup entrance.
+        this.soundEffects.nice_popup = new Howl({
+            src: ['../assets/SoundsSrc/main/nice_popup.wav'],
             volume: 0.5
         });
 
@@ -138,6 +168,26 @@ class AudioManager {
             volume: 0.5
         });
 
+        // Bonus Coin spawn appearance (plays once, then triggers coinLoop)
+        this.soundEffects.coinAppear = new Howl({
+            src: ['../assets/SoundsSrc/main/coin_appear.mp3'],
+            volume: 0.5,
+            loop: false,
+            onend: () => {
+                const g = (typeof window !== 'undefined' && window.game) ? window.game : null;
+                if (g && g._bonusCoinEl) {
+                    this.playSound('coinLoop');
+                }
+            }
+        });
+
+        // Bonus Coin ambient loop (loops while coin remains on screen)
+        this.soundEffects.coinLoop = new Howl({
+            src: ['../assets/SoundsSrc/main/coin_loop.mp3'],
+            volume: 0.5,
+            loop: true
+        });
+
         // Dogebag loot (coins only, not pickaxe/fortune)
         this.soundEffects.receiveStash = new Howl({
             src: ['../assets/SoundsSrc/main/receive_stash.mp3'],
@@ -180,6 +230,9 @@ class AudioManager {
             volume: 0.5
         });
 
+        this.soundEffects.grab_bag2 = this.soundEffects.grabBag;
+        this.soundEffects.select1 = new Howl({ src: ['../assets/SoundsSrc/main/select1.wav'], volume: 0.15 });
+
         // Dogebag modal opens — item collect fanfare
         this.soundEffects.collectItem = new Howl({
             src: ['../assets/SoundsSrc/main/collect_item_1.wav'],
@@ -192,6 +245,16 @@ class AudioManager {
             volume: 0.6
         });
 
+        this.soundEffects.notification_soft3 = new Howl({
+            src: ['../assets/SoundsSrc/main/notification_soft3.wav'], volume: 0.6
+        });
+
+        // Special story popup (DM2's Mystery Box evolution).
+        this.soundEffects.short_sparkle = new Howl({
+            src: ['../assets/SoundsSrc/main/short_sparkle.wav'],
+            volume: 0.6
+        });
+
         // Fortune-specific loot sound
         this.soundEffects.longSparkle = new Howl({
             src: ['../assets/SoundsSrc/main/long_sparkle.wav'],
@@ -200,45 +263,86 @@ class AudioManager {
     }
 
     setupSettingsListeners() {
-        // Listen for music setting changes
-        const musicCheckbox = document.getElementById('music-enabled');
-        if (musicCheckbox) {
-            musicCheckbox.addEventListener('change', (e) => {
-                this.musicEnabled = e.target.checked;
-                // Sync with game settings
-                if (window.game) {
-                    window.game.musicEnabled = e.target.checked;
-                }
-                if (!this.musicEnabled) {
-                    this.stopMusic();
-                } else {
-                    this.playBackgroundMusic();
-                }
-                // Play check sound
-                this.playSound('check');
-                // Trigger auto-save to save settings (don't show notification)
-                if (window.saveManager) {
-                    window.saveManager.saveGame(false);
-                }
+        for (const [id, key, inverse] of this.audioPreferences()) {
+            document.getElementById(id)?.addEventListener('change', event => {
+                this.setAudioPreference(key, inverse ? !event.target.checked : event.target.checked);
             });
         }
+    }
 
-        // Listen for sound setting changes
-        const soundCheckbox = document.getElementById('sound-enabled');
-        if (soundCheckbox) {
-            soundCheckbox.addEventListener('change', (e) => {
-                this.soundEnabled = e.target.checked;
-                // Sync with game settings
-                if (window.game) {
-                    window.game.soundEnabled = e.target.checked;
-                }
-                // Play check sound
-                this.playSound('check');
-                // Trigger auto-save to save settings (don't show notification)
-                if (window.saveManager) {
-                    window.saveManager.saveGame(false);
-                }
-            });
+    audioPreferences() {
+        return [['sound-enabled','soundEnabled',false], ['music-enabled','musicEnabled',false],
+            ['mute-rock-sounds','rockSoundsEnabled',true], ['background-audio-enabled','backgroundAudioEnabled',false]];
+    }
+
+    syncAudioSettings() {
+        for (const [id,key,inverse] of this.audioPreferences()) {
+            for (const prefix of ['', 'mobile-']) {
+                const input = document.getElementById(prefix + id);
+                if (input) input.checked = inverse ? !this[key] : this[key];
+            }
+        }
+    }
+
+    setAudioPreference(key, value) {
+        if (!this.audioPreferences().some(([,name]) => name === key)) return false;
+        const previous = this[key], previousGame = window.game?.[key];
+        this[key] = !!value;
+        if (window.game) window.game[key] = this[key];
+        let saved = true;
+        try { if (window.saveManager) saved = window.saveManager.saveGame(false) !== false; }
+        catch (_) { saved = false; }
+        if (!saved) {
+            this[key] = previous;
+            if (window.game) window.game[key] = previousGame;
+        }
+        this.syncAudioSettings();
+        this.applyAudioPolicy();
+        if (key === 'musicEnabled' && saved) {
+            if (this.musicEnabled && !this._audioSuspended) this.playBackgroundMusic();
+            else this.stopMusic();
+        }
+        if (saved) this.playSound('check');
+        return saved;
+    }
+
+    setupAudioFocusListeners() {
+        if (this._focusListenersInstalled) return;
+        this._focusListenersInstalled = true;
+        this._windowFocused = document.hasFocus?.() !== false;
+        window.addEventListener('blur', () => { this._windowFocused = false; this.applyAudioPolicy(); });
+        window.addEventListener('focus', () => { this._windowFocused = true; this.applyAudioPolicy(); });
+        document.addEventListener('visibilitychange', () => this.applyAudioPolicy());
+        this.applyAudioPolicy();
+    }
+
+    isBackgroundMuted() {
+        return this.backgroundAudioEnabled === false && (document.hidden || this._windowFocused === false);
+    }
+
+    isMiningSound(name) {
+        return ['pick','pew','lasersword','hitHard','hitGround'].includes(name) || /^rockhit/.test(name);
+    }
+
+    applyMediaPolicy(media, cinematic = false) {
+        if (!media) return;
+        this._mediaOriginalMutes ||= new WeakMap();
+        if (!this._mediaOriginalMutes.has(media)) this._mediaOriginalMutes.set(media, !!media.muted);
+        const enabled = cinematic ? window.game?.soundEnabled !== false : this.soundEnabled;
+        media.muted = this._mediaOriginalMutes.get(media) || !!window.CEParityTesting?.active || this.isBackgroundMuted() || !enabled;
+    }
+
+    applyAudioPolicy() {
+        const background = this.isBackgroundMuted() || !!this._audioSuspended;
+        for (const media of Object.values(window.timeTravelManager?._sounds || {})) this.applyMediaPolicy(media);
+        this.applyMediaPolicy(window.game?.cutsceneVideo, true);
+        // Keep each track's position and never alter an external/global mute.
+        for (const track of [this.introSound,this.loopSound,this.moonLoop,this.marsLoop,this.jupiterLoop,this.titanLoop,this.holidayLoop]) {
+            track?.mute?.(background || !this.musicEnabled);
+        }
+        for (const [name,effect] of Object.entries(this.soundEffects)) {
+            const muted = background || !this.soundEnabled || (this.rockSoundsEnabled === false && this.isMiningSound(name));
+            for (const sound of Array.isArray(effect) ? effect : [effect]) sound?.mute?.(muted);
         }
     }
 
@@ -264,6 +368,7 @@ class AudioManager {
             autoplay: false,
             volume: 0.5
         });
+        this.applyAudioPolicy();
     }
 
     loadMoonMusic() {
@@ -273,6 +378,7 @@ class AudioManager {
             autoplay: false,
             volume: 0.5
         });
+        this.applyAudioPolicy();
     }
 
     loadMarsMusic() {
@@ -282,6 +388,7 @@ class AudioManager {
             autoplay: false,
             volume: 0.5
         });
+        this.applyAudioPolicy();
     }
 
     loadJupiterMusic() {
@@ -292,6 +399,7 @@ class AudioManager {
             autoplay: false,
             volume: 0.5
         });
+        this.applyAudioPolicy();
     }
 
     loadTitanMusic() {
@@ -302,6 +410,7 @@ class AudioManager {
             autoplay: false,
             volume: 0.5
         });
+        this.applyAudioPolicy();
     }
 
     isPlaying(sound) {
@@ -309,9 +418,22 @@ class AudioManager {
     }
 
     playBackgroundMusic() {
-        if (!this.musicEnabled) return;
+        if (!this.musicEnabled || this._audioSuspended) return;
 
         const currentLevel = window.game?.currentLevel || 'earth';
+
+        if (window.DogeMinerSeasonal?.active(window.game) === 'xmas') {
+            const path = '../assets/SoundsSrc/musiclevelxmas/level' + (['earth','moon','mars','jupiter','titan'].indexOf(currentLevel)+1) + '/music.mp3';
+            if (this._holidayMusicPath === path && this.isPlaying(this.holidayLoop)) return;
+            this.stopMusic();
+            if (this._holidayMusicPath !== path) {
+                this.holidayLoop?.unload?.();
+                this.holidayLoop = new Howl({src:[path],loop:true,autoplay:false,volume:this.musicVolume??0.5});
+                this._holidayMusicPath = path;
+            }
+            this.currentMusicPlanet = currentLevel;
+            this.applyAudioPolicy();this.holidayLoop?.play();return;
+        }
 
         if (this.currentMusicPlanet === currentLevel) {
             if (currentLevel === 'moon' && this.isPlaying(this.moonLoop)) {
@@ -365,6 +487,7 @@ class AudioManager {
     }
 
     stopMusic() {
+        this.holidayLoop?.stop?.();
         if (this.introSound) {
             this.introSound.stop();
         }
@@ -388,6 +511,8 @@ class AudioManager {
 
     setMusicVolume(volume) {
         const clampedVolume = Math.max(0, Math.min(1, volume));
+        this.musicVolume = clampedVolume;
+        this.holidayLoop?.volume?.(clampedVolume);
         if (this.introSound) {
             this.introSound.volume(clampedVolume);
         }
@@ -415,7 +540,7 @@ class AudioManager {
 
     // Play a sound effect
     playSound(soundName, options = {}) {
-        if (!this.soundEnabled) return;
+        if (!this.soundEnabled || this._audioSuspended || this.isBackgroundMuted() || (this.rockSoundsEnabled === false && this.isMiningSound(soundName))) return;
 
         const sound = this.soundEffects[soundName];
         if (sound) {
@@ -429,7 +554,21 @@ class AudioManager {
         }
     }
 
+    // Stop a specific sound effect
+    stopSound(soundName) {
+        const sound = this.soundEffects[soundName];
+        if (sound) {
+            if (Array.isArray(sound)) {
+                sound.forEach(s => s && typeof s.stop === 'function' && s.stop());
+            } else if (typeof sound.stop === 'function') {
+                sound.stop();
+            }
+        }
+    }
+
     suspendAllAudio() {
+        if (this._audioSuspended) return;
+        this._audioSuspended = true;
         this._wasMusicEnabled = this.musicEnabled;
         this._wasSoundEnabled = this.soundEnabled;
         this.stopMusic();
@@ -439,6 +578,7 @@ class AudioManager {
     }
 
     resumeAudio() {
+        this._audioSuspended = false;
         if (typeof this._wasMusicEnabled === 'boolean') {
             this.musicEnabled = this._wasMusicEnabled;
         }
@@ -447,6 +587,7 @@ class AudioManager {
         }
         delete this._wasMusicEnabled;
         delete this._wasSoundEnabled;
+        this.applyAudioPolicy();
         if (this.musicEnabled) {
             this.playBackgroundMusic();
         }

@@ -1,0 +1,607 @@
+{
+  "schema": 1,
+  "version": "Beta v0.1",
+  "baseline": {
+    "ref": "Alpha",
+    "commit": "557693f5b85c026d8b5c69c6ad9c4ca3d163f570",
+    "label": "v0.055 (ALPHA)"
+  },
+  "build": "beta-v0.1",
+  "posts": [
+    {
+      "title": "Beta v0.1 — Mining, rewards and balance",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [],
+          "text": "A HUGE mining and item balance pass! Pickaxes, Fortunes, helpers, rarity and critical hits now follow Dogeminer 2 progression much more closely."
+        },
+        {
+          "ids": [],
+          "text": "Removed the old per-hit damage cap, so strong pickaxes can actually hit hard! Rock health scales with your planet and mining progress, and hits still stop at the rock's remaining health."
+        },
+        {
+          "ids": [
+            "M19"
+          ],
+          "text": "Record critical hits now get their own recoil and hit text. Your best critical hit is saved too!"
+        },
+        {
+          "ids": [
+            "M20",
+            "M21",
+            "M22",
+            "S07"
+          ],
+          "text": "BONUS COINS! Different planets and progression milestones unlock stronger boosts. Collect one to scoop up nearby coins and enjoy the extra mining power."
+        },
+        {
+          "ids": [
+            "U23"
+          ],
+          "text": "Added a Bonus Coin display showing your active boost and how long you have left. No more guessing when the bonus ends!"
+        },
+        {
+          "ids": [
+            "S26"
+          ],
+          "text": "DOGEDIAMONDS! Find them in rocks, keep them between timelines, and spend one to unlock the third SearchDoge upgrade slot. Your first find gets its own introduction."
+        },
+        {
+          "ids": [
+            "M01",
+            "S25"
+          ],
+          "text": "Your helpers can now earn coins while you are away! Return after more than five minutes to collect 30% of your permanent DPS, for up to 24 hours."
+        },
+        {
+          "ids": [],
+          "text": "Dogebags now use the correct planet and quality pools, with Luck and Loot Find doing their jobs. Pickaxe drops also account for your current timeline and recent finds."
+        },
+        {
+          "ids": [
+            "M28"
+          ],
+          "text": "Fixed the missing Mystery Box Fortunes, repeat rewards, remembered prize types and opening cooldowns. Its normal/double-reward cycle now works properly too."
+        },
+        {
+          "ids": [
+            "S24"
+          ],
+          "text": "The Mystery Box can EVOLVE once you reach the right milestone! The introduction and your progress are saved."
+        },
+        {
+          "ids": [
+            "M14"
+          ],
+          "text": "Corrected the Doge Gate price and made sure rocket cost reductions apply properly."
+        },
+        {
+          "ids": [
+            "M32"
+          ],
+          "text": "Added BUY MAX! Hold a helper's buy button to reveal the bulk purchase option, complete with the total price."
+        },
+        {
+          "ids": [
+            "U25"
+          ],
+          "text": "Coins and income counters now update smoothly. Coins still flying into the counter are counted when they arrive."
+        },
+        {
+          "ids": [],
+          "text": "Bare Paw still deals exactly 1 damage. SunDoge staffs keep their passive DPS role and do not gain direct click damage."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Stories, discoveries and late progression",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [
+            "S01"
+          ],
+          "text": "STORIES! Story progress is now saved, including messages waiting to appear. Reloading will not hand out the same story reward twice."
+        },
+        {
+          "ids": [
+            "S02"
+          ],
+          "text": "Added the first Earth goal and introduction to reaching the Moon."
+        },
+        {
+          "ids": [
+            "S03",
+            "S04",
+            "S05",
+            "S06"
+          ],
+          "text": "Added the return stories and arrival sequences for timeline 2, 3, 4 and later timelines. There is more to coming home than just another rock :)"
+        },
+        {
+          "ids": [
+            "S08",
+            "S09",
+            "S10"
+          ],
+          "text": "Added the Moon arrival story, treasure map and discovery of the route to Mars."
+        },
+        {
+          "ids": [
+            "S11",
+            "S12",
+            "S13"
+          ],
+          "text": "Added the Mars arrival story, crude drawing and discoveries leading toward Jupiter."
+        },
+        {
+          "ids": [
+            "U17"
+          ],
+          "text": "Fixed planet tabs treating a destination you have heard about as somewhere you can already visit. Discovering a world and unlocking its route are now separate."
+        },
+        {
+          "ids": [
+            "M07",
+            "S14"
+          ],
+          "text": "Added the Time Machine Rig invention milestone before Jupiter."
+        },
+        {
+          "ids": [
+            "S15",
+            "S16"
+          ],
+          "text": "Added the first D.I.A. contact and Jupiter arrival stories."
+        },
+        {
+          "ids": [
+            "S18",
+            "S19"
+          ],
+          "text": "Added Titan's sensor discovery, DogeStar route and both progression stories."
+        },
+        {
+          "ids": [
+            "M04",
+            "M05",
+            "M15",
+            "S20"
+          ],
+          "text": "The Altar of the SunDoge now has its full awakening and Robo-Yoga progression, including the matching helper upgrades and Dogediamond payment options."
+        },
+        {
+          "ids": [
+            "M06",
+            "S21",
+            "S22"
+          ],
+          "text": "Added Titan blueprints, their discovery and collection, the next Altar stage and the Reallyhardium upgrade wave. These milestones survive reloads."
+        },
+        {
+          "ids": [
+            "M13",
+            "S17"
+          ],
+          "text": "DJ Kittenz can finally release a hit song and earn royalty income! The reward is saved and cannot be claimed again by reloading."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — D.I.A. missions, prestige and history",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [],
+          "text": "TIME TRAVEL IS HERE! The D.I.A. has an assignment for you. Meet Burt, choose your badge, complete the mission and begin your next timeline!"
+        },
+        {
+          "ids": [],
+          "text": "The full mission supports smaller screens and controllers, including both choices and every reward. Holding a button will not accidentally accept the next prompt or claim a reward twice."
+        },
+        {
+          "ids": [
+            "M08",
+            "M09"
+          ],
+          "text": "Earn Dogediamonds from the coins and pickaxes you bring to the end of a timeline. The payout preview stays consistent throughout the mission."
+        },
+        {
+          "ids": [
+            "M10"
+          ],
+          "text": "Your D.I.A. badge grows stronger with completed timelines, using the correct reward calculation."
+        },
+        {
+          "ids": [
+            "M11"
+          ],
+          "text": "Added timeline history! Statistics now show completed runs, earnings, mining time and mission choices alongside your current timeline."
+        },
+        {
+          "ids": [
+            "M12"
+          ],
+          "text": "Protected Fortunes now stack without losing their earned stats. Seasonal Fortunes, badges and other protected rewards stay with you through time travel."
+        },
+        {
+          "ids": [],
+          "text": "Added Super Fortunes that combine eligible bonuses between timelines. Already-earned Super Fortune stats and protected items are kept intact."
+        },
+        {
+          "ids": [],
+          "text": "Fixed old helpers, timers and temporary effects hanging around after time travel."
+        },
+        {
+          "ids": [],
+          "text": "First-timeline Statistics stay compact. Once you have a history to show, completed timelines scroll inside their own panel."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Field loot, visitors and tools",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [
+            "U06"
+          ],
+          "text": "Capped Dogebags now show the full reward breakdown! Opening a 99-stack pays ALL 99 rewards; coin rewards are counted separately so a shorter item list no longer makes the payout look incomplete."
+        },
+        {
+          "ids": [],
+          "text": "Dogebags remember their original planet, quality and saved count. Full stacks have clearer feedback, and earned rewards are saved before the opening animation."
+        },
+        {
+          "ids": [
+            "M26"
+          ],
+          "text": "Collecting a Dogebag now gathers loose Dogecoins from the mine in the same claim."
+        },
+        {
+          "ids": [
+            "M27"
+          ],
+          "text": "Unclaimed Dogediamonds form proper layered stacks on the field, with their counts saved between visits."
+        },
+        {
+          "ids": [
+            "M33"
+          ],
+          "text": "Loose coins warn you before fading away. Collected piles and effects from old planets clean up properly."
+        },
+        {
+          "ids": [
+            "M24",
+            "M25"
+          ],
+          "text": "Nearby helpers can pick up coins, and the right helpers will seek out available piles!"
+        },
+        {
+          "ids": [
+            "M23"
+          ],
+          "text": "Added Auto-Pickup Loot after your first time travel. It can collect new drops and equip new pickaxes for you, while existing stashes remain available to open yourself."
+        },
+        {
+          "ids": [
+            "M29"
+          ],
+          "text": "The next rock waits when a full loot pile is blocking drops, then resumes when you make room."
+        },
+        {
+          "ids": [
+            "U22"
+          ],
+          "text": "Polished how bags, coins and diamonds arrive, stack, hover and fly into their counters. Kept the crisp outlines!"
+        },
+        {
+          "ids": [
+            "E01",
+            "S23"
+          ],
+          "text": "Cate Thieves can visit your mine! Catch one to free a named Streamer Kitten and unlock its story."
+        },
+        {
+          "ids": [
+            "E02",
+            "E03"
+          ],
+          "text": "RICK IS BACK! Fixed duplicate Ricks, his held pickaxe alignment and pieces being left behind when he leaves. His helper buff now expires properly even when you click out of the game."
+        },
+        {
+          "ids": [
+            "M16"
+          ],
+          "text": "Added dual wielding for compatible duplicate pickaxes, including the second hand and matching attack behavior."
+        },
+        {
+          "ids": [
+            "M17"
+          ],
+          "text": "Added SunDoge staff fusion, with saved progress and the correct passive DPS behavior."
+        },
+        {
+          "ids": [
+            "M18"
+          ],
+          "text": "Drills now support hold-to-mine, their own movement and proper release/cancel handling."
+        },
+        {
+          "ids": [
+            "U12",
+            "E08"
+          ],
+          "text": "Restored the matching movement, layering and sounds for pickaxes, drills, critical hits and helper actions."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Inventory, shop and presentation",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [
+            "M02",
+            "M03"
+          ],
+          "text": "SearchDoge now discovers and saves upgrade offers as you play. The Upgrade badge counts actual found offers in your unlocked slots."
+        },
+        {
+          "ids": [
+            "U07",
+            "U08"
+          ],
+          "text": "Polished upgrade cards, hover feedback and purchase fades. Helpers now show APPLYING and DONE while their equipment changes."
+        },
+        {
+          "ids": [
+            "U24"
+          ],
+          "text": "Helper cards now show their boosted DPS. Hover or tap for a breakdown of where the extra income comes from."
+        },
+        {
+          "ids": [
+            "U02"
+          ],
+          "text": "New-item badges stay unread until you review the inventory, instead of disappearing just because the UI updated."
+        },
+        {
+          "ids": [
+            "U03",
+            "U04",
+            "U05"
+          ],
+          "text": "Inventory details now include all aggregate stats, consistent attribute colors and explanations that match what the stats actually do."
+        },
+        {
+          "ids": [],
+          "text": "Kept the CE inventory grid, search, filters and sorting, with clearer item details, equipped states, DPC comparisons and controller/touch navigation."
+        },
+        {
+          "ids": [
+            "U01"
+          ],
+          "text": "Added the missing NewsDoge reports, with the matching stories, sizes and movement."
+        },
+        {
+          "ids": [
+            "U09",
+            "U10"
+          ],
+          "text": "Polished button presses, close controls and event notices so their feedback feels consistent."
+        },
+        {
+          "ids": [
+            "U13",
+            "U14",
+            "U15"
+          ],
+          "text": "Helpers and Doge have more of their mining phrases, conversations, held/drop chatter and matching animations. Hover names and outlines fade properly too."
+        },
+        {
+          "ids": [
+            "U26"
+          ],
+          "text": "Moon and Super Shibes now have personal names. Grouped helpers keep their members' names and information."
+        },
+        {
+          "ids": [
+            "U16"
+          ],
+          "text": "Added the Moon launch introduction, playback controls, replay/skip behavior and input guards."
+        },
+        {
+          "ids": [
+            "U18"
+          ],
+          "text": "Restored planet background variety and smoother transitions. An image finishing late will no longer put the wrong planet behind your mine."
+        },
+        {
+          "ids": [],
+          "text": "Cleaned up counters, timeline labels, the planet/population footer, upgrade badges, tooltips and short-screen panels."
+        },
+        {
+          "ids": [],
+          "text": "Fixed broken item images, old fallback paths and encoded Fortune names, including Fortune of Günther and Fortune of the Đ. Repaired damaged PNG color-profile checksums without changing the artwork. Pandie is in the Mining Shibe name pool too!"
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Saves, import and recovery",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [],
+          "text": "Existing Alpha saves get a balance update with a searchable before/after report. An independent copy of the original save is kept for recovery."
+        },
+        {
+          "ids": [],
+          "text": "The save update preserves your coins, diamonds, helpers, equipped item, earned item rolls, Super Fortunes, badges and protected/custom items."
+        },
+        {
+          "ids": [],
+          "text": "Fixed older saves getting stuck with an absurdly difficult rock. A one-time adjustment brings its health back in reach while keeping your mining progress."
+        },
+        {
+          "ids": [
+            "M30"
+          ],
+          "text": "Cloud saves now compare completed timelines and lifetime earned progress before replacing anything. Active rewards wait to finish, newer progress wins, and cloud writes keep supporter perks intact."
+        },
+        {
+          "ids": [
+            "M31"
+          ],
+          "text": "Convert your Dogeminer 2 save to CE! Import CE JSON, Base64 or UTF16 .doge files, review the progress first, and keep backups of both the original and the CE save being replaced."
+        },
+        {
+          "ids": [],
+          "text": "DM2 conversion keeps item rolls, protected rewards, equipment, helpers, names, positions, worlds, clues, stashes, Mystery Box progress and available timeline history. Johnny progress maps to the CE Altar."
+        },
+        {
+          "ids": [
+            "U21"
+          ],
+          "text": "The home page now offers Continue when it finds a supported save or backup. You can also review and import a save before entering the game."
+        },
+        {
+          "ids": [],
+          "text": "Fixed landing-page imports being applied again after reload. Failed imports keep the original data available for recovery."
+        },
+        {
+          "ids": [],
+          "text": "Coin, diamond, bag, offline, story and mission rewards now save before their animations. Reloading or closing a reward early cannot pay it twice."
+        },
+        {
+          "ids": [],
+          "text": "Damaged or unsupported saves are rejected before replacing progress. If storage fails during a write, the previous save and backup are restored together. Incomplete item downloads now stop startup before your existing save is touched."
+        },
+        {
+          "ids": [],
+          "text": "Changing planets now cancels helper placement safely. Saved rock regeneration, helper groups and pending rewards restore consistently."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Holidays and the Easter hunt",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [
+            "E04"
+          ],
+          "text": "HOLIDAY EVENTS! Easter runs March 31–April 8, Halloween October 24–31, and Christmas December 15–31, using your local calendar."
+        },
+        {
+          "ids": [],
+          "text": "Added holiday backgrounds, head accessories, Santa expressions, rock and footer decorations, counters and Christmas music. Existing audio settings still apply."
+        },
+        {
+          "ids": [
+            "E05"
+          ],
+          "text": "Added 10 seasonal pickaxe types and 21 protected Fortune types to the matching event drops and Mystery Box pools. Anything you earn stays usable after the event ends!"
+        },
+        {
+          "ids": [
+            "E06"
+          ],
+          "text": "The Easter egg hunt is here! Find nine hidden eggs across the five worlds, Settings, both inventories and Upgrades. The original egg icons track your finds, and completing the hunt unlocks the golden-egg story and reward."
+        },
+        {
+          "ids": [],
+          "text": "Each Easter egg adds to the event income bonus. All nine give ×1.09; the golden reward doubles that to ×2.18. Fixed the count and completed golden-egg display."
+        },
+        {
+          "ids": [
+            "E07"
+          ],
+          "text": "Holiday Spirit on equipped pickaxes and Fortunes now adds its event DPS bonus away from Earth. The bonus turns off outside the matching event."
+        },
+        {
+          "ids": [
+            "Q09"
+          ],
+          "text": "Added saved Holiday Events and Auto-Pickup Loot settings after time travel. Turning events off keeps your items and egg progress, and imported event preferences carry across."
+        }
+      ]
+    },
+    {
+      "title": "Beta v0.1 — Controls, audio, mobile and updates",
+      "date": "2026-10-18",
+      "changes": [
+        {
+          "ids": [
+            "Q01",
+            "Q02"
+          ],
+          "text": "Hint, Story Popups and NewsDoge preferences now save separately and control their own messages. Turning stories off does not discard earned story rewards."
+        },
+        {
+          "ids": [
+            "Q03"
+          ],
+          "text": "Added Mute Rock Sounds, so you can quiet the mining without turning off every sound effect."
+        },
+        {
+          "ids": [
+            "Q04"
+          ],
+          "text": "Background Audio now controls sound while the game is hidden or unfocused, alongside the existing music and effects settings."
+        },
+        {
+          "ids": [
+            "Q05",
+            "Q06"
+          ],
+          "text": "Added Less Effects and an optional 48 FPS cap for players who want a quieter or lighter game."
+        },
+        {
+          "ids": [
+            "Q07"
+          ],
+          "text": "Choose Automatic, Desktop, Tablet or Phone layout! Fixed profiles fit the display and include a way back to Automatic. Settings dropdowns line up, Supporter stays visible on desktop after travel, and controller focus follows layout changes."
+        },
+        {
+          "ids": [
+            "Q10"
+          ],
+          "text": "Fixed mobile swipes being mistaken for mining, equipping or helper input. Inventories browse horizontally while content can still scroll vertically; extra fingers, lost touches and rotation cancel unfinished gestures."
+        },
+        {
+          "ids": [
+            "E09"
+          ],
+          "text": "Kept the DOGE keyboard secret and its optional link to the original game. Wide-layout keyboard tricks are reserved for the native versions."
+        },
+        {
+          "ids": [
+            "U19"
+          ],
+          "text": "NEW PATCH NOTES now has a clearer click target and dot. After reading, the button returns to just the version number, without an underline. Update notices still save before reloading."
+        },
+        {
+          "ids": [],
+          "text": "The Beta notes now cover the changes since Alpha v0.055. Your existing saves are updated for Beta instead of asking you to start over. Windows packages use a separate increasing version so Beta is recognized as an update to Alpha."
+        },
+        {
+          "ids": [],
+          "text": "Another Mobile & Controller polish pass! Larger Phone targets, tidier dropdowns and narrow tabs, Supporter access, more landscape drawer space, and dialogs that properly take input from the panel behind them. Phone settings now include helper placement and controller options; mobile sign-out updates immediately, and Xbox-only controls stay hidden."
+        },
+        {
+          "ids": [],
+          "text": "Controller navigation now reaches both upgrade currencies and the third SearchDoge slot, follows Phone shop cards, opens a closed drawer and skips worlds whose routes are still locked."
+        }
+      ]
+    }
+  ],
+  "sources": [
+    "DEVELOPMENT_CHANGES_LOG.md",
+    "docs/dm2-parity/remaining-parity-backlog.json",
+    "docs/dm2-parity/beta-balance-migration.md",
+    "Alpha..HEAD + current working tree"
+  ],
+  "status": "release"
+}

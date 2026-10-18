@@ -83,10 +83,21 @@ skills-lock.json
 .trae
 .agents
 
+DEVELOPMENT_CHANGES_LOG.md
 # Windows / Store Packaging
 dist_msix/
 *.msix
 packaging/windows/*.pfx
 packaging/windows/Assets/*.png
 Bundling DogeminerCE For Microsoft Store.md
-Bunding DogeminerCE For Microsoft Store
+Bunding DogeminerCE For Microsoft Store
+
+# Local UI/video reference renders and isolated test harnesses
+scratch/ce-ui-reference/
+
+# Local agent history, audit snapshots and renders are not release files
+/scratch/
+/.claude/
+/SESSION_HANDOFF.md
+/functions/.env*
+/functions/.secret*

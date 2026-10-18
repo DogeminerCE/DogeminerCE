@@ -3,17 +3,16 @@
 
 $ErrorActionPreference = "Stop"
 
-# 1. Parse Version from play/index.html
-$indexContent = Get-Content -Path "play/index.html" -Raw
-if ($indexContent -match "v(\d+\.\d+(\.\d+)?)") {
-    $rawVersion = $Matches[1]
-    # MSIX requires 4 parts, e.g. 0.55.0.0
-    # Also, it DISALLOWS leading zeros (e.g., 055 must be 55)
-    $parts = $rawVersion.Split('.') | ForEach-Object { [int]$_ }
-    while ($parts.Count -lt 4) { $parts += 0 }
-    $version = $parts -join "."
-} else {
-    $version = "1.0.0.0" # Fallback
+# 1. Use the explicit Windows package version, independently of the game label.
+# Parsing Beta v0.1 from HTML would downgrade the previous 0.55.0.0 package.
+[xml]$packageManifest = Get-Content -Path "packaging/windows/AppxManifest.xml" -Raw
+$version = [string]$packageManifest.Package.Identity.Version
+if ($version -notmatch '^(0|[1-9]\d{0,4})\.(0|[1-9]\d{0,4})\.(0|[1-9]\d{0,4})\.(0|[1-9]\d{0,4})$') {
+    throw "AppxManifest Identity Version must contain four numeric fields without leading zeros."
+}
+$parts = $version.Split('.') | ForEach-Object { [int]$_ }
+if ($parts[0] -lt 1 -or ($parts | Where-Object { $_ -gt 65535 }) -or $parts[3] -ne 0) {
+    throw "Store package version requires a positive major, fields up to 65535, and a zero revision."
 }
 
 Write-Host "Building DogeminerCE MSIX v$version..."
@@ -46,10 +45,8 @@ Copy-Item -Path "packaging\windows\Assets\*" -Destination "$stagingDir\StoreAsse
 $manifestPath = "$stagingDir\AppxManifest.xml"
 Copy-Item -Path "packaging\windows\AppxManifest.xml" -Destination $manifestPath
 
-# 5. Injection: Update Version in Identity tag only
+# 5. Ensure the manifest is UTF8 without BOM; its version is already authoritative.
 $manifestContent = Get-Content -Path $manifestPath -Raw
-# Target the Identity tag's version specifically
-$manifestContent = $manifestContent -replace '(?i)(<Identity\s+[^>]*?Version=")([^"]*)(")', "`${1}$version`${3}"
 # MSIX requires UTF8 WITHOUT BOM. Set-Content adds BOM.
 [IO.File]::WriteAllText($manifestPath, $manifestContent, (New-Object System.Text.UTF8Encoding($false)))
 

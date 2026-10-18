@@ -1,0 +1,16 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const listeners={},classes=new Set(),nodes=new Map();let now=0,applies=0,opens=0;
+function node(tag){return {tag,children:[],append(...children){this.children.push(...children);for(const c of children)if(c.id)nodes.set(c.id,c);},setAttribute(k,v){this[k]=v;},addEventListener(){},remove(){nodes.delete(this.id);}};}
+const body=node('body');body.classList={add:c=>classes.add(c),remove:c=>classes.delete(c)};
+const ctx={console,Date:{now:()=>now},document:{body,getElementById:id=>nodes.get(id),createElement:node,createTextNode:text=>({text}),addEventListener:(type,fn)=>listeners[type]=fn},addEventListener(){},open(){opens++;}};ctx.window=ctx;vm.createContext(ctx);vm.runInContext(fs.readFileSync('play/js/layout.js','utf8'),ctx);const layout=ctx.DogeMinerLayout;
+assert.equal(layout.normalize(null).mode,'auto');for(const mode of layout.modes)assert.equal(layout.normalize({version:1,mode}).mode,mode);
+assert.equal(layout.normalize(null,{sourceSettings:{layout:'tablet'}}).mode,'tablet');for(const bad of [{version:2,mode:'phone'},{version:1,mode:'bad'}])assert.throws(()=>layout.normalize(bad));
+assert.equal(layout.adaptMedia('(max-width:768px) and (prefers-reduced-motion:reduce)',1024),'(min-width:100000px) and (prefers-reduced-motion:reduce)');assert.equal(layout.adaptMedia('(min-width:769px) and (max-width:1200px)',1024),'(min-width:0px) and (min-width:0px)');assert.equal(layout.adaptMedia('(orientation:landscape) and (max-height:450px)',1024),'(orientation:landscape) and (max-height:450px)');
+ctx.DogeMinerLayout={apply(){applies++;}};ctx.DogeMinerGame=function(){};ctx.DogeMinerGame.prototype.advanceTimelineProgress=function(ms){this.timelineProgress.current.playTimeMs+=ms;};
+vm.runInContext(fs.readFileSync('play/js/secret-codes.js','utf8'),ctx);const api=ctx.DogeMinerSecrets,g={_bootComplete:true,currentLevel:'earth',isPlaying:true,timelineProgress:{current:{playTimeMs:0}},showNotification(){}};ctx.game=g;
+assert.equal(api.sequence(['KeyI','KeyD','KeyD','KeyQ','KeyD']),null);assert.equal(api.sequence(['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA']),null);assert.equal(api.sequence(['KeyD','KeyO','KeyG','KeyE']),'doge');
+function type(text,extra={}){let result;for(const key of text)result=api.handle({key,code:'Key'+key.toUpperCase(),...extra},g);return result;}
+for(const extra of [{repeat:true},{ctrlKey:true},{metaKey:true},{isComposing:true},{target:{closest:()=>({})}}]){api.reset(g);assert.equal(type('doge',extra),null);assert.equal(nodes.has('secret-doge-message'),false);}
+assert.equal(type('iddqd'),null);assert.equal(classes.has('ce-secret-wide'),false);assert.equal(type('doge'),'doge');assert.equal(opens,0);const message=nodes.get('secret-doge-message');assert.ok(message);assert.equal(message.children.find(n=>n.tag==='a').href,'https://dogeminer.se');
+g._secretWide=true;classes.add('ce-secret-wide');api.reset(g);assert.equal(g._secretWide,undefined);assert.equal(classes.has('ce-secret-wide'),false);assert.equal(api.tick,undefined);assert.equal(applies,0);
+console.log('PASS: saved layout/import validation, media adaptation, removed IDDQD/Konami layout effects, guarded DOGE and voluntary original-site link.');

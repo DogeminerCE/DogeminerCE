@@ -1,0 +1,11 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');const rows=[],removed=[],storage=new Map(),listeners=new Set();
+const media={matches:false,addEventListener:(_k,fn)=>listeners.add(fn),removeEventListener:(_k,fn)=>listeners.delete(fn)};
+const manager={showEvent(data){rows.push(data);return data;},removeNotification(node,reason){removed.push(reason);node.onEnd(reason);}};
+const context={window:{matchMedia:q=>{assert.equal(q,'(prefers-reduced-motion: reduce)');return media;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}};
+vm.createContext(context);vm.runInContext(fs.readFileSync('play/js/motion-notice.js','utf8'),context);const api=context.window.DogeMinerMotionNotice;
+api.start({},manager);assert.equal(rows.length,0);media.matches=true;for(const fn of listeners)fn();assert.equal(rows.length,1);assert.equal(rows[0].system,true);assert.equal(rows[0].silent,true);assert.equal(rows[0].stay,true);assert.match(rows[0].details,/accessibility settings/);
+rows[0].onEnd('close');api.start({},manager);assert.equal(rows.length,1,'Acknowledgment survives reload/start in this tab');assert.equal(media.matches,true,'Preference is never overwritten');
+media.matches=false;for(const fn of listeners)fn();assert.equal(storage.size,0);media.matches=true;for(const fn of listeners)fn();assert.equal(rows.length,2,'New preference-on cycle warns again');api.start({},manager);assert.equal(listeners.size,1,'One live preference observer');
+const count=storage.size;api.preview(manager).onEnd('activate');assert.equal(storage.size,count,'Private preview does not save a dismissal');
+const normal=storage.get('dogeminer-ce-motion-notice-dismissed');context.window.CEParityTesting={active:true};rows.at(-2).onEnd('close');assert.equal(storage.get('dogeminer-ce-motion-notice-dismissed'),normal);assert.equal(storage.get('ce-parity-motion-notice-dismissed'),'1');
+console.log('PASS: preference detection/change/off/reset, persistent accessible notice, silent/system visibility, once-per-tab acknowledgment, singleton listener and preview isolation.');

@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+let now=0,stored=null,next=0;const intervals=new Map(),selects={};
+const context={window:{},console,performance:{now:()=>now},localStorage:{getItem:()=>stored,setItem:(_,v)=>stored=String(v)},document:{getElementById:id=>selects[id]},setInterval:(fn,ms)=>{intervals.set(++next,{fn,ms});return next;},clearInterval:id=>intervals.delete(id)};
+vm.createContext(context);vm.runInContext(fs.readFileSync('play/js/game.js','utf8'),context);const Game=vm.runInContext('DogeMinerGame',context);
+const g=Object.assign(Object.create(Game.prototype),{isPlaying:true,dps:1234.5,dogecoins:100,totalMined:100,pendingCoinDisplayAmount:7,updateUI(){this.ui=(this.ui||0)+1;},updateDogecoinCounter(){this.paints=(this.paints||0)+1;this.visible=this.getVisibleDogecoinBalance();}});
+assert.equal(g.getValueUpdateRate(),20);for(const n of [0,20,100,1000,5000]){stored=String(n);assert.equal(g.getValueUpdateRate(),n);}for(const n of ['', 'broken','-1','Infinity','22']){stored=n;assert.equal(g.getValueUpdateRate(),n===''?0:20);}
+// Execute the shipped DM2 loop as an independent elapsed-time oracle.
+let sourceNow=0;const source={Date:{now:()=>sourceNow},dogeminer:{player:{coins:100,alltimecoins:100,limitfps:false}},$K:()=>g.dps,wQ(){},I$(){},clearTimeout(){},setTimeout(){}};
+vm.createContext(source);vm.runInContext('var iQ=false,EJ=0,tQ;'+fs.readFileSync('tests/reference/play-B7Micxas.pretty.js','utf8').match(/function sQ\(\) \{[\s\S]*?\n\}/)[0],source);
+g.dpsUpdateRate=20;g.setupDpsInterval();assert.equal(intervals.size,1);assert.equal([...intervals.values()][0].ms,20);
+for(const delta of [20,20,21,19,120,800,200,2000]){now+=delta;sourceNow=now;source.sQ();[...intervals.values()][0].fn();assert.equal(g.dogecoins,source.dogeminer.player.coins);assert.equal(g.totalMined,source.dogeminer.player.alltimecoins);assert.equal(g.getVisibleDogecoinBalance(),g.dogecoins-7);}
+assert.ok(g.ui<=3,'No full UI scans on every20ms tick');assert.ok(g.paints<=6,'Source50ms paint throttle');
+const before=g.dogecoins;g.isPlaying=false;now+=100000;[...intervals.values()][0].fn();assert.equal(g.dogecoins,before);g.isPlaying=true;now+=20;[...intervals.values()][0].fn();assert.equal(g.dogecoins,before+g.dps*.02,'Paused income is discarded');
+now+=500000;g.resetPassiveIncomeClock();now+=20;const imported=g.dogecoins;[...intervals.values()][0].fn();assert.equal(g.dogecoins,imported+g.dps*.02,'Import/reset cannot replay old elapsed time');
+selects['value-update-rate']={};selects['mobile-value-update-rate']={};for(const rate of [1000,5000,100,20]){g.setValueUpdateRate(rate);assert.equal(intervals.size,1);assert.equal([...intervals.values()][0].ms,rate);assert.equal(stored,String(rate));assert.equal(selects['mobile-value-update-rate'].value,String(rate));}assert.equal(g.setValueUpdateRate(69),false);g.setValueUpdateRate(0);assert.equal(intervals.size,0);
+g.resetPassiveIncomeClock();now+=16;const instant=g.dogecoins;g.creditPassiveIncome(16,now,true);assert.equal(g.dogecoins,instant+g.dps*.016);assert.equal(g.visible,g.dogecoins-7);
+g.limitFps=true;g.setValueUpdateRate(20);assert.equal([...intervals.values()][0].ms,72,'Source FPS-limited smooth loop');assert.equal(stored,'20','Do not rewrite the saved CE rate');g.setValueUpdateRate(1000);assert.equal([...intervals.values()][0].ms,1000,'Explicit CE rate remains authoritative');g.limitFps=false;g.setValueUpdateRate(20);assert.equal([...intervals.values()][0].ms,20);
+console.log('PASS:20ms source elapsed-time oracle, saved rates,50ms paints, bounded full UI work, pause/reset, one timer, Instant mode and arrival ledger.');

@@ -1,0 +1,7 @@
+# Checkpoint 66 — Controller shop and travel
+
+Use [checkpoint 68](http://localhost:8011/play/?parityTest=checkpoint-68), open **Test tools**, select **Controller shop, upgrades & travel**, and press **Show feature**. The four-choice compact panel is retained; [all changes](http://localhost:8011/play/?parityTest=checkpoint-68&allChanges=1) includes historical previews and every seasonal scene.
+
+D-pad entry opens a closed Phone drawer. Phone shop cards follow their horizontal order; desktop shop navigation derives the displayed column count. Upgrade focus follows native action buttons, including both payment currencies, the third SearchDoge slot and the Pickaxe Tree launcher. A invokes the normal purchase handler, retaining its stale-offer and save guards. Left at the beginning or B returns to mining. Travel consults the actual discovery ledger, skips locked worlds and stops during waiting routes/transitions. It avoids switching to the current planet when no other destination is available.
+
+Thirteen browser cases cover both currencies at three layouts, the actual third-slot unlock, tree purchase/modal isolation, horizontal shop paging and real discovery-ledger travel gates. See `scratch/checkpoint-66-qa/browser-results.json`; the shared script is `scratch/checkpoint-68-qa/browser-check.cjs`. Native controller cursor and nested-dialog regression checks pass. Physical controller feel remains V01 in the existing verification queue.

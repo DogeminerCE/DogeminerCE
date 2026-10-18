@@ -1,0 +1,14 @@
+**:controller: Another BIG Controller & Mobile pass!**
+Polished D.I.A. dialogue, badges, warnings, choices, rewards, and inventory controls. Holding a button should no longer accidentally accept the next prompt!
+Controller navigation reaches both upgrade currencies and the third SearchDoge slot, follows Phone shop cards, opens the drawer, and skips locked travel routes.
+
+Choose Automatic, Desktop, Tablet, or Phone layout! Phone controls have larger targets, cleaner tabs, and more usable landscape space. Settings dropdowns line up, dialogs properly take focus, and the desktop Supporter button stays visible after time travel.
+
+**Settings, saves & the little things**
+Added separate rock-sound muting, Background Audio, Less Effects, a 48 FPS option, and saved story/news/hint preferences.
+Polished item details, unread counters, helper names, NewsDoge, backgrounds, buttons, and event notices.
+Existing Alpha saves get a balance update with a searchable before/after report and an original-save backup. Earned protected/custom items and Super Fortune bonuses stay intact!
+Cloud restore now checks earned progress, waits for reward screens, keeps recovery data, and preserves supporter perks.
+
+**PATCH NOTES that actually behave!**
+The in-game notes cover the changes since Alpha v0.055. NEW PATCH NOTES is clearer to click, and after reading it the footer returns to just the version number, without the underline.

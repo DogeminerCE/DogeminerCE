@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alpha rock durability comparison</title>
+<style>
+body{margin:0;color:var(--foreground);font-family:var(--font-sans,system-ui);font-size:14px;line-height:1.5}
+h2{font-size:18px;font-weight:500;margin:0 0 8px}
+p{margin:6px 0;color:var(--muted-foreground)}
+label{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 8px}
+input{flex:1;min-width:120px;accent-color:var(--primary)}
+output{font-variant-numeric:tabular-nums;min-width:25px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:10px 4px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+th{font-weight:500;color:var(--muted-foreground)}
+th:first-child,td:first-child{text-align:left}
+caption{text-align:left;color:var(--muted-foreground);font-size:12px;caption-side:bottom;padding-top:8px}
+.sources{font-size:12px;margin-top:12px}
+a{color:var(--foreground);text-underline-offset:3px}
+@media(max-width:380px){th,td{padding:9px 2px;font-size:12px}}
+</style>
+</head>
+<body>
+<main id="rock-comparison">
+<h2>Alpha rock durability comparison</h2>
+<p>Fixture: 100 DPC · 1,000 planet DPS · highest owned DPC 100</p>
+<label for="rock-level">Rock number <output id="rock-value">50</output><input id="rock-level" type="range" min="1" max="50" value="50" aria-label="Rock number"></label>
+<table aria-label="DM2 versus Alpha CE rock hit points">
+<thead><tr><th>Planet</th><th>DM2 HP</th><th>Alpha HP</th><th>Alpha / DM2</th></tr></thead>
+<tbody id="rock-results" aria-live="polite"></tbody>
+<caption>Standard rock, no buffs. Rock #1 means zero previous breaks. This compares the old Alpha formula; Beta now uses the DM2 formula plus a one-time saved-rock rescue.</caption>
+</table>
+<p class="sources">Verified against <a href="https://dogeminer2.com/assets/play-B7Micxas.js" target="_blank" rel="noreferrer">DM2 2.15 source</a> and CE’s pre-migration Alpha <code>getRockHP</code>.</p>
+</main>
+<script>
+(() => {
+  const root=document.getElementById('rock-comparison');
+  const slider=root.querySelector('#rock-level'), output=root.querySelector('#rock-value'), rows=root.querySelector('#rock-results');
+  const planets=[['Earth',60,100,1.15],['Moon',3000,500,1.25],['Mars',155000,1500,1.4],['Jupiter',450000,5000,1.6],['Titan',2500000,25000,1.85]];
+  const short=n=>n>=1e15?n.toExponential(2):n>=1e12?(n/1e12).toFixed(2)+'T':n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(2)+'K':n.toLocaleString('en-US');
+  function draw(){
+    const level=Number(slider.value);output.textContent=level;
+    rows.innerHTML=planets.map(([planet,dmBase,ceBase,growth])=>{
+      const dm=Math.ceil((dmBase+Math.ceil(2.5*1000+Math.ceil(2*100)))*1.1**(level-1));
+      const ce=Math.max(Math.floor(ceBase*growth**(level-1)),Math.floor(100*6.67));
+      const ratio=ce/dm;
+      const ratioText=ratio>=1e6?ratio.toExponential(2)+'×':ratio>=1000?Math.round(ratio).toLocaleString('en-US')+'×':ratio.toFixed(ratio<.01?4:2)+'×';
+      return '<tr><td>'+planet+'</td><td title="'+dm.toLocaleString('en-US')+' HP">'+short(dm)+'</td><td title="'+ce.toLocaleString('en-US')+' HP">'+short(ce)+'</td><td>'+ratioText+'</td></tr>';
+    }).join('');
+  }
+  slider.addEventListener('input',draw);draw();
+  console.log('Rock comparison initialized: '+rows.children.length+' planets at rock '+output.textContent);
+})();
+</script>
+</body>
+</html>

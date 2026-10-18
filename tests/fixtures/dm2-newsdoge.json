@@ -1,0 +1,2981 @@
+{
+  "source": "DM2 web 2.15.0 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "reports": [
+    {
+      "id": "nws1",
+      "text": "NewsDoge reporting, I'm here at a... mining operation without shibes? Hmm, it's a bold strategy. Exciting!"
+    },
+    {
+      "id": "nws2",
+      "text": "This is NewsDoge reporting live, from what appears to be a dogecoin mining operation. I'm going to try to find a shibe for an interview..."
+    },
+    {
+      "id": "nws3",
+      "text": "This just in: local, cate-financed news stations are bashing your quest to go to the moon, calling it \"A foolish pursuit\" ...."
+    },
+    {
+      "id": "nws4",
+      "text": "Recent studies suggest that the interior of the moon is made up entirely of dogecoins. Scientists are baffled. Further research required. More at eleven!"
+    },
+    {
+      "id": "nws5",
+      "text": "More dogecoin in the news today. It was recently discovered that if you submerge yourself entirely in dogecoins, your body appears to become younger! Wow ?!"
+    },
+    {
+      "id": "nws6",
+      "text": "Rumours about a large dogecoin mining operation are spreading to many parts of the world."
+    },
+    {
+      "id": "nws7",
+      "text": "PSA: The dogecoin mining operation has alerted several governments. They are at DEFCON wow!"
+    },
+    {
+      "id": "nws9",
+      "text": "Tensions around the world are rising, as your goal of going to the moon is looming ever closer. All scientists are taking a day off in anticipation of the upcoming launch..."
+    },
+    {
+      "id": "nws10",
+      "text": "Reporting live from the moon! The recent successful moon landing & mining operation seems to have gone well. We're monitoring the situation..."
+    },
+    {
+      "id": "nws11",
+      "text": "The DIA is reporting that Cate has secretly been running its own mining operation based on kitten labor."
+    },
+    {
+      "id": "nws13",
+      "text": "There's no news to report."
+    },
+    {
+      "id": "nws14",
+      "text": "Today I am hanging out with some Moon Shibes. We will be discussing what life is like on the moon, the best moon-doge-food, and finding out how high can you really jump on the moon!"
+    },
+    {
+      "id": "nws16",
+      "text": "\"Truly breathtaking... a glimpse of the true power of dogecoins.\" - National Dogeographic, regarding your Mars mining operation."
+    },
+    {
+      "id": "nws17",
+      "text": "Due to heavy mining, Mars is becoming more habitable - contrary to popular belief! \"Much Atmosphere\" is apparently a byproduct of dogecoin mining. Scientists are once again baffled."
+    },
+    {
+      "id": "nws21",
+      "text": "Extra, extra! Mars is now habitable. Wow! The world is in awe, master miner. A Doge statue, twice the size of any other statue, is being erected in your honor."
+    },
+    {
+      "id": "nws22",
+      "text": "This is NewsDoge, reporting live... Yes that's right, Jupiter! And boy is it wow! A recent study of the clouds of Jupiter indicated hidden dogecoin treasures. Mining clouds? Hmm..."
+    },
+    {
+      "id": "nws23",
+      "text": "Breakthroughs in science & technology due to your unstoppable quest for dogecoins, has unlocked new opportunities on both The Earth and The Moon!"
+    },
+    {
+      "id": "nws25",
+      "text": "The Doge Intelligence Agency, or the DIA for short, has received strong evidence of kitten labour by Cate. A warrant for Cates arrest is in effect, be on the lookout..."
+    },
+    {
+      "id": "nws26",
+      "text": "Rumour has it Doge went back to the future to invent dogecoin in the past."
+    },
+    {
+      "id": "nws27",
+      "text": "A wise Doge once said: \"You don't have to be WOW to START, but you have to START to be WOW.\" ... motivational stuff."
+    },
+    {
+      "id": "nws28",
+      "text": "The recent creation of an enormous so called 'DogeStar' has scientists worried. The mass of this moon-sized space station has an impact on the orbit of Jupiter itself, and by extension, the entire solar system..."
+    },
+    {
+      "id": "nws29",
+      "text": "Goood moorning Titan! It's a bright and beautiful day here at the first mining base on Titan, the most valuable moon of Saturn. It was recently discovered that Titan itself is a giant alloy of mysterious golden dogecoins..."
+    }
+  ],
+  "cases": [
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 474,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 475,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 999,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 1000,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 2499,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 2500,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 4099,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 4100,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 7999,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 8000,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 19999,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 20000,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6",
+        "nws7"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 39999,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6",
+        "nws7"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 40000,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6",
+        "nws7",
+        "nws9"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 500,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 2,
+        "timeplayed": 500,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 2,
+        "timeplayed": 501,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1",
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6",
+        "nws7",
+        "nws9"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws2",
+        "nws3",
+        "nws4",
+        "nws5",
+        "nws6",
+        "nws7",
+        "nws9"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 1,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws13",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16",
+        "nws17"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws21"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1",
+        "nws22"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws22",
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 1,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 0,
+          "1:2": 0,
+          "2:7": 0,
+          "2:8": 0,
+          "2:10": 0,
+          "3:13": 0,
+          "3:14": 0,
+          "3:15": 0,
+          "3:16": 0,
+          "4:21": 0,
+          "4:22": 0,
+          "4:29": 0,
+          "4:27": 0,
+          "4:24": 0,
+          "5:35": 0
+        }
+      },
+      "eligible": [
+        "nws1"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 501,
+        "alltimecoins": 40000,
+        "locationMs": 9101,
+        "counts": {
+          "1:1": 10,
+          "1:2": 10,
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws29"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 1,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 2,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 6,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 7,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 9,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws13",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 5,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 6,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws13",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 1,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws13"
+      ]
+    },
+    {
+      "input": {
+        "level": 2,
+        "maxlevel": 2,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 2,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws10",
+        "nws11",
+        "nws13",
+        "nws14"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 4,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 5,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 5,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 6,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16",
+        "nws17"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 0,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 1,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 2,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 3,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 3,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws16",
+        "nws17"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 2,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 3,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws21"
+      ]
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 2,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 3,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 3,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws21"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 0,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 1,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 2,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 3,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 1,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 2,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 0,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 1,
+          "4:24": 10,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 0,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 1,
+          "5:35": 10
+        }
+      },
+      "eligible": [
+        "nws23",
+        "nws25",
+        "nws26",
+        "nws27",
+        "nws28"
+      ]
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 0
+        }
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 5,
+        "maxlevel": 5,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 0,
+        "counts": {
+          "2:7": 10,
+          "2:8": 10,
+          "2:10": 10,
+          "3:13": 10,
+          "3:14": 10,
+          "3:15": 10,
+          "3:16": 10,
+          "4:21": 10,
+          "4:22": 10,
+          "4:29": 10,
+          "4:27": 10,
+          "4:24": 10,
+          "5:35": 1
+        }
+      },
+      "eligible": [
+        "nws29"
+      ]
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 9100,
+        "counts": {}
+      },
+      "eligible": []
+    },
+    {
+      "input": {
+        "level": 4,
+        "maxlevel": 4,
+        "timeline": 1,
+        "timeplayed": 0,
+        "alltimecoins": 0,
+        "locationMs": 9101,
+        "counts": {}
+      },
+      "eligible": [
+        "nws22"
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "text": "#111111",
+      "fill": 16576703,
+      "report": 16049584,
+      "stroke": 12223244
+    },
+    {
+      "text": "#111111",
+      "fill": 13494526,
+      "report": 10800623,
+      "stroke": 6723544
+    },
+    {
+      "text": "#111111",
+      "fill": 14984898,
+      "report": 16486335,
+      "stroke": 11739713
+    },
+    {
+      "text": "#111111",
+      "fill": 16376242,
+      "report": 16767907,
+      "stroke": 12811555
+    },
+    {
+      "text": "#601a00",
+      "fill": 16765528,
+      "report": 15317064,
+      "stroke": 8612670
+    }
+  ],
+  "queue": [
+    {
+      "random": 0,
+      "first": [],
+      "pending": [
+        [
+          "new2",
+          "fresh2"
+        ],
+        [
+          "new3",
+          "fresh3"
+        ],
+        [
+          "new4",
+          "fresh4"
+        ]
+      ],
+      "delay": 500,
+      "opened": [
+        {
+          "text": "new2",
+          "id": "fresh2"
+        }
+      ]
+    },
+    {
+      "random": 0.999999,
+      "first": [],
+      "pending": [
+        [
+          "new2",
+          "fresh2"
+        ],
+        [
+          "new3",
+          "fresh3"
+        ],
+        [
+          "new4",
+          "fresh4"
+        ]
+      ],
+      "delay": 3499,
+      "opened": [
+        {
+          "text": "new2",
+          "id": "fresh2"
+        }
+      ]
+    }
+  ]
+}

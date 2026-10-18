@@ -1,6 +1,6 @@
 // DogeMiner CE - Pickaxe Factory & Template System
 // Handles loading pickaxe templates from folder-based assets, parsing data.txt files,
-// and generating unique pickaxe instances with the linear progression system.
+// and generating pickaxe instances with the pinned DM2 balance rules.
 
 class PickaxeFactory {
     constructor() {
@@ -19,7 +19,7 @@ class PickaxeFactory {
         this.coreStats = new Set([
             'luck', 'lootfind', 'wow', 'critchance',
             'dpcmultiplier', 'helperdpsmultiplier', 'rocketcostreduction',
-            'dps', 'higherground', 'criticalchance'
+            'dps', 'criticalchance', 'mysterybonus', 'holidayspirit'
         ]);
         this.loaded = false;
         // Set of template IDs that have active (-use.webp) sprites
@@ -31,6 +31,7 @@ class PickaxeFactory {
      * Scans /assets/items/pickaxes/{Planet}/{PickaxeName}/ directories.
      */
     async loadTemplates() {
+        this.loadErrors = [];
         const planets = ['Earth', 'Moon', 'Mars', 'Jupiter', 'Titan', 'Universal'];
         const basePath = 'assets/items/pickaxes';
 
@@ -52,6 +53,7 @@ class PickaxeFactory {
                             }
                         })
                         .catch(err => {
+                            (this.loadErrors ||= []).push(String(err));
                             console.warn(`Failed to load pickaxe template: ${planet}/${folder}`, err);
                         })
                 );
@@ -61,6 +63,13 @@ class PickaxeFactory {
             }
         }
 
+        const staff = Object.values(this.templates).find(t => t.balanceDefinitionId === 'staff');
+        if (staff) this.templates.universal_ascendedstaffofthesundoge = {
+            ...staff, id:'universal_ascendedstaffofthesundoge', name:'Ascended Staff of the SunDoge',
+            description:"Two ancient suns, one legendary staff. Its passive DPS bonus is ten times the newest staff's original roll. It deals no direct damage.",
+            rarity:'legendary', balanceDefinitionId:'staffascended', fusionOnly:true, zeroDPC:true
+        };
+        window.DogeMinerSeasonal?.installTemplates('pickaxe', this);
         this.loaded = true;
         this._buildActiveSpriteSet();
         console.log(`PickaxeFactory: Loaded ${Object.keys(this.templates).length} templates across ${planets.length} planets.`);
@@ -93,11 +102,13 @@ class PickaxeFactory {
         } catch (err) {
             console.warn(`Could not fetch ${txtPath}, trying alternate names...`, err);
             // Some files have slightly different names, try fetching any .txt
+            (this.loadErrors ||= []).push(txtPath);
             return null;
         }
 
         // Parse the txt content
         const template = this._parseTxt(txtContent);
+        if (!template.name) { (this.loadErrors ||= []).push(txtPath); return null; }
 
         // Find the sprite (the .webp file in the folder)
         // We'll try the known sprite names from our manifest
@@ -110,6 +121,14 @@ class PickaxeFactory {
         }
 
         template.folderPath = folderPath;
+        if (window.DogeMinerBalance) {
+            const definition = window.DogeMinerBalance.getDefinition('pickaxe', template);
+            template.balanceDefinitionId = definition.id;
+            template.balanceSourceMatched = definition.sourceMatched;
+            template.rarity = definition.rarity;
+            template.zeroDPC = definition.zeroDPC;
+            template.isStaffOfSundoge = definition.id === 'staff' || definition.id === 'staffascended';
+        }
         return template;
     }
 
@@ -253,7 +272,7 @@ class PickaxeFactory {
 
         if (fixedPercentMatch) {
             indicator = '+%';
-            fixedValue = parseFloat(fixedPercentMatch[1]) / 100;
+            fixedValue = parseFloat(fixedPercentMatch[1]); // Percentage points, matching generated/saved stat values.
             statName = fixedPercentMatch[2].trim();
         } else if (fixedFlatMatch) {
             indicator = '+';
@@ -304,125 +323,37 @@ class PickaxeFactory {
 
     /**
      * Generates a unique pickaxe instance from a template.
-     * Uses the linear progression system: NewDPC = CurrentMaxDPC * 1.15
+     * Uses DM2 location/helper tiers, Wow, rarity and timeline progression.
      * 
      * @param {string} templateId - The template to generate from
      * @param {number} currentMaxDPC - The player's current highest pickaxe DPC
      * @param {number} playerWow - The player's current Wow stat (affects stat rolls)
      * @returns {Object} A unique pickaxe instance
      */
-    generatePickaxe(templateId, currentMaxDPC, playerWow = 0) {
+    generatePickaxe(templateId, currentMaxDPC, playerWow = 0, rollContext = null, rng = Math.random) {
         const template = this.templates[templateId];
-        if (!template) {
-            console.error(`Unknown pickaxe template: ${templateId}`);
-            return null;
-        }
-
-        // Calculate DPC using linear progression
-        let baseDPC;
-        if (template.zeroDPC) {
-            baseDPC = 0;
-        } else {
-            // Logarithmic dampening: growth rate starts strong and diminishes as DPC rises
-            // This prevents runaway exponential compounding into trillions/quadrillions
-            const logDpc = Math.log10(Math.max(2, currentMaxDPC));
-            const growthRate = 0.15 / (1 + logDpc * 0.35);
-            const multiplier = 1 + growthRate + (Math.random() * growthRate * 0.5);
-
-            // Scaling flat boost (meaningful early, proportionally small late)
-            const flatBoost = Math.max(1, Math.floor(Math.sqrt(currentMaxDPC) * 0.5))
-                            + Math.floor(Math.random() * 3);
-            
-            baseDPC = Math.floor((currentMaxDPC * multiplier) + flatBoost);
-
-            // Rarity scaling — exciting but not game-breaking
-            const rarityScales = {
-                common: 1.0,
-                improved: 1.1,
-                rare: 1.25,
-                epic: 1.5,
-                legendary: 2.0
-            };
-            const rScale = rarityScales[template.rarity] || 1.0;
-            
-            baseDPC = Math.floor(baseDPC * rScale);
-
-            // Ensure it's always an upgrade (at least +1)
-            if (baseDPC <= currentMaxDPC && currentMaxDPC > 0) {
-                baseDPC = currentMaxDPC + 1;
-            }
-        }
-
-        // Generate unique instance ID
-        const instanceId = `${templateId}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-
-        // Roll stats
-        const stats = this._rollStats(template.statTemplates, playerWow);
-
+        if (!template) return null;
+        const balance = window.DogeMinerBalance;
+        if (!balance) throw new Error('DM2 balance rules must load before PickaxeFactory.');
+        const context = {...balance.getRollContext(window.game || {}), ...(rollContext || {}), wow: rollContext?.wow ?? playerWow};
+        const definition = balance.getDefinition('pickaxe', template);
+        const baseDPC = balance.rollDPC({...context, template, rarity: definition.rarity, maxDPC: currentMaxDPC}, rng);
+        const stats = balance.rollStats('pickaxe', template, context, rng);
         return {
-            instanceId,
-            templateId,
-            name: template.name,
-            rarity: template.rarity,
-            description: template.description,
-            planetOfOrigin: template.planetOfOrigin,
-            baseDPC,
-            stats,
-            idleSprite: template.idleSprite,
-            isStaffOfSundoge: template.isStaffOfSundoge,
-            specialInstructions: template.specialInstructions
+            instanceId: `${templateId}_${Date.now()}_${Math.floor(rng() * 10000)}`,
+            templateId, name: template.name, rarity: definition.rarity, description: template.description,
+            planetOfOrigin: template.planetOfOrigin, baseDPC, stats, idleSprite: template.idleSprite,
+            isStaffOfSundoge: template.isStaffOfSundoge, specialInstructions: template.specialInstructions,
+            balanceVersion: balance.VERSION, balanceDefinitionId: definition.id,
+            balanceOrigin: balance.describeOrigin(context, definition)
         };
     }
 
-    /**
-     * Rolls random numerical values for all stats on a pickaxe.
-     * Core stats affect gameplay; cosmetic stats are for flavor.
-     * 
-     * @param {Array} statTemplates - The stat templates from the txt file
-     * @param {number} playerWow - Player's Wow stat for scaling
-     * @returns {Array} Array of { name, displayName, indicator, isCore, value }
-     */
-    _rollStats(statTemplates, playerWow) {
-        return statTemplates.map(st => {
-            let value;
-
-            if (st.fixedValue !== null && st.fixedValue !== undefined) {
-                // Fixed value stats (e.g., "+10% DPS") - not affected by Wow
-                value = st.fixedValue;
-            } else if (st.isFixedNotWow) {
-                // Explicitly marked as not affected by Wow
-                value = st.fixedValue || 0.1;
-            } else {
-                // Roll a random value based on indicator type
-                if (st.indicator === '+%') {
-                    // Percentage stats: roll 1-25%, scaled logarithmically by Wow
-                    const baseRoll = 1 + Math.random() * 24;
-                    value = baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10));
-                    value = Math.round(value * 10) / 10; // Round to 1 decimal
-                } else if (st.indicator === '+') {
-                    // Flat additive stats: roll 1-100, scaled logarithmically by Wow
-                    const baseRoll = 1 + Math.floor(Math.random() * 99);
-                    value = Math.floor(baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10)));
-                } else if (st.indicator === '-') {
-                    // Reduction stats: roll 1-50 (stored as positive, displayed with -)
-                    const baseRoll = 1 + Math.floor(Math.random() * 49);
-                    value = Math.floor(baseRoll * (1 + Math.random() * Math.log2(1 + (playerWow || 0) / 10)));
-                }
-
-                // Apply multiplier if present (e.g., "5*Calculated value")
-                if (st.multiplier) {
-                    value *= st.multiplier;
-                }
-            }
-
-            return {
-                name: st.name,
-                displayName: st.displayName,
-                indicator: st.indicator,
-                isCore: st.isCore,
-                value: value
-            };
-        });
+    /** Compatibility adapter for callers that used the old parsed-stat method. */
+    _rollStats(statTemplates, playerWow = 0, template = null, rollContext = null, rng = Math.random) {
+        const balance = window.DogeMinerBalance;
+        const context = {...balance.getRollContext(window.game || {}), ...(rollContext || {}), wow: rollContext?.wow ?? playerWow};
+        return balance.rollStats('pickaxe', template || Object.values(this.templates).find(candidate => candidate.statTemplates === statTemplates) || {statTemplates}, context, rng);
     }
 
     /**
@@ -453,42 +384,8 @@ class PickaxeFactory {
      * weighted by rarity and player's Loot Find stat.
      */
     rollTemplate(planet, playerLootFind = 0) {
-        const pool = this.getDropPool(planet);
-        if (pool.length === 0) return null;
-
-        // Rarity weights (higher = rarer)
-        const rarityWeights = {
-            common: 100,
-            improved: 200,
-            rare: 500,
-            epic: 1000,
-            legendary: 2500
-        };
-
-        // Build weighted pool: lower effective threshold = more likely
-        const weighted = pool.map(templateId => {
-            const template = this.templates[templateId];
-            const baseThreshold = rarityWeights[template.rarity] || 100;
-            // Loot Find reduces threshold, making rarer items more accessible
-            const effectiveThreshold = baseThreshold / (1 + (playerLootFind / 100));
-            // Convert to probability weight (inverse of threshold)
-            const weight = 1000 / effectiveThreshold;
-            return { templateId, weight };
-        });
-
-        // Weighted random selection
-        const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
-        let roll = Math.random() * totalWeight;
-
-        for (const entry of weighted) {
-            roll -= entry.weight;
-            if (roll <= 0) {
-                return entry.templateId;
-            }
-        }
-
-        // Fallback to last entry
-        return weighted[weighted.length - 1].templateId;
+        const game = {...(window.game || {}), pickaxeFactory: this};
+        return window.DogeMinerBalance.selectNaturalTemplate(game, 'pickaxe', {planet, lootFind: playerLootFind});
     }
 
     /**

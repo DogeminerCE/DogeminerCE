@@ -4,6 +4,12 @@ class SaveManager {
         this.game = game;
         this.saveKey = 'dogeminer_ce_save';
         this.backupKey = 'dogeminer_ce_backup';
+        this.alphaBackupKey = 'dogeminer_ce_alpha_backup_dm2-beta-1';
+        this.migrationReceiptKey = 'dogeminer_ce_beta_migration_receipts';
+        this.offlineReceiptKey = 'dogeminer_ce_offline_earnings_receipts';
+        this.loadError = null;
+        this._saveBlocked = false;
+        this._loadInProgress = false;
         this.autoSaveInterval = 30000; // 30 seconds
         this.lastSave = Date.now();
 
@@ -64,6 +70,12 @@ class SaveManager {
             });
         }
 
+        for (const [id, key] of [['hints', 'hintsEnabled'], ['stories', 'storiesEnabled'], ['news', 'newsEnabled']]) {
+            document.getElementById(`${id}-enabled`)?.addEventListener('change', event => {
+                this.game.setStoryPreference(key, event.target.checked);
+            });
+        }
+
         // Listen for auto-save setting changes
         const autoSaveCheckbox = document.getElementById('auto-save-enabled');
         if (autoSaveCheckbox) {
@@ -96,6 +108,8 @@ class SaveManager {
     }
 
     saveGame(showNotification = true) {
+        // A failed migration must never let the fresh constructor overwrite Alpha.
+        if (this._saveBlocked || this._loadInProgress) return false;
         try {
             const saveData = this.createSaveData();
             const saveString = JSON.stringify(saveData);
@@ -108,11 +122,6 @@ class SaveManager {
 
             this.lastSave = Date.now();
 
-            // Only show notification if requested and notifications are enabled
-            if (showNotification && this.game.notificationsEnabled) {
-                this.game.showNotification('Game saved successfully!');
-            }
-
             console.log('Game saved:', saveData);
             return true;
         } catch (error) {
@@ -124,22 +133,55 @@ class SaveManager {
         }
     }
 
+    // Prestige commits its inventory, currencies and timeline record together.
+    commitTimelineReset() { return this._commitProgressTransaction('mission rewards'); }
+
+    commitStoryProgress() { return this._commitProgressTransaction('story progress'); }
+    commitWorldDiscovery() { return this._commitProgressTransaction('world discovery'); }
+    commitFieldLoot() { return this._commitProgressTransaction('field loot'); }
+    commitHelperPurchase() { return this._commitProgressTransaction('helper purchases'); }
+    commitHelperUpgrade() { return this._commitProgressTransaction('helper upgrade'); }
+    commitLateProgression() { return this._commitProgressTransaction('late-game progression'); }
+    commitToolProgress() { return this._commitProgressTransaction('tool progression'); }
+    commitEncounterProgress() { return this._commitProgressTransaction('field encounters'); }
+
+    _commitProgressTransaction(label) {
+        if (this._saveBlocked || this._loadInProgress) return false;
+        try {
+            const json = JSON.stringify(this.createSaveData());
+            this._writeStorageTransaction([[this.backupKey, json], [this.saveKey, json]]);
+            this.lastSave = Date.now();
+            return true;
+        } catch (error) {
+            console.error(`Could not save ${label}:`, error);
+            return false;
+        }
+    }
+
     loadGame() {
         try {
             const saveString = localStorage.getItem(this.saveKey);
             if (!saveString) {
+                this.loadError = null;
+                this._saveBlocked = false;
+                this.game.balanceVersion = window.DogeMinerBalance?.VERSION || null;
+                this.game.betaMigrationReport = null;
+                this.game.offlineEarningsReport = null;
+                this.game.closeOfflineEarningsReport?.();
                 this.game.showNotification('No save data found!');
                 return false;
             }
 
             const saveData = JSON.parse(saveString);
-            this.applySaveData(saveData);
+            this.applySaveData(saveData, { originalString: saveString });
 
             // Notification handled by main.js
             console.log('Game loaded:', saveData);
             return true;
         } catch (error) {
             console.error('Error loading game:', error);
+            this.loadError = error;
+            this._saveBlocked = true;
 
             // Try to load backup
             if (this.loadBackup()) {
@@ -158,12 +200,14 @@ class SaveManager {
             if (!backupString) return false;
 
             const saveData = JSON.parse(backupString);
-            this.applySaveData(saveData);
+            this.applySaveData(saveData, { originalString: backupString });
 
             console.log('Loaded from backup:', saveData);
             return true;
         } catch (error) {
             console.error('Error loading backup:', error);
+            this.loadError ||= error;
+            this._saveBlocked = true;
             return false;
         }
     }
@@ -182,6 +226,7 @@ class SaveManager {
                 isMining: !!helper.isMining
             };
 
+            if (typeof helper.groupId === 'string') saveHelper.groupId = helper.groupId;
             if (helper.name) {
                 saveHelper.name = helper.name;
             }
@@ -231,9 +276,10 @@ class SaveManager {
         const helperData = currentPlaced.map(serializePlacedHelper).filter(Boolean);
 
         // Ensure the current active rock health is saved before serializing
-        if (this.game.planetRockData && this.game.currentLevel) {
+        if (this.game.planetRockData && this.game.currentLevel && !this.game.isRockRegenerating) {
             this.game.planetRockData[this.game.currentLevel] = {
                 rocksBroken: this.game.rocksBroken,
+                rockLevel: this.game.rockLevel || (this.game.rocksBroken + 1),
                 currentHP: this.game.rockCurrentHP,
                 maxHP: this.game.rockMaxHP
             };
@@ -241,13 +287,25 @@ class SaveManager {
 
         return {
             version: '1.0.0',
+            balanceVersion: this.game.balanceVersion || window.DogeMinerBalance?.VERSION || null,
+            betaMigrationReport: this.game.betaMigrationReport || null,
+            offlineEarningsReport: this.game.offlineEarningsReport || null,
             timestamp: Date.now(),
+            layout: this.game.getLayoutForSave?.() || null,
+            seasonal: this.game.getSeasonalForSave?.() || null,
+            dm2Import: this.game.dm2Import || null,
+            importReceipt: this.game.importReceipt || null,
             dogecoins: this.game.dogecoins,
             planetRockData: this.game.planetRockData,
+            dogebagStacks: this.game.getDogebagStacksForSave?.() || {},
+            diamondStacks: this.game.getDiamondStacksForSave?.() || {},
+            lootAutomation: this.game.getLootAutomationForSave?.() || null,
             totalMined: this.game.totalMined,
             totalClicks: this.game.totalClicks,
             dps: this.game.dps,
             highestDps: this.game.highestDps,
+            records: this.game.getMiningRecordsForSave?.() || { highestcrit: 0 },
+            encounters:this.game.getEncountersForSave?.() || null,
             currentLevel: this.game.currentLevel,
             helpers: this.game.helpers,
             moonHelpers: this.game.moonHelpers,
@@ -256,24 +314,45 @@ class SaveManager {
             titanHelpers: this.game.titanHelpers, // Keep Titan helper ownership synced across reloads.
             pickaxeInventory: this.game.pickaxeInventory,
             equippedPickaxeId: this.game.equippedPickaxeId,
+            ...(window.DogeMinerTools?.discoveryState(this.game) || {}),
             maxPickaxeDPC: this.game.maxPickaxeDPC,
             fortuneInventory: this.game.fortuneInventory,
             latestObtainedFortune: this.game.latestObtainedFortune || null,
+            inventoryUnread: { ...(this.game.inventoryUnread || { pickaxe: 0, fortune: 0 }) },
+            lastPickaxeDropTime: Number.isFinite(this.game.lastPickaxeDropTime) ? Math.max(0, this.game.lastPickaxeDropTime) : 0,
+            prizesSinceLastPickaxe: Number.isFinite(this.game.prizesSinceLastPickaxe) ? Math.max(0, Math.floor(this.game.prizesSinceLastPickaxe)) : 0,
             moonDogebagCount: this.game.moonDogebagCount || 0,
             mysteryBoxObtained: this.game.mysteryBoxObtained || false,
+            mysteryBoxEvolutionPending: this.game.mysteryBoxEvolutionPending === true,
             mysteryBoxOpenCount: this.game.mysteryBoxOpenCount || 0,
-            mysteryBoxTimerRemaining: this.game.mysteryBoxTimerRemaining || 0,
+            mysteryBoxCycle: window.DogeMinerBalance?.getMysteryBoxOpening?.(this.game)?.cycle ?? (this.game.mysteryBoxOpenCount || 0) % 11,
+            mysteryBoxLastKind: this.game.mysteryBoxLastKind === 'fortune' ? 'fortune' : 'pickaxe',
+            mysteryBoxTimerRemaining: this.game.getMysteryBoxTimerRemaining?.() ?? this.game.mysteryBoxTimerRemaining ?? 0,
             mysteryBoxLastSaveTime: Date.now(),
             bonusCoinLevel: this.game.bonusCoinLevel || 1,
+            bonusCoinMaxPlanetLevel: this.game.getBonusCoinPlanetLevel?.() || 1,
+            bonusCoinBuffTier: this.game.bonusCoinBuffTier || 0,
+            bonusCoinClaimCount: this.game.bonusCoinClaimCount || 0,
+            bonusCoinEarlyOffered: this.game.bonusCoinEarlyOffered === true,
             bonusCoinSeenLevel: this.game.bonusCoinSeenLevel || 0,
             bonusCoinBuffMultiplier: this.game.bonusCoinBuffMultiplier || 1,
             bonusCoinBuffEndTime: this.game.bonusCoinBuffEndTime || 0,
             dogediamonds: this.game.dogediamonds || 0,
             dogediamondsEverObtained: this.game.dogediamondsEverObtained || 0,
             searchdogeSlot3Unlocked: this.game.searchdogeSlot3Unlocked || false,
+            timelineNumber: this.game.timelineNumber || 1,
+            timelineProgress: this.game.getTimelineProgressForSave?.() || null,
+            storyProgress: this.game.getStoryProgressForSave?.() || null,
+            worldDiscovery: this.game.getWorldDiscoveryForSave?.() || null,
+            lateProgression: this.game.getLateProgressionForSave?.() || null,
+            diaMissionSeenOnce: this.game.diaMissionSeenOnce || false,
+            hasReachedJupiterEver: this.game.hasReachedJupiterEver || false,
             rocksBroken: this.game.rocksBroken,
+            rockLevel: this.game.rockLevel || (this.game.rocksBroken + 1),
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
+            helperUpgradeOffers: this.game.helperUpgradeOffers || {},
+            searchdogeDiscovery: this.game.getSearchdogeDiscoveryForSave?.() || null,
             placedHelpers: helperData,
             earthPlacedHelpers,
             moonPlacedHelpers,
@@ -291,8 +370,16 @@ class SaveManager {
             settings: {
                 soundEnabled: this.game.soundEnabled !== false,
                 musicEnabled: this.game.musicEnabled !== false,
+                rockSoundsEnabled: this.game.rockSoundsEnabled !== false,
+                backgroundAudioEnabled: this.game.backgroundAudioEnabled !== false,
+                lessEffects: this.game.lessEffects === true,
+                limitFps: this.game.limitFps === true,
                 notificationsEnabled: this.game.notificationsEnabled !== false,
+                storiesEnabled: this.game.storiesEnabled !== false,
+                hintsEnabled: this.game.hintsEnabled !== false,
+                newsEnabled: this.game.newsEnabled !== false,
                 autoSaveEnabled: this.game.autoSaveEnabled !== false,
+                autoPlaceHelpers: this.game.autoPlaceHelpers !== false,
                 controllerIndicators: window.controllerManager ? window.controllerManager.showIndicators !== false : true
             },
             cutscenes: {
@@ -305,18 +392,267 @@ class SaveManager {
         };
     }
 
-    applySaveData(saveData) {
+    applySaveData(rawSaveData, options = {}) {
+        try {
+            return this._prepareAndApplySaveData(rawSaveData, options);
+        } catch (error) {
+            // Preparation and original-backup errors happen before live mutation,
+            // but they must still stop startup autosave from replacing Alpha.
+            this.loadError = error;
+            this._saveBlocked = true;
+            this._loadInProgress = false;
+            throw error;
+        }
+    }
+
+    _prepareAndApplySaveData(rawSaveData, { originalString, persist = false, recovery = null, importOriginal = null } = {}) {
+        if (!this.validateSaveData(rawSaveData)) throw new Error('Invalid save data');
+        const migration = window.BetaSaveMigration;
+        if (window.DogeMinerBalance && !migration) {
+            throw new Error('Beta save migration is unavailable; the existing save was not changed.');
+        }
+        const prepared = migration
+            ? migration.prepare(rawSaveData, { game: this.game })
+            : { saveData: JSON.parse(JSON.stringify(rawSaveData)), migrated: false };
+        const history = window.DogeMinerStoryHistory?.prepare(prepared.saveData) || { saveData:prepared.saveData, changed:false };
+        const saveData = history.saveData;
+        window.DogeMinerTools?.discoveryState(saveData);
+        window.DogeMinerEncounters?.normalize(saveData.encounters,saveData);
+        window.DogeMinerLayout?.normalize(saveData.layout,saveData.dm2Import);
+        window.DogeMinerSeasonal?.normalize(saveData.seasonal, saveData.dm2Import);
+        window.DogeMinerDM2Import?.receipt(saveData.dm2Import);
+        window.DogeMinerDM2Import?.requestReceipt(saveData.importReceipt);
+        const previousState = { ...this.game };
+        const previousKeys = new Set(Object.keys(this.game));
+        const alphaBackupKey = this.alphaBackupKey || 'dogeminer_ce_alpha_backup_dm2-beta-1';
+        const receiptKey = this.migrationReceiptKey || 'dogeminer_ce_beta_migration_receipts';
+        let receipts = {};
+        if (prepared.migrated) {
+            // Keep the full original independently of the ordinary rolling backup.
+            // Even a failed migration leaves this original intact and recoverable.
+            if (localStorage.getItem(alphaBackupKey) === null) {
+                localStorage.setItem(alphaBackupKey, originalString || JSON.stringify(rawSaveData));
+            }
+            try { receipts = JSON.parse(localStorage.getItem(receiptKey) || '{}') || {}; }
+            catch (_) { receipts = {}; }
+            const receipt = receipts[prepared.report.fingerprint];
+            if (receipt?.version === prepared.report.version) {
+                prepared.report.createdAt = receipt.createdAt;
+                prepared.report.acknowledged = receipt.acknowledged === true;
+                if (receipt.acknowledgedAt) prepared.report.acknowledgedAt = receipt.acknowledgedAt;
+            }
+        }
+        this._loadInProgress = true;
+        try {
+            this.game.balanceVersion = saveData.balanceVersion || window.DogeMinerBalance?.VERSION || null;
+            this.game.betaMigrationReport = saveData.betaMigrationReport || null;
+            this._applySaveData(saveData);
+            const offlineCredit = this._prepareOfflineCredit(rawSaveData);
+            if (prepared.migrated) {
+                migration.rebalanceRocks(this.game, prepared.report, prepared.originalRockData);
+                this.game.updateRockHealthDisplay?.();
+            }
+            if (prepared.migrated || offlineCredit || history.changed || persist) {
+                const finalData = this.createSaveData();
+                migration?.validate(finalData);
+                const finalString = JSON.stringify(finalData);
+                const writes = [];
+                if (recovery) writes.push([recovery.key, recovery.value]);
+                if (importOriginal && localStorage.getItem(importOriginal.key) === null) writes.push([importOriginal.key, importOriginal.value]);
+                const historyBackupKey = 'dogeminer_ce_story_history_original_v1';
+                if (history.changed && localStorage.getItem(historyBackupKey) === null) {
+                    writes.push([historyBackupKey, originalString || JSON.stringify(rawSaveData)]);
+                }
+                if (prepared.migrated) {
+                    receipts[prepared.report.fingerprint] = {
+                        version: prepared.report.version,
+                        createdAt: prepared.report.createdAt,
+                        acknowledged: prepared.report.acknowledged,
+                        ...(prepared.report.acknowledgedAt ? { acknowledgedAt: prepared.report.acknowledgedAt } : {})
+                    };
+                    writes.push([receiptKey, JSON.stringify(receipts)]);
+                }
+                if (offlineCredit) writes.push([this.offlineReceiptKey || 'dogeminer_ce_offline_earnings_receipts', JSON.stringify(offlineCredit.receipts)]);
+                writes.push([this.backupKey, finalString], [this.saveKey, finalString]);
+                this._writeStorageTransaction(writes);
+                this.lastSave = Date.now();
+            } else {
+                this.lastSave = rawSaveData.timestamp;
+            }
+            this.loadError = null;
+            this._saveBlocked = false;
+        } catch (error) {
+            for (const key of Object.keys(this.game)) {
+                if (!previousKeys.has(key)) delete this.game[key];
+            }
+            Object.assign(this.game, previousState);
+            window.DogeMinerBonusHud?.clear(this.game);
+        this.game.resetPassiveIncomeClock?.();
+        window.DogeMinerSecrets?.reset(this.game);
+        this.game.resetRockReplacement?.();
+        this.game.resetCateThief?.();
+        window.DogeMinerReleaseNotes?.close({immediate:true});
+        this.game.resetToolPresentation?.();
+        this.game.resetUpgradePresentation?.();
+        this.game.resetMoonLaunchPresentation?.();
+        this.game.resetStoryPresentation?.();
+            this.loadError = error;
+            this._saveBlocked = true;
+            throw error;
+        } finally {
+            this._loadInProgress = false;
+        }
+        this.game.closeOfflineEarningsReport?.();
+        this.game.showPendingBetaMigrationReport?.();
+        this.game.scheduleOfflineEarningsReport?.();
+        return saveData;
+    }
+
+    _prepareOfflineCredit(snapshot) {
+        const offline = window.DogeMinerOfflineEarnings;
+        if (!offline) return null;
+        const key = this.offlineReceiptKey || 'dogeminer_ce_offline_earnings_receipts';
+        let receipts;
+        try { receipts = offline.readReceipts(JSON.parse(localStorage.getItem(key) || '[]')); }
+        catch (_) { receipts = []; }
+        const pending = this.game.offlineEarningsReport;
+        const acknowledged = pending && receipts.find(receipt => receipt.id === pending.id && receipt.acknowledged);
+        if (acknowledged) this.game.offlineEarningsReport = { ...pending, acknowledged: true };
+        const credit = offline.prepare(snapshot, this.game.getOfflineDPS?.() ?? this.game.dps, receipts);
+        if (!credit) return null;
+        const coins = this.game.dogecoins + credit.report.amount;
+        const total = this.game.totalMined + credit.report.amount;
+        if (!Number.isFinite(coins) || !Number.isFinite(total)) throw new Error('Offline earnings exceed the supported balance.');
+        this.game.dogecoins = coins;
+        this.game.totalMined = total;
+        this.game.offlineEarningsReport = credit.report;
+        this.game.updateUI();
+        return credit;
+    }
+
+    acknowledgeOfflineEarnings(id) {
+        const report = this.game.offlineEarningsReport;
+        if (!report || report.id !== id || this._saveBlocked || this._loadInProgress) return false;
+        if (report.acknowledged) return true;
+        try {
+            const acknowledged = { ...report, acknowledged: true };
+            const key = this.offlineReceiptKey || 'dogeminer_ce_offline_earnings_receipts';
+            let receipts;
+            try { receipts = window.DogeMinerOfflineEarnings.readReceipts(JSON.parse(localStorage.getItem(key) || '[]')); }
+            catch (_) { receipts = []; }
+            receipts = [...receipts.filter(receipt => receipt.id !== id), acknowledged].slice(-64);
+            const data = this.createSaveData();
+            data.offlineEarningsReport = acknowledged;
+            const json = JSON.stringify(data);
+            this._writeStorageTransaction([[key, JSON.stringify(receipts)], [this.backupKey, json], [this.saveKey, json]]);
+            this.game.offlineEarningsReport = acknowledged;
+            this.lastSave = Date.now();
+            return true;
+        } catch (error) {
+            console.error('Could not acknowledge offline earnings:', error);
+            return false;
+        }
+    }
+
+    _writeStorageTransaction(entries) {
+        const originals = entries.map(([key]) => [key, localStorage.getItem(key)]);
+        try {
+            for (const [key, value] of entries) localStorage.setItem(key, value);
+        } catch (error) {
+            // localStorage writes are individually atomic. Restore already written
+            // companion keys if quota or another storage failure rejects the commit.
+            for (const [key, original] of originals) {
+                try {
+                    if (original === null) localStorage.removeItem(key);
+                    else localStorage.setItem(key, original);
+                } catch (restoreError) { console.error('Could not restore save storage:', restoreError); }
+            }
+            throw error;
+        }
+    }
+
+    acknowledgeBetaMigration() {
+        const report = this.game.betaMigrationReport;
+        if (!report || report.acknowledged) return true;
+        if (this._saveBlocked || this._loadInProgress) return false;
+        const acknowledgedAt = Date.now();
+        const acknowledged = { ...report, acknowledged: true, acknowledgedAt };
+        try {
+            const saveData = this.createSaveData();
+            saveData.betaMigrationReport = acknowledged;
+            const saveString = JSON.stringify(saveData);
+            const receiptKey = this.migrationReceiptKey || 'dogeminer_ce_beta_migration_receipts';
+            let receipts = {};
+            try { receipts = JSON.parse(localStorage.getItem(receiptKey) || '{}') || {}; } catch (_) { }
+            if (report.fingerprint) receipts[report.fingerprint] = {
+                version: report.version, createdAt: report.createdAt, acknowledged: true, acknowledgedAt
+            };
+            this._writeStorageTransaction([
+                [receiptKey, JSON.stringify(receipts)], [this.backupKey, saveString], [this.saveKey, saveString]
+            ]);
+            this.game.betaMigrationReport = acknowledged;
+            this.lastSave = Date.now();
+            return true;
+        } catch (error) {
+            console.error('Could not acknowledge Beta balance report:', error);
+            this.game.showNotification('Unable to save the balance report confirmation. Please try again.');
+            return false;
+        }
+    }
+
+    _applySaveData(saveData) {
         if (!this.validateSaveData(saveData)) {
             throw new Error('Invalid save data');
         }
 
+        window.DogeMinerLayout?.normalize(saveData.layout,saveData.dm2Import);
+        window.DogeMinerSeasonal?.normalize(saveData.seasonal, saveData.dm2Import);
+        window.DogeMinerLootAutomation?.normalize(saveData.lootAutomation, saveData.timelineNumber);
+        window.DogeMinerLateProgression?.normalize(saveData.lateProgression,saveData);
+
+        // A loaded balance already includes claimed currency; previous-page
+        // display flights must not withhold any part of the restored amount.
+        this.game.resetRockReplacement?.();
+        this.game.resetCateThief?.();
+        window.DogeMinerReleaseNotes?.close({immediate:true});
+        this.game.resetToolPresentation?.();
+        this.game.resetUpgradePresentation?.();
+        this.game.resetMoonLaunchPresentation?.();
+        this.game.resetStoryPresentation?.();
+        this.game.resetDogebagPresentation?.();
+        this.game.resetFieldLootPresentation?.();
+        this.game.resetRickVisitor?.();
+        this.game.despawnRick?.({ animate: false });
+        this.game._removeBonusCoinEl?.();
+        this.game.resetBonusCoinSpawnCycle?.();
+        this.game._currencyFlightEpoch = (this.game._currencyFlightEpoch || 0) + 1;
+        this.game._rockStateEpoch = (this.game._rockStateEpoch || 0) + 1;
+        this.game.activeEffectCount = 0;
+        this.game.isRockRegenerating = false;
+        this.game.pendingCoinDisplayAmount = 0;
+        this.game.pendingDiamondDisplayAmount = 0;
+        this.game.offlineEarningsReport = window.DogeMinerOfflineEarnings?.normalizeReport(saveData.offlineEarningsReport) || null;
+        this.game.restoreEncounterProgress?.(saveData);
+        this.game.dm2Import = window.DogeMinerDM2Import?.receipt(saveData.dm2Import) || null;
+        this.game.importReceipt = window.DogeMinerDM2Import?.requestReceipt(saveData.importReceipt) || null;
+        this.game.restoreSeasonal?.(saveData.seasonal, saveData.dm2Import);
         this.game.dogecoins = saveData.dogecoins || 0;
         this.game.totalMined = saveData.totalMined || 0;
         this.game.totalClicks = saveData.totalClicks || 0;
         this.game.dps = saveData.dps || 0;
         this.game.highestDps = saveData.highestDps || 0;
+        this.game.restoreMiningRecords?.(saveData.records);
         this.game.currentLevel = saveData.currentLevel || 'earth';
+        this.game.restoreDogebagStacks?.(saveData.dogebagStacks || {});
         this.game.isTransitioning = false;
+
+        this.game.helperUpgradeOffers = {};
+        for (const planet of ['earth', 'moon', 'mars', 'jupiter', 'titan']) {
+            const slots = saveData.helperUpgradeOffers?.[planet];
+            if (Array.isArray(slots)) {
+                this.game.helperUpgradeOffers[planet] = Array.from({ length: 3 }, (_, i) => typeof slots[i] === 'string' ? slots[i] : null);
+            }
+        }
 
         // Update data-planet attribute for CSS targeting
         document.body.dataset.planet = this.game.currentLevel;
@@ -350,20 +686,37 @@ class SaveManager {
             : []; // Preserve Titan helper ownership for reloads.
         this.game.pickaxeInventory = Array.isArray(saveData.pickaxeInventory) ? saveData.pickaxeInventory : [this.game.defaultPickaxe];
         this.game.equippedPickaxeId = saveData.equippedPickaxeId || 'default_normal_pickaxe';
+        Object.assign(this.game, window.DogeMinerTools?.discoveryState(saveData));
         this.game.maxPickaxeDPC = saveData.maxPickaxeDPC || 1;
         this.game.fortuneInventory = Array.isArray(saveData.fortuneInventory) ? saveData.fortuneInventory : [];
+        this.game.restoreDiamondStacks?.(saveData.diamondStacks);
         this.game.latestObtainedFortune = saveData.latestObtainedFortune || null;
+        this.game.restoreInventoryUnread?.(saveData.inventoryUnread);
+        this.game.lastPickaxeDropTime = Number.isFinite(saveData.lastPickaxeDropTime)
+            ? Math.max(0, Math.min(Date.now(), saveData.lastPickaxeDropTime)) : 0;
+        this.game.prizesSinceLastPickaxe = Number.isFinite(saveData.prizesSinceLastPickaxe)
+            ? Math.max(0, Math.floor(saveData.prizesSinceLastPickaxe)) : 0;
 
         // Migrate old .png/.jpg sprite paths to .webp (post-WebP conversion)
         this._migrateSpritePaths(this.game.pickaxeInventory);
         this._migrateSpritePaths(this.game.fortuneInventory);
         this._patchCorruptedFortunes(this.game.fortuneInventory);
+
+        // Retroactive fix: merge duplicate D.I.A. Badges of the same type into one
+        // (their stat values add together). Saves from before the merge rule could
+        // hold e.g. two "D.I.A. Badge (Loot)" fortunes.
+        if (!saveData.balanceVersion) this._mergeDuplicateDiaBadges(this.game.fortuneInventory);
         if (this.game.latestObtainedFortune) {
             this._migrateSpritePaths([this.game.latestObtainedFortune]);
         }
         this.game.moonDogebagCount = saveData.moonDogebagCount || 0;
         this.game.mysteryBoxObtained = saveData.mysteryBoxObtained || false;
+        this.game.mysteryBoxEvolutionPending = saveData.mysteryBoxEvolutionPending === true;
+        this.game._mysteryEvolution = null; this.game._mysteryEntryAt = 0;
         this.game.mysteryBoxOpenCount = saveData.mysteryBoxOpenCount || 0;
+        this.game.mysteryBoxCycle = Number.isInteger(saveData.mysteryBoxCycle) && saveData.mysteryBoxCycle >= 0 && saveData.mysteryBoxCycle <= 10 ? saveData.mysteryBoxCycle : this.game.mysteryBoxOpenCount % 11;
+        this.game._mysteryBoxReadyAt = null;
+        this.game.mysteryBoxLastKind = saveData.mysteryBoxLastKind === 'fortune' ? 'fortune' : 'pickaxe';
         this.game.mysteryBoxTimerRemaining = saveData.mysteryBoxTimerRemaining || 0;
 
         // Bonus Coin state
@@ -371,12 +724,25 @@ class SaveManager {
         this.game.bonusCoinSeenLevel = saveData.bonusCoinSeenLevel || 0;
         this.game.bonusCoinBuffMultiplier = saveData.bonusCoinBuffMultiplier || 1;
         this.game.bonusCoinBuffEndTime = saveData.bonusCoinBuffEndTime || 0;
+        this.game.bonusCoinBuffTier = saveData.bonusCoinBuffTier || 0;
+        this.game.bonusCoinClaimCount = Number.isFinite(saveData.bonusCoinClaimCount)
+            ? Math.max(0, Math.floor(saveData.bonusCoinClaimCount))
+            : (this.game.bonusCoinBuffMultiplier > 1 && this.game.bonusCoinBuffEndTime > Date.now() ? 1 : 0);
+        this.game.bonusCoinEarlyOffered = saveData.bonusCoinEarlyOffered === true || this.game.bonusCoinClaimCount > 0;
 
         // Dogediamonds state
         this.game.dogediamonds = saveData.dogediamonds || 0;
         this.game.dogediamondsEverObtained = saveData.dogediamondsEverObtained || 0;
         this.game.searchdogeSlot3Unlocked = saveData.searchdogeSlot3Unlocked || false;
+        this.game.timelineNumber = saveData.timelineNumber || 1;
+        this.game.restoreTimelineProgress?.(saveData);
+        this.game.restoreStoryProgress?.(saveData);
+        this.game.restoreWorldDiscovery?.(saveData);
+        this.game.restoreSearchdogeDiscovery?.(saveData);
+        this.game.diaMissionSeenOnce = saveData.diaMissionSeenOnce || false;
+        this.game.hasReachedJupiterEver = saveData.hasReachedJupiterEver || false;
         if (typeof this.game.updateDiamondCounter === 'function') this.game.updateDiamondCounter();
+        if (window.timeTravelManager) window.timeTravelManager.updateDogetalkieButton();
 
         // Retroactive Mystery Box unlock for older saves
         if (!this.game.mysteryBoxObtained && Array.isArray(this.game.fortuneInventory)) {
@@ -392,32 +758,41 @@ class SaveManager {
             this.game.mysteryBoxTimerRemaining = Math.max(0, this.game.mysteryBoxTimerRemaining - elapsed);
         }
 
+        this.game.mysteryBoxLastSaveTime = Date.now();
+
         if (saveData.planetRockData) {
             this.game.planetRockData = saveData.planetRockData;
         } else {
             // Legacy migration: funnel old global rocks broken into earth, initialize others
             this.game.planetRockData = {
                 earth: { rocksBroken: saveData.rocksBroken || 0, currentHP: null, maxHP: null },
-                moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
-                mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
-                jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
-                titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+                moon:  { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                mars:  { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                jupiter: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                titan: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null }
             };
         }
 
         // Load active level rock properties
         const level = this.game.currentLevel;
-        const activeRockData = this.game.planetRockData[level] || { rocksBroken: 0, currentHP: null, maxHP: null };
-        this.game.rocksBroken = activeRockData.rocksBroken || 0;
+        const activeRockData = this.game.planetRockData[level] || { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null };
+        this.game.rocksBroken = Number.isFinite(activeRockData.rocksBroken)
+            ? Math.max(0, Math.floor(activeRockData.rocksBroken)) : 0;
+        this.game.rockLevel = Number.isFinite(activeRockData.rockLevel) && activeRockData.rockLevel >= 1
+            ? Math.floor(activeRockData.rockLevel) : this.game.rocksBroken + 1;
+        activeRockData.rockLevel = this.game.rockLevel;
         this.game.rockBaseHP = this.game.getPlanetRockBaseHP(level);
-        
-        if (activeRockData.maxHP !== null && activeRockData.currentHP !== null) {
+        const needsFreshActiveRock = !Number.isFinite(activeRockData.maxHP) || activeRockData.maxHP <= 0
+            || !Number.isFinite(activeRockData.currentHP) || activeRockData.currentHP <= 0;
+        if (!needsFreshActiveRock) {
             this.game.rockMaxHP = activeRockData.maxHP;
-            this.game.rockCurrentHP = activeRockData.currentHP;
+            this.game.rockCurrentHP = Math.min(activeRockData.maxHP, activeRockData.currentHP);
         } else {
-            // Recalculate rock HP based on rocks broken
-            this.game.rockMaxHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rocksBroken);
-            this.game.rockCurrentHP = this.game.rockMaxHP;
+            // An interrupted rock-regeneration animation may have saved 0 HP.
+            // Restore safe temporary health, then calculate a fresh rock after
+            // all stats, helpers, upgrades, and settings have been restored.
+            this.game.rockMaxHP = this.game.rockBaseHP;
+            this.game.rockCurrentHP = this.game.rockBaseHP;
         }
         this.game.recalculatePlayerStats();
 
@@ -440,9 +815,13 @@ class SaveManager {
             const equippedSprite = equipped.idleSprite || equipped.sprite || fallbackSprite;
             
             pickaxeImg.src = equippedSprite;
-            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette');
-            const sp = equippedSprite;
-            if (sp.includes('cleaver')) {
+            pickaxeImg.classList.remove('pickaxe-scale-half', 'pickaxe-shift-right', 'pickaxe-scale-baguette', 'pickaxe-paw');
+            const sp = equippedSprite.split('/').pop().toLowerCase();
+            if (equipped.isPaw) {
+                // The bare Paw sits behind Doge and only shows when mining
+                pickaxeImg.classList.remove('pickaxe-intro');
+                pickaxeImg.classList.add('pickaxe-paw');
+            } else if (sp.includes('cleaver')) {
                 pickaxeImg.classList.add('pickaxe-scale-half');
             } else if (sp.includes('baguette')) {
                 pickaxeImg.classList.add('pickaxe-scale-baguette');
@@ -453,7 +832,7 @@ class SaveManager {
                 'fryingpan', 'bigboot', 'eguitar', 'cod.', 'felps',
                 'barbell', 'poolnoodle', 'record'
             ];
-            if (largeWeaponPatterns.some(p => sp.includes(p))) {
+            if (!equipped.isPaw && largeWeaponPatterns.some(p => sp.includes(p))) {
                 pickaxeImg.classList.add('pickaxe-shift-right');
             }
             // Update pickaxe button preview
@@ -474,6 +853,7 @@ class SaveManager {
         }
         this.game.upgrades = saveData.upgrades || {};
         this.game.helperUpgradeLevels = saveData.helperUpgradeLevels || {};
+        this.game.restoreLateProgression?.(saveData);
 
         const rebuildPlacedHelpers = (helpersArray = [], planet = 'earth') => {
             if (!Array.isArray(helpersArray)) return [];
@@ -505,6 +885,7 @@ class SaveManager {
 
                     const helper = {
                         type: savedHelper.type,
+                        ...(typeof savedHelper.groupId === 'string' ? { groupId: savedHelper.groupId } : {}),
                         x: savedHelper.x ?? 0,
                         y: savedHelper.y ?? 0,
                         id: savedHelper.id ?? (Date.now() + Math.random()),
@@ -633,6 +1014,17 @@ class SaveManager {
                 if (missingCount > 0) {
                     const helperData = shopCategory?.[type];
                     if (helperData) {
+                        // Purchases made through the phone bar retain the same
+                        // name when a desktop field is reconstructed later.
+                        const placedNames = new Map();
+                        for (const record of placedHelpers.filter(h => h.type === type && h.name)) {
+                            placedNames.set(record.name, (placedNames.get(record.name) || 0) + 1);
+                        }
+                        const names = ownedHelpers.filter(h => h.type === type && h.name).map(h => h.name).filter(name => {
+                            const used = placedNames.get(name) || 0;
+                            if (used) { placedNames.set(name, used - 1); return false; }
+                            return true;
+                        });
                         for (let i = 0; i < missingCount; i++) {
                             // Create clump pattern with small random offsets
                             const offsetX = (Math.random() - 0.5) * 80;
@@ -645,7 +1037,8 @@ class SaveManager {
                                 id: Date.now() + Math.random(),
                                 isMining: false,
                                 helper: helperData,
-                                dps: helperData.baseDps
+                                dps: helperData.baseDps,
+                                name: names.shift() || helperData.name
                             });
                             spawnIndex++;
                         }
@@ -693,10 +1086,23 @@ class SaveManager {
         this.game.achievements = saveData.statistics?.achievements || [];
         this.game.startTime = saveData.statistics?.startTime || Date.now();
 
+        this.game.restoreLootAutomation?.(saveData.lootAutomation, saveData.timelineNumber);
         this.game.soundEnabled = saveData.settings?.soundEnabled !== false;
         this.game.musicEnabled = saveData.settings?.musicEnabled !== false;
+        this.game.rockSoundsEnabled = saveData.settings?.rockSoundsEnabled !== false;
+        this.game.backgroundAudioEnabled = saveData.settings?.backgroundAudioEnabled !== false;
+        this.game.lessEffects = saveData.settings?.lessEffects === true;
+        this.game.limitFps = saveData.settings?.limitFps === true;
+        window.DogeMinerPerformance?.apply(this.game);
         this.game.notificationsEnabled = saveData.settings?.notificationsEnabled !== false;
+        this.game.storiesEnabled = saveData.settings?.storiesEnabled !== false;
+        this.game.hintsEnabled = saveData.settings?.hintsEnabled !== false;
+        this.game.newsEnabled = saveData.settings?.newsEnabled !== false;
+        this.game.syncStorySettings?.();
         this.game.autoSaveEnabled = saveData.settings?.autoSaveEnabled !== false;
+        this.game.autoPlaceHelpers = saveData.settings?.autoPlaceHelpers !== false;
+        const placementCheckbox = document.getElementById('auto-place-helpers');
+        if (placementCheckbox) placementCheckbox.checked = this.game.autoPlaceHelpers;
         this.game.hasPlayedMoonLaunch = saveData.cutscenes?.moonLaunch || false;
 
         // Restore unlockedLevels from saved array
@@ -719,9 +1125,28 @@ class SaveManager {
             }
         }
 
+        // Legacy saves recorded reached/unlocked planets, but no per-run Bonus
+        // Coin maximum. Infer that once; future timelines explicitly reset it.
+        const planets = ['earth', 'moon', 'mars', 'jupiter', 'titan'];
+        this.game.bonusCoinMaxPlanetLevel = Number.isFinite(saveData.bonusCoinMaxPlanetLevel)
+            ? Math.max(1, Math.min(5, Math.floor(saveData.bonusCoinMaxPlanetLevel)))
+            : Math.max(1, ...Array.from(this.game.unlockedLevels, planet => planets.indexOf(planet) + 1));
+        if (!this.game.bonusCoinBuffTier && this.game.bonusCoinBuffMultiplier > 1) {
+            const tiers = this.game.getBonusCoinTiers?.() || [];
+            // Alpha's old multipliers identify its claimed tier even if a later
+            // planet unlocked before this save. Keep that icon with the old buff.
+            const legacyTier = [1.5, 1.6, 1.7, 1.8, 1.9, 2].findIndex(multiplier => Math.abs(multiplier - this.game.bonusCoinBuffMultiplier) < 1e-9) + 1;
+            this.game.bonusCoinBuffTier = legacyTier || tiers.find(tier => tier && Math.abs(1 + tier.boost - this.game.bonusCoinBuffMultiplier) < 1e-9)?.level
+                || Math.max(1, Math.min(6, this.game.bonusCoinLevel));
+        }
+
         if (window.audioManager) {
             window.audioManager.soundEnabled = this.game.soundEnabled;
             window.audioManager.musicEnabled = this.game.musicEnabled;
+            window.audioManager.rockSoundsEnabled = this.game.rockSoundsEnabled;
+            window.audioManager.backgroundAudioEnabled = this.game.backgroundAudioEnabled;
+            window.audioManager.applyAudioPolicy?.();
+            window.audioManager.syncAudioSettings?.();
         }
 
         const soundCheckbox = document.getElementById('sound-enabled');
@@ -743,6 +1168,19 @@ class SaveManager {
         }
 
         this.game.updateDPS();
+        this.game.resumeBonusCoinBuff?.();
+        if (needsFreshActiveRock) {
+            const computedHP = this.game.getRockHP(this.game.rockBaseHP, this.game.rockLevel - 1, level);
+            this.game.rockMaxHP = Number.isFinite(computedHP) && computedHP > 0
+                ? computedHP : Math.max(1, this.game.rockBaseHP);
+            this.game.rockCurrentHP = this.game.rockMaxHP;
+            this.game.planetRockData[level] = { ...activeRockData,
+                rocksBroken: this.game.rocksBroken, rockLevel: this.game.rockLevel,
+                maxHP: this.game.rockMaxHP, currentHP: this.game.rockCurrentHP };
+        }
+        this.game.restoreLayout?.(saveData.layout,saveData.dm2Import);
+        this.game.setPlanetBackgrounds?.(this.game.currentLevel, { reset: true });
+        if (this.game._bootComplete) this.game.startSeasonal?.();
         this.game.updateUI();
         if (this.game.updateRockHealthDisplay) {
             this.game.updateRockHealthDisplay();
@@ -857,16 +1295,21 @@ class SaveManager {
         for (const item of items) {
             if (!item || typeof item !== 'object') continue;
             
-            // Map legacy .sprite to .idleSprite for pickaxes (Fortunes still use .sprite mostly but this is safe)
-            if (!item.idleSprite && item.sprite) {
-                item.idleSprite = item.sprite;
-            }
-            
             // Migrate all string properties that look like image paths
             for (const key of Object.keys(item)) {
                 if (typeof item[key] === 'string' && /\.(png|jpg|jpeg)$/i.test(item[key])) {
                     item[key] = item[key].replace(/\.(png|jpg|jpeg)$/i, '.webp');
                 }
+            }
+
+            // Restore canonical Patron artwork without changing earned stats.
+            if (item.templateId === 'badge_of_patronage' || item.name === 'Badge of Patronage') {
+                item.sprite = 'assets/general/icons/Fortunes/Protected Non Seasonal/Badge of Patronage/patreonbadge.webp';
+            }
+
+            // Migrate Super Fortune sprite path to the Protected Non Seasonal path
+            if (item.isSuperFortune || item.templateId === 'super_fortune' || item.name === 'Super Fortune') {
+                item.sprite = 'assets/general/icons/Fortunes/Protected Non Seasonal/Super Fortune/superfortune.webp';
             }
         }
     }
@@ -874,6 +1317,35 @@ class SaveManager {
     /**
      * Patches previously saved fortunes that had internal corrupted ASCII due to file encoding issues
      */
+    /**
+     * Merges duplicate D.I.A. Badges of the same type (name) into a single badge
+     * whose stat value is the sum. Mutates the inventory array in place.
+     */
+    _mergeDuplicateDiaBadges(inventory) {
+        if (!Array.isArray(inventory)) return;
+        const isBadge = f => f && (f.isDiaBadge || (typeof f.name === 'string' && f.name.startsWith('D.I.A. Badge')));
+        const byName = {};
+        const toRemove = [];
+        inventory.forEach(f => {
+            if (!isBadge(f)) return;
+            const keeper = byName[f.name];
+            if (!keeper) {
+                byName[f.name] = f;
+            } else {
+                const add = (f.stats && f.stats[0] && f.stats[0].value) || 0;
+                if (keeper.stats && keeper.stats[0]) keeper.stats[0].value += add;
+                toRemove.push(f);
+            }
+        });
+        if (toRemove.length > 0) {
+            toRemove.forEach(f => {
+                const idx = inventory.indexOf(f);
+                if (idx !== -1) inventory.splice(idx, 1);
+            });
+            console.log(`[Retroactive Fix] Merged ${toRemove.length} duplicate D.I.A. Badge(s)`);
+        }
+    }
+
     _patchCorruptedFortunes(inventory) {
         if (!Array.isArray(inventory)) return;
         inventory.forEach(item => {
@@ -903,15 +1375,15 @@ class SaveManager {
             }
         }
 
-        if (typeof saveData.dogecoins !== 'number' || saveData.dogecoins < 0) {
+        if (!Number.isFinite(saveData.dogecoins) || saveData.dogecoins < 0) {
             return false;
         }
 
-        if (typeof saveData.totalMined !== 'number' || saveData.totalMined < 0) {
+        if (!Number.isFinite(saveData.totalMined) || saveData.totalMined < 0) {
             return false;
         }
 
-        if (typeof saveData.totalClicks !== 'number' || saveData.totalClicks < 0) {
+        if (!Number.isFinite(saveData.totalClicks) || saveData.totalClicks < 0) {
             return false;
         }
 
@@ -957,41 +1429,38 @@ class SaveManager {
         }
     }
 
+    async importSaveText(text, { confirm = true, requestId = null } = {}) {
+        const importer = window.DogeMinerDM2Import;
+        if (!importer) throw new Error('Save conversion is unavailable. Your save was not changed.');
+        if (this._loadInProgress || this.game.isTransitioning || this.game.isCutscenePlaying) throw new Error('Finish the current event before importing.');
+        const panel = document.getElementById('left-panel');
+        const draft = importer.prepare(text,{field:{width:panel?.offsetWidth || 626,height:panel?.offsetHeight || 586}});
+        const summary = draft.summary;
+        const message = `${draft.format} save · Timeline ${summary.timeline}\n${this.game.formatNumber(summary.coins)} Dogecoins · ${summary.pickaxes} pickaxes · ${summary.fortunes} fortunes` +
+            (summary.helpers === undefined ? '' : ` · ${summary.helpers} helpers`) + '\n\n' + draft.notes.join('\n') + '\n\nReplace your current progress?';
+        if (confirm && !await importer.review(message,{title:'Import '+draft.format+' Save'})) return false;
+        draft.saveData.importReceipt = importer.requestReceipt({version:1,requestId:requestId || draft.fingerprint+'_'+Date.now(),fingerprint:draft.fingerprint});
+        const before = this.createSaveData(), flags = {blocked:this._saveBlocked,error:this.loadError};
+        try {
+            this.applySaveData(draft.saveData,{originalString:text,persist:true,
+                recovery:{key:'dogeminer_ce_before_import_v1',value:flags.blocked ? localStorage.getItem(this.saveKey) || JSON.stringify(before) : JSON.stringify(before)},
+                importOriginal:{key:'dogeminer_ce_import_original_'+draft.fingerprint,value:text}});
+            this.game.showNotification(draft.format+' save imported successfully!');
+            return true;
+        } catch (error) {
+            try { this._applySaveData(before); } catch (_) {}
+            this._saveBlocked=flags.blocked; this.loadError=flags.error;
+            throw error;
+        }
+    }
+
     importSave() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-
-        input.onchange = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const saveData = JSON.parse(e.target.result);
-
-                    if (this.validateSaveData(saveData)) {
-                        const ok = await gameConfirm('This will overwrite your current save. Continue?', {
-                            title: 'Import Save'
-                        });
-                        if (ok) {
-                            this.applySaveData(saveData);
-                            this.saveGame();
-                            this.game.showNotification('Save imported successfully!');
-                        }
-                    } else {
-                        this.game.showNotification('Invalid save file!');
-                    }
-                } catch (error) {
-                    console.error('Error importing save:', error);
-                    this.game.showNotification('Error importing save!');
-                }
-            };
-
-            reader.readAsText(file);
+        const input = document.createElement('input'); input.type='file'; input.accept='.json,.doge,.txt';
+        input.onchange = async event => {
+            const file=event.target.files[0];if(!file)return;
+            try { await this.importSaveText(await file.text()); }
+            catch(error){console.error('Error importing save:',error);this.game.showNotification(error.message || 'Could not import this save. Your progress was kept.');}
         };
-
         input.click();
     }
 
@@ -1018,9 +1487,41 @@ class SaveManager {
                 }
 
                 // Reset game state directly
+                this.game.resetDogebagPresentation?.();
+                this.game.resetFieldLootPresentation?.();
+                this.game.resetDogebagStacks?.();
+                this.game.restoreDiamondStacks?.(null);
+                this.game._currencyFlightEpoch = (this.game._currencyFlightEpoch || 0) + 1;
+                this.game._rockStateEpoch = (this.game._rockStateEpoch || 0) + 1;
+                this.game.activeEffectCount = 0;
+                this.game.isRockRegenerating = false;
+                this.game.pendingCoinDisplayAmount = 0;
+                this.game.pendingDiamondDisplayAmount = 0;
+                this.game.encounters=window.DogeMinerEncounters?.normalize();
+                this.game.restoreLayout?.({version:1,mode:'auto'});
+                this.game.restoreSeasonal?.(null);
+                this.game.dm2Import = null;
+                this.game.importReceipt = null;
                 this.game.dogecoins = 0;
                 this.game.totalMined = 0;
+                this.game.timelineNumber = 1;
+                this.game.timelineProgress = null;
+                        this.game.resetRockReplacement?.();
+                this.game.resetCateThief?.();
+                window.DogeMinerReleaseNotes?.close({immediate:true});
+                this.game.resetToolPresentation?.();
+                this.game.resetUpgradePresentation?.();
+                this.game.resetMoonLaunchPresentation?.();
+                this.game.resetStoryPresentation?.();
+                this.game.storyProgress = null;
+                this.game.worldDiscovery = null;
+                this.game.storiesEnabled = true;
+                this.game.hintsEnabled = true;
+                this.game.newsEnabled = true;
+                this.game.syncStorySettings?.();
+                this.game.diaMissionSeenOnce = false;
                 this.game.totalClicks = 0;
+                this.game.restoreMiningRecords?.(null);
                 this.game.dps = 0;
                 this.game.helpers = [];
                 this.game.moonHelpers = [];
@@ -1038,27 +1539,47 @@ class SaveManager {
                 this.game.isPlacingHelpers = false;
                 this.game.upgrades = [];
                 this.game.helperUpgradeLevels = {};
+                this.game.lateProgression = window.DogeMinerLateProgression?.fresh(1);
+                this.game.helperUpgradeOffers = {};
+                this.game.searchdogeDiscovery = null;
                 this.game.pickaxeInventory = [this.game.defaultPickaxe];
                 this.game.equippedPickaxeId = 'default_normal_pickaxe';
+                Object.assign(this.game, window.DogeMinerTools?.discoveryState());
                 this.game.maxPickaxeDPC = 1;
                 this.game.fortuneInventory = [];
+                this.game.restoreInventoryUnread?.(null);
                 
                 // Preserve supporter status across resets — this represents a real-money purchase
                 // The badge will be re-granted automatically by setSupporterStatus on next load
                 const wasSupporter = this.game.isSupporter;
                 this.game.latestObtainedFortune = null;
+                this.game.lastPickaxeDropTime = 0;
+                this.game.prizesSinceLastPickaxe = 0;
                 this.game.moonDogebagCount = 0;
                 this.game.mysteryBoxObtained = false;
+                this.game.mysteryBoxEvolutionPending = false;
+                this.game._mysteryEvolution = null; this.game._mysteryEntryAt = 0;
                 this.game.mysteryBoxOpenCount = 0;
+                this.game.mysteryBoxCycle = 0;
+                this.game._mysteryBoxReadyAt = null;
+                this.game.mysteryBoxLastKind = 'pickaxe';
                 this.game.mysteryBoxTimerRemaining = 0;
                 this.game.mysteryBoxLastSaveTime = 0;
 
+                this.game.resetRickVisitor?.();
+                this.game.despawnRick?.({ animate: false });
+
                 // Reset Bonus Coin progression and clear any active buff / on-screen coin
                 this.game.bonusCoinLevel = 1;
+                this.game.bonusCoinMaxPlanetLevel = 1;
+                this.game.bonusCoinBuffTier = 0;
+                this.game.bonusCoinClaimCount = 0;
+                this.game.bonusCoinEarlyOffered = false;
+                this.game.resetBonusCoinSpawnCycle?.();
                 this.game.bonusCoinSeenLevel = 0;
                 this.game.bonusCoinBuffMultiplier = 1;
                 this.game.bonusCoinBuffEndTime = 0;
-                if (typeof this.game._expireBonusCoinBuff === 'function') this.game._expireBonusCoinBuff();
+                if (typeof this.game._expireBonusCoinBuff === 'function') this.game._expireBonusCoinBuff({ silent: true });
                 if (typeof this.game._removeBonusCoinEl === 'function') this.game._removeBonusCoinEl();
 
                 // Reset Dogediamonds
@@ -1080,12 +1601,19 @@ class SaveManager {
                 }
                 
                 this.game.rocksBroken = 0;
+                this.game.rockLevel = 1;
+                this.game.balanceVersion = window.DogeMinerBalance?.VERSION || null;
+                this.game.betaMigrationReport = null;
+                this.game.offlineEarningsReport = null;
+                this.game.closeOfflineEarningsReport?.();
+                this.loadError = null;
+                this._saveBlocked = false;
                 this.game.planetRockData = {
-                    earth: { rocksBroken: 0, currentHP: null, maxHP: null },
-                    moon:  { rocksBroken: 0, currentHP: null, maxHP: null },
-                    mars:  { rocksBroken: 0, currentHP: null, maxHP: null },
-                    jupiter: { rocksBroken: 0, currentHP: null, maxHP: null },
-                    titan: { rocksBroken: 0, currentHP: null, maxHP: null }
+                    earth: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                    moon:  { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                    mars:  { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                    jupiter: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null },
+                    titan: { rocksBroken: 0, rockLevel: 1, currentHP: null, maxHP: null }
                 };
                 
                 this.game.rockBaseHP = this.game.getPlanetRockBaseHP('earth');
@@ -1094,6 +1622,10 @@ class SaveManager {
                 this.game.lastDamageThresholdPercent = 100;
                 this.game.recalculatePlayerStats();
                 this.game.currentLevel = 'earth';
+                this.game.autoPlaceHelpers = true;
+                this.game.restoreLootAutomation?.(null, 1);
+                const placementCheckbox = document.getElementById('auto-place-helpers');
+                if (placementCheckbox) placementCheckbox.checked = true;
                 this.game.hasPlayedMoonLaunch = false;
                 this.game.hasSeenDogebagIntro = false;
                 this.game.isCutscenePlaying = false;

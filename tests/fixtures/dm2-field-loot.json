@@ -1,0 +1,138 @@
+{
+  "source": "https://dogeminer2.com/assets/play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "capCases": [
+    {
+      "count": 0,
+      "amount": 0,
+      "added": 0,
+      "remaining": 0
+    },
+    {
+      "count": 0,
+      "amount": 1,
+      "added": 1,
+      "remaining": 1
+    },
+    {
+      "count": 0,
+      "amount": 2,
+      "added": 2,
+      "remaining": 2
+    },
+    {
+      "count": 0,
+      "amount": 1000,
+      "added": 999,
+      "remaining": 999
+    },
+    {
+      "count": 1,
+      "amount": 0,
+      "added": 0,
+      "remaining": 1
+    },
+    {
+      "count": 1,
+      "amount": 1,
+      "added": 1,
+      "remaining": 2
+    },
+    {
+      "count": 1,
+      "amount": 2,
+      "added": 2,
+      "remaining": 3
+    },
+    {
+      "count": 1,
+      "amount": 1000,
+      "added": 998,
+      "remaining": 999
+    },
+    {
+      "count": 998,
+      "amount": 0,
+      "added": 0,
+      "remaining": 998
+    },
+    {
+      "count": 998,
+      "amount": 1,
+      "added": 1,
+      "remaining": 999
+    },
+    {
+      "count": 998,
+      "amount": 2,
+      "added": 1,
+      "remaining": 999
+    },
+    {
+      "count": 998,
+      "amount": 1000,
+      "added": 1,
+      "remaining": 999
+    },
+    {
+      "count": 999,
+      "amount": 0,
+      "added": 0,
+      "remaining": 999
+    },
+    {
+      "count": 999,
+      "amount": 1,
+      "added": 0,
+      "remaining": 999
+    },
+    {
+      "count": 999,
+      "amount": 2,
+      "added": 0,
+      "remaining": 999
+    },
+    {
+      "count": 999,
+      "amount": 1000,
+      "added": 0,
+      "remaining": 999
+    }
+  ],
+  "warningCases": [
+    {
+      "random": 0,
+      "delay": 6001
+    },
+    {
+      "random": 0.1,
+      "delay": 6067
+    },
+    {
+      "random": 0.5,
+      "delay": 6334
+    },
+    {
+      "random": 0.999999,
+      "delay": 6666
+    }
+  ],
+  "coinRemovalDelay": 3030,
+  "miniLimit": {
+    "desktop": 10,
+    "phone": 4
+  },
+  "diamondPositions": {
+    "desktop": [
+      134,
+      159
+    ],
+    "phone": [
+      302,
+      203
+    ]
+  },
+  "coinClickCollectsOne": true,
+  "bagOpeningCollectsAllCoins": true,
+  "prestigeClearsFieldStacks": true
+}

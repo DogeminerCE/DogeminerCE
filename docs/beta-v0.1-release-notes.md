@@ -1,0 +1,124 @@
+# Alpha v0.055 → Beta v0.1
+
+Player-facing changes compared with the repository’s `Alpha` tag (`557693f5b85c026d8b5c69c6ad9c4ca3d163f570`), which displays `v0.055 (ALPHA)`. Release build: `beta-v0.1`.
+
+## Mining, rewards and balance
+
+- A HUGE mining and item balance pass! Pickaxes, Fortunes, helpers, rarity and critical hits now follow Dogeminer 2 progression much more closely.
+- Removed the old per-hit damage cap, so strong pickaxes can actually hit hard! Rock health scales with your planet and mining progress, and hits still stop at the rock's remaining health.
+- Record critical hits now get their own recoil and hit text. Your best critical hit is saved too!
+- BONUS COINS! Different planets and progression milestones unlock stronger boosts. Collect one to scoop up nearby coins and enjoy the extra mining power.
+- Added a Bonus Coin display showing your active boost and how long you have left. No more guessing when the bonus ends!
+- DOGEDIAMONDS! Find them in rocks, keep them between timelines, and spend one to unlock the third SearchDoge upgrade slot. Your first find gets its own introduction.
+- Your helpers can now earn coins while you are away! Return after more than five minutes to collect 30% of your permanent DPS, for up to 24 hours.
+- Dogebags now use the correct planet and quality pools, with Luck and Loot Find doing their jobs. Pickaxe drops also account for your current timeline and recent finds.
+- Fixed the missing Mystery Box Fortunes, repeat rewards, remembered prize types and opening cooldowns. Its normal/double-reward cycle now works properly too.
+- The Mystery Box can EVOLVE once you reach the right milestone! The introduction and your progress are saved.
+- Corrected the Doge Gate price and made sure rocket cost reductions apply properly.
+- Added BUY MAX! Hold a helper's buy button to reveal the bulk purchase option, complete with the total price.
+- Coins and income counters now update smoothly. Coins still flying into the counter are counted when they arrive.
+- Bare Paw still deals exactly 1 damage. SunDoge staffs keep their passive DPS role and do not gain direct click damage.
+
+## Stories, discoveries and late progression
+
+- STORIES! Story progress is now saved, including messages waiting to appear. Reloading will not hand out the same story reward twice.
+- Added the first Earth goal and introduction to reaching the Moon.
+- Added the return stories and arrival sequences for timeline 2, 3, 4 and later timelines. There is more to coming home than just another rock :)
+- Added the Moon arrival story, treasure map and discovery of the route to Mars.
+- Added the Mars arrival story, crude drawing and discoveries leading toward Jupiter.
+- Fixed planet tabs treating a destination you have heard about as somewhere you can already visit. Discovering a world and unlocking its route are now separate.
+- Added the Time Machine Rig invention milestone before Jupiter.
+- Added the first D.I.A. contact and Jupiter arrival stories.
+- Added Titan's sensor discovery, DogeStar route and both progression stories.
+- The Altar of the SunDoge now has its full awakening and Robo-Yoga progression, including the matching helper upgrades and Dogediamond payment options.
+- Added Titan blueprints, their discovery and collection, the next Altar stage and the Reallyhardium upgrade wave. These milestones survive reloads.
+- DJ Kittenz can finally release a hit song and earn royalty income! The reward is saved and cannot be claimed again by reloading.
+
+## D.I.A. missions, prestige and history
+
+- TIME TRAVEL IS HERE! The D.I.A. has an assignment for you. Meet Burt, choose your badge, complete the mission and begin your next timeline!
+- The full mission supports smaller screens and controllers, including both choices and every reward. Holding a button will not accidentally accept the next prompt or claim a reward twice.
+- Earn Dogediamonds from the coins and pickaxes you bring to the end of a timeline. The payout preview stays consistent throughout the mission.
+- Your D.I.A. badge grows stronger with completed timelines, using the correct reward calculation.
+- Added timeline history! Statistics now show completed runs, earnings, mining time and mission choices alongside your current timeline.
+- Protected Fortunes now stack without losing their earned stats. Seasonal Fortunes, badges and other protected rewards stay with you through time travel.
+- Added Super Fortunes that combine eligible bonuses between timelines. Already-earned Super Fortune stats and protected items are kept intact.
+- Fixed old helpers, timers and temporary effects hanging around after time travel.
+- First-timeline Statistics stay compact. Once you have a history to show, completed timelines scroll inside their own panel.
+
+## Field loot, visitors and tools
+
+- Capped Dogebags now show the full reward breakdown! Opening a 99-stack pays ALL 99 rewards; coin rewards are counted separately so a shorter item list no longer makes the payout look incomplete.
+- Dogebags remember their original planet, quality and saved count. Full stacks have clearer feedback, and earned rewards are saved before the opening animation.
+- Collecting a Dogebag now gathers loose Dogecoins from the mine in the same claim.
+- Unclaimed Dogediamonds form proper layered stacks on the field, with their counts saved between visits.
+- Loose coins warn you before fading away. Collected piles and effects from old planets clean up properly.
+- Nearby helpers can pick up coins, and the right helpers will seek out available piles!
+- Added Auto-Pickup Loot after your first time travel. It can collect new drops and equip new pickaxes for you, while existing stashes remain available to open yourself.
+- The next rock waits when a full loot pile is blocking drops, then resumes when you make room.
+- Polished how bags, coins and diamonds arrive, stack, hover and fly into their counters. Kept the crisp outlines!
+- Cate Thieves can visit your mine! Catch one to free a named Streamer Kitten and unlock its story.
+- RICK IS BACK! Fixed duplicate Ricks, his held pickaxe alignment and pieces being left behind when he leaves. His helper buff now expires properly even when you click out of the game.
+- Added dual wielding for compatible duplicate pickaxes, including the second hand and matching attack behavior.
+- Added SunDoge staff fusion, with saved progress and the correct passive DPS behavior.
+- Drills now support hold-to-mine, their own movement and proper release/cancel handling.
+- Restored the matching movement, layering and sounds for pickaxes, drills, critical hits and helper actions.
+
+## Inventory, shop and presentation
+
+- SearchDoge now discovers and saves upgrade offers as you play. The Upgrade badge counts actual found offers in your unlocked slots.
+- Polished upgrade cards, hover feedback and purchase fades. Helpers now show APPLYING and DONE while their equipment changes.
+- Helper cards now show their boosted DPS. Hover or tap for a breakdown of where the extra income comes from.
+- New-item badges stay unread until you review the inventory, instead of disappearing just because the UI updated.
+- Inventory details now include all aggregate stats, consistent attribute colors and explanations that match what the stats actually do.
+- Kept the CE inventory grid, search, filters and sorting, with clearer item details, equipped states, DPC comparisons and controller/touch navigation.
+- Added the missing NewsDoge reports, with the matching stories, sizes and movement.
+- Polished button presses, close controls and event notices so their feedback feels consistent.
+- Helpers and Doge have more of their mining phrases, conversations, held/drop chatter and matching animations. Hover names and outlines fade properly too.
+- Moon and Super Shibes now have personal names. Grouped helpers keep their members' names and information.
+- Added the Moon launch introduction, playback controls, replay/skip behavior and input guards.
+- Restored planet background variety and smoother transitions. An image finishing late will no longer put the wrong planet behind your mine.
+- Cleaned up counters, timeline labels, the planet/population footer, upgrade badges, tooltips and short-screen panels.
+- Fixed broken item images, old fallback paths and encoded Fortune names, including Fortune of Günther and Fortune of the Đ. Repaired damaged PNG color-profile checksums without changing the artwork. Pandie is in the Mining Shibe name pool too!
+
+## Saves, import and recovery
+
+- Existing Alpha saves get a balance update with a searchable before/after report. An independent copy of the original save is kept for recovery.
+- The save update preserves your coins, diamonds, helpers, equipped item, earned item rolls, Super Fortunes, badges and protected/custom items.
+- Fixed older saves getting stuck with an absurdly difficult rock. A one-time adjustment brings its health back in reach while keeping your mining progress.
+- Cloud saves now compare completed timelines and lifetime earned progress before replacing anything. Active rewards wait to finish, newer progress wins, and cloud writes keep supporter perks intact.
+- Convert your Dogeminer 2 save to CE! Import CE JSON, Base64 or UTF16 .doge files, review the progress first, and keep backups of both the original and the CE save being replaced.
+- DM2 conversion keeps item rolls, protected rewards, equipment, helpers, names, positions, worlds, clues, stashes, Mystery Box progress and available timeline history. Johnny progress maps to the CE Altar.
+- The home page now offers Continue when it finds a supported save or backup. You can also review and import a save before entering the game.
+- Fixed landing-page imports being applied again after reload. Failed imports keep the original data available for recovery.
+- Coin, diamond, bag, offline, story and mission rewards now save before their animations. Reloading or closing a reward early cannot pay it twice.
+- Damaged or unsupported saves are rejected before replacing progress. If storage fails during a write, the previous save and backup are restored together. Incomplete item downloads now stop startup before your existing save is touched.
+- Changing planets now cancels helper placement safely. Saved rock regeneration, helper groups and pending rewards restore consistently.
+
+## Holidays and the Easter hunt
+
+- HOLIDAY EVENTS! Easter runs March 31–April 8, Halloween October 24–31, and Christmas December 15–31, using your local calendar.
+- Added holiday backgrounds, head accessories, Santa expressions, rock and footer decorations, counters and Christmas music. Existing audio settings still apply.
+- Added 10 seasonal pickaxe types and 21 protected Fortune types to the matching event drops and Mystery Box pools. Anything you earn stays usable after the event ends!
+- The Easter egg hunt is here! Find nine hidden eggs across the five worlds, Settings, both inventories and Upgrades. The original egg icons track your finds, and completing the hunt unlocks the golden-egg story and reward.
+- Each Easter egg adds to the event income bonus. All nine give ×1.09; the golden reward doubles that to ×2.18. Fixed the count and completed golden-egg display.
+- Holiday Spirit on equipped pickaxes and Fortunes now adds its event DPS bonus away from Earth. The bonus turns off outside the matching event.
+- Added saved Holiday Events and Auto-Pickup Loot settings after time travel. Turning events off keeps your items and egg progress, and imported event preferences carry across.
+
+## Controls, audio, mobile and updates
+
+- Hint, Story Popups and NewsDoge preferences now save separately and control their own messages. Turning stories off does not discard earned story rewards.
+- Added Mute Rock Sounds, so you can quiet the mining without turning off every sound effect.
+- Background Audio now controls sound while the game is hidden or unfocused, alongside the existing music and effects settings.
+- Added Less Effects and an optional 48 FPS cap for players who want a quieter or lighter game.
+- Choose Automatic, Desktop, Tablet or Phone layout! Fixed profiles fit the display and include a way back to Automatic. Settings dropdowns line up, Supporter stays visible on desktop after travel, and controller focus follows layout changes.
+- Fixed mobile swipes being mistaken for mining, equipping or helper input. Inventories browse horizontally while content can still scroll vertically; extra fingers, lost touches and rotation cancel unfinished gestures.
+- Kept the DOGE keyboard secret and its optional link to the original game. Wide-layout keyboard tricks are reserved for the native versions.
+- NEW PATCH NOTES now has a clearer click target and dot. After reading, the button returns to just the version number, without an underline. Update notices still save before reloading.
+- The Beta notes now cover the changes since Alpha v0.055. Your existing saves are updated for Beta instead of asking you to start over. Windows packages use a separate increasing version so Beta is recognized as an update to Alpha.
+- Another Mobile & Controller polish pass! Larger Phone targets, tidier dropdowns and narrow tabs, Supporter access, more landscape drawer space, and dialogs that properly take input from the panel behind them. Phone settings now include helper placement and controller options; mobile sign-out updates immediately, and Xbox-only controls stay hidden.
+- Controller navigation now reaches both upgrade currencies and the third SearchDoge slot, follows Phone shop cards, opens a closed drawer and skips worlds whose routes are still locked.
+
+## Coverage and review
+
+The in-game feed and this document are generated from [the editable note catalog](beta-v0.1-release-notes.json). [Coverage](beta-v0.1-release-note-coverage.json) maps all 101 completed parity entries to their exact bullets. The development log, migration report and checkpoint guides provide implementation/test evidence. The static browser title and disabled source hover feature are retained omissions. Existing CE design policies and the physical-device verification queue remain recorded in the [parity backlog](dm2-parity/remaining-parity-backlog.md).

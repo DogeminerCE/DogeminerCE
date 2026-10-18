@@ -1,0 +1,636 @@
+{
+  "schema": 1,
+  "baseline": {
+    "ref": "Alpha",
+    "commit": "557693f5b85c026d8b5c69c6ad9c4ca3d163f570",
+    "label": "v0.055 (ALPHA)"
+  },
+  "build": "beta-v0.1",
+  "implementedEntries": 101,
+  "coverage": {
+    "M19": [
+      {
+        "post": 1,
+        "bullet": 3
+      }
+    ],
+    "M20": [
+      {
+        "post": 1,
+        "bullet": 4
+      }
+    ],
+    "M21": [
+      {
+        "post": 1,
+        "bullet": 4
+      }
+    ],
+    "M22": [
+      {
+        "post": 1,
+        "bullet": 4
+      }
+    ],
+    "S07": [
+      {
+        "post": 1,
+        "bullet": 4
+      }
+    ],
+    "U23": [
+      {
+        "post": 1,
+        "bullet": 5
+      }
+    ],
+    "S26": [
+      {
+        "post": 1,
+        "bullet": 6
+      }
+    ],
+    "M01": [
+      {
+        "post": 1,
+        "bullet": 7
+      }
+    ],
+    "S25": [
+      {
+        "post": 1,
+        "bullet": 7
+      }
+    ],
+    "M28": [
+      {
+        "post": 1,
+        "bullet": 9
+      }
+    ],
+    "S24": [
+      {
+        "post": 1,
+        "bullet": 10
+      }
+    ],
+    "M14": [
+      {
+        "post": 1,
+        "bullet": 11
+      }
+    ],
+    "M32": [
+      {
+        "post": 1,
+        "bullet": 12
+      }
+    ],
+    "U25": [
+      {
+        "post": 1,
+        "bullet": 13
+      }
+    ],
+    "S01": [
+      {
+        "post": 2,
+        "bullet": 1
+      }
+    ],
+    "S02": [
+      {
+        "post": 2,
+        "bullet": 2
+      }
+    ],
+    "S03": [
+      {
+        "post": 2,
+        "bullet": 3
+      }
+    ],
+    "S04": [
+      {
+        "post": 2,
+        "bullet": 3
+      }
+    ],
+    "S05": [
+      {
+        "post": 2,
+        "bullet": 3
+      }
+    ],
+    "S06": [
+      {
+        "post": 2,
+        "bullet": 3
+      }
+    ],
+    "S08": [
+      {
+        "post": 2,
+        "bullet": 4
+      }
+    ],
+    "S09": [
+      {
+        "post": 2,
+        "bullet": 4
+      }
+    ],
+    "S10": [
+      {
+        "post": 2,
+        "bullet": 4
+      }
+    ],
+    "S11": [
+      {
+        "post": 2,
+        "bullet": 5
+      }
+    ],
+    "S12": [
+      {
+        "post": 2,
+        "bullet": 5
+      }
+    ],
+    "S13": [
+      {
+        "post": 2,
+        "bullet": 5
+      }
+    ],
+    "U17": [
+      {
+        "post": 2,
+        "bullet": 6
+      }
+    ],
+    "M07": [
+      {
+        "post": 2,
+        "bullet": 7
+      }
+    ],
+    "S14": [
+      {
+        "post": 2,
+        "bullet": 7
+      }
+    ],
+    "S15": [
+      {
+        "post": 2,
+        "bullet": 8
+      }
+    ],
+    "S16": [
+      {
+        "post": 2,
+        "bullet": 8
+      }
+    ],
+    "S18": [
+      {
+        "post": 2,
+        "bullet": 9
+      }
+    ],
+    "S19": [
+      {
+        "post": 2,
+        "bullet": 9
+      }
+    ],
+    "M04": [
+      {
+        "post": 2,
+        "bullet": 10
+      }
+    ],
+    "M05": [
+      {
+        "post": 2,
+        "bullet": 10
+      }
+    ],
+    "M15": [
+      {
+        "post": 2,
+        "bullet": 10
+      }
+    ],
+    "S20": [
+      {
+        "post": 2,
+        "bullet": 10
+      }
+    ],
+    "M06": [
+      {
+        "post": 2,
+        "bullet": 11
+      }
+    ],
+    "S21": [
+      {
+        "post": 2,
+        "bullet": 11
+      }
+    ],
+    "S22": [
+      {
+        "post": 2,
+        "bullet": 11
+      }
+    ],
+    "M13": [
+      {
+        "post": 2,
+        "bullet": 12
+      }
+    ],
+    "S17": [
+      {
+        "post": 2,
+        "bullet": 12
+      }
+    ],
+    "M08": [
+      {
+        "post": 3,
+        "bullet": 3
+      }
+    ],
+    "M09": [
+      {
+        "post": 3,
+        "bullet": 3
+      }
+    ],
+    "M10": [
+      {
+        "post": 3,
+        "bullet": 4
+      }
+    ],
+    "M11": [
+      {
+        "post": 3,
+        "bullet": 5
+      }
+    ],
+    "M12": [
+      {
+        "post": 3,
+        "bullet": 6
+      }
+    ],
+    "U06": [
+      {
+        "post": 4,
+        "bullet": 1
+      }
+    ],
+    "M26": [
+      {
+        "post": 4,
+        "bullet": 3
+      }
+    ],
+    "M27": [
+      {
+        "post": 4,
+        "bullet": 4
+      }
+    ],
+    "M33": [
+      {
+        "post": 4,
+        "bullet": 5
+      }
+    ],
+    "M24": [
+      {
+        "post": 4,
+        "bullet": 6
+      }
+    ],
+    "M25": [
+      {
+        "post": 4,
+        "bullet": 6
+      }
+    ],
+    "M23": [
+      {
+        "post": 4,
+        "bullet": 7
+      }
+    ],
+    "M29": [
+      {
+        "post": 4,
+        "bullet": 8
+      }
+    ],
+    "U22": [
+      {
+        "post": 4,
+        "bullet": 9
+      }
+    ],
+    "E01": [
+      {
+        "post": 4,
+        "bullet": 10
+      }
+    ],
+    "S23": [
+      {
+        "post": 4,
+        "bullet": 10
+      }
+    ],
+    "E02": [
+      {
+        "post": 4,
+        "bullet": 11
+      }
+    ],
+    "E03": [
+      {
+        "post": 4,
+        "bullet": 11
+      }
+    ],
+    "M16": [
+      {
+        "post": 4,
+        "bullet": 12
+      }
+    ],
+    "M17": [
+      {
+        "post": 4,
+        "bullet": 13
+      }
+    ],
+    "M18": [
+      {
+        "post": 4,
+        "bullet": 14
+      }
+    ],
+    "U12": [
+      {
+        "post": 4,
+        "bullet": 15
+      }
+    ],
+    "E08": [
+      {
+        "post": 4,
+        "bullet": 15
+      }
+    ],
+    "M02": [
+      {
+        "post": 5,
+        "bullet": 1
+      }
+    ],
+    "M03": [
+      {
+        "post": 5,
+        "bullet": 1
+      }
+    ],
+    "U07": [
+      {
+        "post": 5,
+        "bullet": 2
+      }
+    ],
+    "U08": [
+      {
+        "post": 5,
+        "bullet": 2
+      }
+    ],
+    "U24": [
+      {
+        "post": 5,
+        "bullet": 3
+      }
+    ],
+    "U02": [
+      {
+        "post": 5,
+        "bullet": 4
+      }
+    ],
+    "U03": [
+      {
+        "post": 5,
+        "bullet": 5
+      }
+    ],
+    "U04": [
+      {
+        "post": 5,
+        "bullet": 5
+      }
+    ],
+    "U05": [
+      {
+        "post": 5,
+        "bullet": 5
+      }
+    ],
+    "U01": [
+      {
+        "post": 5,
+        "bullet": 7
+      }
+    ],
+    "U09": [
+      {
+        "post": 5,
+        "bullet": 8
+      }
+    ],
+    "U10": [
+      {
+        "post": 5,
+        "bullet": 8
+      }
+    ],
+    "U13": [
+      {
+        "post": 5,
+        "bullet": 9
+      }
+    ],
+    "U14": [
+      {
+        "post": 5,
+        "bullet": 9
+      }
+    ],
+    "U15": [
+      {
+        "post": 5,
+        "bullet": 9
+      }
+    ],
+    "U26": [
+      {
+        "post": 5,
+        "bullet": 10
+      }
+    ],
+    "U16": [
+      {
+        "post": 5,
+        "bullet": 11
+      }
+    ],
+    "U18": [
+      {
+        "post": 5,
+        "bullet": 12
+      }
+    ],
+    "M30": [
+      {
+        "post": 6,
+        "bullet": 4
+      }
+    ],
+    "M31": [
+      {
+        "post": 6,
+        "bullet": 5
+      }
+    ],
+    "U21": [
+      {
+        "post": 6,
+        "bullet": 7
+      }
+    ],
+    "E04": [
+      {
+        "post": 7,
+        "bullet": 1
+      }
+    ],
+    "E05": [
+      {
+        "post": 7,
+        "bullet": 3
+      }
+    ],
+    "E06": [
+      {
+        "post": 7,
+        "bullet": 4
+      }
+    ],
+    "E07": [
+      {
+        "post": 7,
+        "bullet": 6
+      }
+    ],
+    "Q09": [
+      {
+        "post": 7,
+        "bullet": 7
+      }
+    ],
+    "Q01": [
+      {
+        "post": 8,
+        "bullet": 1
+      }
+    ],
+    "Q02": [
+      {
+        "post": 8,
+        "bullet": 1
+      }
+    ],
+    "Q03": [
+      {
+        "post": 8,
+        "bullet": 2
+      }
+    ],
+    "Q04": [
+      {
+        "post": 8,
+        "bullet": 3
+      }
+    ],
+    "Q05": [
+      {
+        "post": 8,
+        "bullet": 4
+      }
+    ],
+    "Q06": [
+      {
+        "post": 8,
+        "bullet": 4
+      }
+    ],
+    "Q07": [
+      {
+        "post": 8,
+        "bullet": 5
+      }
+    ],
+    "Q10": [
+      {
+        "post": 8,
+        "bullet": 6
+      }
+    ],
+    "E09": [
+      {
+        "post": 8,
+        "bullet": 7
+      }
+    ],
+    "U19": [
+      {
+        "post": 8,
+        "bullet": 8
+      }
+    ]
+  },
+  "omitted": [
+    {
+      "id": "U11",
+      "title": "Doge/pickaxe hover tilt and idle sway",
+      "reason": "Original missing-feature classification corrected: live exported source defaults/configs are disabled and unarmed. The exact source gate stays off with renderer references; explicit-enable positive control and phone suppression are tested. No extra CE motion added."
+    },
+    {
+      "id": "U20",
+      "title": "Browser title balance",
+      "reason": "Checkpoint14 balance-title behavior removed at the user request in Checkpoint15. Static Dogeminer:CE title; HUD currency flight behavior retained."
+    }
+  ],
+  "sources": [
+    "DEVELOPMENT_CHANGES_LOG.md",
+    "docs/dm2-parity/remaining-parity-backlog.json",
+    "docs/dm2-parity/beta-balance-migration.md",
+    "Alpha..HEAD + current working tree"
+  ]
+}

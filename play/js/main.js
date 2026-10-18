@@ -15,11 +15,19 @@ document.addEventListener('contextmenu', (e) => {
 
 async function initializeGame() {
     try {
+        if (window.CEParityTesting?.active && window.CEParityTesting.error) throw new Error(window.CEParityTesting.error);
+        window.CEParityTesting?.mute?.();
         showLoadingScreen();
         updateLoadingInfo('Initializing game engine...');
+        if (['DogeMinerSaveReconciliation', 'DogeMinerDM2Import', 'DogeMinerDM2ImportData', 'DogeMinerLZString', 'DogeMinerLandingSave', 'DogeMinerSeasonal', 'DogeMinerLayout', 'DogeMinerSecrets'].some(name => !window[name])
+            || typeof DogeMinerGame.prototype.getSeasonalForSave !== 'function' || typeof DogeMinerGame.prototype.getLayoutForSave !== 'function'
+            || !window.DogeMinerReleaseNotes || !window.DogeMinerRockReplacement || !window.DogeMinerRickVisitor || !window.DogeMinerEncounters || !window.DogeMinerToolAudio || !window.DogeMinerToolProfiles || !window.DogeMinerDrills || !window.DogeMinerSunDogeFusion || !window.DogeMinerTools || !window.DogeMinerUpgradePresentation || !window.DogeMinerLateProgression || !window.DogeMinerMoonLaunch || !window.DogeMinerMobileGestures || !window.DogeMinerFrameClock || !window.DogeMinerPerformance || !window.DogeMinerBonusHud || !window.DogeMinerMotionNotice || !window.DogeMinerEventNotifications || !window.DogeMinerButtonMotion || !window.DogeMinerFieldPersonality || !window.DogeMinerHelperNames || !window.DogeMinerHelperShopDetails || !window.DogeMinerBulkShop || !window.DogeMinerLootAutomation || !window.DogeMinerHelperLoot || !window.DogeMinerFieldLoot || !window.PopupPresentation || !window.DogeMinerBalance || !window.BetaSaveMigration || !window.BetaBalanceReport || !window.WelcomeBackReport || !window.DogeMinerOfflineEarnings || !window.DogeMinerTimelineHistory || !window.DogeMinerStories || !window.DogeMinerStoryHistory || !window.DogeMinerNewsDoge || !window.DogeMinerWorldDiscovery || !window.DogeMinerSearchdoge || !window.LootMotion || typeof DogeMinerGame.prototype.scheduleOfflineEarningsReport !== 'function' || typeof DogeMinerGame.prototype.animateMysteryBoxOpening !== 'function') {
+            throw new Error('Game balance or loot presentation files could not be loaded. Your existing save has not been changed; please refresh.');
+        }
 
         // Initialize game instance
         game = new DogeMinerGame();
+        game.isPlaying = false;
 
         // Set initial planet attribute for CSS targeting
         document.body.dataset.planet = game.currentLevel;
@@ -33,10 +41,14 @@ async function initializeGame() {
                 game.pickaxeFactory.loadTemplates(),
                 game.fortuneFactory.loadTemplates()
             ]);
+            if (game.pickaxeFactory.loadErrors?.length || game.fortuneFactory.loadErrors?.length) {
+                throw new Error('Item data could not be loaded completely. Your existing save has not been changed; please refresh.');
+            }
             // Pass active sprite set to game for click animation
             game._activeSpritePaths = game.pickaxeFactory.templatesWithActiveSprite;
         } catch (err) {
             console.error('Failed to load item templates:', err);
+            throw err;
         }
 
         updateLoadingInfo('Setting up shop system...');
@@ -79,9 +91,17 @@ async function initializeGame() {
         updateLoadingInfo('Initializing save system...');
 
         saveManager = new SaveManager(game);
+        window.saveManager = saveManager;
         updateLoadingInfo('Preparing notifications...');
 
         notificationManager = new NotificationManager(game);
+
+        // Time Travel / D.I.A. mission system
+        try {
+            window.timeTravelManager = new TimeTravelManager(game);
+        } catch (error) {
+            console.warn('Time Travel system unavailable:', error);
+        }
 
         // Initialize controller support (Xbox gamepad / any standard gamepad)
         updateLoadingInfo('Setting up controller support...');
@@ -95,7 +115,11 @@ async function initializeGame() {
         updateLoadingInfo('Loading game data...');
 
         // Try to load existing save
-        const saveLoaded = saveManager.loadGame();
+        let saveLoaded = saveManager.loadGame();
+        const landingImport = await window.DogeMinerLandingSave?.consume(saveManager);
+        if (landingImport?.imported) saveLoaded = true;
+        else if (landingImport?.error) notificationManager.showError(landingImport.error.message);
+        if (saveManager.loadError) throw saveManager.loadError;
         if (!saveLoaded) {
             // No save found, start new game
             notificationManager.showInfo('Welcome to DogeminerCE!');
@@ -117,16 +141,6 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
-                    game.backgrounds = [
-                        'backgrounds/bg1.webp',
-                        'backgrounds/bg3.webp',
-                        'backgrounds/bg4.webp',
-                        'backgrounds/bg5.webp',
-                        'backgrounds/bg6.webp',
-                        'backgrounds/bg7.webp',
-                        'backgrounds/bg9.webp',
-                        'backgrounds/bg-new.webp'
-                    ];
                 } else if (game.currentLevel === 'moon') {
                     mainCharacter.src = 'assets/general/character/spacehelmet.webp';
                     mainRock.src = 'assets/general/rocks/moon.webp';
@@ -151,15 +165,6 @@ async function initializeGame() {
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-mars');
-                    game.backgrounds = [
-                        'backgrounds/bg6.webp',
-                        'assets/backgrounds/bg101.webp', // Mars extras live under play/assets/backgrounds/
-                        'assets/backgrounds/bg102.webp',
-                        'assets/backgrounds/bg103.webp',
-                        'assets/backgrounds/bg104.webp',
-                        'assets/backgrounds/bg105.webp',
-                        'backgrounds/bg-new.webp'
-                    ];
                 } else if (game.currentLevel === 'jupiter') {
                     // Jupiter reuses the space suit but swaps to the dedicated platform art.
                     mainCharacter.src = 'assets/general/character/spacehelmet.webp';
@@ -171,12 +176,6 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-titan');
                     document.body.classList.add('planet-jupiter');
-                    game.backgrounds = [
-                        'assets/backgrounds/bgjup01.webp',
-                        'assets/backgrounds/bgjup02.webp',
-                        'assets/backgrounds/bgjup03.webp',
-                        'assets/backgrounds/dogewow.webp'
-                    ];
                 } else if (game.currentLevel === 'titan') {
                     // Titan uses the space helmet like Jupiter and Moon
                     mainCharacter.src = 'assets/general/character/spacehelmet.webp';
@@ -189,16 +188,10 @@ async function initializeGame() {
                     document.body.classList.remove('planet-mars');
                     document.body.classList.remove('planet-jupiter');
                     document.body.classList.add('planet-titan');
-                    game.backgrounds = [
-                        'assets/backgrounds/titan02.webp',
-                        'assets/backgrounds/titan03.webp',
-                        'assets/backgrounds/titan04.webp',
-                        'assets/backgrounds/titan05.webp'
-                    ];
                 }
 
                 // Make sure the background DOM nodes reflect the resolved pool for this load-in planet.
-                game.syncBackgroundImages?.(true);
+                game.setPlanetBackgrounds(game.currentLevel, { reset: true });
 
                 // Force update shop content and planet tabs if on Moon, Mars, Jupiter, or Titan
                 if ((game.currentLevel === 'moon' || game.currentLevel === 'mars' || game.currentLevel === 'jupiter' || game.currentLevel === 'titan') && uiManager) {
@@ -209,6 +202,9 @@ async function initializeGame() {
                 }
             }
         }
+
+        // Populate the mobile/forced-mobile bar before dismissing the loader.
+        game.updateMobileHelperBar();
 
         // CloudSaveManager will be initialized by cloud-save.js
         updateLoadingInfo('Finalizing...');
@@ -227,12 +223,21 @@ async function initializeGame() {
             window.notificationManager = notificationManager;
             // window.audioManager already assigned above
 
-            // Play doge intro animation
-            if (game.currentLevel === 'earth') {
-                game.playDogeIntro();
-            } else {
-                game.playDogeIntro(true);
+            // Let returning Alpha players review their saved changes before gameplay.
+            window.DogeMinerPerformance.bind(game);
+            window.DogeMinerMobileGestures.install(game,uiManager);
+            game._bootComplete = true;
+            if (!game.layoutPreference) game.restoreLayout?.(null);
+            game.startSeasonal?.();
+            window.DogeMinerMotionNotice.start(game, notificationManager);
+            game._introAfterBetaReport = !!game.betaMigrationReport && !game.betaMigrationReport.acknowledged;
+            if (!game.showPendingBetaMigrationReport()) {
+                game.playDogeIntro(game.currentLevel !== 'earth');
             }
+
+            game.scheduleOfflineEarningsReport?.();
+            window.ParityCheckpointTests?.initialize();
+            if (window.CEParityTesting?.active && !debugMode) toggleDebugMode();
 
             // Start background music only if enabled
             if (audioManager && game && game.musicEnabled) {
@@ -241,7 +246,7 @@ async function initializeGame() {
 
             // Force update UI one last time to ensure everything is rendered
             game.updateUI();
-            if (window.innerWidth <= 768) {
+            if (game.isMobileDevice()) {
                 game.updateMobileHelperBar();
             }
 
@@ -249,6 +254,7 @@ async function initializeGame() {
         }, 500);
 
     } catch (error) {
+        if (game) game.isPlaying = false;
         console.error('Error initializing game:', error);
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
@@ -416,6 +422,10 @@ function dogebagEquip() {
     }
 }
 
+function closeDogebagModal() {
+    if (window.game) window.game.closeDogebagModal();
+}
+
 function dogebagLoot() {
     if (window.game) {
         window.game.dogebagLoot();
@@ -423,12 +433,20 @@ function dogebagLoot() {
 }
 
 function toggleForceMobileUI(enabled) {
+    if (window.game?.setLayoutMode) return window.game.setLayoutMode(enabled ? 'phone' : 'auto');
     if (enabled) {
         document.body.classList.add('force-mobile');
     } else {
         document.body.classList.remove('force-mobile');
     }
     localStorage.setItem('forceMobileUI', enabled ? '1' : '0');
+    if (window.game && window.shopManager) {
+        game.updateMobileHelperBar();
+        if (enabled) {
+            window.uiManager?.updateMobileShopContent();
+            if (window.uiManager?.activeMobileTab === 'upgrades') uiManager.updateMobileUpgradesContent();
+        }
+    }
 
     // Sync both checkboxes
     const desktop = document.getElementById('force-mobile-ui');
@@ -452,7 +470,7 @@ function toggleDisableController(disabled) {
     }
     
     // Restore value update rate dropdown
-    const updateRate = localStorage.getItem('valueUpdateRate');
+    const updateRate = window.game?.getValueUpdateRate?.() ?? localStorage.getItem('valueUpdateRate') ?? '20';
     if (updateRate !== null) {
         const select = document.getElementById('value-update-rate');
         if (select) select.value = updateRate;
@@ -521,10 +539,10 @@ function updateLoadingInfo(info) {
 async function preloadAssets() {
     const assets = [
         // Backgrounds
-        'assets/backgrounds/bg/bg1.webp',
-        'assets/backgrounds/bg/bgmoon01.webp',
-        'assets/backgrounds/bg/bg4.webp',
-        'assets/backgrounds/bg/bgjup01.webp',
+        'assets/backgrounds/bg1.webp',
+        'assets/backgrounds/bgmoon01.webp',
+        'assets/backgrounds/bg4.webp',
+        'assets/backgrounds/bgjup01.webp',
 
         // Rocks
         'assets/general/rocks/earth.webp',
@@ -551,10 +569,10 @@ async function preloadAssets() {
 
 
         // Pickaxe icons
-        'assets/items/pickaxes/standard.webp',
-        'assets/items/pickaxes/stronger.webp',
-        'assets/items/pickaxes/golden.webp',
-        'assets/items/pickaxes/rocketaxe.webp'
+        'assets/items/pickaxes/Earth/Normal Pickaxe/standard.webp',
+        'assets/items/pickaxes/Earth/Stronger Pickaxe/stronger.webp',
+        'assets/items/pickaxes/Earth/Golden Pickaxe/golden.webp',
+        'assets/items/pickaxes/Universal/Rocket-Powered Battle-Axe/rocketaxe.webp'
     ];
 
     const loadPromises = assets.map(asset => {
@@ -616,7 +634,12 @@ class PerformanceMonitor {
             }
         }
 
-        requestAnimationFrame(() => this.update());
+        this.frameRequest = requestAnimationFrame(() => this.update());
+    }
+    stop() {
+        cancelAnimationFrame(this.frameRequest);
+        this.fpsElement?.remove();
+        this.fpsElement = null;
     }
 }
 
@@ -640,7 +663,7 @@ function toggleDebugMode() {
     } else {
         // Disable debug features
         if (window.performanceMonitor) {
-            window.performanceMonitor.fpsElement?.remove();
+            window.performanceMonitor.stop();
             window.performanceMonitor = null;
         }
 
@@ -654,21 +677,14 @@ function addDebugConsole() {
     const debugConsole = document.createElement('div');
     debugConsole.id = 'debug-console';
     debugConsole.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 10px;
-        border-radius: 5px;
-        font-family: monospace;
-        font-size: 12px;
-        z-index: 10000;
-        max-width: 300px;
+        position:fixed; bottom:20px; left:10px; background:#25231fee; color:#fff;
+        padding:12px; border:1px solid #b99a59; border-radius:8px; font-family:monospace;
+        font-size:12px; z-index:10000; width:330px; max-width:calc(100vw - 44px);
+        max-height:calc(100dvh - 70px); overflow-y:auto; box-sizing:border-box;
     `;
 
     debugConsole.innerHTML = `
-        <div>Debug Console</div>
+        <details class="legacy-debug-tools"><summary>Current game tools</summary>
         <button onclick="game.dogecoins += 1000">+1000 Coins</button>
         <button onclick="game.dogecoins += 10000">+10000 Coins</button>
         <button onclick="game.dogecoins = 40000000000000000; game.updateUI();" style="background: #ff6b6b; color: white;">+40 Quadrillion Coins</button>
@@ -678,21 +694,25 @@ function addDebugConsole() {
         <button onclick="game.createDogebag()">Spawn Dogebag</button>
         <button onclick="game.mysteryBoxTimerRemaining = 0; game.startMysteryBoxTimer()">Skip Mystery Box Timer</button>
         <button onclick="game.spawnBonusCoin()">Spawn Bonus Coin</button>
-        <button onclick="debugLevelUpBonusCoin()">Level up Bonus Coin</button>
+        <button onclick="debugLevelUpBonusCoin()">Preview next Bonus tier</button>
         <button onclick="game.createDiamondLoot()">Spawn Dogediamond</button>
         <button onclick="game.dogediamonds += 5; game.dogediamondsEverObtained += 5; game.updateDiamondCounter(); game.updateUI();">+5 Dogediamonds</button>
+        <button onclick="window.timeTravelManager && timeTravelManager.openMissionBrief(true)">Open D.I.A. Mission</button>
         <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
         <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>
-        <button onclick="toggleDebugMode()">Close Debug</button>
+        </details>
+        <button class="debug-close" onclick="toggleDebugMode()">Close Debug · Ctrl+\\</button>
     `;
 
-    document.body.appendChild(debugConsole);
+    debugConsole._cleanup = window.ParityCheckpointTests?.mount(debugConsole);
+    document.documentElement.appendChild(debugConsole);
 }
 
 function removeDebugConsole() {
     const debugConsole = document.getElementById('debug-console');
     if (debugConsole) {
+        debugConsole._cleanup?.();
         debugConsole.remove();
     }
 }
@@ -700,18 +720,13 @@ function removeDebugConsole() {
 function debugLevelUpBonusCoin() {
     if (!window.game) return;
     const g = window.game;
-    const maxLevel = g.getBonusCoinTiers().length - 1;
-    if (g.bonusCoinLevel >= maxLevel) {
-        g.showNotification('Bonus Coin already at max tier!');
-        return;
-    }
-    g.bonusCoinLevel++;
-    g.bonusCoinSeenLevel = g.bonusCoinLevel; // suppress duplicate unlock toast below
-    const tier = g.getCurrentBonusCoinTier();
-    g.showNotification(`Bonus Coin leveled up: ${tier.name}!`);
-    g.playSound('longSparkle');
-    g._renderBonusCoinBuffIndicator();
-    console.log(`Debug: Bonus Coin now tier ${g.bonusCoinLevel} (${tier.name})`);
+    const tiers = g.getBonusCoinTiers();
+    g._bonusCoinPreviewLevel = ((g._bonusCoinPreviewLevel || 0) % (tiers.length - 1)) + 1;
+    const tier = tiers[g._bonusCoinPreviewLevel];
+    g._removeBonusCoinEl();
+    const playing = g.isPlaying; g.isPlaying = true;
+    try { g.spawnBonusCoin({ tier }); } finally { g.isPlaying = playing; }
+    g.showNotification(`Preview: ${tier.name} · eight seconds to claim`);
 }
 
 function debugGrantAllPickaxes() {
@@ -777,7 +792,7 @@ function debugGrantAllFortunes() {
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     // Toggle debug mode with Ctrl+\
-    if (e.ctrlKey && e.key === '\\') {
+    if (e.ctrlKey && (e.code === 'Backslash' || e.key === '\\')) {
         e.preventDefault();
         toggleDebugMode();
     }

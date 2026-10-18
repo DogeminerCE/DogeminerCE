@@ -1,0 +1,1107 @@
+{
+  "source": "https://dogeminer2.com/play/ — live bundle verified October 15, 2026",
+  "bundle": "play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "stories": [
+    {
+      "id": "timemachine",
+      "title": "TIME MINER",
+      "titleText": "TIME MINER",
+      "body": "Top scientists on <earth>EARTH</earth> have recently invented an experimental <dark>TIME TRAVEL MINING RIG</dark> that <i>could</i> help with mining.\n ",
+      "image": "helpers/rigs/rigs-idle-0"
+    },
+    {
+      "id": "dia",
+      "title": "<medium><icon></icon> DOGE INTELLIGENCE AGENCY <icon></icon></medium>",
+      "titleText": "DOGE INTELLIGENCE AGENCY",
+      "body": "<i>“Wow! Such greetings. The <ltblue>DIA</ltblue> has been following your career very closely. We have a much important job for someone of your caliber. Contact us on this <dark>DOGETALKIE</dark> if you are interested.”</i>",
+      "image": "story/dia"
+    },
+    {
+      "id": "titan1",
+      "title": "Sensing Something",
+      "titleText": "Sensing Something",
+      "body": "An unexpected find has arisen from your <orange>CLOUD BASE</orange> sensor arrays. They have detected a massive object of almost pure <green>ĐOGECOIN</green>. But not on <jupiter>JUPITER</jupiter>! These readings seem to indicate that <goldorange>TITAN</goldorange>, a moon of <ltblue>SATURN</ltblue>, is the source.",
+      "image": "general/titan"
+    },
+    {
+      "id": "titan2",
+      "title": "IT'S BEAUTIFUL",
+      "titleText": "IT'S BEAUTIFUL",
+      "body": "The construction of your <orange>DOGESTAR</orange> is... complete. Such work. Much marvelous. The space station can travel short distances within the solar system. Perhaps going to <goldorange>TITAN</goldorange>, the <green>ĐOGECOIN</green> rich moon of <ltblue>SATURN</ltblue>, would be an adventure.",
+      "image": "story/titan1"
+    }
+  ],
+  "criteria": {
+    "rig": {
+      "expression": "() => oD(3, 13) >= 25 || oD(3, 16) >= 2 || KP.maxlevel > 3",
+      "line": 37174
+    },
+    "titanSensor": {
+      "expression": "() => cD(21, 1)",
+      "line": 37265
+    },
+    "titanRoute": {
+      "expression": "() => oD(4, 24) > 0",
+      "line": 37286
+    },
+    "contact": {
+      "expression": "() =>\n        oD(1, 6) > 0 &&\n        ft.timestampOnLocation + 11e3 < Date.now() &&\n        !dogeminer.player.contacted",
+      "line": 37311
+    }
+  },
+  "gates": [
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 0,
+        "maxlevel": 1
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 0,
+        "maxlevel": 2
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 0,
+        "maxlevel": 3
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 0,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 0,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 1,
+        "maxlevel": 1
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 1,
+        "maxlevel": 2
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 1,
+        "maxlevel": 3
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 1,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 1,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 2,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 2,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 2,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 2,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 2,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 3,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 3,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 3,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 3,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 0,
+        "bass": 3,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 0,
+        "maxlevel": 1
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 0,
+        "maxlevel": 2
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 0,
+        "maxlevel": 3
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 0,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 0,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 1,
+        "maxlevel": 1
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 1,
+        "maxlevel": 2
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 1,
+        "maxlevel": 3
+      },
+      "eligible": false
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 1,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 1,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 2,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 2,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 2,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 2,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 2,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 3,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 3,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 3,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 3,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 24,
+        "bass": 3,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 0,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 0,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 0,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 0,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 0,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 1,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 1,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 1,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 1,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 1,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 2,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 2,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 2,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 2,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 2,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 3,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 3,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 3,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 3,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 25,
+        "bass": 3,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 0,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 0,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 0,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 0,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 0,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 1,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 1,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 1,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 1,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 1,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 2,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 2,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 2,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 2,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 2,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 3,
+        "maxlevel": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 3,
+        "maxlevel": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 3,
+        "maxlevel": 3
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 3,
+        "maxlevel": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "rig",
+      "input": {
+        "party": 26,
+        "bass": 3,
+        "maxlevel": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanSensor",
+      "input": {
+        "sensor": 0
+      },
+      "eligible": false
+    },
+    {
+      "name": "titanSensor",
+      "input": {
+        "sensor": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanSensor",
+      "input": {
+        "sensor": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanSensor",
+      "input": {
+        "sensor": 4
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanRoute",
+      "input": {
+        "dogeStars": 0
+      },
+      "eligible": false
+    },
+    {
+      "name": "titanRoute",
+      "input": {
+        "dogeStars": 1
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanRoute",
+      "input": {
+        "dogeStars": 2
+      },
+      "eligible": true
+    },
+    {
+      "name": "titanRoute",
+      "input": {
+        "dogeStars": 5
+      },
+      "eligible": true
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 0,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 0,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 10999,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 10999,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 11000,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 11000,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 11001,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 11001,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 20000,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 0,
+        "elapsed": 20000,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 0,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 0,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 10999,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 10999,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 11000,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 11000,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 11001,
+        "contacted": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 11001,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 20000,
+        "contacted": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 1,
+        "elapsed": 20000,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 0,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 0,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 10999,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 10999,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 11000,
+        "contacted": false
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 11000,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 11001,
+        "contacted": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 11001,
+        "contacted": true
+      },
+      "eligible": false
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 20000,
+        "contacted": false
+      },
+      "eligible": true
+    },
+    {
+      "name": "contact",
+      "input": {
+        "rigs": 2,
+        "elapsed": 20000,
+        "contacted": true
+      },
+      "eligible": false
+    }
+  ],
+  "delays": {
+    "rig": 1250,
+    "titanSensor": 500,
+    "titanRoute": 500,
+    "contact": 11000
+  }
+}

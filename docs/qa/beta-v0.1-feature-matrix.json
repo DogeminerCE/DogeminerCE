@@ -1,0 +1,2816 @@
+{
+  "build": "beta-v0.1",
+  "date": "2026-10-18",
+  "uniquePreviews": 117,
+  "renderCases": 234,
+  "rows": [
+    {
+      "id": "polish-settings",
+      "feature": "Compact settings & patch notes",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-mission",
+      "feature": "D.I.A. with controller or touch",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-rewards",
+      "feature": "Mission reward controls",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-phone",
+      "feature": "Phone inventory & drawer",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "updates-discovery",
+      "feature": "Updates & discovery",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rick-visit",
+      "feature": "Rick visit",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rock-capacity",
+      "feature": "Rock capacity",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-complete",
+      "feature": "Ninth egg & golden reward",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-goal",
+      "feature": "First Moon goal",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "first-bonus",
+      "feature": "First Bonus Coin",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-2",
+      "feature": "Timeline 2 return",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-3",
+      "feature": "Timeline 3 return",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-4",
+      "feature": "Timeline 4 return",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-5",
+      "feature": "Later timeline return",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "newsdoge",
+      "feature": "NewsDoge size & motion",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "story-settings",
+      "feature": "Settings & Supporter",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-arrival",
+      "feature": "Moon arrival",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-map",
+      "feature": "Moon treasure map",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-route",
+      "feature": "Discover Mars",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-arrival",
+      "feature": "Mars arrival",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-drawing",
+      "feature": "Mars crude drawing",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "jupiter-route",
+      "feature": "Discover Jupiter",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "jupiter-arrival",
+      "feature": "Jupiter arrival",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "popup-layout",
+      "feature": "Popup zoom in & out",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rig-invention",
+      "feature": "Time Machine Rig invention",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "dia-contact",
+      "feature": "First D.I.A. contact",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-sensors",
+      "feature": "Discover Titan",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-route",
+      "feature": "DogeStar route to Titan",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-unread",
+      "feature": "New item badges",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-totals",
+      "feature": "Complete stat totals",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-explanations",
+      "feature": "Stat explanations",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-colors",
+      "feature": "Attribute colors",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mystery-fortunes",
+      "feature": "Restored Mystery fortunes",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bag-gather",
+      "feature": "Bag gathers loose coins",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "diamond-stacks",
+      "feature": "Persistent diamond stacks",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "coin-expiry",
+      "feature": "Coin warning & expiry",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bag-overflow",
+      "feature": "Large Dogebag opening",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "diamond-layers",
+      "feature": "Diamond stack layering",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "field-motion",
+      "feature": "Coin motion & hover",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-pickup",
+      "feature": "Nearby helper pickup",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-seeking",
+      "feature": "Helpers seek coins",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-unlock",
+      "feature": "Prestige auto-pickup unlock",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-drops",
+      "feature": "Automatic loot & equip",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-settings",
+      "feature": "Auto-pickup setting",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "buy-max",
+      "feature": "Buy Max motion & icon",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-income",
+      "feature": "Boosted helper DPS",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-breakdown",
+      "feature": "Helper DPS breakdown",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "record-crit",
+      "feature": "Record critical hit",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "ordinary-crit",
+      "feature": "Ordinary critical hit",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "saved-crit",
+      "feature": "Saved critical record",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "balance-flight",
+      "feature": "Balance on coin arrival",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-first",
+      "feature": "First-game Statistics",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-compact",
+      "feature": "Statistics after travel",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-history",
+      "feature": "Scrollable timeline history",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-hover",
+      "feature": "Softer card hover",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "returning-save",
+      "feature": "Returning save",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "unfinished-story-news",
+      "feature": "New story & NewsDoge",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-hover",
+      "feature": "Helper outline & name fade",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-groups",
+      "feature": "Grouped helper names",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-names",
+      "feature": "Moon Shibe nicknames",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "super-names",
+      "feature": "Super Shibe nicknames",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mining-chatter",
+      "feature": "Mining text spread",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-conversation",
+      "feature": "Helper conversations",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "held-conversation",
+      "feature": "Held & dropped phrases",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-cadence",
+      "feature": "Helper animation timing",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-shop",
+      "feature": "Shop button motion",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-report",
+      "feature": "Welcome Back buttons",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-story",
+      "feature": "Story & close buttons",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "motion-notice",
+      "feature": "Reduce Motion notice",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "found-upgrade-notice",
+      "feature": "Found upgrade notification",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "story-notice",
+      "feature": "Story notification",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "notification-timer",
+      "feature": "Notification dismissal",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-moon",
+      "feature": "Moon backgrounds",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-mars",
+      "feature": "Mars backgrounds",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-jupiter",
+      "feature": "Jupiter backgrounds",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-titan",
+      "feature": "Titan backgrounds",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bonus-hud",
+      "feature": "Bonus HUD & expiry",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "smooth-income",
+      "feature": "Smooth passive income",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mining-audio",
+      "feature": "Mining sound setting",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-audio",
+      "feature": "Background audio setting",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "less-effects",
+      "feature": "Less Effects",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "frame-cap",
+      "feature": "48 FPS cap",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-swipes",
+      "feature": "Inventory swipes",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "panel-swipes",
+      "feature": "Panel swipe & mining guard",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "doge-gate-price",
+      "feature": "Doge Gate price",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mystery-evolution",
+      "feature": "Mystery Box evolution",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-launch",
+      "feature": "Moon launch introduction",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-skip",
+      "feature": "Moon playback & skip",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "altar-yoga",
+      "feature": "Altar awakening & payments",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-blueprints",
+      "feature": "Titan blueprints",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "reallyhardium",
+      "feature": "Reallyhardium unlocks",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-transform",
+      "feature": "Upgrade transformation",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-dual",
+      "feature": "Dual-wielding",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-fusion",
+      "feature": "SunDoge fusion",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-drills",
+      "feature": "Hold-to-mine drills",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-profiles",
+      "feature": "Tool motion & sound profiles",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cate-thief",
+      "feature": "Cate Thief",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-local",
+      "feature": "Keep newer local progress",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-newer",
+      "feature": "Restore newer cloud progress",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-reward",
+      "feature": "Cloud waits for rewards",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-invalid",
+      "feature": "Reject invalid cloud save",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-basic",
+      "feature": "DM2 first-timeline save",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-late",
+      "feature": "DM2 protected rewards & history",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-backup",
+      "feature": "UTF16 import & backups",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-invalid",
+      "feature": "Reject damaged DM2 save",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "landing-new",
+      "feature": "Landing: new game",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "landing-continue",
+      "feature": "Landing: saved game",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-easter",
+      "feature": "Easter scene & hidden egg",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-halloween",
+      "feature": "Halloween scene & drops",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-xmas",
+      "feature": "Christmas scene & music",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-desktop",
+      "feature": "Desktop layout",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-tablet",
+      "feature": "Tablet layout",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-phone",
+      "feature": "Phone layout",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-codes",
+      "feature": "Keyboard secrets",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "party-names",
+      "feature": "Party Shibe nicknames",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "dj-names",
+      "feature": "DJ Kittenz nicknames",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-hover-mars",
+      "feature": "Mars upgrade cards",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-settings",
+      "feature": "Compact settings & patch notes",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-mission",
+      "feature": "D.I.A. with controller or touch",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-rewards",
+      "feature": "Mission reward controls",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "polish-phone",
+      "feature": "Phone inventory & drawer",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "updates-discovery",
+      "feature": "Updates & discovery",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rick-visit",
+      "feature": "Rick visit",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rock-capacity",
+      "feature": "Rock capacity",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-complete",
+      "feature": "Ninth egg & golden reward",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-goal",
+      "feature": "First Moon goal",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "first-bonus",
+      "feature": "First Bonus Coin",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-2",
+      "feature": "Timeline 2 return",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-3",
+      "feature": "Timeline 3 return",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-4",
+      "feature": "Timeline 4 return",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "return-5",
+      "feature": "Later timeline return",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "newsdoge",
+      "feature": "NewsDoge size & motion",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "story-settings",
+      "feature": "Settings & Supporter",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-arrival",
+      "feature": "Moon arrival",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-map",
+      "feature": "Moon treasure map",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-route",
+      "feature": "Discover Mars",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-arrival",
+      "feature": "Mars arrival",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mars-drawing",
+      "feature": "Mars crude drawing",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "jupiter-route",
+      "feature": "Discover Jupiter",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "jupiter-arrival",
+      "feature": "Jupiter arrival",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "popup-layout",
+      "feature": "Popup zoom in & out",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "rig-invention",
+      "feature": "Time Machine Rig invention",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "dia-contact",
+      "feature": "First D.I.A. contact",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-sensors",
+      "feature": "Discover Titan",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-route",
+      "feature": "DogeStar route to Titan",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-unread",
+      "feature": "New item badges",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-totals",
+      "feature": "Complete stat totals",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-explanations",
+      "feature": "Stat explanations",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-colors",
+      "feature": "Attribute colors",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mystery-fortunes",
+      "feature": "Restored Mystery fortunes",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bag-gather",
+      "feature": "Bag gathers loose coins",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "diamond-stacks",
+      "feature": "Persistent diamond stacks",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "coin-expiry",
+      "feature": "Coin warning & expiry",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bag-overflow",
+      "feature": "Large Dogebag opening",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "diamond-layers",
+      "feature": "Diamond stack layering",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "field-motion",
+      "feature": "Coin motion & hover",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-pickup",
+      "feature": "Nearby helper pickup",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-seeking",
+      "feature": "Helpers seek coins",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-unlock",
+      "feature": "Prestige auto-pickup unlock",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-drops",
+      "feature": "Automatic loot & equip",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "auto-settings",
+      "feature": "Auto-pickup setting",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "buy-max",
+      "feature": "Buy Max motion & icon",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-income",
+      "feature": "Boosted helper DPS",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-breakdown",
+      "feature": "Helper DPS breakdown",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "record-crit",
+      "feature": "Record critical hit",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "ordinary-crit",
+      "feature": "Ordinary critical hit",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "saved-crit",
+      "feature": "Saved critical record",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "balance-flight",
+      "feature": "Balance on coin arrival",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-first",
+      "feature": "First-game Statistics",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-compact",
+      "feature": "Statistics after travel",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "stats-history",
+      "feature": "Scrollable timeline history",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-hover",
+      "feature": "Softer card hover",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "returning-save",
+      "feature": "Returning save",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "unfinished-story-news",
+      "feature": "New story & NewsDoge",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-hover",
+      "feature": "Helper outline & name fade",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-groups",
+      "feature": "Grouped helper names",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-names",
+      "feature": "Moon Shibe nicknames",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "super-names",
+      "feature": "Super Shibe nicknames",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mining-chatter",
+      "feature": "Mining text spread",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-conversation",
+      "feature": "Helper conversations",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "held-conversation",
+      "feature": "Held & dropped phrases",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "helper-cadence",
+      "feature": "Helper animation timing",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-shop",
+      "feature": "Shop button motion",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-report",
+      "feature": "Welcome Back buttons",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "button-story",
+      "feature": "Story & close buttons",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "motion-notice",
+      "feature": "Reduce Motion notice",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "found-upgrade-notice",
+      "feature": "Found upgrade notification",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "story-notice",
+      "feature": "Story notification",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "notification-timer",
+      "feature": "Notification dismissal",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-moon",
+      "feature": "Moon backgrounds",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-mars",
+      "feature": "Mars backgrounds",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-jupiter",
+      "feature": "Jupiter backgrounds",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-titan",
+      "feature": "Titan backgrounds",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "bonus-hud",
+      "feature": "Bonus HUD & expiry",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "smooth-income",
+      "feature": "Smooth passive income",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mining-audio",
+      "feature": "Mining sound setting",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "background-audio",
+      "feature": "Background audio setting",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "less-effects",
+      "feature": "Less Effects",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "frame-cap",
+      "feature": "48 FPS cap",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "inventory-swipes",
+      "feature": "Inventory swipes",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "panel-swipes",
+      "feature": "Panel swipe & mining guard",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "doge-gate-price",
+      "feature": "Doge Gate price",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "mystery-evolution",
+      "feature": "Mystery Box evolution",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-launch",
+      "feature": "Moon launch introduction",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "moon-skip",
+      "feature": "Moon playback & skip",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "altar-yoga",
+      "feature": "Altar awakening & payments",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "titan-blueprints",
+      "feature": "Titan blueprints",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "reallyhardium",
+      "feature": "Reallyhardium unlocks",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-transform",
+      "feature": "Upgrade transformation",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-dual",
+      "feature": "Dual-wielding",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-fusion",
+      "feature": "SunDoge fusion",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-drills",
+      "feature": "Hold-to-mine drills",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "tool-profiles",
+      "feature": "Tool motion & sound profiles",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cate-thief",
+      "feature": "Cate Thief",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-local",
+      "feature": "Keep newer local progress",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-newer",
+      "feature": "Restore newer cloud progress",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-reward",
+      "feature": "Cloud waits for rewards",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "cloud-invalid",
+      "feature": "Reject invalid cloud save",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-basic",
+      "feature": "DM2 first-timeline save",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-late",
+      "feature": "DM2 protected rewards & history",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-backup",
+      "feature": "UTF16 import & backups",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "import-invalid",
+      "feature": "Reject damaged DM2 save",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "landing-new",
+      "feature": "Landing: new game",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "landing-continue",
+      "feature": "Landing: saved game",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-easter",
+      "feature": "Easter scene & hidden egg",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-halloween",
+      "feature": "Halloween scene & drops",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "holiday-xmas",
+      "feature": "Christmas scene & music",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-desktop",
+      "feature": "Desktop layout",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-tablet",
+      "feature": "Tablet layout",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-phone",
+      "feature": "Phone layout",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "layout-codes",
+      "feature": "Keyboard secrets",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "party-names",
+      "feature": "Party Shibe nicknames",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "dj-names",
+      "feature": "DJ Kittenz nicknames",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    },
+    {
+      "id": "upgrade-hover-mars",
+      "feature": "Mars upgrade cards",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "passed": true,
+      "failedImages": [],
+      "javascriptErrors": [],
+      "missingResponses": []
+    }
+  ]
+}

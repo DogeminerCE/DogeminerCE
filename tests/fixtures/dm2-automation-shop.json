@@ -1,0 +1,845 @@
+{
+  "source": "https://dogeminer2.com/assets/play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "config": {
+    "enabled": true,
+    "design": "Ladder",
+    "holdMs": 500,
+    "chargeDelayMs": 160,
+    "holdSlop": 14,
+    "dragUpOpens": true,
+    "pickRise": 8,
+    "pickRiseTouch": 12,
+    "releaseOnButtonBuysOne": true,
+    "linger": true,
+    "lingerMs": 1600,
+    "maxPerGesture": 100,
+    "burstMs": 600,
+    "sound": true,
+    "stiffness": 420,
+    "damping": 17,
+    "magnet": 15,
+    "hitPad": 16,
+    "size": 1,
+    "hint": true,
+    "hintDelayMs": 600
+  },
+  "labels": [
+    {
+      "count": 0,
+      "label": "BUY MAX"
+    },
+    {
+      "count": 1,
+      "label": "BUY MAX"
+    },
+    {
+      "count": 2,
+      "label": "BUY 2 (MAX)"
+    },
+    {
+      "count": 17,
+      "label": "BUY 17 (MAX)"
+    },
+    {
+      "count": 100,
+      "label": "BUY 100 (MAX)"
+    }
+  ],
+  "burstCases": [
+    {
+      "requested": 0,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 0,
+      "budget": 1000,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 0,
+      "budget": 1000000000000000,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 1,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 1,
+      "budget": 1000,
+      "bought": 1,
+      "spent": 20,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        }
+      ],
+      "delays": []
+    },
+    {
+      "requested": 1,
+      "budget": 1000000000000000,
+      "bought": 1,
+      "spent": 20,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        }
+      ],
+      "delays": []
+    },
+    {
+      "requested": 2,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 2,
+      "budget": 1000,
+      "bought": 2,
+      "spent": 43,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        }
+      ],
+      "delays": [
+        600
+      ]
+    },
+    {
+      "requested": 2,
+      "budget": 1000000000000000,
+      "bought": 2,
+      "spent": 43,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        }
+      ],
+      "delays": [
+        600
+      ]
+    },
+    {
+      "requested": 5,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 5,
+      "budget": 1000,
+      "bought": 5,
+      "spent": 136,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        }
+      ],
+      "delays": [
+        150,
+        150,
+        150,
+        150
+      ]
+    },
+    {
+      "requested": 5,
+      "budget": 1000000000000000,
+      "bought": 5,
+      "spent": 136,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        }
+      ],
+      "delays": [
+        150,
+        150,
+        150,
+        150
+      ]
+    },
+    {
+      "requested": 13,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 13,
+      "budget": 1000,
+      "bought": 13,
+      "spent": 694,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        },
+        {
+          "count": 6,
+          "spent": 41
+        },
+        {
+          "count": 7,
+          "spent": 47
+        },
+        {
+          "count": 8,
+          "spent": 54
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 13,
+      "budget": 1000000000000000,
+      "bought": 13,
+      "spent": 694,
+      "waves": [
+        {
+          "count": 1,
+          "spent": 20
+        },
+        {
+          "count": 2,
+          "spent": 23
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        },
+        {
+          "count": 6,
+          "spent": 41
+        },
+        {
+          "count": 7,
+          "spent": 47
+        },
+        {
+          "count": 8,
+          "spent": 54
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 14,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 14,
+      "budget": 1000,
+      "bought": 14,
+      "spent": 818,
+      "waves": [
+        {
+          "count": 2,
+          "spent": 43
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        },
+        {
+          "count": 6,
+          "spent": 41
+        },
+        {
+          "count": 7,
+          "spent": 47
+        },
+        {
+          "count": 8,
+          "spent": 54
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        },
+        {
+          "count": 14,
+          "spent": 124
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 14,
+      "budget": 1000000000000000,
+      "bought": 14,
+      "spent": 818,
+      "waves": [
+        {
+          "count": 2,
+          "spent": 43
+        },
+        {
+          "count": 3,
+          "spent": 27
+        },
+        {
+          "count": 4,
+          "spent": 31
+        },
+        {
+          "count": 5,
+          "spent": 35
+        },
+        {
+          "count": 6,
+          "spent": 41
+        },
+        {
+          "count": 7,
+          "spent": 47
+        },
+        {
+          "count": 8,
+          "spent": 54
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        },
+        {
+          "count": 14,
+          "spent": 124
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 17,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 17,
+      "budget": 1000,
+      "bought": 15,
+      "spent": 960,
+      "waves": [
+        {
+          "count": 2,
+          "spent": 43
+        },
+        {
+          "count": 4,
+          "spent": 58
+        },
+        {
+          "count": 6,
+          "spent": 76
+        },
+        {
+          "count": 8,
+          "spent": 101
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        },
+        {
+          "count": 14,
+          "spent": 124
+        },
+        {
+          "count": 15,
+          "spent": 142
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 17,
+      "budget": 1000000000000000,
+      "bought": 17,
+      "spent": 1311,
+      "waves": [
+        {
+          "count": 2,
+          "spent": 43
+        },
+        {
+          "count": 4,
+          "spent": 58
+        },
+        {
+          "count": 6,
+          "spent": 76
+        },
+        {
+          "count": 8,
+          "spent": 101
+        },
+        {
+          "count": 9,
+          "spent": 62
+        },
+        {
+          "count": 10,
+          "spent": 71
+        },
+        {
+          "count": 11,
+          "spent": 81
+        },
+        {
+          "count": 12,
+          "spent": 94
+        },
+        {
+          "count": 13,
+          "spent": 108
+        },
+        {
+          "count": 14,
+          "spent": 124
+        },
+        {
+          "count": 15,
+          "spent": 142
+        },
+        {
+          "count": 16,
+          "spent": 163
+        },
+        {
+          "count": 17,
+          "spent": 188
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    },
+    {
+      "requested": 100,
+      "budget": 19,
+      "bought": 0,
+      "spent": 0,
+      "waves": [],
+      "delays": []
+    },
+    {
+      "requested": 100,
+      "budget": 1000,
+      "bought": 15,
+      "spent": 960,
+      "waves": [
+        {
+          "count": 8,
+          "spent": 278
+        },
+        {
+          "count": 15,
+          "spent": 682
+        }
+      ],
+      "delays": [
+        50
+      ]
+    },
+    {
+      "requested": 100,
+      "budget": 1000000000000000,
+      "bought": 100,
+      "spent": 156575045,
+      "waves": [
+        {
+          "count": 8,
+          "spent": 278
+        },
+        {
+          "count": 16,
+          "spent": 845
+        },
+        {
+          "count": 24,
+          "spent": 2573
+        },
+        {
+          "count": 32,
+          "spent": 7863
+        },
+        {
+          "count": 40,
+          "spent": 24044
+        },
+        {
+          "count": 48,
+          "spent": 73541
+        },
+        {
+          "count": 56,
+          "spent": 224961
+        },
+        {
+          "count": 64,
+          "spent": 688147
+        },
+        {
+          "count": 72,
+          "spent": 2105051
+        },
+        {
+          "count": 79,
+          "spent": 5191547
+        },
+        {
+          "count": 86,
+          "spent": 13809613
+        },
+        {
+          "count": 93,
+          "spent": 36733841
+        },
+        {
+          "count": 100,
+          "spent": 97712741
+        }
+      ],
+      "delays": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ]
+    }
+  ],
+  "autoCases": [
+    {
+      "enabled": false,
+      "type": "coins",
+      "scheduled": []
+    },
+    {
+      "enabled": false,
+      "type": "diamonds",
+      "scheduled": []
+    },
+    {
+      "enabled": false,
+      "type": "chest",
+      "scheduled": []
+    },
+    {
+      "enabled": false,
+      "type": "map",
+      "scheduled": []
+    },
+    {
+      "enabled": true,
+      "type": "coins",
+      "scheduled": [
+        628
+      ]
+    },
+    {
+      "enabled": true,
+      "type": "diamonds",
+      "scheduled": [
+        628
+      ]
+    },
+    {
+      "enabled": true,
+      "type": "chest",
+      "scheduled": [
+        628
+      ]
+    },
+    {
+      "enabled": true,
+      "type": "map",
+      "scheduled": []
+    }
+  ],
+  "unlockMs": 7000,
+  "spawnCheckMs": 200,
+  "autoGrabMs": 628,
+  "prizeFadeMs": 600,
+  "itemHoldMs": 750,
+  "itemFlyMs": 1000
+}

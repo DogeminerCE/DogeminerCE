@@ -1,0 +1,18 @@
+# Beta v0.1 is out on https://dogeminerce.com/ !
+## This update brings:
+
+**TIME TRAVEL IS FINALLY HERE! :timer:**
+The D.I.A. has an assignment for you! Meet Burt, choose your badge, complete the mission, and start your next timeline with Dogediamonds, stronger badges, and Super Fortunes!
+Protected Fortunes stay with you, and Statistics now keeps a history of your timelines, earnings, mining time, and mission choices.
+
+**STORIES! :book:**
+Added the Earth goal, Moon map, Mars and Jupiter discoveries, D.I.A. contact, Titan progression, and the return stories for later timelines!
+The Altar of the SunDoge, Robo-Yoga, Titan blueprints, and Reallyhardium progression are here too. Also, DJ Kittenz can finally release a hit song and earn royalties :)
+
+**DOGEDIAMONDS & BONUS COINS! :diamond: :bonuscoin:**
+Find Dogediamonds in rocks, keep them between timelines, and unlock the third SearchDoge slot!
+Bonus Coins unlock stronger boosts as you progress, collect nearby coins, and show their remaining boost time above the mine.
+
+**CONVERT YOUR DM2 SAVE! :floppy_disk:**
+You can now bring your Dogeminer 2 save into CE! Supports JSON, Base64, and UTF16 .doge saves, with a review before importing and backups of both your original and previous CE save.
+Items, earned rolls, protected rewards, helpers, names, planets, stashes, and available timeline history carry across!

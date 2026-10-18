@@ -1,0 +1,10 @@
+NAME:
+Huge Enchanted Green Gem
+
+RARITY:
+Legendary
+
+DESCRIPTION:
+Touching it makes your head spin. Best keep it in a bag for now.
+
+STATS:

@@ -1,0 +1,171 @@
+{
+  "version": 4,
+  "timeline": 3,
+  "coins": 12345,
+  "alltimecoins": 50000,
+  "clicks": 77,
+  "diamonds": 9,
+  "alltimediamonds": 40,
+  "level": 2,
+  "pickaxes": [
+    [
+      1,
+      [
+        [
+          "click",
+          123
+        ],
+        [
+          "loot",
+          4
+        ]
+      ]
+    ],
+    [
+      "staff",
+      [
+        [
+          "click",
+          0
+        ],
+        [
+          "dpsp",
+          14
+        ]
+      ]
+    ]
+  ],
+  "equipped": {
+    "pick": 1
+  },
+  "fortunes": [
+    [
+      "super1",
+      [
+        [
+          "luck",
+          777
+        ]
+      ]
+    ],
+    [
+      "dialoot",
+      [
+        [
+          "loot",
+          75
+        ]
+      ]
+    ],
+    [
+      "rainbowegg",
+      [
+        [
+          "spirit",
+          25
+        ]
+      ]
+    ]
+  ],
+  "helpers": [
+    [
+      1,
+      2,
+      3,
+      1,
+      1
+    ],
+    [
+      7,
+      1,
+      2,
+      2,
+      1
+    ]
+  ],
+  "helperpositions": [
+    [
+      1,
+      1,
+      [
+        [
+          200,
+          300,
+          0,
+          1
+        ],
+        [
+          210,
+          300,
+          1,
+          0
+        ]
+      ]
+    ]
+  ],
+  "rocks": [
+    [
+      1,
+      40
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "rockvalues": [
+    20,
+    30
+  ],
+  "fieldloot": {
+    "1": {
+      "bags": [
+        99,
+        1,
+        0,
+        0
+      ],
+      "diamonds": 2
+    }
+  },
+  "seen": [
+    "tothemoon",
+    "moon1"
+  ],
+  "visited": {
+    "locations": [
+      1,
+      2
+    ]
+  },
+  "unlocked": {
+    "locations": [
+      1,
+      2
+    ],
+    "upgradeslots": [
+      1,
+      1,
+      1
+    ]
+  },
+  "timelinecoins": [
+    10,
+    20
+  ],
+  "timelinealltimecoins": [
+    100,
+    200
+  ],
+  "timelineplayeds": [
+    30,
+    40
+  ],
+  "kitlerstats": [
+    0,
+    1
+  ],
+  "timeplayed": 50,
+  "mbtot": 12,
+  "mbnum": 8
+}

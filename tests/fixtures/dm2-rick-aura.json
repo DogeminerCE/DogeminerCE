@@ -1,0 +1,280 @@
+{
+  "source": "DM2 2.15 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "functions": [
+    "IA",
+    "v_",
+    "QK",
+    "tJ"
+  ],
+  "cases": [
+    {
+      "width": 0,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 0,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 169.999,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 0,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 170,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 0,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 170.001,
+          "y": 100
+        }
+      ],
+      "aura": 0
+    },
+    {
+      "width": 200,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 200,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 169.999,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 200,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 170,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 200,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 170.001,
+          "y": 100
+        }
+      ],
+      "aura": 0
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 225.999,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 226,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 226.001,
+          "y": 100
+        }
+      ],
+      "aura": 0
+    },
+    {
+      "width": 2000,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 2000,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 339.999,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 2000,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 340,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    },
+    {
+      "width": 2000,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 340.001,
+          "y": 100
+        }
+      ],
+      "aura": 0
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "helperID": "base",
+          "x": 110,
+          "y": 100
+        }
+      ],
+      "aura": 80
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100,
+          "dragging": true
+        },
+        {
+          "helperID": "base",
+          "x": 110,
+          "y": 100
+        }
+      ],
+      "aura": 60
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100,
+          "destroyed": true
+        },
+        {
+          "helperID": "base",
+          "x": 110,
+          "y": 100
+        }
+      ],
+      "aura": 60
+    },
+    {
+      "width": 700,
+      "helpers": [
+        {
+          "helperID": "bad",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "helperID": "shibe",
+          "x": 100,
+          "y": 100
+        }
+      ],
+      "aura": 20
+    }
+  ],
+  "income": [
+    {
+      "aura": 0,
+      "total": 548.5499999999998,
+      "current": 189.39999999999998,
+      "other": 280.59999999999997
+    },
+    {
+      "aura": 20,
+      "total": 653.4299999999998,
+      "current": 280.59999999999997,
+      "other": 280.59999999999997
+    },
+    {
+      "aura": 60,
+      "total": 863.1899999999998,
+      "current": 462.99999999999994,
+      "other": 280.59999999999997
+    },
+    {
+      "aura": 200,
+      "total": 1597.3499999999997,
+      "current": 1101.3999999999999,
+      "other": 280.59999999999997
+    }
+  ]
+}

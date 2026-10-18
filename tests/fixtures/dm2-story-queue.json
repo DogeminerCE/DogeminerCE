@@ -1,0 +1,137 @@
+{
+  "source": "DM2 2.15 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "routines": [
+    "Cb",
+    "_b",
+    "Ib"
+  ],
+  "alwaysShow": [
+    "welcomeback",
+    "newtimeline",
+    "newtimeline2",
+    "newtimeline3",
+    "newtimeline4",
+    "newtimeline5",
+    "catepril",
+    "easter",
+    "eggz21"
+  ],
+  "cases": [
+    {
+      "input": {
+        "id": "one",
+        "enabled": true
+      },
+      "output": {
+        "queuedBefore": [
+          "one"
+        ],
+        "opened": [
+          "one"
+        ],
+        "seen": [
+          "one"
+        ],
+        "effects": [
+          "one"
+        ],
+        "pending": []
+      }
+    },
+    {
+      "input": {
+        "id": "one",
+        "enabled": false
+      },
+      "output": {
+        "queuedBefore": [
+          "one"
+        ],
+        "opened": [],
+        "seen": [
+          "one"
+        ],
+        "effects": [
+          "one"
+        ],
+        "pending": []
+      }
+    },
+    {
+      "input": {
+        "id": "newtimeline",
+        "enabled": false
+      },
+      "output": {
+        "queuedBefore": [
+          "newtimeline"
+        ],
+        "opened": [
+          "newtimeline"
+        ],
+        "seen": [
+          "newtimeline"
+        ],
+        "effects": [
+          "newtimeline"
+        ],
+        "pending": []
+      }
+    },
+    {
+      "input": {
+        "id": "one",
+        "enabled": true,
+        "holding": true
+      },
+      "output": {
+        "queuedBefore": [
+          "one"
+        ],
+        "opened": [],
+        "seen": [],
+        "effects": [],
+        "pending": [
+          "one"
+        ]
+      }
+    },
+    {
+      "input": {
+        "id": "one",
+        "enabled": true,
+        "paused": true
+      },
+      "output": {
+        "queuedBefore": [
+          "one"
+        ],
+        "opened": [],
+        "seen": [],
+        "effects": [],
+        "pending": [
+          "one"
+        ]
+      }
+    },
+    {
+      "input": {
+        "id": "one",
+        "enabled": true,
+        "noPops": true
+      },
+      "output": {
+        "queuedBefore": [
+          "one"
+        ],
+        "opened": [],
+        "seen": [],
+        "effects": [
+          "one"
+        ],
+        "pending": []
+      }
+    }
+  ]
+}

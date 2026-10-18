@@ -1,0 +1,3179 @@
+{
+  "source": "DM2 2.15 play-B7Micxas.js",
+  "sha256": "24948a089fc981326a2d6ad7a558cc766ca79c85ca11d3c18e976f8dc2a03764",
+  "functions": [
+    "cb",
+    "r0",
+    "a0",
+    "s0"
+  ],
+  "tiers": [
+    {
+      "name": "Golden Bonus",
+      "multiplier": 1.5,
+      "nicePercent": 50,
+      "duration": 60,
+      "speed": 0.5,
+      "sprite": "general/bonuscoin",
+      "spriteKey": "standard",
+      "weight": 40
+    },
+    {
+      "name": "Moon Coin",
+      "multiplier": 1.6,
+      "nicePercent": 60,
+      "duration": 60,
+      "speed": 0.45,
+      "sprite": "general/diamondbonuscoin",
+      "spriteKey": "moon",
+      "weight": 25
+    },
+    {
+      "name": "Pristine Bonus",
+      "multiplier": 1.7,
+      "nicePercent": 70,
+      "duration": 75,
+      "speed": 0.4,
+      "sprite": "general/icons/goldendarkcoin",
+      "spriteKey": "mars",
+      "weight": 15
+    },
+    {
+      "name": "Ultra Pristine Bonus",
+      "multiplier": 1.9,
+      "nicePercent": 90,
+      "duration": 90,
+      "speed": 0.35,
+      "sprite": "general/icons/diamonddarkcoin",
+      "spriteKey": "jupiter",
+      "weight": 10
+    },
+    {
+      "name": "Hyperultra Pristine Bonus",
+      "multiplier": 2.1,
+      "nicePercent": 110,
+      "duration": 105,
+      "speed": 0.3,
+      "sprite": "general/icons/specialdarkcoin",
+      "spriteKey": "titan",
+      "weight": 6
+    },
+    {
+      "name": "Super Ultra Omega Bonus",
+      "multiplier": 2.5,
+      "nicePercent": 150,
+      "duration": 120,
+      "speed": 0.25,
+      "sprite": "general/icons/specialsuperfortune",
+      "spriteKey": "superfortune",
+      "weight": 4
+    }
+  ],
+  "cases": [
+    {
+      "maxlevel": 0,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.9090909090899091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.9090909090909091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.909090909091909,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.9090909090899091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.9090909090909091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.909090909091909,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 0,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.9090909090899091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.9090909090909091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.909090909091909,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.9090909090899091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.9090909090909091,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.909090909091909,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 1,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.6153846153836154,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.6153846153846154,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.6153846153856154,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.5797101449265363,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.5797101449275363,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.5797101449285362,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.9420289855062464,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.9420289855072463,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.9420289855082463,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.5797101449265363,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.5797101449275363,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.5797101449285362,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.9420289855062464,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.9420289855072463,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.9420289855082463,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 2,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.499999999999,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.500000000001,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.812499999999,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.8125,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.812500000001,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.4761904761894762,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.47619047619047616,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.47619047619147614,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.7738095238085239,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.7738095238095238,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.7738095238105238,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.9523809523799524,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.9523809523809523,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.9523809523819523,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.4761904761894762,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.47619047619047616,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.47619047619147614,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.7738095238085239,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.7738095238095238,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.7738095238105238,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.9523809523799524,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.9523809523809523,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.9523809523819523,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 3,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.44444444444344444,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.4444444444444444,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.4444444444454444,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.7222222222212222,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.7222222222222222,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.7222222222232222,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.8888888888878889,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.8888888888888888,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.8888888888898888,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.42553191489261705,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.425531914893617,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.425531914894617,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.6914893617011277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.6914893617021277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.6914893617031277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.8510638297862341,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.851063829787234,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.851063829788234,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.9574468085096384,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.9574468085106383,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.9574468085116383,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.42553191489261705,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.425531914893617,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.425531914894617,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.6914893617011277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.6914893617021277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.6914893617031277,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.8510638297862341,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.851063829787234,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.851063829788234,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.9574468085096384,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.9574468085106383,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.9574468085116383,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 4,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.4166666666656667,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.4166666666666667,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.41666666666766666,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.6770833333323334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.6770833333333334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.6770833333343333,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.8333333333323334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.8333333333333334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.8333333333343333,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.937499999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.9375,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.937500000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.39999999999900004,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.4,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.400000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.649999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.65,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.650000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.7999999999990001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.8,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.800000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.899999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.9,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.900000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.959999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.96,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.9600000000009999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.39999999999900004,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.4,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.400000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.649999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.65,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.650000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.7999999999990001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.8,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.800000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.899999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.9,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.900000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.959999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.96,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.9600000000009999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 5,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.4166666666656667,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.4166666666666667,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.41666666666766666,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.6770833333323334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.6770833333333334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.6770833333343333,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.8333333333323334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.8333333333333334,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.8333333333343333,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.937499999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.9375,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.937500000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 1,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.39999999999900004,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.4,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.400000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.649999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.65,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.650000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.7999999999990001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.8,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.800000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.899999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.9,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.900000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.959999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.96,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.9600000000009999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 2,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.5,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.9999999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.39999999999900004,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.4,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 1
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.400000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.649999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.65,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 2
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.650000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.7999999999990001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.8,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 3
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.800000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.899999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.9,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 4
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.900000000001,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.959999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.96,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 5
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.9600000000009999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    },
+    {
+      "maxlevel": 6,
+      "timeline": 3,
+      "roll": 0.999999999999,
+      "eligible": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "selected": 6
+    }
+  ]
+}

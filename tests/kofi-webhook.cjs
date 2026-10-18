@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict'),{createKofiWebhook}=require('../functions/kofi-webhook');
+const id='A1b2C3d4E5f6G7h8I9j0',users=new Map([[id,{totalTipAmount:0}]]),receipts=new Map();let fails=false;
+const db={collection:collection=>({doc:key=>({collection,key})}),async runTransaction(fn){const writes=[];const result=await fn({get:async r=>({exists:(r.collection==='users'?users:receipts).has(r.key)}),update:(r,data)=>writes.push([r,data]),set:(r,data)=>writes.push([r,data])});if(fails)throw Error('Rejected');for(const [r,data]of writes){const map=r.collection==='users'?users:receipts,old=map.get(r.key)||{};map.set(r.key,{...old,...data,...(data.totalTipAmount?{totalTipAmount:(old.totalTipAmount||0)+data.totalTipAmount.increment}:{})});}return result;}};
+let secret='private-test-token';const hook=createKofiWebhook({db,getVerificationToken:()=>secret,increment:increment=>({increment}),logger:{error(){}},now:()=>123});
+const payload=extra=>({verification_token:secret,message:'Save ID: '+id,message_id:'one',amount:'5.00',currency:'USD',...extra});
+async function call(body,method='POST'){const res={status(n){this.code=n;return this;},send(text){this.text=text;}};await hook({body,method},res);return res;}
+(async()=>{assert.equal((await call(payload(),'GET')).code,405);assert.equal((await call({data:'bad'})).code,400);assert.equal((await call(payload({verification_token:'wrong'}))).code,401);secret='';assert.equal((await call(payload())).code,503);secret='private-test-token';
+for(const amount of ['NaN','5abc','',null,0,-1,Infinity,'0.00'])assert.equal((await call(payload({amount}))).code,400);
+assert.equal((await call(payload({message_id:''}))).code,400);assert.equal((await call(payload({message:'hello'}))).code,200);assert.equal(receipts.size,0);
+fails=true;assert.equal((await call(payload())).code,500);assert.equal(users.get(id).totalTipAmount,0);assert.equal(receipts.size,0);fails=false;
+assert.equal((await call({data:JSON.stringify(payload())})).code,200);assert.equal(users.get(id).isSupporter,true);assert.equal(users.get(id).eligibleForGameKey,true);assert.equal(users.get(id).totalTipAmount,5);assert.equal(receipts.size,1);assert.equal((await call(payload())).text,'Already processed');assert.equal(users.get(id).totalTipAmount,5);
+assert.equal((await call(payload({message_id:'two',amount:'1.25'}))).code,200);assert.equal(users.get(id).totalTipAmount,6.25);assert.equal(receipts.size,2);
+assert.equal((await call(payload({message_id:'three',message:'B'.repeat(28)}))).code,200);assert.equal(receipts.size,2);
+console.log('PASS: webhook token/method/payload/amount validation, missing-user handling, transaction rollback, delivery replay protection and unchanged supporter/key grants without remote writes.');})().catch(e=>{console.error(e);process.exitCode=1;});
