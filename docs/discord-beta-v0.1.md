@@ -50,9 +50,9 @@ Cloud restore now checks earned progress, waits for reward screens, keeps recove
 The in-game notes cover the changes since Alpha v0.055. NEW PATCH NOTES is clearer to click, and after reading it the footer returns to just the version number, without the underline.
 
 **:beetle: Bugfixes!**
-Fixed Rick creating duplicate copies and leaving pieces behind
-Fixed Rick's held pickaxe alignment
-Fixed Rick's buff timer being exploitable by clicking out of the game
+Fixed rkn creating duplicate copies and leaving pieces behind
+Fixed rkn's held pickaxe alignment
+Fixed rkn's buff timer being exploitable by clicking out of the game
 Fixed capped Dogebags looking like only around 20 rewards by showing the full 99-bag item and coin breakdown
 Fixed rewards being claimable again through reloads or stale callbacks
 Fixed old helpers and effects lingering after time travel
@@ -69,7 +69,7 @@ Fixed broken item images, fallback paths, and PNG color-profile checksums
 Fixed older Alpha saves getting stuck behind an absurdly strong rock
 Fixed the Easter egg count and completed golden-egg display
 Fixed Windows Beta packages using a lower version number than Alpha
-Fixed missing and mismatched sounds for loot, Mystery Boxes, Dogediamonds, Easter eggs, Rick, fusion, and D.I.A. scenes
+Fixed missing and mismatched sounds for loot, Mystery Boxes, Dogediamonds, Easter eggs, rkn, fusion, and D.I.A. scenes
 Fixed the split white backing on Dogebag and Mystery Box rewards
 Updated the third Searchdoge slot with the proper lock icon and matching Dogediamond buy button
 

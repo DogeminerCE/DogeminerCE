@@ -55,14 +55,14 @@
         ['reallyhardium','Reallyhardium unlocks'],['upgrade-transform','Upgrade transformation']];
     const TOOL_FEATURES=[['tool-dual','Dual-wielding'],['tool-fusion','SunDoge fusion'],
         ['tool-drills','Hold-to-mine drills'],['tool-profiles','Tool motion & sound profiles']];
-    const ENCOUNTER_FEATURES=[['cate-thief','Cate Thief'],['rick-visit','Rick visit'],['rock-capacity','Rock capacity'],['updates-discovery','Updates & discovery']];
+    const ENCOUNTER_FEATURES=[['cate-thief','Cate Thief'],['rick-visit','rkn visit'],['rock-capacity','Rock capacity'],['updates-discovery','Updates & discovery']];
     const CLOUD_FEATURES=[['cloud-local','Keep newer local progress'],['cloud-newer','Restore newer cloud progress'],['cloud-reward','Cloud waits for rewards'],['cloud-invalid','Reject invalid cloud save']];
     const IMPORT_FEATURES=[['import-basic','DM2 first-timeline save'],['import-late','DM2 protected rewards & history'],['import-backup','UTF16 import & backups'],['import-invalid','Reject damaged DM2 save']];
     const LANDING_FEATURES=[['landing-new','Landing: new game'],['landing-continue','Landing: saved game'],['import-late','DM2 protected rewards & history'],['import-invalid','Reject damaged DM2 save']];
     const SEASONAL_FEATURES=[['holiday-easter','Easter scene & hidden egg'],['holiday-halloween','Halloween scene & drops'],['holiday-xmas','Christmas scene & music'],['holiday-complete','Ninth egg & golden reward']];
     const LAYOUT_FEATURES=[['layout-desktop','Desktop layout'],['layout-tablet','Tablet layout'],['layout-phone','Phone layout'],['layout-codes','Keyboard secrets']];
-    const REVIEW_FEATURES=[['updates-discovery','Full Beta patch notes'],['rick-visit','Rick visit & tool alignment'],['rock-capacity','99 Dogebags & rock capacity'],['holiday-complete','Ninth egg & golden reward']];
-    const VERIFICATION_FEATURES=[['verify-input','Settings, inputs & Rick timer'],['verify-mission','Full D.I.A. mission'],['verify-worlds','Planet scenes & holiday cycle'],['verify-recovery','Ninth egg, saved reward & reload']];
+    const REVIEW_FEATURES=[['updates-discovery','Full Beta patch notes'],['rick-visit','rkn visit & tool alignment'],['rock-capacity','99 Dogebags & rock capacity'],['holiday-complete','Ninth egg & golden reward']];
+    const VERIFICATION_FEATURES=[['verify-input','Settings, inputs & rkn timer'],['verify-mission','Full D.I.A. mission'],['verify-worlds','Planet scenes & holiday cycle'],['verify-recovery','Ninth egg, saved reward & reload']];
     const POLISH_FEATURES=[['polish-settings','Compact settings & patch notes'],['polish-mission','D.I.A. with controller or touch'],['polish-rewards','Mission reward controls'],['polish-phone','Phone inventory & drawer']];
     const fullReview=()=>new URLSearchParams(location.search).get('allChanges')==='1';
     // The latest sandbox exposes the whole review history, including the early
@@ -100,7 +100,7 @@
         {label:'More helper names & upgrades',features:[['party-names','Party Shibe nicknames'],['dj-names','DJ Kittenz nicknames'],['upgrade-hover-mars','Mars upgrade cards']]},
         {label:"1 \u00b7 Income & Searchdoge", action:true, features:[["offline-hour", "Offline: 1 hour"], ["offline-cap", "Offline: 72h / cap"], ["offline-short", "Offline: 4m / no credit"], ["offline-zero", "Offline: zero DPS"], ["offline-refresh", "Offline + refresh"], ["offline-replay", "Replay last snapshot"], ["beta-offline", "Beta \u2192 welcome back"], ["search-first", "Search: first timeline"], ["search-prestige", "Search: timeline 2"], ["search-planets", "Search: two planets"], ["search-find", "Force next discovery"], ["search-fill", "Fill found slots"], ["search-step", "Step search 3s"], ["coin-hover", "Coin hover sample"]]},
         {label:"2 \u00b7 Prestige rewards", action:true, features:[["prestige-million", "Load 1M coins \u00b7 8 pickaxes"], ["prestige-cap", "Load 1T coins \u00b7 first badge cap"], ["prestige-paw", "Paw only \u00b7 zero helpers"], ["prestige-planets", "Helpers on all five planets"], ["prestige-timeline-2", "Badge: timeline 2"], ["prestige-timeline-10", "Badge: timeline 10"], ["prestige-timeline-11", "Badge: timeline 11"], ["prestige-preservation", "Preserve earned Alpha rewards"], ["prestige-quote", "View mission quote"], ["prestige-choices", "View badge choices"], ["prestige-review", "Review rewards \u00b7 skip cutscene"]]},
-        {label:"3 \u00b7 Bonus Coins & Rick", action:true, features:[["bonus-earth", "Load Earth \u00b7 tier 1"], ["bonus-mars", "Load Mars reached \u00b7 no bases"], ["bonus-titan", "Load Titan reached \u00b7 tiers 1\u20135"], ["bonus-timeline-2", "Load timeline 2 \u00b7 Earth + Omega"], ["bonus-early", "Load nine Shibes \u00b7 early offer"], ["bonus-weighted", "Spawn weighted coin"], ["bonus-tier", "Spawn selected tier"], ["bonus-roll", "Step two-minute check"], ["bonus-high-roll", "High roll \u00b7 build odds"], ["bonus-success", "Force successful check"], ["bonus-expire", "Expire current buff"], ["rick-near", "Load Rick \u00b7 nearby groups"], ["rick-remove", "Remove Rick"]]},
+        {label:"3 \u00b7 Bonus Coins & rkn", action:true, features:[["bonus-earth", "Load Earth \u00b7 tier 1"], ["bonus-mars", "Load Mars reached \u00b7 no bases"], ["bonus-titan", "Load Titan reached \u00b7 tiers 1\u20135"], ["bonus-timeline-2", "Load timeline 2 \u00b7 Earth + Omega"], ["bonus-early", "Load nine Shibes \u00b7 early offer"], ["bonus-weighted", "Spawn weighted coin"], ["bonus-tier", "Spawn selected tier"], ["bonus-roll", "Step two-minute check"], ["bonus-high-roll", "High roll \u00b7 build odds"], ["bonus-success", "Force successful check"], ["bonus-expire", "Expire current buff"], ["rick-near", "Load rkn \u00b7 nearby groups"], ["rick-remove", "Remove rkn"]]},
         {label:"4 \u00b7 Timelines & Fortunes", action:true, features:[["history-first", "Load first tracked run"], ["history-legacy", "Load veteran Alpha save"], ["history-many", "Load 30 completed timelines"], ["history-stacked", "Load existing protected stacks"], ["history-view", "View timeline history"], ["history-inventory", "View Fortune inventory"], ["history-step", "Add 1K earned coins + 10s"], ["history-choice", "Play mission choice"], ["history-review", "Review rewards \u00b7 selected choice"], ["history-fail", "Fail next mission save once"]]},
         {label:"5 \u00b7 Stories & royalties", action:true, features:[["story-four", "Load four DJs \u00b7 blocked"], ["story-short", "Load five DJs \u00b7 729s"], ["story-ready", "Load five DJs \u00b7 730s"], ["story-timeline-2", "Load timeline 2 \u00b7 five DJs"], ["story-claimed", "Load claimed royalty reward"], ["story-suppressed", "Load stories suppressed"], ["story-pending", "Load saved pending story"], ["story-offline", "Queue behind Welcome Back"], ["story-delay", "Pass arrival delay"], ["story-time", "Add one mining second"], ["story-check", "Step story check"], ["story-fail", "Fail next story completion once"], ["stories-toggle", "Toggle story popups"]]},
     ];
@@ -370,7 +370,7 @@
         for (let index = 0; index < 2; index++) data.helpers.push({ type: 'miningShibe', name: `Unplaced ${index + 1}`,
             dps: window.shopManager.getCurrentHelperUpgradeInfo('miningShibe').dps });
         apply(data); g.dropRick(center.x - 30, center.y - 30); g.isPlaying = false;
-        lastResult = 'Paused Rick sample · 30s visit. Drag Rick or the near ×4 group: green strokes and DPS update immediately. Unplaced/far helpers receive no aura. Reload or load another preset to clear Rick.';
+        lastResult = 'Paused rkn sample · 30s visit. Drag rkn or the near ×4 group: green strokes and DPS update immediately. Unplaced/far helpers receive no aura. Reload or load another preset to clear rkn.';
     }
 
     function historyPreset(name) {
@@ -1271,7 +1271,7 @@
         if(scene==='updates-discovery'){g.createDiamondLoot();window.DogeMinerReleaseNotes.open();}
         window.saveManager.saveGame(false);
         lastResult=scene==='cate-thief'?'Catch the thief before it finishes stealing. One named Streamer Kitten is freed and saved before its story. This source encounter is desktop-only.'
-            :scene==='rick-visit'?'Watch the portal, Rick mining and his 30-second timer. Drag him to move his helper buff.'
+            :scene==='rick-visit'?'Watch the portal, rkn mining and his 30-second timer. Drag him to move his helper buff.'
             :scene==='rock-capacity'?'A full stack holds the next rock. Open the 99-bag stack to make room; replacement then follows the source delay.'
             :'Close the patch notes, then collect the visible diamond for its first-discovery cue. The version label reopens patch notes.';
     }
@@ -1375,7 +1375,7 @@
             localStorage.setItem('ce-release-notes',JSON.stringify({lastSeenBuild:'beta-parity-previous',opened:false,seenUpdate:null}));
             window.DogeMinerReleaseNotes.check({force:true});
             window.saveManager.saveGame(false);revealTestView();
-            lastResult='Layout sits directly above Value Update Rate. Rick expires after 30 real seconds, including loss of focus. Try Space in inventory search, dropdowns and dialogs; it must not mine. Open Pickaxes to swipe/browse. Type DOGE; layout codes are removed.';
+            lastResult='Layout sits directly above Value Update Rate. rkn expires after 30 real seconds, including loss of focus. Try Space in inventory search, dropdowns and dialogs; it must not mine. Open Pickaxes to swipe/browse. Type DOGE; layout codes are removed.';
         }else if(scene==='verify-mission'){
             historyPreset('history-first');g.diaMissionSeenOnce=false;window.saveManager.saveGame(false);window.timeTravelManager.openMissionBrief(true);revealTestView();
             lastResult='Play the first mission from the brief through either Attack or Go Home, then all rewards and the saved timeline return. Both choices reach impact. The first mission cannot skip; repeats retain the answered choice and protected rewards.';
@@ -1600,7 +1600,7 @@
         } else if (name === 'rick-near') {
             rickPreset();
         } else if (name === 'rick-remove') {
-            g.despawnRick(); lastResult = 'Rick removed. Aura DPS returns to zero immediately.';
+            g.despawnRick(); lastResult = 'rkn removed. Aura DPS returns to zero immediately.';
         } else if (['prestige-million', 'prestige-cap', 'prestige-paw', 'prestige-planets', 'prestige-timeline-2',
             'prestige-timeline-10', 'prestige-timeline-11', 'prestige-preservation'].includes(name)) {
             prestigePreset(name);
@@ -1731,7 +1731,7 @@
         button('Play ninth egg → golden reward',()=>run('feature-preview',{scene:'holiday-complete'}),seasons);
 
         const category=select('Change category','parityCategory',[['all','All changes'],...REVIEW_GROUPS.map((group,index)=>[String(index),group.label])]);
-        const searchLabel=make('label','Search changes '),search=make('input','',searchLabel);search.type='search';search.placeholder='Rick, inventory, cloud, story…';search.dataset.paritySearch='';
+        const searchLabel=make('label','Search changes '),search=make('input','',searchLabel);search.type='search';search.placeholder='rkn, inventory, cloud, story…';search.dataset.paritySearch='';
         const feature=select('Preview','parityFeature',[]),matches=make('p','');matches.className='parity-match-count';
         const draw=()=>{
             const previous=feature.value||selectedFeature,query=search.value.trim().toLowerCase(),seen=new Set();feature.replaceChildren();
@@ -1770,7 +1770,7 @@
         const checkpoint = window.CEParityTesting?.checkpoint || 45;
         let renderView = () => {};
         const title = document.createElement('h3'); title.textContent = checkpoint >= 69 ? 'Beta v0.1 · Release review' : checkpoint >= 63 ? 'Checkpoints 63–65 · Mobile & Controller' : checkpoint >= 58 ? 'Checkpoints 58–62 · Verification' : checkpoint >= 56 ? 'Beta Review' : checkpoint >= 53 ? 'Checkpoints 53–55 · Layouts & Secrets' : checkpoint >= 49 ? 'Checkpoints 49–52 · Holidays & Egg Hunt' : checkpoint >= 48 ? 'Checkpoint 48 · Start, Continue & Import' : checkpoint >= 47 ? 'Checkpoint 47 · DM2 Save Import' : checkpoint >= 46 ? 'Checkpoint 46 · Cloud Save Safety' : checkpoint >= 41 ? 'Checkpoints 41–45 · Visitors & Discovery' : checkpoint >= 36 ? 'Checkpoints 36–40 · Tools & Fusion' : ['','Checkpoint 1 · Income & Searchdoge',
-            'Checkpoint 2 · Prestige rewards','Checkpoint 3 · Bonus Coins & Rick', 'Checkpoint 4 · Timelines & Fortunes', 'Checkpoint 5 · Stories & Royalties', 'Checkpoint 6 · Goals & Return Stories', 'Checkpoint 7 · Planet Discoveries', 'Checkpoint 8 · Rig, Contact & Titan', 'Checkpoint 9 · Inventory & Motion', 'Checkpoint 10 · Field Loot', 'Checkpoint 11 · Helper Loot', 'Checkpoint 12 · Auto Loot & Buy Max', 'Checkpoint 13 · Shop Details', 'Checkpoint 14 · Mining Feedback', 'Checkpoint 15 · Statistics & Upgrades', 'Checkpoint 16 · Return & Review', 'Checkpoint 17 · Helper Hover & Names', 'Checkpoint 18 · Field Personality', 'Checkpoint 19 · Mining Text & Buttons', 'Checkpoint 20 · Notifications & Motion Notice', 'Checkpoint 21 · Planet Backgrounds', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades'][checkpoint]; section.appendChild(title);
+            'Checkpoint 2 · Prestige rewards','Checkpoint 3 · Bonus Coins & rkn', 'Checkpoint 4 · Timelines & Fortunes', 'Checkpoint 5 · Stories & Royalties', 'Checkpoint 6 · Goals & Return Stories', 'Checkpoint 7 · Planet Discoveries', 'Checkpoint 8 · Rig, Contact & Titan', 'Checkpoint 9 · Inventory & Motion', 'Checkpoint 10 · Field Loot', 'Checkpoint 11 · Helper Loot', 'Checkpoint 12 · Auto Loot & Buy Max', 'Checkpoint 13 · Shop Details', 'Checkpoint 14 · Mining Feedback', 'Checkpoint 15 · Statistics & Upgrades', 'Checkpoint 16 · Return & Review', 'Checkpoint 17 · Helper Hover & Names', 'Checkpoint 18 · Field Personality', 'Checkpoint 19 · Mining Text & Buttons', 'Checkpoint 20 · Notifications & Motion Notice', 'Checkpoint 21 · Planet Backgrounds', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 22–24 · HUD, Income & Audio', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 25–27 · Performance & Swipes', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 28–30 · Gate, Evolution & Launch', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades', 'Checkpoints 31–35 · Late Progression & Upgrades'][checkpoint]; section.appendChild(title);
         function button(label, action, parent = section) {
             const node = document.createElement('button'); node.type = 'button'; node.textContent = label;
             node.addEventListener('click', () => {
@@ -1843,9 +1843,9 @@
             ['Review rewards · selected choice', 'history-review'], ['Fail next mission save once', 'history-fail']]) {
             const node = button(text, () => run(id, { choice: recordChoice.value, badge: recordBadge.value }), records); node.dataset.parityScenario = id;
         }
-        const bonus = group('Checkpoint 3 · Bonus Coins & Rick', checkpoint === 3);
+        const bonus = group('Checkpoint 3 · Bonus Coins & rkn', checkpoint === 3);
         const bonusHelp = document.createElement('p');
-        bonusHelp.textContent = 'Scenes load paused. Coin actions close these tools for the 8s claim window. Rick visits last 30s; drag him or a group to compare DPS.'; bonus.appendChild(bonusHelp);
+        bonusHelp.textContent = 'Scenes load paused. Coin actions close these tools for the 8s claim window. rkn visits last 30s; drag him or a group to compare DPS.'; bonus.appendChild(bonusHelp);
         const tierLabel = document.createElement('label'); tierLabel.textContent = 'Preview tier ';
         const tierSelect = document.createElement('select'); tierSelect.dataset.parityBonusTier = '';
         for (const tier of window.game.getBonusCoinTiers().slice(1)) {
@@ -1858,7 +1858,7 @@
             ['Load nine Shibes · early offer', 'bonus-early'], ['Spawn weighted coin', 'bonus-weighted'],
             ['Spawn selected tier', 'bonus-tier'], ['Step two-minute check', 'bonus-roll'],
             ['High roll · build odds', 'bonus-high-roll'], ['Force successful check', 'bonus-success'],
-            ['Expire current buff', 'bonus-expire'], ['Load Rick · nearby groups', 'rick-near'], ['Remove Rick', 'rick-remove']]) {
+            ['Expire current buff', 'bonus-expire'], ['Load rkn · nearby groups', 'rick-near'], ['Remove rkn', 'rick-remove']]) {
             const node = button(text, () => run(id, { tier: tierSelect.value }), bonus); node.dataset.parityScenario = id;
         }
         const prestige = group('Checkpoint 2 · Prestige rewards', checkpoint === 2);
@@ -1931,7 +1931,7 @@
                     + `Next check ${Math.max(0, Math.ceil((g._bonusCoinNextCheckTime - Date.now()) / 1000))}s · claims ${g.bonusCoinClaimCount || 0}\n`
                     + `Field tier ${g._bonusCoinFieldTier?.level || '—'} · buff ${g.bonusCoinBuffTier || '—'} / ${Math.max(0, Math.ceil((g.bonusCoinBuffEndTime - Date.now()) / 1000))}s\n`
                     + `DPS ${g.formatNumber(g.dps)} · permanent ${g.formatNumber(g.getOfflineDPS())}\n`
-                    + `Rick base bonus +${g.formatNumber(g.getRickAuraBaseDPS())} · radius ${Math.round(g.getRickAuraRadius())}`;
+                    + `rkn base bonus +${g.formatNumber(g.getRickAuraBaseDPS())} · radius ${Math.round(g.getRickAuraRadius())}`;
                 return;
             }
             const rules = window.DogeMinerSearchdoge.config(g.timelineNumber);

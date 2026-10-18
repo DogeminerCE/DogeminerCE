@@ -1,7 +1,7 @@
 // CE release feed and guarded update checks. Uses the shared panel popup motion.
 (function () {
     'use strict';
-    const BUILD = 'beta-v0.1-r3', VERSION = 'v0.1 (BETA)', MIN_CHECK = 300000;
+    const BUILD = 'beta-v0.1-r4', VERSION = 'v0.1 (BETA)', MIN_CHECK = 300000;
     const node = (tag, name, text) => { const e=document.createElement(tag);e.className=name;if(text!==undefined)e.textContent=text;return e; };
     function manifest(raw) {
         if(raw?.schema!==1 || typeof raw.build!=='string' || !/^[a-zA-Z0-9._-]{1,80}$/.test(raw.build)) throw Error('Invalid release version.');
