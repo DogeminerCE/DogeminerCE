@@ -1055,27 +1055,9 @@ class SaveManager {
         this.game.jupiterPlacedHelpers = spawnMissingHelpers(this.game.jupiterHelpers, this.game.jupiterPlacedHelpers, 'jupiter');
         this.game.titanPlacedHelpers = spawnMissingHelpers(this.game.titanHelpers, this.game.titanPlacedHelpers, 'titan');
 
-        if (this.game.currentLevel === 'moon') {
-            this.game.placedHelpers = [...this.game.moonPlacedHelpers];
-        } else if (this.game.currentLevel === 'mars') {
-            this.game.placedHelpers = [...this.game.marsPlacedHelpers];
-        } else if (this.game.currentLevel === 'jupiter') {
-            this.game.placedHelpers = [...this.game.jupiterPlacedHelpers];
-        } else if (this.game.currentLevel === 'titan') {
-            // Load Titan placed helpers when on Titan to prevent Earth helpers from appearing
-            this.game.placedHelpers = [...this.game.titanPlacedHelpers];
-        } else {
-            this.game.placedHelpers = [...this.game.earthPlacedHelpers];
-        }
-
-        const body = document.body;
-        if (body) {
-            const level = this.game.currentLevel;
-            document.body.classList.toggle('moon-theme', level === 'moon');
-            document.body.classList.toggle('planet-mars', level === 'mars');
-            document.body.classList.toggle('planet-jupiter', level === 'jupiter');
-            document.body.classList.toggle('planet-titan', level === 'titan');
-        }
+        this.game.placedHelpers = [...this.game[this.game.getPlacedHelperKey()]];
+        // Apply sizing/theme classes before constructing field sprites.
+        this.game.applyPlanetTheme();
 
         this.game.recreateHelperSprites();
         this.game.updateShopPrices();
@@ -1179,7 +1161,7 @@ class SaveManager {
                 maxHP: this.game.rockMaxHP, currentHP: this.game.rockCurrentHP };
         }
         this.game.restoreLayout?.(saveData.layout,saveData.dm2Import);
-        this.game.setPlanetBackgrounds?.(this.game.currentLevel, { reset: true });
+        if (!window.uiManager) this.game.setPlanetBackgrounds?.(this.game.currentLevel, { reset: true });
         if (this.game._bootComplete) this.game.startSeasonal?.();
         this.game.updateUI();
         if (this.game.updateRockHealthDisplay) {
@@ -1187,25 +1169,7 @@ class SaveManager {
         }
 
         if (window.uiManager) {
-            if (this.game.currentLevel === 'moon') {
-                document.body.classList.add('moon-theme');
-                document.body.classList.remove('planet-mars');
-                document.body.classList.remove('planet-jupiter');
-            } else if (this.game.currentLevel === 'mars') {
-                document.body.classList.add('planet-mars');
-                document.body.classList.remove('moon-theme');
-                document.body.classList.remove('planet-jupiter');
-            } else if (this.game.currentLevel === 'jupiter') {
-                document.body.classList.add('planet-jupiter');
-                document.body.classList.remove('moon-theme');
-                document.body.classList.remove('planet-mars');
-            } else {
-                document.body.classList.remove('moon-theme');
-                document.body.classList.remove('planet-mars');
-                document.body.classList.remove('planet-jupiter');
-            }
-
-            uiManager.updateBackground(this.game.currentLevel);
+            uiManager.syncPlanetScene(this.game.currentLevel, { resetBackground: true });
             if (this.game.marsHelpers.length && !this.game.moonHelpers.some(helper => helper.type === 'marsRocket')) {
                 const hasMarsRocketInMarsHelpers = this.game.marsHelpers.some(helper => helper.type === 'marsRocket');
                 if (hasMarsRocketInMarsHelpers) {
@@ -1852,18 +1816,7 @@ class SaveManager {
             this.game.jupiterPlacedHelpers = planetArrays['jupiter'];
             this.game.titanPlacedHelpers = planetArrays['titan'];
 
-            // Also update current placedHelpers based on currentLevel
-            if (this.game.currentLevel === 'moon') {
-                this.game.placedHelpers = this.game.moonPlacedHelpers;
-            } else if (this.game.currentLevel === 'mars') {
-                this.game.placedHelpers = this.game.marsPlacedHelpers;
-            } else if (this.game.currentLevel === 'jupiter') {
-                this.game.placedHelpers = this.game.jupiterPlacedHelpers;
-            } else if (this.game.currentLevel === 'titan') {
-                this.game.placedHelpers = this.game.titanPlacedHelpers;
-            } else {
-                this.game.placedHelpers = this.game.earthPlacedHelpers;
-            }
+            this.game.placedHelpers = this.game[this.game.getPlacedHelperKey()];
             // === END: Cross-planet helper repair ===
 
             // Clean up helpers array (remove null entries, ensure required fields)

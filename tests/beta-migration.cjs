@@ -24,10 +24,11 @@ function contextFor(storage = new Map(), fault = {}) {
         }
     };
     vm.createContext(context);
-    for (const file of ['balance-data', 'balance', 'beta-migration', 'save']) {
+    for (const file of ['game', 'balance-data', 'balance', 'beta-migration', 'save']) {
         vm.runInContext(fs.readFileSync(path.join(sourceRoot, `${file}.js`), 'utf8'), context);
     }
     context.SaveManager = vm.runInContext('SaveManager', context);
+    context.Game = vm.runInContext('DogeMinerGame', context);
     return { context, storage, fault, migration: context.window.BetaSaveMigration };
 }
 
@@ -90,6 +91,8 @@ function makeGame(environment) {
         getEquippedPickaxe() { return this.pickaxeInventory.find(item => item.instanceId === this.equippedPickaxeId) || this.defaultPickaxe; },
         getPickaxeDPC() { return this.getEquippedPickaxe().baseDPC; },
         recalculatePlayerStats() { this.playerStats = { luck: 1, wow: 2, lootFind: 3, critChance: 0 }; },
+        getPlacedHelperKey: environment.context.Game.prototype.getPlacedHelperKey,
+        applyPlanetTheme: environment.context.Game.prototype.applyPlanetTheme,
         recreateHelperSprites() {}, updateShopPrices() {}, updateDPS() { this.dps = 999; }, updateUI() {},
         updateRockHealthDisplay() {}, initMysteryBox() {}, showNotification() {},
         showPendingBetaMigrationReport() { this.reportCalls = (this.reportCalls || 0) + 1; },

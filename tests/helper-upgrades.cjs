@@ -30,6 +30,7 @@ const game = {
     getRickAuraRadius: DogeMinerGame.prototype.getRickAuraRadius,
     getRickAuraBaseDPS: DogeMinerGame.prototype.getRickAuraBaseDPS,
     calculateTotalDPS: DogeMinerGame.prototype.calculateTotalDPS,
+    sumHelperDPS: DogeMinerGame.prototype.sumHelperDPS,
     getMysteryDPS: DogeMinerGame.prototype.getMysteryDPS,
     getHelperCost: DogeMinerGame.prototype.getHelperCost,
     getHelperSpritePaths: DogeMinerGame.prototype.getHelperSpritePaths,

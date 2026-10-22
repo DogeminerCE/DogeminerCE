@@ -3406,6 +3406,18 @@ class DogeMinerGame {
         return this[this.getHelperCategoryForLevel(level)];
     }
 
+    getPlacedHelperKey(level = this.currentLevel) {
+        return `${['moon', 'mars', 'jupiter', 'titan'].includes(level) ? level : 'earth'}PlacedHelpers`;
+    }
+
+    applyPlanetTheme(level = this.currentLevel) {
+        const body = document.body;
+        if (!body) return;
+        body.dataset.planet = level;
+        for (const [planet, theme] of [['moon', 'moon-theme'], ['mars', 'planet-mars'],
+            ['jupiter', 'planet-jupiter'], ['titan', 'planet-titan']]) body.classList.toggle(theme, level === planet);
+    }
+
     getTotalHelperCount() {
         return (this.helpers?.length || 0) + (this.moonHelpers?.length || 0)
             + (this.marsHelpers?.length || 0) + (this.jupiterHelpers?.length || 0)
@@ -5280,21 +5292,7 @@ class DogeMinerGame {
     }
 
     calculateTotalDPS({ includeTemporary = true, includeRick = true } = {}) {
-        // Resolve each upgrade tier once per helper type, rather than once per
-        // owned instance. Late-game collections can contain thousands of helpers.
-        const ownedByType = new Map();
-        for (const category of ['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']) {
-            for (const helper of this[category] || []) {
-                if (!ownedByType.has(helper.type)) ownedByType.set(helper.type, []);
-                ownedByType.get(helper.type).push(helper);
-            }
-        }
-        let baseDpsTotal = 0;
-        for (const [type, helpers] of ownedByType) {
-            const dps = window.shopManager?.getCurrentHelperUpgradeInfo(type)?.dps;
-            baseDpsTotal += dps != null ? dps * helpers.length
-                : helpers.reduce((total, helper) => total + (helper.dps || 0), 0);
-        }
+        let baseDpsTotal = this.sumHelperDPS(['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']);
         if (includeTemporary && includeRick) baseDpsTotal += this.getRickAuraBaseDPS();
         const bonus = includeTemporary ? (this.bonusCoinBuffMultiplier || 1) : 1;
         const helperMultiplier = Number(((this.playerStats.helperDpsMultiplier || 1) * bonus).toFixed(2));
@@ -5303,19 +5301,32 @@ class DogeMinerGame {
             * (this.playerStats.totalDpsMultiplier || 1);
     }
 
+    sumHelperDPS(categories, { mining = false } = {}) {
+        // Retain only a count and subtotal per type, rather than allocating a
+        // second array of every owned helper on each DPS update.
+        const groups = new Map();
+        for (const category of categories) for (const helper of this[category] || []) {
+            const type = helper.type;
+            let group = groups.get(type);
+            if (!group) {
+                group = { strength: window.shopManager?.getCurrentHelperUpgradeInfo(type)?.dps, count: 0, total: 0 };
+                groups.set(type, group);
+            }
+            group.count++;
+            // Mining deliberately adds each instance in order. Multiplying the
+            // strength by the count changes floating-point damage thresholds.
+            if (mining) group.total += group.strength ?? helper.dps ?? helper.baseDps ?? 0;
+            else if (group.strength == null) group.total += helper.dps || 0;
+        }
+        let total = 0;
+        for (const group of groups.values()) total += !mining && group.strength != null
+            ? group.strength * group.count : group.total;
+        return total;
+    }
+
     getPlanetMiningDPS(planet = this.currentLevel) {
         const category = { earth: 'helpers', moon: 'moonHelpers', mars: 'marsHelpers', jupiter: 'jupiterHelpers', titan: 'titanHelpers' }[planet];
-        const helpers = this[category] || [];
-        const byType = new Map();
-        for (const helper of helpers) {
-            if (!byType.has(helper.type)) byType.set(helper.type, []);
-            byType.get(helper.type).push(helper);
-        }
-        let base = 0;
-        for (const [type, owned] of byType) {
-            const strength = window.shopManager?.getCurrentHelperUpgradeInfo(type)?.dps;
-            base += owned.reduce((total, helper) => total + (strength ?? helper.dps ?? helper.baseDps ?? 0), 0);
-        }
+        let base = this.sumHelperDPS([category], { mining: true });
         if (planet === this.currentLevel) base += this.getRickAuraBaseDPS();
         const multiplier = Number(((this.playerStats?.helperDpsMultiplier || 1) * (this.bonusCoinBuffMultiplier || 1)).toFixed(2));
         return base * multiplier + (this.playerStats?.pickaxeFlatDps || 0);
@@ -5730,7 +5741,6 @@ class DogeMinerGame {
                     this.creditPassiveIncome(dt, timestamp, true);
                 }
 
-                this.updateHelpers();
             }
 
             this.advanceRickVisitor?.(dt);
@@ -5890,48 +5900,33 @@ class DogeMinerGame {
     }
 
     startBlinking() {
-        // Start blinking every 10 seconds
-        this.blinkInterval = setInterval(() => {
-            this.blinkDoge();
-        }, 10000);
+        if (this.blinkInterval != null) return;
+        this.blinkInterval = setInterval(() => this.blinkDoge(), 10000);
+    }
+
+    cancelDogeBlink() {
+        const blink = this._dogeBlink;
+        if (!blink) return;
+        clearTimeout(blink.timer);
+        this._dogeBlink = null;
+        if (this.currentLevel === blink.planet && blink.doge.src === blink.closedSrc)
+            blink.doge.src = blink.originalSrc;
     }
 
     blinkDoge() {
         const doge = document.getElementById('main-character');
-        if (!doge) return;
-        if (this.currentLevel === 'mars') {
-            return;
-        }
-
-        // Store original src
-        const originalSrc = doge.src;
-
-        // Choose the correct closed eyes sprite based on current planet
-        let closedEyesSprite;
-        if (this.currentLevel === 'earth') {
-            closedEyesSprite = 'assets/general/character/closed_eyes.webp';
-        } else if (this.currentLevel === 'moon') {
-            closedEyesSprite = 'assets/general/character/closed_space.webp';
-        } else if (this.currentLevel === 'mars') {
-            // Mars uses party sprite with happy variant for blinking
-            closedEyesSprite = 'assets/general/character/happy_party.webp';
-        } else if (this.currentLevel === 'jupiter') {
-            // Jupiter uses space helmet sprite like the Moon
-            closedEyesSprite = 'assets/general/character/closed_space.webp';
-        } else if (this.currentLevel === 'titan') {
-            // Titan uses space helmet (eyes open), blink with closed_space (eyes closed)
-            closedEyesSprite = 'assets/general/character/closed_space.webp';
-        } else {
-            // Default fallback
-            closedEyesSprite = 'assets/general/character/closed_eyes.webp';
-        }
-
-        // Change to closed eyes
-        doge.src = closedEyesSprite;
-
-        // Blink for 200ms
-        setTimeout(() => {
-            doge.src = originalSrc;
+        if (!doge || this.currentLevel === 'mars' || this._dogeBlink) return;
+        const blink = { doge, planet: this.currentLevel, originalSrc: doge.src };
+        doge.src = this.currentLevel === 'earth' ? 'assets/general/character/closed_eyes.webp'
+            : 'assets/general/character/closed_space.webp';
+        blink.closedSrc = doge.src;
+        this._dogeBlink = blink;
+        blink.timer = setTimeout(() => {
+            if (this._dogeBlink !== blink) return;
+            this._dogeBlink = null;
+            // A save import, scene switch or replacement character owns its new sprite.
+            if (this.currentLevel === blink.planet && document.getElementById('main-character') === doge
+                && doge.src === blink.closedSrc) doge.src = blink.originalSrc;
         }, 200);
     }
 
@@ -6596,6 +6591,7 @@ class DogeMinerGame {
 
     stopGame() {
         this.isPlaying = false;
+        this.cancelDogeBlink();
 
         // Clear all intervals
         if (this.dpsInterval) {
@@ -6614,13 +6610,6 @@ class DogeMinerGame {
             clearInterval(this.rickInterval);
             this.rickInterval = null;
         }
-    }
-
-    updateHelpers() {
-        // Animate helpers
-        this.helpers.forEach(helper => {
-            // Helper animation logic would go here
-        });
     }
 
     getVisibleDogecoinBalance() {
@@ -6946,12 +6935,8 @@ class DogeMinerGame {
     }
 
     recreateHelperSprites() {
-        // Clear existing helper sprites
-        const existingSprites = document.querySelectorAll('.helper-sprite');
-        existingSprites.forEach(sprite => { if (!sprite.classList.contains('rick-helper')) sprite.remove(); });
-
-        const existingTooltips = document.querySelectorAll('.helper-tooltip');
-        existingTooltips.forEach(tooltip => tooltip.remove());
+        // Run the presentation wrappers too: stop frames, names, chatter and motion.
+        this.clearAllHelperSprites();
 
         // Recreate all helper sprites
         this.placedHelpers.forEach(placedHelper => {

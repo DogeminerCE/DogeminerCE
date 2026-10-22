@@ -203,22 +203,7 @@ class UIManager {
 
             // Use timeout to ensure loading screen is visible before processing
             setTimeout(() => {
-                // First save the current state
-                if (this.game.currentLevel === 'earth') {
-                    // Save earth placed helpers
-                    this.game.earthPlacedHelpers = [...this.game.placedHelpers];
-                } else if (this.game.currentLevel === 'moon') {
-                    // Save moon placed helpers
-                    this.game.moonPlacedHelpers = [...this.game.placedHelpers];
-                } else if (this.game.currentLevel === 'mars') {
-                    // Save mars placed helpers
-                    this.game.marsPlacedHelpers = [...this.game.placedHelpers];
-                } else if (this.game.currentLevel === 'jupiter') {
-                    this.game.jupiterPlacedHelpers = [...this.game.placedHelpers];
-                } else if (this.game.currentLevel === 'titan') {
-                    // Save titan placed helpers when leaving Titan
-                    this.game.titanPlacedHelpers = [...this.game.placedHelpers];
-                }
+                this.game[this.game.getPlacedHelperKey()] = [...this.game.placedHelpers];
 
                 // Save current planet's rock health state
                 if (!this.game.isRockRegenerating && this.game.planetRockData && this.game.planetRockData[this.game.currentLevel]) {
@@ -271,108 +256,10 @@ class UIManager {
                 // Set data-planet attribute on body for CSS targeting
                 document.body.dataset.planet = planetName;
 
-                // Update mobile display
-                this.updateMobilePlanetDisplay();
+                this.game.placedHelpers = [...(this.game[this.game.getPlacedHelperKey(planetName)] || [])];
 
-                // Load the appropriate placed helpers
-                if (planetName === 'earth') {
-                    this.game.placedHelpers = [...this.game.earthPlacedHelpers];
-                } else if (planetName === 'moon') {
-                    this.game.placedHelpers = [...this.game.moonPlacedHelpers];
-                } else if (planetName === 'mars') {
-                    this.game.placedHelpers = [...(this.game.marsPlacedHelpers || [])];
-                } else if (planetName === 'jupiter') {
-                    this.game.placedHelpers = [...(this.game.jupiterPlacedHelpers || [])];
-                } else if (planetName === 'titan') {
-                    // Load titan placed helpers when switching to Titan
-                    this.game.placedHelpers = [...(this.game.titanPlacedHelpers || [])];
-                }
-
-                // Update the character sprite
-                if (planetName === 'earth') {
-                    // Earth character
-                    this.updateCharacter('standard');
-                } else if (planetName === 'moon') {
-                    // Moon character with spacesuit
-                    this.updateCharacter('spacehelmet');
-                } else if (planetName === 'mars') {
-                    this.updateCharacter('party');
-                } else if (planetName === 'jupiter') {
-                    // Use moon suit on Jupiter per requirements
-                    this.updateCharacter('spacehelmet');
-                } else if (planetName === 'titan') {
-                    // Titan uses space helmet like Jupiter and Moon
-                    this.updateCharacter('spacehelmet');
-                }
-
-                // Update the rock image
-                const rockElement = document.getElementById('main-rock');
-                const platform = document.getElementById('platform');
-                if (planetName === 'earth') {
-                    document.getElementById('main-rock').src = 'assets/general/rocks/earth.webp';
-                    if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatform.webp';
-                    }
-                    document.body.classList.remove('moon-theme');
-                    document.body.classList.remove('planet-mars');
-                    document.body.classList.remove('planet-jupiter');
-                    document.body.classList.remove('planet-titan');
-                    if (window.audioManager) {
-                        audioManager.playBackgroundMusic();
-                    }
-                } else if (planetName === 'moon') {
-                    rockElement.src = 'assets/general/rocks/moon.webp';
-                    if (platform) {
-                        platform.src = '../assets/quickUI/dogeplatformmoon.webp';
-                    }
-                    document.body.classList.add('moon-theme');
-                    document.body.classList.remove('planet-mars');
-                    document.body.classList.remove('planet-jupiter');
-                    document.body.classList.remove('planet-titan');
-                    if (window.audioManager) {
-                        audioManager.playBackgroundMusic();
-                    }
-                } else if (planetName === 'mars') {
-                    rockElement.src = 'assets/general/rocks/mars.webp';
-                    if (platform) {
-                        platform.src = '../assets/quickUI/marsdogeplatform.webp';
-                    }
-                    document.body.classList.remove('moon-theme');
-                    document.body.classList.add('planet-mars');
-                    document.body.classList.remove('planet-jupiter');
-                    document.body.classList.remove('planet-titan');
-                    if (window.audioManager) {
-                        audioManager.playBackgroundMusic();
-                    }
-                } else if (planetName === 'jupiter') {
-                    rockElement.src = 'assets/general/rocks/jupiter.webp';
-                    if (platform) {
-                        // Jupiter uses its own platform art so the scene matches the new assets.
-                        platform.src = '../assets/quickUI/jupiterdogeplatform.webp';
-                    }
-                    document.body.classList.remove('moon-theme');
-                    document.body.classList.remove('planet-mars');
-                    document.body.classList.remove('planet-titan');
-                    document.body.classList.add('planet-jupiter');
-                    if (window.audioManager) {
-                        audioManager.playBackgroundMusic();
-                    }
-                } else if (planetName === 'titan') {
-                    // Titan uses its own rock and platform
-                    rockElement.src = 'assets/general/rocks/titan.webp';
-                    if (platform) {
-                        platform.src = '../assets/quickUI/titandogeplatform.webp';
-                    }
-                    document.body.classList.remove('moon-theme');
-                    document.body.classList.remove('planet-mars');
-                    document.body.classList.remove('planet-jupiter');
-                    document.body.classList.add('planet-titan');
-                    if (window.audioManager) {
-                        audioManager.playBackgroundMusic();
-                    }
-                }
-
-                this.game.setPlanetBackgrounds(planetName);
+                this.syncPlanetScene(planetName);
+                window.audioManager?.playBackgroundMusic();
 
                 // Update the shop to show the appropriate helpers
                 this.updateShopContent();
@@ -473,11 +360,6 @@ class UIManager {
             return;
         }
 
-        // Log the current planet to help debug shop issues
-
-        // Clear existing content
-        shopContent.innerHTML = '';
-
         // Render the correct helpers based on current planet
         this.renderHelperShop(shopContent);
 
@@ -485,13 +367,11 @@ class UIManager {
         this.game.updateShopPrices();
     }
 
-    renderHelperShop(container) {
+    // Both layouts share prices, upgrade tiers and progression gates. Only the card layout differs.
+    renderHelperShop(container, mobile = false) {
         container.innerHTML = ''; // Clear container completely
 
-        if (!this.game) {
-            console.warn('renderHelperShop called before game was ready');
-            return;
-        }
+        if (!this.game || !window.shopManager?.shopData) return;
 
         // Choose which helpers to display based on current planet
         const helperCategory = this.game.getHelperCategoryForLevel(this.game.currentLevel);
@@ -641,25 +521,48 @@ class UIManager {
                     titleSizeClass = 'title-sm';
                 }
 
-                item.innerHTML = `
-                    <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title ${titleSizeClass}">${displayName}</div>
-                    <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
-                    <div class="shop-item-sprite">
-                        <img src="${displayIcon}" alt="${displayName}">
-                    </div>
-                    <div class="shop-item-description">${displayDesc}</div>
-                    <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" 
-                            ${buttonDisabled} style="width: ${buttonWidth};">
-                        <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
-                        <span class="buy-btn-price">${priceText}</span>
-                    </button>
-                    ${lockOverlayHtml}
-                `;
+                if (mobile) {
+                    item.innerHTML = `
+                        <div class="shop-item-quantity">#${owned}</div>
+                        <div class="shop-item-title">${displayName}</div>
+                        <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
+                        <div class="shop-sprite-description-container">
+                            <div class="shop-item-sprite">
+                                <img src="${displayIcon}" alt="${displayName}">
+                            </div>
+                            <div class="shop-item-info">
+                                <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
+                                <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" ${buttonDisabled}>
+                                    <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
+                                    <span class="buy-btn-price">${priceText}</span>
+                                </button>
+                            </div>
+                        </div>
+                        ${lockOverlayHtml}
+                    `;
 
-                if (isLocked) {
-                    item.classList.add('helper-locked');
+                } else {
+                    item.innerHTML = `
+                        <div class="shop-item-quantity">#${owned}</div>
+                        <div class="shop-item-title ${titleSizeClass}">${displayName}</div>
+                        <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
+                        <div class="shop-item-sprite">
+                            <img src="${displayIcon}" alt="${displayName}">
+                        </div>
+                        <div class="shop-item-description">${displayDesc}</div>
+                        <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}"
+                                ${buttonDisabled} style="width: ${buttonWidth};">
+                            <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
+                            <span class="buy-btn-price">${priceText}</span>
+                        </button>
+                        ${lockOverlayHtml}
+                    `;
+
                 }
+
+                if (isLocked) item.classList.add('helper-locked');
+                item.querySelector('.shop-buy-btn').addEventListener('click',
+                    mobile ? this.boundMobileBuyButtonClick : this.boundHandleBuyButtonClick);
             } else {
                 // Empty slot
                 item.innerHTML = `
@@ -672,64 +575,7 @@ class UIManager {
             container.appendChild(item);
         }
 
-        // Add event listeners to all buy buttons
-        this.setupShopButtonListeners();
         this.game.updateHelperShopDps?.();
-    }
-
-    // Render upgrade button for Earth helpers that have upgrades available
-    renderUpgradeButton(helperType, owned) {
-        // Only show upgrade button if player owns at least one of this helper
-        if (owned < 1) return '';
-
-        // Only show for Earth helpers (upgrades not yet implemented for other planets)
-        if (this.game.currentLevel !== 'earth') return '';
-
-        const nextUpgrade = window.shopManager?.getNextHelperUpgrade(helperType);
-        if (!nextUpgrade) return ''; // Max level reached or no upgrades
-
-        const canAfford = window.shopManager?.canAffordHelperUpgrade(helperType);
-        const currentLevel = window.shopManager?.getHelperUpgradeLevel(helperType) || 0;
-        const priceText = this.game.formatNumber(nextUpgrade.price);
-
-        return `
-            <button class="shop-upgrade-btn${canAfford ? '' : ' unaffordable'}" 
-                    data-upgrade-type="${helperType}" 
-                    ${canAfford ? '' : 'disabled'}>
-                <span class="upgrade-label">⬆ Lvl ${currentLevel + 1}: ${nextUpgrade.upgradeName}</span>
-                <span class="upgrade-price">${priceText}</span>
-            </button>
-        `;
-    }
-
-    setupShopButtonListeners() {
-        // Add event listeners to all buy buttons
-        // Desktop helper cards render inside #shop-content, so bind listeners to that node.
-        const shopContainer = document.getElementById('shop-content');
-        if (!shopContainer) return;
-
-        // Buy buttons
-        const buyButtons = shopContainer.querySelectorAll('.shop-buy-btn[data-helper-type]');
-        buyButtons.forEach((button) => {
-            // Remove any existing listeners to prevent duplicates
-            button.removeEventListener('click', this.boundHandleBuyButtonClick);
-            // Add new listener
-            button.addEventListener('click', this.boundHandleBuyButtonClick);
-        });
-
-        // Upgrade buttons
-        const upgradeButtons = shopContainer.querySelectorAll('.shop-upgrade-btn[data-upgrade-type]');
-        upgradeButtons.forEach((button) => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const helperType = button.getAttribute('data-upgrade-type');
-                if (helperType && window.shopManager) {
-                    window.shopManager.buyHelperUpgrade(helperType);
-                    // Re-render shop to update UI
-                    this.updateShopContent();
-                }
-            });
-        });
     }
 
     handleBuyButtonClick(event) {
@@ -800,40 +646,6 @@ class UIManager {
         }
 
         this.updateShopContent();
-    }
-
-    renderPickaxeShop(container) {
-        Object.entries(this.game.pickaxeTypes).forEach(([type, pickaxe]) => {
-            const owned = this.game.pickaxes.includes(type);
-            const canBuy = !owned && this.game.dogecoins >= pickaxe.cost;
-
-            const item = document.createElement('div');
-            item.className = 'shop-item';
-
-            item.innerHTML = `
-                <div class="shop-item-header">
-                    <div class="shop-item-title">${pickaxe.name}</div>
-                    <div class="shop-item-price">${owned ? 'Owned' : 'D ' + this.game.formatNumber(pickaxe.cost)}</div>
-                </div>
-                <div class="shop-item-content">
-                    <div class="shop-item-icon">
-                        <img src="${pickaxe.icon}" alt="${pickaxe.name}">
-                    </div>
-                    <div class="shop-item-details">
-                        <p>${pickaxe.description}</p>
-                        <div class="shop-item-stats">Multiplier: ${pickaxe.multiplier}x ${owned ? '| ✓ Owned' : ''}</div>
-                    </div>
-                </div>
-                <div class="shop-item-footer">
-                    <button class="buy-btn" onclick="game.buyPickaxe('${type}')" 
-                            ${!canBuy ? 'disabled' : ''}>
-                        ${owned ? 'Owned' : 'Buy!'}
-                    </button>
-                </div>
-            `;
-
-            container.appendChild(item);
-        });
     }
 
     setupStats() {
@@ -978,29 +790,30 @@ class UIManager {
         }
     }
 
+    syncPlanetScene(level = this.game.currentLevel, { resetBackground = false } = {}) {
+        const scenes = {
+            earth: ['standard', '../assets/quickUI/dogeplatform.webp'],
+            moon: ['spacehelmet', '../assets/quickUI/dogeplatformmoon.webp'],
+            mars: ['party', '../assets/quickUI/marsdogeplatform.webp'],
+            jupiter: ['spacehelmet', '../assets/quickUI/jupiterdogeplatform.webp'],
+            titan: ['spacehelmet', '../assets/quickUI/titandogeplatform.webp']
+        };
+        const scene = scenes[level];
+        if (!scene) return;
+        this.game.applyPlanetTheme(level);
+        this.updateMobilePlanetDisplay();
+        this.updateCharacter(scene[0]);
+        const platform = document.getElementById('platform');
+        if (platform && platform.getAttribute('src') !== scene[1]) platform.src = scene[1];
+        this.updateBackground(level);
+        this.game.setPlanetBackgrounds?.(level, { reset: resetBackground });
+    }
+
     updateCharacter(characterType = 'standard') {
-        const characterImage = document.getElementById('main-character');
-        if (!characterImage) return;
-
-        // Check if the current character is already correct to avoid unnecessary updates
-        const currentSrc = characterImage.src;
-        const targetSrc = `assets/general/character/${characterType}.webp`;
-
-        // Only update if the source has changed (avoid unnecessary reloading)
-        if (!currentSrc.endsWith(targetSrc)) {
-            console.log(`Updating character sprite to: ${characterType}`);
-
-            // Create a new image to preload
-            const preloadImage = new Image();
-            preloadImage.onload = () => {
-                // Once loaded, update the main character
-                characterImage.src = targetSrc;
-            };
-            preloadImage.onerror = () => {
-                console.error(`Failed to load character sprite: ${targetSrc}`);
-            };
-            preloadImage.src = targetSrc;
-        }
+        this.game.cancelDogeBlink?.();
+        const character = document.getElementById('main-character');
+        const target = `assets/general/character/${characterType}.webp`;
+        if (character && character.getAttribute('src') !== target) character.src = target;
     }
 
     showComboEffect(comboCount) {
@@ -1571,30 +1384,12 @@ class UIManager {
                         window.switchPlanet(planet);
                         planetMenu.classList.remove('open');
 
-                        // Update toggle icon and text
-                        const toggleIcon = document.getElementById('mobile-current-planet-icon');
-                        const toggleText = document.getElementById('mobile-planet-name');
-                        if (toggleIcon) {
-                            toggleIcon.src = `assets/general/${planet}.webp`;
-                        }
-                        if (toggleText) {
-                            toggleText.textContent = planet.charAt(0).toUpperCase() + planet.slice(1);
-                        }
-
-                        // Update active state in menu
-                        mobilePlanetTabs.forEach(t => t.classList.remove('active'));
-                        e.currentTarget.classList.add('active');
                     }
                 });
             });
 
             // Initialize toggle icon and text based on current planet
             this.updateMobilePlanetDisplay();
-
-            // Add a delayed update to ensure game state is fully loaded
-            setTimeout(() => {
-                this.updateMobilePlanetDisplay();
-            }, 500);
 
             // Update mobile stats every second
             setInterval(() => {
@@ -1661,40 +1456,14 @@ class UIManager {
 
     // Update mobile planet display (icon and text)
     updateMobilePlanetDisplay() {
-        if (!this.game || !this.game.currentLevel) return;
-
-        const toggleIcon = document.getElementById('mobile-current-planet-icon');
-        const toggleText = document.getElementById('mobile-planet-name');
-        const mobilePlanetTabs = document.querySelectorAll('.mobile-planet-tab');
-
-        if (toggleIcon) {
-            toggleIcon.src = `assets/general/${this.game.currentLevel}.webp`;
-        }
-        if (toggleText) {
-            toggleText.textContent = this.game.currentLevel.charAt(0).toUpperCase() + this.game.currentLevel.slice(1);
-        }
-
-        // Update active state in menu
-        mobilePlanetTabs.forEach(t => {
-            if (t.dataset.planet === this.game.currentLevel) {
-                t.classList.add('active');
-            } else {
-                t.classList.remove('active');
-            }
-        });
-
-        // Also update menu theming
-        const planetMenu = document.getElementById('mobile-planet-menu');
-        if (planetMenu) {
-            // Remove existing planet classes
-            planetMenu.classList.remove('planet-earth', 'planet-moon', 'planet-mars', 'planet-jupiter', 'planet-titan');
-            // Add current planet class (assuming CSS uses .planet-name structure on body, but here we scope it to menu if needed)
-            // Actually, the CSS uses body classes like .planet-mars. 
-            // But for the menu styling to work if it's outside the body class scope (it isn't, it's in body), 
-            // we just need to ensure body class is updated. switchPlanet does that via game logic usually.
-            // But let's ensure the menu itself has a class if we used that in CSS.
-            // Looking at CSS: .planet-mars #mobile-planet-menu. So it relies on body class.
-        }
+        if (!this.game?.currentLevel) return;
+        const planet = this.game.currentLevel;
+        const icon = document.getElementById('mobile-current-planet-icon');
+        const src = `assets/general/${planet}.webp`;
+        if (icon && icon.getAttribute('src') !== src) icon.src = src;
+        this.game.updateDisplayText('mobile-planet-name', planet.charAt(0).toUpperCase() + planet.slice(1));
+        for (const tab of document.querySelectorAll('.mobile-planet-tab'))
+            tab.classList.toggle('active', tab.dataset.planet === planet);
     }
 
     // Toggle mobile menu open/closed
@@ -1825,186 +1594,8 @@ class UIManager {
 
     // Update mobile shop content with horizontal scrolling
     updateMobileShopContent() {
-        if (!this.game) return;
-
-        const mobileShopContent = document.getElementById('mobile-shop-content');
-        if (!mobileShopContent) return;
-
-        // Check if shopManager is ready
-        if (!window.shopManager || !window.shopManager.shopData) {
-            console.warn('Shop manager not ready yet, skipping mobile shop update');
-            return;
-        }
-
-        // Clear existing content
-        mobileShopContent.innerHTML = '';
-
-        // Get helper category for current level
-        const helperCategory = this.game.getHelperCategoryForLevel(this.game.currentLevel);
-
-        if (!window.shopManager.shopData[helperCategory]) {
-            console.error(`Shop data for ${helperCategory} is missing!`);
-            return;
-        }
-
-        const helperEntries = Object.entries(window.shopManager.shopData[helperCategory]);
-        const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
-        const helperCounts = window.shopManager.getHelperCounts(helperArray);
-
-        const moonHelpers = Array.isArray(this.game.moonHelpers) ? this.game.moonHelpers : [];
-        const marsHelpers = Array.isArray(this.game.marsHelpers) ? this.game.marsHelpers : [];
-        const jupiterHelpers = Array.isArray(this.game.jupiterHelpers) ? this.game.jupiterHelpers : [];
-        const moonBaseOwned = moonHelpers.some(h => h.type === 'moonBase');
-        const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
-        const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
-        const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
-        const jupiterReached = this.isJupiterUnlocked();
-
-        // Create shop items (same logic as desktop but different layout)
-        for (let i = 0; i < 6; i++) {
-            const item = document.createElement('div');
-            item.className = 'shop-grid-item';
-
-            if (i < helperEntries.length) {
-                const [type, helper] = helperEntries[i];
-                const owned = helperCounts.get(type) || 0;
-                const cost = this.game.getHelperCost(helper.baseCost, owned, type);
-                const canAfford = this.game.dogecoins >= cost;
-
-                // Check if helper is locked (same logic as desktop)
-                let lockReason = null;
-
-                if (this.game.currentLevel === 'earth') {
-                    // The rig follows its saved invention; the Drive keeps its existing progression gate.
-                    if (type === 'timeMachineRig' && !(this.game.isWorldHelperAvailable?.(type) ?? jupiterReached)) {
-                        lockReason = 'notInvented';
-                    }
-                    // Infinite Dogebility Drive requires further progress
-                    else if (type === 'infiniteDogebility' && !jupiterReached) {
-                        lockReason = 'furtherProgress';
-                    }
-                } else if (this.game.currentLevel === 'moon') {
-                    if (type !== 'moonBase' && !moonBaseOwned) {
-                        lockReason = 'moonBase';
-                    } else if (type === 'marsRocket' && !landerShibeOwned) {
-                        lockReason = 'landerShibe';
-                    } else if (type === 'dogeGate' && !jupiterReached) {
-                        lockReason = 'furtherProgress';
-                    }
-                } else if (this.game.currentLevel === 'mars') {
-                    if (type !== 'marsBase' && !marsBaseOwned) {
-                        lockReason = 'marsBase';
-                    }
-                    const spaceBassOwned = marsHelpers.some(h => h.type === 'spaceBass');
-                    if (type === 'jupiterRocket' && !spaceBassOwned) {
-                        lockReason = 'spaceBass';
-                    }
-                } else if (this.game.currentLevel === 'jupiter') {
-                    if (type !== 'cloudBase' && !jupiterBaseOwned) {
-                        lockReason = 'cloudBase';
-                    }
-                } else if (this.game.currentLevel === 'titan') {
-                    const titanHelpers = Array.isArray(this.game.titanHelpers) ? this.game.titanHelpers : [];
-                    const titanBaseOwned = titanHelpers.some(h => h.type === 'titanBase');
-                    if (type !== 'titanBase' && !titanBaseOwned) {
-                        lockReason = 'titanBase';
-                    }
-                }
-                if (type === 'marsRocket' && moonBaseOwned) {
-                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (landerShibeOwned ? 'discoveringRoute' : 'landerShibe') : null;
-                }
-                if (type === 'jupiterRocket' && marsBaseOwned) {
-                    const spaceBassOwned = marsHelpers.some(helper => helper.type === 'spaceBass');
-                    lockReason = this.game.isWorldHelperAvailable?.(type) === false ? (spaceBassOwned ? 'discoveringRoute' : 'spaceBass') : null;
-                }
-                const isLocked = lockReason !== null;
-
-                const priceText = this.game.formatNumber(cost);
-                const buttonDisabled = (!canAfford || isLocked) ? 'disabled' : '';
-
-                // Get upgrade-based info for Earth helpers (same as desktop)
-                let displayName = helper.name;
-                let displayDesc = helper.description;
-                let displayDps = helper.baseDps;
-                let displayIcon = helper.icon;
-
-                if (window.shopManager) {
-                    const upgradeInfo = window.shopManager.getCurrentHelperUpgradeInfo(type);
-                    if (upgradeInfo) {
-                        displayName = upgradeInfo.name;
-                        displayDps = upgradeInfo.dps;
-                        if (upgradeInfo.shopDesc) {
-                            displayDesc = upgradeInfo.shopDesc;
-                        }
-                    }
-                    // Get upgrade-level sprite
-                    const upgradeLevel = this.game.helperUpgradeLevels?.[type] || 0;
-                    const spritePaths = this.game.getHelperSpritePaths(type, upgradeLevel);
-                    if (spritePaths && spritePaths.idle) {
-                        displayIcon = spritePaths.idle;
-                    }
-                }
-
-                // Build lock text based on lock reason
-                let lockText = 'REQUIRES MOON BASE';
-                if (lockReason === 'discoveringRoute') lockText = 'SCOUTING THE ROUTE';
-                else if (lockReason === 'landerShibe') lockText = 'REQUIRES LANDER SHIBE';
-                else if (lockReason === 'marsBase') lockText = 'REQUIRES MARS BASE';
-                else if (lockReason === 'spaceBass') lockText = 'REQUIRES SPACE BASS';
-                else if (lockReason === 'cloudBase') lockText = 'REQUIRES CLOUD BASE';
-                else if (lockReason === 'titanBase') lockText = 'REQUIRES TITAN BASE';
-                else if (lockReason === 'furtherProgress') lockText = 'REQUIRES FURTHER PROGRESS';
-                else if (lockReason === 'notInvented') lockText = 'HAS NOT BEEN INVENTED YET.';
-
-                const lockOverlayHtml = isLocked ? `
-                    <div class="helper-lock-overlay">
-                        <div class="helper-lock-icon" aria-hidden="true"></div>
-                        <div class="helper-lock-text">LOCKED</div>
-                        <div class="helper-lock-subtext">${lockText}</div>
-                    </div>
-                ` : '';
-
-                item.innerHTML = `
-                    <div class="shop-item-quantity">#${owned}</div>
-                    <div class="shop-item-title">${displayName}</div>
-                    <button type="button" class="shop-item-dps" data-helper-dps="${type}" aria-expanded="false">${displayDps} ĐPS</button>
-                    <div class="shop-sprite-description-container">
-                        <div class="shop-item-sprite">
-                            <img src="${displayIcon}" alt="${displayName}">
-                        </div>
-                        <div class="shop-item-info">
-                            <div class="shop-item-description ${displayDesc.length > 75 ? 'long-description' : ''}">${displayDesc}</div>
-                            <button class="shop-buy-btn${isLocked ? ' locked' : ''}" data-helper-type="${type}" ${buttonDisabled}>
-                                <img src="assets/general/dogecoin_70x70.webp" alt="DogeCoin" class="buy-btn-icon">
-                                <span class="buy-btn-price">${priceText}</span>
-                            </button>
-                        </div>
-                    </div>
-                    ${lockOverlayHtml}
-                `;
-
-                if (isLocked) {
-                    item.classList.add('helper-locked');
-                }
-
-                // Add click listener to buy button using shared handler to avoid duplicate stacking
-                const buyBtn = item.querySelector('.shop-buy-btn');
-                if (buyBtn) {
-                    buyBtn.removeEventListener('click', this.boundMobileBuyButtonClick);
-                    buyBtn.addEventListener('click', this.boundMobileBuyButtonClick);
-                }
-            } else {
-                // Empty slot
-                item.innerHTML = `
-                    <div class="shop-item-empty">
-                        <div class="empty-text">Coming Soon!</div>
-                    </div>
-                `;
-            }
-
-            mobileShopContent.appendChild(item);
-        }
-        this.game.updateHelperShopDps?.();
+        const container = document.getElementById('mobile-shop-content');
+        if (container && this.game && window.shopManager?.shopData) this.renderHelperShop(container, true);
     }
 
     // Update mobile upgrades content

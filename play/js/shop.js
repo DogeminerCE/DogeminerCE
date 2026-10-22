@@ -638,92 +638,17 @@ class ShopManager {
     }
 
     canAffordHelper(helperType) {
-        const owned = this.game.helpers.filter(h => h.type === helperType).length;
-        const cost = this.getHelperCost(helperType, owned);
-        return this.game.dogecoins >= cost;
+        const category = this.game.getHelperCategoryForLevel();
+        const helper = this.shopData[category]?.[helperType];
+        if (!helper || this.game.isWorldHelperAvailable?.(helperType) === false) return false;
+        const owned = this.getHelperCounts(this.game.getHelperArrayForLevel()).get(helperType) || 0;
+        return this.game.dogecoins >= this.game.getHelperCost(helper.baseCost, owned, helperType);
     }
 
-    canAffordPickaxe(pickaxeType) {
-        const pickaxe = this.shopData.pickaxes[pickaxeType];
-        if (!pickaxe) return false;
-
-        return this.game.dogecoins >= pickaxe.cost && !this.game.pickaxes.includes(pickaxeType);
-    }
-
-    canAffordUpgrade(upgradeType) {
-        const upgrade = this.shopData.upgrades[upgradeType];
-        if (!upgrade) return false;
-
-        const level = this.game.upgrades[upgradeType] || 0;
-        if (level >= upgrade.maxLevel) return false;
-
-        const cost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
-        return this.game.dogecoins >= cost;
-    }
-
+    // Keep the legacy entry point on the same purchase, placement and save path
+    // as keyboard, touch and controller purchases.
     buyHelper(helperType) {
-        if (!this.canAffordHelper(helperType)) {
-            this.game.showNotification('Not enough Dogecoins!');
-            return false;
-        }
-
-        const owned = this.game.helpers.filter(h => h.type === helperType).length;
-        const cost = this.getHelperCost(helperType, owned);
-        const helper = this.shopData.helpers[helperType];
-
-        this.game.dogecoins -= cost;
-        this.game.flashDogecoinAmount?.('red');
-        this.game.helpers.push({
-            type: helperType,
-            name: helper.name,  // Store the display name from shop data
-            dps: helper.baseDps,
-            owned: owned + 1
-        });
-
-        this.game.updateDPS();
-        this.game.showNotification(`Bought ${helper.name} for ${this.game.formatNumber(cost)} Dogecoins!`);
-        this.game.playSound('check.wav');
-
-        return true;
-    }
-
-    buyPickaxe(pickaxeType) {
-        if (!this.canAffordPickaxe(pickaxeType)) {
-            this.game.showNotification('Cannot buy this pickaxe!');
-            return false;
-        }
-
-        const pickaxe = this.shopData.pickaxes[pickaxeType];
-
-        this.game.dogecoins -= pickaxe.cost;
-        this.game.flashDogecoinAmount?.('red');
-        this.game.pickaxes.push(pickaxeType);
-        this.game.currentPickaxe = pickaxeType;
-
-        this.game.showNotification(`Bought ${pickaxe.name}!`);
-        this.game.playSound('check.wav');
-
-        return true;
-    }
-
-    buyUpgrade(upgradeType) {
-        if (!this.canAffordUpgrade(upgradeType)) {
-            this.game.showNotification('Cannot buy this upgrade!');
-            return false;
-        }
-
-        const upgrade = this.shopData.upgrades[upgradeType];
-        const level = this.game.upgrades[upgradeType] || 0;
-        const cost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
-
-        this.game.dogecoins -= cost;
-        this.game.flashDogecoinAmount?.('red');
-        this.game.upgrades[upgradeType] = level + 1;
-
-        this.game.showNotification(`Bought ${upgrade.name} Level ${level + 1}!`);
-        this.game.playSound('check.wav');
-
-        return true;
+        return this.game.buyHelper(helperType);
     }
 
     // Helper upgrade methods
@@ -898,129 +823,6 @@ class ShopManager {
         return true;
     }
 
-    getShopItems(category) {
-        return this.shopData[category] || {};
-    }
-
-    getUnlockedItems(category) {
-        const items = this.getShopItems(category);
-        const unlocked = {};
-
-        Object.entries(items).forEach(([key, item]) => {
-            if (this.isItemUnlocked(key, category)) {
-                unlocked[key] = item;
-            }
-        });
-
-        return unlocked;
-    }
-
-    isItemUnlocked(itemKey, category) {
-        switch (category) {
-            case 'helpers':
-                // All helpers are unlocked by default
-                return true;
-
-            case 'pickaxes':
-                const pickaxe = this.shopData.pickaxes[itemKey];
-                return pickaxe && pickaxe.unlocked;
-
-            case 'upgrades':
-                // Unlock upgrades based on progress
-                return this.isUpgradeUnlocked(itemKey);
-
-            default:
-                return false;
-        }
-    }
-
-    isUpgradeUnlocked(upgradeType) {
-        // Unlock upgrades based on game progress
-        switch (upgradeType) {
-            case 'clickPower':
-                return this.game.totalMined >= 100;
-            case 'autoClicker':
-                return this.game.totalMined >= 1000;
-            case 'criticalChance':
-                return this.game.totalMined >= 5000;
-            case 'helperEfficiency':
-                return this.game.helpers.length >= 3;
-            default:
-                return false;
-        }
-    }
-
-    updateShopDisplay() {
-        // This will be called by the UI manager to refresh shop displays
-        if (uiManager && uiManager.activePanel === 'shop-panel') {
-            uiManager.updateShopContent();
-        }
-    }
-
-    getHelperStats(helperType) {
-        const helper = this.shopData.helpers[helperType];
-        const owned = this.game.helpers.filter(h => h.type === helperType).length;
-        const totalDps = helper.baseDps * owned;
-
-        return {
-            owned,
-            totalDps,
-            nextCost: this.getHelperCost(helperType, owned)
-        };
-    }
-
-    getUpgradeStats(upgradeType) {
-        const upgrade = this.shopData.upgrades[upgradeType];
-        const level = this.game.upgrades[upgradeType] || 0;
-        const nextCost = Math.floor(upgrade.baseCost * Math.pow(1.5, level));
-
-        return {
-            level,
-            nextCost,
-            maxLevel: upgrade.maxLevel,
-            isMaxLevel: level >= upgrade.maxLevel
-        };
-    }
-
-    // Special offers and limited-time items
-    getSpecialOffers() {
-        const offers = [];
-
-        // Example: Double DPS weekend
-        if (this.isWeekend()) {
-            offers.push({
-                type: 'doubleDps',
-                name: 'Weekend Boost',
-                description: 'All helpers produce 2x DPS!',
-                icon: 'assets/general/diamond.webp',
-                active: true
-            });
-        }
-
-        return offers;
-    }
-
-    isWeekend() {
-        const day = new Date().getDay();
-        return day === 0 || day === 6; // Sunday or Saturday
-    }
-
-    applySpecialOffers() {
-        const offers = this.getSpecialOffers();
-        let multiplier = 1;
-
-        offers.forEach(offer => {
-            if (offer.active) {
-                switch (offer.type) {
-                    case 'doubleDps':
-                        multiplier *= 2;
-                        break;
-                }
-            }
-        });
-
-        return multiplier;
-    }
 }
 
 // Global shop manager instance
