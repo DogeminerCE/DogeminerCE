@@ -6,7 +6,7 @@
     "commit": "557693f5b85c026d8b5c69c6ad9c4ca3d163f570",
     "label": "v0.055 (ALPHA)"
   },
-  "build": "beta-v0.1-r5",
+  "build": "beta-v0.1-r6",
   "posts": [
     {
       "title": "Beta v0.1 — Mining, rewards and balance",
@@ -530,7 +530,7 @@
     },
     {
       "title": "Beta v0.1 — Controls, audio, mobile and updates",
-      "date": "2026-10-18",
+      "date": "2026-10-22",
       "changes": [
         {
           "ids": [
@@ -601,6 +601,10 @@
         {
           "ids": [],
           "text": "Fixed the split white backing on Dogebag and Mystery Box rewards! It now covers both panels, the gap and the planet tabs. The third Searchdoge slot now uses the proper lock icon and matches the other Dogediamond upgrade buttons."
+        },
+        {
+          "ids": [],
+          "text": "Optimized the older shop, upgrade and currency displays to do less work while mining, especially with lots of helpers. Fixed lifetime helper counts leaving out Titan."
         }
       ]
     }

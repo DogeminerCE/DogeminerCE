@@ -817,14 +817,31 @@ class ShopManager {
         return Math.min(Number.isSafeInteger(level) && level >= 0 ? level : 0, upgrades.length - 1);
     }
 
-    getOwnedHelperCount(helperType) {
-        return ['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']
-            .reduce((count, key) => count + (this.game[key] || []).filter(helper => helper.type === helperType).length, 0);
+    getHelperCounts(helpers) {
+        // A snapshot belongs to one synchronous refresh; purchases, imports and
+        // planet changes can replace helper arrays without cache invalidation.
+        const groups = helpers ? [helpers] : ['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']
+            .map(key => this.game[key] || []);
+        const counts = new Map();
+        for (const group of groups) for (const helper of group) {
+            const type = helper.type;
+            counts.set(type, (counts.get(type) || 0) + 1);
+        }
+        return counts;
     }
 
-    canAffordHelperUpgrade(helperType, currency = 'dogecoins') {
+    getOwnedHelperCount(helperType, counts) {
+        if (counts) return counts.get(helperType) || 0;
+        let count = 0;
+        for (const key of ['helpers', 'moonHelpers', 'marsHelpers', 'jupiterHelpers', 'titanHelpers']) {
+            for (const helper of this.game[key] || []) if (helper.type === helperType) count++;
+        }
+        return count;
+    }
+
+    canAffordHelperUpgrade(helperType, currency = 'dogecoins', counts) {
         const nextUpgrade = this.getNextHelperUpgrade(helperType);
-        if (!nextUpgrade || this.getOwnedHelperCount(helperType) < 1) return false;
+        if (!nextUpgrade || this.getOwnedHelperCount(helperType, counts) < 1) return false;
         const price = currency === 'dogecoins' ? nextUpgrade.price : currency === 'dogediamonds' ? nextUpgrade.diamondPrice : undefined;
         return Number.isFinite(price) && price > 0 && this.game[currency] >= price;
     }

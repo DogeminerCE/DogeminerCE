@@ -114,7 +114,8 @@ class TimeTravelManager {
             // rebuying a Time Machine Mining Rig in the new timeline.
             const showLabel = (this.game.timelineNumber || 1) > 1;
             label.style.display = showLabel ? 'block' : 'none';
-            label.textContent = showLabel ? `TIMELINE #${this.game.timelineNumber || 1}` : '';
+            const text = showLabel ? `TIMELINE #${this.game.timelineNumber || 1}` : '';
+            if (label.textContent !== text) label.textContent = text;
         }
     }
 

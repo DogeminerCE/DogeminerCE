@@ -474,7 +474,6 @@ class UIManager {
         }
 
         // Log the current planet to help debug shop issues
-        console.log(`Updating shop content for planet: ${this.game.currentLevel}`);
 
         // Clear existing content
         shopContent.innerHTML = '';
@@ -496,7 +495,6 @@ class UIManager {
 
         // Choose which helpers to display based on current planet
         const helperCategory = this.game.getHelperCategoryForLevel(this.game.currentLevel);
-        console.log(`Rendering shop with helper category: ${helperCategory} for planet: ${this.game.currentLevel}`);
 
         if (!window.shopManager.shopData[helperCategory]) {
             console.error(`Shop data for ${helperCategory} is missing!`);
@@ -504,6 +502,8 @@ class UIManager {
         }
 
         const helperEntries = Object.entries(window.shopManager.shopData[helperCategory]);
+        const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
+        const helperCounts = window.shopManager.getHelperCounts(helperArray);
         const moonHelpers = Array.isArray(this.game.moonHelpers) ? this.game.moonHelpers : [];
         const marsHelpers = Array.isArray(this.game.marsHelpers) ? this.game.marsHelpers : [];
         const jupiterHelpers = Array.isArray(this.game.jupiterHelpers) ? this.game.jupiterHelpers : [];
@@ -521,8 +521,7 @@ class UIManager {
             if (i < helperEntries.length) {
                 const [type, helper] = helperEntries[i];
                 // Choose the correct helper array based on current planet
-                const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
-                const owned = helperArray.filter(h => h.type === type).length;
+                const owned = helperCounts.get(type) || 0;
                 const cost = this.game.getHelperCost(helper.baseCost, owned, type);
                 const canAfford = this.game.dogecoins >= cost;
 
@@ -1208,7 +1207,8 @@ class UIManager {
         const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
         for (const badge of document.querySelectorAll('.upgrade-tab-count')) {
             const previous = badge.dataset.count === undefined ? null : Number(badge.dataset.count);
-            badge.parentElement.setAttribute('aria-label', count ? `Upgrades, ${count} found` : 'Upgrades');
+            const label = count ? `Upgrades, ${count} found` : 'Upgrades';
+            if (badge.parentElement.getAttribute('aria-label') !== label) badge.parentElement.setAttribute('aria-label', label);
             if (previous === count) continue;
             badge.dataset.count = String(count);
             badge._countAnimation?.cancel();
@@ -1242,15 +1242,27 @@ class UIManager {
     }
 
     updateHelperUpgradeAffordability() {
-        if (!window.shopManager) return;
-        document.querySelectorAll('[data-upgrade-helper][data-upgrade-currency]').forEach(button => {
+        const shop = window.shopManager;
+        if (!shop) return;
+        const buttons = document.querySelectorAll('[data-upgrade-helper][data-upgrade-currency]');
+        if (!buttons.length) return;
+        const counts = shop.getHelperCounts(), byType = new Map();
+        for (const button of buttons) {
             const type = button.dataset.upgradeHelper;
-            const next = window.shopManager.getNextHelperUpgrade(type);
-            const canAfford = next?.level === Number(button.dataset.upgradeLevel)
-                && window.shopManager.canAffordHelperUpgrade(type, button.dataset.upgradeCurrency);
-            button.disabled = !canAfford;
-            button.classList.toggle('disabled', !canAfford);
-        });
+            if (!byType.has(type)) {
+                const next = shop.getNextHelperUpgrade(type);
+                byType.set(type, {
+                    level: next?.level,
+                    dogecoins: shop.canAffordHelperUpgrade(type, 'dogecoins', counts),
+                    dogediamonds: shop.canAffordHelperUpgrade(type, 'dogediamonds', counts)
+                });
+            }
+            const state = byType.get(type);
+            const disabled = state.level !== Number(button.dataset.upgradeLevel)
+                || state[button.dataset.upgradeCurrency] !== true;
+            if (button.disabled !== disabled) button.disabled = disabled;
+            if (button.classList.contains('disabled') !== disabled) button.classList.toggle('disabled', disabled);
+        }
     }
 
     updateUpgradeContent(fadeInSectionIndex) {
@@ -1313,47 +1325,13 @@ class UIManager {
     }
 
     getAvailableHelperUpgrades() {
-        const upgrades = [];
-
-        console.log('getAvailableHelperUpgrades called');
-        console.log('shopManager:', window.shopManager);
-        console.log('currentLevel:', this.game.currentLevel);
-
-        if (!window.shopManager) {
-            console.log('No shopManager found');
-            return upgrades;
-        }
-
-        // Get the helper array for the current level
-        let helperArray = [];
-        const currentLevel = this.game.currentLevel;
-
-        if (currentLevel === 'earth') {
-            helperArray = this.game.helpers || [];
-        } else if (currentLevel === 'moon') {
-            helperArray = this.game.moonHelpers || [];
-        } else if (currentLevel === 'mars') {
-            helperArray = this.game.marsHelpers || [];
-        } else if (currentLevel === 'jupiter') {
-            helperArray = this.game.jupiterHelpers || [];
-        } else if (currentLevel === 'titan') {
-            helperArray = this.game.titanHelpers || [];
-        }
-
-        console.log('Helpers array for level:', helperArray);
-
-        const ownedHelperTypes = new Set(helperArray.map(h => h.type));
-        console.log('Owned helper types:', [...ownedHelperTypes]);
-
-        // Check each owned helper type for available upgrades
-        ownedHelperTypes.forEach(helperType => {
-            const nextUpgrade = window.shopManager.getNextHelperUpgrade(helperType);
-            console.log('Checking helper type:', helperType, 'nextUpgrade:', nextUpgrade);
-
+        const upgrades = [], shop = window.shopManager;
+        if (!shop) return upgrades;
+        const counts = shop.getHelperCounts(this.game.getHelperArrayForLevel() || []);
+        for (const [helperType, helperCount] of counts) {
+            const nextUpgrade = shop.getNextHelperUpgrade(helperType);
             if (nextUpgrade) {
-                const currentInfo = window.shopManager.getCurrentHelperUpgradeInfo(helperType);
-                const helperCount = helperArray.filter(h => h.type === helperType).length;
-
+                const currentInfo = shop.getCurrentHelperUpgradeInfo(helperType);
                 upgrades.push({
                     helperType: helperType,
                     helperName: currentInfo.name,
@@ -1368,9 +1346,7 @@ class UIManager {
                     helperCount: helperCount
                 });
             }
-        });
-
-        console.log('Final available upgrades:', upgrades);
+        }
         return upgrades;
     }
 
@@ -1873,6 +1849,16 @@ class UIManager {
 
         const helperEntries = Object.entries(window.shopManager.shopData[helperCategory]);
         const helperArray = this.game.getHelperArrayForLevel(this.game.currentLevel);
+        const helperCounts = window.shopManager.getHelperCounts(helperArray);
+
+        const moonHelpers = Array.isArray(this.game.moonHelpers) ? this.game.moonHelpers : [];
+        const marsHelpers = Array.isArray(this.game.marsHelpers) ? this.game.marsHelpers : [];
+        const jupiterHelpers = Array.isArray(this.game.jupiterHelpers) ? this.game.jupiterHelpers : [];
+        const moonBaseOwned = moonHelpers.some(h => h.type === 'moonBase');
+        const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
+        const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
+        const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
+        const jupiterReached = this.isJupiterUnlocked();
 
         // Create shop items (same logic as desktop but different layout)
         for (let i = 0; i < 6; i++) {
@@ -1881,20 +1867,12 @@ class UIManager {
 
             if (i < helperEntries.length) {
                 const [type, helper] = helperEntries[i];
-                const owned = helperArray.filter(h => h.type === type).length;
+                const owned = helperCounts.get(type) || 0;
                 const cost = this.game.getHelperCost(helper.baseCost, owned, type);
                 const canAfford = this.game.dogecoins >= cost;
 
                 // Check if helper is locked (same logic as desktop)
                 let lockReason = null;
-                const moonHelpers = Array.isArray(this.game.moonHelpers) ? this.game.moonHelpers : [];
-                const marsHelpers = Array.isArray(this.game.marsHelpers) ? this.game.marsHelpers : [];
-                const jupiterHelpers = Array.isArray(this.game.jupiterHelpers) ? this.game.jupiterHelpers : [];
-                const moonBaseOwned = moonHelpers.some(h => h.type === 'moonBase');
-                const marsBaseOwned = marsHelpers.some(h => h.type === 'marsBase');
-                const jupiterBaseOwned = jupiterHelpers.some(h => h.type === 'cloudBase');
-                const landerShibeOwned = moonHelpers.some(h => h.type === 'landerShibe');
-                const jupiterReached = this.isJupiterUnlocked();
 
                 if (this.game.currentLevel === 'earth') {
                     // The rig follows its saved invention; the Drive keeps its existing progression gate.
@@ -2213,36 +2191,19 @@ class UIManager {
         this.game?.updateTimelineHistoryUI?.();
         if (!this.game || this.activeMobileTab !== 'achievements') return;
 
-        const mobileTotalMined = document.getElementById('mobile-total-mined');
-        const mobileCurrentBalance = document.getElementById('mobile-current-balance');
-        const mobileTotalClicks = document.getElementById('mobile-total-clicks');
-        const mobileCurrentDps = document.getElementById('mobile-current-dps');
-        const mobileHighestDps = document.getElementById('mobile-highest-dps');
-        const mobileHelpersOwned = document.getElementById('mobile-helpers-owned');
-        const mobilePlayTime = document.getElementById('mobile-play-time');
-
-        if (mobileTotalMined) mobileTotalMined.textContent = this.game.formatNumber(Math.floor(this.game.totalMined || 0));
-        if (mobileCurrentBalance) mobileCurrentBalance.textContent = this.game.formatNumber(Math.floor(this.game.dogecoins || 0));
-        if (mobileTotalClicks) mobileTotalClicks.textContent = this.game.formatNumber(this.game.totalClicks || 0);
-        if (mobileCurrentDps) mobileCurrentDps.textContent = this.game.formatNumber(this.game.dps || 0) + ' Đ/s';
-        if (mobileHighestDps) mobileHighestDps.textContent = this.game.formatNumber(this.game.highestDps || 0) + ' Đ/s';
-        const mobileHighestCrit = document.getElementById('mobile-highest-crit');
-        if (mobileHighestCrit) mobileHighestCrit.textContent = this.game.formatNumber(this.game.records?.highestcrit || 0);
-
-        const totalHelpers = (this.game.helpers?.length || 0) +
-            (this.game.moonHelpers?.length || 0) +
-            (this.game.marsHelpers?.length || 0) +
-            (this.game.jupiterHelpers?.length || 0) +
-            (this.game.titanHelpers?.length || 0);
-        if (mobileHelpersOwned) mobileHelpersOwned.textContent = totalHelpers;
-
-        if (mobilePlayTime) {
-            const currentPlayTime = Math.floor((Date.now() - this.game.startTime) / 1000) + this.game.totalPlayTime;
-            const hours = Math.floor(currentPlayTime / 3600);
-            const minutes = Math.floor((currentPlayTime % 3600) / 60);
-            const seconds = Math.floor(currentPlayTime % 60);
-            mobilePlayTime.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
+        const game = this.game;
+        game.updateDisplayText('mobile-total-mined', game.formatNumber(Math.floor(game.totalMined || 0)));
+        game.updateDisplayText('mobile-current-balance', game.formatNumber(Math.floor(game.dogecoins || 0)));
+        game.updateDisplayText('mobile-total-clicks', game.formatNumber(game.totalClicks || 0));
+        game.updateDisplayText('mobile-current-dps', game.formatNumber(game.dps || 0) + ' Đ/s');
+        game.updateDisplayText('mobile-highest-dps', game.formatNumber(game.highestDps || 0) + ' Đ/s');
+        game.updateDisplayText('mobile-highest-crit', game.formatNumber(game.records?.highestcrit || 0));
+        game.updateDisplayText('mobile-helpers-owned', game.getTotalHelperCount());
+        const currentPlayTime = Math.floor((Date.now() - game.startTime) / 1000) + game.totalPlayTime;
+        const hours = Math.floor(currentPlayTime / 3600);
+        const minutes = Math.floor((currentPlayTime % 3600) / 60);
+        const seconds = Math.floor(currentPlayTime % 60);
+        game.updateDisplayText('mobile-play-time', `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
     }
 
     // Update mobile settings content

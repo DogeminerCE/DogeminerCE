@@ -1491,10 +1491,10 @@ class DogeMinerGame {
         const counter = document.getElementById('diamond-counter');
         if (!counter) return;
         const unlocked = this.dogediamondsEverObtained > 0;
-        counter.style.display = unlocked ? 'flex' : 'none';
-        const amountEl = document.getElementById('diamond-amount');
+        const display = unlocked ? 'flex' : 'none';
+        if (counter.style.display !== display) counter.style.display = display;
         const visibleBalance = Math.max(0, this.dogediamonds - (this.pendingDiamondDisplayAmount || 0));
-        if (amountEl) amountEl.textContent = this.formatCounterAmount(visibleBalance);
+        this.updateDisplayText('diamond-amount', this.formatCounterAmount(visibleBalance));
     }
 
     /** Opens the first-find Dogediamonds explainer popup. */
@@ -3403,33 +3403,18 @@ class DogeMinerGame {
     }
 
     getHelperArrayForLevel(level = this.currentLevel) {
-        switch (level) {
-            case 'moon':
-                return this.moonHelpers;
-            case 'mars':
-                return this.marsHelpers;
-            case 'jupiter':
-                return this.jupiterHelpers;
-            case 'titan':
-                return this.titanHelpers;
-            default:
-                return this.helpers;
-        }
+        return this[this.getHelperCategoryForLevel(level)];
+    }
+
+    getTotalHelperCount() {
+        return (this.helpers?.length || 0) + (this.moonHelpers?.length || 0)
+            + (this.marsHelpers?.length || 0) + (this.jupiterHelpers?.length || 0)
+            + (this.titanHelpers?.length || 0);
     }
 
     buyHelper(helperType) {
         if (this.isCutscenePlaying || this.isStoryOpen) return false;
         if (this.isWorldHelperAvailable?.(helperType) === false) return false;
-
-        if (!this._bulkBuying) {
-        console.log('=== buyHelper called ===');
-        console.log('Helper type:', helperType);
-        console.log('isPlacingHelpers:', this.isPlacingHelpers);
-        console.log('Current placementQueue length:', this.placementQueue?.length || 0);
-        console.log('helpersOnCursor length:', this.helpersOnCursor?.length || 0);
-        console.log('Current level:', this.currentLevel);
-        console.log('Stack trace:', new Error().stack);
-        }
 
         const helperCategory = this.getHelperCategoryForLevel();
         const helperData = window.shopManager?.shopData?.[helperCategory]?.[helperType];
@@ -3560,7 +3545,6 @@ class DogeMinerGame {
 
         // If this is the first helper, start the placement system
         // But only if shouldStartPlacement is true (not for drag-and-drop)
-        console.log('helpersOnCursor.length:', this.helpersOnCursor.length, 'isPlacingHelpers:', this.isPlacingHelpers, 'shouldStartPlacement:', shouldStartPlacement);
         if (this.helpersOnCursor.length === 1 && shouldStartPlacement) {
             this.startHelperPlacement();
         } else {
@@ -3580,8 +3564,6 @@ class DogeMinerGame {
         this.updateDPS();
         this.updateUI();
         this.updateMobileHelperBar();
-
-        console.log(`[Mobile] Added ${helperType} to helper bar`);
 
         // Check for spaceRocket to trigger moon cutscene
         if (helperType === 'spaceRocket' && !this.hasPlayedMoonLaunch) {
@@ -3690,17 +3672,11 @@ class DogeMinerGame {
             // Update content (for both new and existing items)
 
             // Update affordability class
-            if (canAfford) {
-                item.classList.add('affordable');
-            } else {
-                item.classList.remove('affordable');
-            }
+            if (item.classList.contains('affordable') !== canAfford) item.classList.toggle('affordable', canAfford);
 
             // Update count text
             const badge = item.querySelector('.mobile-helper-count');
-            if (badge) {
-                badge.textContent = count;
-            }
+            if (badge && badge.textContent !== String(count)) badge.textContent = String(count);
 
             // Update sprites for existing items (in case of upgrade)
             if (!isNew) {
@@ -3711,8 +3687,8 @@ class DogeMinerGame {
                     const idleSprite = spritePaths?.idle || helperData.icon;
                     const miningSprite = spritePaths?.mining || helperData.miningSprite || helperData.icon;
 
-                    icon.dataset.idleSrc = idleSprite;
-                    icon.dataset.miningSrc = miningSprite;
+                    if (icon.dataset.idleSrc !== idleSprite) icon.dataset.idleSrc = idleSprite;
+                    if (icon.dataset.miningSrc !== miningSprite) icon.dataset.miningSrc = miningSprite;
                     // Update current src based on mining state
                     const currentSprite = icon.dataset.isMining === 'true' ? miningSprite : idleSprite;
                     if (icon.getAttribute('src') !== currentSprite) icon.src = currentSprite;
@@ -3783,10 +3759,6 @@ class DogeMinerGame {
 
     startHelperPlacement() {
         // Set flag to prevent drag-and-drop during placement
-        console.log('=== Starting helper placement ===');
-        console.log('Queue length before placement:', this.placementQueue?.length || 0);
-        console.log('helpersOnCursor length:', this.helpersOnCursor?.length || 0);
-        console.log('Setting isPlacingHelpers to true');
         this.isPlacingHelpers = true;
 
         // Create sprites for all helpers on cursor
@@ -4095,16 +4067,11 @@ class DogeMinerGame {
         });
 
         // Clear the cursor stack
-        console.log('Clearing helpersOnCursor after successful placement, length was:', this.helpersOnCursor.length);
         this.helpersOnCursor = [];
         this.clearCursorSprites();
 
         // Clean up placement listeners
         this.finishHelperPlacement();
-
-        // Clear placement flag
-        console.log('Clearing isPlacingHelpers flag after successful placement (first)');
-        // Don't clear here - let finishHelperPlacement handle it
 
         // Update UI and DPS
         this.updateDPS();
@@ -4120,55 +4087,30 @@ class DogeMinerGame {
     }
 
     updateHelperSpritesByType(helperType) {
-        console.log('=== updateHelperSpritesByType ===');
-        console.log('helperType:', helperType);
-        console.log('placedHelpers length:', this.placedHelpers?.length);
-        console.log('helperUpgradeLevels:', JSON.stringify(this.helperUpgradeLevels));
-
-        let foundCount = 0;
-        let matchCount = 0;
-
         // Iterate through all placed helpers to find matching types
-        this.placedHelpers.forEach((placedHelper, index) => {
-            console.log(`Helper ${index}: type=${placedHelper.type}, id=${placedHelper.id}, isMining=${placedHelper.isMining}`);
+        this.placedHelpers.forEach(placedHelper => {
             if (placedHelper.type === helperType) {
-                matchCount++;
                 const helperSprite = document.querySelector(`img[data-helper-id="${placedHelper.id}"]`);
-                console.log(`  Match found! Sprite element:`, helperSprite);
                 if (helperSprite) {
-                    foundCount++;
-                    console.log(`  Current src: ${helperSprite.src}`);
-                    console.log(`  Animation interval: ${helperSprite.dataset.animationInterval}`);
 
                     // Stop existing animation
                     this.stopHelperAnimation(helperSprite);
-                    console.log(`  After stop - interval: ${helperSprite.dataset.animationInterval}`);
 
                     // Get new sprite path based on current upgrade level
                     const upgradeLevel = this.helperUpgradeLevels?.[helperType] || 0;
                     const spritePaths = this.getHelperSpritePaths(helperType, upgradeLevel);
-                    console.log(`  New upgrade level: ${upgradeLevel}`);
-                    console.log(`  New sprite paths:`, spritePaths);
 
                     // Update sprite source
                     helperSprite.src = spritePaths.idle;
-                    console.log(`  Set src to: ${spritePaths.idle}`);
 
                     // Restart animation loop with new sprites if it was mining
                     if (placedHelper.isMining) {
-                        console.log(`  Restarting animation (isMining=true)`);
                         this.startHelperAnimation(placedHelper, helperSprite);
-                        console.log(`  After restart - interval: ${helperSprite.dataset.animationInterval}`);
-                    } else {
-                        console.log(`  NOT restarting animation (isMining=false)`);
                     }
-                } else {
-                    console.log(`  WARNING: Could not find sprite element!`);
                 }
             }
         });
 
-        console.log(`Summary: ${matchCount} matches, ${foundCount} sprites found`);
 
     }
 
@@ -4514,10 +4456,6 @@ class DogeMinerGame {
         // Clean up placement
         this.finishHelperPlacement();
 
-        // Clear placement flag
-        console.log('Clearing isPlacingHelpers flag after successful placement (second)');
-        // Don't clear here - let finishHelperPlacement handle it
-
         // Update DPS and UI
         this.updateDPS();
         this.updateUI();
@@ -4755,7 +4693,6 @@ class DogeMinerGame {
 
         const startDrag = (e) => {
             if (this.isPlacingHelpers) {
-                console.log('BLOCKED: Drag attempt during placement');
                 if (e.preventDefault) e.preventDefault();
                 return false;
             }
@@ -5209,10 +5146,6 @@ class DogeMinerGame {
     }
 
     finishHelperPlacement() {
-        console.log('=== Finishing helper placement ===');
-        console.log('Remaining queue length:', this.placementQueue?.length || 0);
-        console.log('helpersOnCursor length:', this.helpersOnCursor?.length || 0);
-        console.log('isPlacingHelpers before clear:', this.isPlacingHelpers);
 
         // Remove placement sprite
         if (this.helperSpriteBeingPlaced) {
@@ -5234,7 +5167,6 @@ class DogeMinerGame {
         this.helperBeingPlaced = null;
 
         // SOLUTION 2: Clear all state after placement
-        console.log('Clearing all placement state');
         this.isPlacingHelpers = false;
         this.placementQueue = [];
         this.currentPlacementType = null;
@@ -5243,7 +5175,6 @@ class DogeMinerGame {
         // Remove any lingering click handlers
         document.body.style.cursor = 'default';
 
-        console.log('Placement state cleared - isPlacingHelpers:', this.isPlacingHelpers);
     }
 
     cancelHelperPlacement() {
@@ -5266,7 +5197,6 @@ class DogeMinerGame {
         this.clearCursorSprites();
 
         // Clear the placement flag
-        console.log('Clearing isPlacingHelpers flag after cancellation');
         this.isPlacingHelpers = false;
 
         this.finishHelperPlacement();
@@ -5703,9 +5633,13 @@ class DogeMinerGame {
     updateShopPrices() {
         this.updateHelperShopDps?.();
         window.uiManager?.updateHelperUpgradeAffordability();
+        const helperCategory = this.getHelperCategoryForLevel();
+        const shopCategory = window.shopManager?.shopData?.[helperCategory];
+        if (!shopCategory) return;
+        const counts = window.shopManager.getHelperCounts(this.getHelperArrayForLevel());
         // Update shop prices and quantities without rebuilding the entire shop
         const shopItems = document.querySelectorAll('.shop-grid-item');
-        shopItems.forEach((item, index) => {
+        shopItems.forEach(item => {
             const quantityElement = item.querySelector('.shop-item-quantity');
             const priceElement = item.querySelector('.buy-btn-price');
             const buyButton = item.querySelector('.shop-buy-btn[data-helper-type]');
@@ -5715,21 +5649,19 @@ class DogeMinerGame {
                 const helperType = buyButton.getAttribute('data-helper-type');
                 if (helperType) {
                     // Get the correct helper category based on current planet
-                    const helperCategory = this.getHelperCategoryForLevel();
-                    const shopCategory = window.shopManager?.shopData?.[helperCategory];
                     const helper = shopCategory?.[helperType];
                     if (helper) {
-                        const helperArray = this.getHelperArrayForLevel();
-                        const owned = helperArray.filter(h => h.type === helperType).length;
+                        const owned = counts.get(helperType) || 0;
                         const cost = this.getHelperCost(helper.baseCost, owned, helperType);
                         const canAfford = this.dogecoins >= cost;
 
                         // Update quantity
-                        quantityElement.textContent = `#${owned}`;
+                        const quantityText = `#${owned}`;
+                        if (quantityElement.textContent !== quantityText) quantityElement.textContent = quantityText;
 
                         // Update price
                         const priceText = this.formatNumber(cost);
-                        priceElement.textContent = priceText;
+                        if (priceElement.textContent !== priceText) priceElement.textContent = priceText;
 
                         // Recalculate button width based on new price length
                         const priceLength = priceText.length;
@@ -5751,17 +5683,13 @@ class DogeMinerGame {
                         }
 
                         // Update button width
-                        buyButton.style.width = buttonWidth;
+                        if (buyButton.style.width !== buttonWidth) buyButton.style.width = buttonWidth;
 
                         // A price refresh must retain progression and discovery locks.
                         const canBuy = canAfford && !buyButton.classList.contains('locked') && this.isWorldHelperAvailable?.(helperType) !== false;
-                        if (canBuy) {
-                            buyButton.disabled = false;
-                            buyButton.style.opacity = '1';
-                        } else {
-                            buyButton.disabled = true;
-                            buyButton.style.opacity = '0.7';
-                        }
+                        if (buyButton.disabled !== !canBuy) buyButton.disabled = !canBuy;
+                        const opacity = canBuy ? '1' : '0.7';
+                        if (buyButton.style.opacity !== opacity) buyButton.style.opacity = opacity;
                     }
                 }
             }
@@ -6701,14 +6629,19 @@ class DogeMinerGame {
         return Math.max(0, this.dogecoins - (this.pendingCoinDisplayAmount || 0) - unclaimedOffline);
     }
 
+    updateDisplayText(id, value) {
+        const element = document.getElementById(id), text = String(value);
+        if (element && element.textContent !== text) element.textContent = text;
+    }
+
     updateDogecoinCounter() {
-        document.getElementById('dogecoin-amount').textContent = this.formatCounterAmount(this.getVisibleDogecoinBalance());
+        this.updateDisplayText('dogecoin-amount', this.formatCounterAmount(this.getVisibleDogecoinBalance()));
     }
 
     updateUI(skipShopPrices = false) {
         // Pending mined coins become visible when their individual flight lands.
         this.updateDogecoinCounter();
-        document.getElementById('dps-amount').textContent = this.formatCounterAmount(this.dps, true);
+        this.updateDisplayText('dps-amount', this.formatCounterAmount(this.dps, true));
         this.updateDiamondCounter();
         this.updateInventoryUnread();
         this.updatePlanetSummary?.();
@@ -6722,31 +6655,23 @@ class DogeMinerGame {
             this.updateShopPrices();
         }
 
-        document.getElementById('total-mined').textContent = this.formatNumber(Math.floor(this.totalMined));
-        document.getElementById('total-clicks').textContent = this.formatNumber(this.totalClicks);
-        const totalHelpersOwned =
-            (this.helpers?.length || 0) +
-            (this.moonHelpers?.length || 0) +
-            (this.marsHelpers?.length || 0) +
-            (this.jupiterHelpers?.length || 0); // Sum helpers across planets for an accurate counter.
-        document.getElementById('helpers-owned').textContent = totalHelpersOwned;
+        this.updateDisplayText('total-mined', this.formatNumber(Math.floor(this.totalMined)));
+        this.updateDisplayText('total-clicks', this.formatNumber(this.totalClicks));
+        this.updateDisplayText('helpers-owned', this.getTotalHelperCount());
         const activeLevelName = this.levels?.[this.currentLevel]?.name || this.currentLevel; // Match stats banner to current planet
-        document.getElementById('current-level').textContent = activeLevelName;
+        this.updateDisplayText('current-level', activeLevelName);
 
         // Calculate current play time from session start plus total accumulated time.
         const currentPlayTime = Math.floor((Date.now() - this.startTime) / 1000) + this.totalPlayTime;
-        document.getElementById('play-time').textContent = this.formatTime(currentPlayTime);
-        document.getElementById('highest-dps').textContent = this.formatNumber(this.highestDps);
-        const highestCrit = document.getElementById('highest-crit');
-        if (highestCrit) highestCrit.textContent = this.formatNumber(this.records?.highestcrit || 0);
+        this.updateDisplayText('play-time', this.formatTime(currentPlayTime));
+        this.updateDisplayText('highest-dps', this.formatNumber(this.highestDps));
+        this.updateDisplayText('highest-crit', this.formatNumber(this.records?.highestcrit || 0));
         this.updateTimelineHistoryUI?.();
 
         // Update mobile helper bar if on mobile
         if (this.isMobileDevice()) {
             this.updateMobileHelperBar();
         }
-
-        // Rock health system removed - simplified mining
     }
 
     formatTime(seconds) {

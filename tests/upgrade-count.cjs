@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const badges = Array.from({ length: 2 }, () => ({ dataset: {}, hidden: true, textContent: '', animations: [],
-    parentElement: { setAttribute(key, value) { this[key] = value; } },
+    parentElement: { getAttribute(key) { return this[key] ?? null; }, setAttribute(key, value) { this[key] = value; } },
     animate(frames, options) { const animation = { frames, options, canceled: false, cancel() { this.canceled = true; } };
         this.animations.push(animation); return animation; } }));
 let reduced = false;

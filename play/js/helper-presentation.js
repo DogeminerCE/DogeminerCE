@@ -21,8 +21,10 @@
         const name = document.getElementById('planet-summary-name');
         const population = document.getElementById('planet-summary-population');
         const icon = document.getElementById('planet-summary-icon');
-        if (name) name.textContent = this.currentLevel === 'moon' ? 'THE MOON' : String(this.currentLevel).toUpperCase();
-        if (population) population.textContent = `POPULATION: ${1 + this.getHelperArrayForLevel().length}`;
+        const title = this.currentLevel === 'moon' ? 'THE MOON' : String(this.currentLevel).toUpperCase();
+        const count = `POPULATION: ${1 + this.getHelperArrayForLevel().length}`;
+        if (name && name.textContent !== title) name.textContent = title;
+        if (population && population.textContent !== count) population.textContent = count;
         if (icon && icon.dataset.planet !== this.currentLevel) {
             icon.src = `../assets/general/${this.currentLevel}.webp`; icon.dataset.planet = this.currentLevel;
         }

@@ -649,18 +649,3 @@ window.addEventListener('unhandledrejection', (e) => {
         notificationManager.showError('Promise error: ' + (e.reason?.message || e.reason));
     }
 });
-
-// Service Worker registration (for PWA features)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
-
-// Global variables are now properly declared at the top of the file
